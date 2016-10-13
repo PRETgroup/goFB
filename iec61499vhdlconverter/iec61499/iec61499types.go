@@ -109,7 +109,7 @@ type OtherLanguage struct {
 
 //VarDeclare is used to store variable declarations of BasicFBs
 type VarDeclare struct {
-	Variable []Variable `xml:"VarDeclaration"`
+	Variables []Variable `xml:"VarDeclaration"`
 }
 
 //Variable is used as a variable in an algorithm of a BasicFB
@@ -135,4 +135,15 @@ type Event struct {
 //With associates a variable and an event (as data only changes on events)
 type With struct {
 	Var string `xml:"Var,attr"`
+}
+
+//GetTransitionsForState returns only the transitions for a given source state
+func (b *BasicFB) GetTransitionsForState(source string) []ECTransition {
+	trans := make([]ECTransition, 0, len(b.Transistions))
+	for i := 0; i < len(b.Transistions); i++ {
+		if b.Transistions[i].Source == source {
+			trans = append(trans, b.Transistions[i])
+		}
+	}
+	return trans
 }

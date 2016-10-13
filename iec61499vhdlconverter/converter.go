@@ -1,13 +1,21 @@
 package iec61499vhdlconverter
 
 import (
+	"bytes"
 	"encoding/xml"
 	"errors"
+	"strings"
+	"text/template"
 
 	"github.com/kiwih/go-iec61499-vhdl/iec61499vhdlconverter/iec61499"
 )
 
-//IEC61499ToVHDL converts iec61499 xml-formatted []byte into vhdl []byte
+var (
+	vhdlTemplateFuncMap = template.FuncMap{"getVhdlType": getVhdlType, "getVhdlECCTransitionCondition": getVhdlECCTransitionCondition}
+	vhdlTemplates       = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./vhdltemplates/*"))
+)
+
+//IEC61499ToVHDL converts iec61499 xml (stored as []byte) into vhdl []byte
 //Returns nil error on success
 func IEC61499ToVHDL(iec61499bytes []byte) ([]byte, error) {
 	FB := iec61499.FB{}
@@ -15,10 +23,47 @@ func IEC61499ToVHDL(iec61499bytes []byte) ([]byte, error) {
 		return nil, errors.New("Couldn't unmarshal iec61499 xml: " + err.Error())
 	}
 
-	return nil, errors.New("Not yet implemented")
+	output := &bytes.Buffer{}
+
+	if err := vhdlTemplates.ExecuteTemplate(output, "basicFB", FB); err != nil {
+		return nil, errors.New("Couldn't format template: " + err.Error())
+	}
+
+	return output.Bytes(), nil
 }
 
-//IEC61499BasicFBVHDL is used as template string for making ECC
-const IEC61499BasicFBVHDL = `
+//getVhdlType returns the VHDL type to use with respect to an IEC61499 type
+func getVhdlType(iec61499type string) string {
+	vhdlType := ""
+	switch strings.ToLower(iec61499type) {
+	case "unsigned":
+		vhdlType = "unsigned(31 downto 0)"
+	case "int":
+		vhdlType = "signed(31 downto 0)"
+	case "float":
+		panic("Float type not allowed in conversion")
+	case "double":
+		panic("Double type not allowed in conversion")
+	case "bool":
+		vhdlType = "std_logic"
+	case "string":
+		panic("String type not allowed in conversion")
+	case "byte":
+		vhdlType = "std_logic_vector(7 downto 0)"
+	case "any":
+		panic("Any type not allowed in conversion")
+	default:
+		panic("Unknown IEC61499 type: " + iec61499type)
+	}
 
-`
+	return vhdlType
+}
+
+//getVhdlECCTransitionCondition returns the VHDL "if" condition to use in state machine next state logic
+func getVhdlECCTransitionCondition(iec61499trans string) string {
+	retVal := iec61499trans
+	retVal = strings.Replace(retVal, "!", "not ", -1)
+	retVal = strings.Replace(retVal, "AND", "and", -1)
+	retVal = strings.Replace(retVal, "OR", "or", -1)
+	return retVal
+}

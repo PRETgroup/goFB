@@ -33,5 +33,5 @@ func main() {
 		return
 	}
 
-	fmt.Println(vhdl)
+	fmt.Printf("\n%s\n\n", vhdl)
 }
