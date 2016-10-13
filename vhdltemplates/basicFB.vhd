@@ -14,8 +14,13 @@ architecture rtl of {{.Name}} is
 
 	-- Register to hold the current state
 	signal state   : state_type;
-	signal entered : std_logic;
+	signal entered : std_logic; --entered is used to trigger algorithms (algorithms should only run upon entering a state)
 
+	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
+	signal {{$alg.Name}}_alg_en : std_logic; {{end}}
+
+	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}
+	signal {{$var.Name}} : {{getVhdlType $var.Type}}; --type was {{$var.Type}} {{end}}{{end}}
 begin
 	
 	-- Logic to advance to the next state
@@ -25,40 +30,62 @@ begin
 			state <= {{(index $basicFB.States 0).Name}};
 			entered <= '0';
 		elsif (rising_edge(clk)) then
-			--default values
-			state <= state;
-			entered <= '1';
-
-			--next state logic
-			if entered = '0' then
+			if enable = '1' then 
+				--default values
+				state <= state;
 				entered <= '1';
-			else
-				case state is
-					{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}=>
-						{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{getVhdlECCTransitionCondition $trans.Condition}} then
-							state <= {{$trans.Destination}};
-							entered <= '0';
-						{{end}}end if;
-					{{end}}
-				end case;
+
+				--next state logic
+				if entered = '0' then
+					entered <= '1';
+				else
+					case state is
+						{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}=>
+							{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{getVhdlECCTransitionCondition $trans.Condition}} then
+								state <= {{$trans.Destination}};
+								entered <= '0';
+							{{end}}end if;
+						{{end}}
+					end case;
+				end if;
 			end if;
 		end if;
 	end process;
 
-	-- Output depends solely on the current state
+	-- Event outputs and internal algorithm triggers depend solely on the current state
 	process (state)
 	begin
+		--default values
+		{{if .EventOutputs}}--events
+		{{range $index, $event := .EventOutputs.Events}}{{$event.Name}} <= '0';
+		{{end}}{{end}}
+		{{if $basicFB.Algorithms}}--algorithms{{range $algIndex, $alg := $basicFB.Algorithms}}
+		{{$alg.Name}}_alg_en <= '0'; {{end}}{{end}}
+
 		case state is
-			when s0 =>
-				output <= "00";
-			when s1 =>
-				output <= "01";
-			when s2 =>
-				output <= "10";
-			when s3 =>
-				output <= "11";
+			{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}=>
+				{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$action.Algorithm}}_alg_en <= '1';
+				{{end}}{{if $action.Output}}{{$action.Output}} <= '1';
+				{{end}}{{end}}
+			{{end}}
 		end case;
 	end process;
 
+	-- Algorithms
+	{{range $algIndex, $alg := $basicFB.Algorithms}}
+	-- Algorithm {{$alg.Name}}
+	process(clk)
+	begin
+		if rising_edge(clk) then
+			if (entered = '0' and {{$alg.Name}}_alg_en = '1') then
+
+--begin algorithm raw text
+{{$alg.Other.Text}}
+--end algorithm raw text
+
+			end if;
+		end if;
+	end process;
+	{{end}}
 end rtl;
 {{end}}

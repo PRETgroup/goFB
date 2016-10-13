@@ -25,6 +25,10 @@ func IEC61499ToVHDL(iec61499bytes []byte) ([]byte, error) {
 
 	output := &bytes.Buffer{}
 
+	if err := checkFB(&FB); err != nil {
+		return nil, errors.New("FB is not suitable for conversion to VHDL: " + err.Error())
+	}
+
 	if err := vhdlTemplates.ExecuteTemplate(output, "basicFB", FB); err != nil {
 		return nil, errors.New("Couldn't format template: " + err.Error())
 	}

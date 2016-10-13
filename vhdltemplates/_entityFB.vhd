@@ -6,6 +6,7 @@ entity {{.Name}} is
 		--for clock and reset signal
 		clk		: in	std_logic;
 		reset	: in	std_logic;
+		enable	: in	std_logic;
 		{{if .EventInputs}}
 		--input events
 		{{range $index, $event := .EventInputs.Events}}{{$event.Name}} : in std_logic;

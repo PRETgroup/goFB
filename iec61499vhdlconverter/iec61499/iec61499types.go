@@ -71,11 +71,11 @@ type BasicFB struct {
 
 //ECState is a state in the ECC (Execution control chart) of a BasicFB
 type ECState struct {
-	Name     string   `xml:"Name,attr"`
-	ECAction []Action `xml:",omitempty"`
-	Comment  string   `xml:"Comment,attr"`
-	X        string   `xml:"x,attr"`
-	Y        string   `xml:"y,attr"`
+	Name      string   `xml:"Name,attr"`
+	ECActions []Action `xml:"ECAction,omitempty"`
+	Comment   string   `xml:"Comment,attr"`
+	X         string   `xml:"x,attr"`
+	Y         string   `xml:"y,attr"`
 }
 
 //Action is a link between an ECState and an Algorithm
