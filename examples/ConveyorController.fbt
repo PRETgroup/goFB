@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="ConveyorController" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="InjectDone" Comment="">
+  </Event>
+  <Event Name="EmergencyStopChanged" Comment="">
+    <With Var="EmergencyStop" />
+  </Event>
+  <Event Name="LasersChanged" Comment="">
+    <With Var="InjectSiteLaser" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="ConveyorChanged" Comment="">
+    <With Var="ConveyorSpeed" />
+  </Event>
+  <Event Name="ConveyorStoppedForInject" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="EmergencyStop" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectSiteLaser" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="ConveyorSpeed" Type="BYTE" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="Variable1" Type="BOOL" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="E_Stop" Comment="" x="1115.625" y="2326.04166666667">
+  </ECState>
+  <ECState Name="Running" Comment="" x="2490.10416666667" y="2606.77083333333">
+    <ECAction Algorithm="ConveyorStart" Output="ConveyorChanged" />
+  </ECState>
+  <ECState Name="Pause" Comment="" x="1673.4375" y="3040.625">
+    <ECAction Algorithm="ConveyorStop" Output="ConveyorChanged" />
+    <ECAction Output="ConveyorStoppedForInject" />
+  </ECState>
+  <ECTransition Source="Pause" Destination="Running" Condition="InjectDone" x="1968.75" y="2625" />
+  <ECTransition Source="Pause" Destination="E_Stop" Condition="EmergencyStopChanged AND (EmergencyStop)" x="568.75" y="2756.25" />
+  <ECTransition Source="Running" Destination="Pause" Condition="LasersChanged AND (InjectSiteLaser)" x="2143.75" y="2887.5" />
+  <ECTransition Source="E_Stop" Destination="Running" Condition="EmergencyStopChanged AND (!EmergencyStop)" x="1881.25" y="2275" />
+</ECC><Algorithm Name="ConveyorStart" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;ConveyorSpeed = 1;&#xD;&#xA;printf(&quot;Conveyor: Start\n&quot;);" />
+</Algorithm>
+<Algorithm Name="ConveyorStop" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;ConveyorSpeed = 0;&#xD;&#xA;printf(&quot;Conveyor: Stop\n&quot;);" />
+</Algorithm>
+<Algorithm Name="ConveyorRunning" Comment="">
+  <Other Language="C" Prototype="" Text="printf(&quot;Conveyor running region\n&quot;);" />
+</Algorithm>
+<Algorithm Name="ConveyorEStop" Comment="">
+  <Other Language="C" Prototype="" Text="printf(&quot;Conveyor Emergency Stopped\n&quot;);" />
+</Algorithm></BasicFB>
+</FBType>
