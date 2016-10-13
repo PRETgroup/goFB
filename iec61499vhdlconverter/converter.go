@@ -17,3 +17,8 @@ func IEC61499ToVHDL(iec61499bytes []byte) ([]byte, error) {
 
 	return nil, errors.New("Not yet implemented")
 }
+
+//IEC61499BasicFBVHDL is used as template string for making ECC
+const IEC61499BasicFBVHDL = `
+
+`
