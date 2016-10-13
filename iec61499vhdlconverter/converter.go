@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -65,9 +66,18 @@ func getVhdlType(iec61499type string) string {
 
 //getVhdlECCTransitionCondition returns the VHDL "if" condition to use in state machine next state logic
 func getVhdlECCTransitionCondition(iec61499trans string) string {
+	re := regexp.MustCompile("([a-zA-Z_]+)")
 	retVal := iec61499trans
 	retVal = strings.Replace(retVal, "!", "not ", -1)
 	retVal = strings.Replace(retVal, "AND", "and", -1)
 	retVal = strings.Replace(retVal, "OR", "or", -1)
+	retVal = re.ReplaceAllStringFunc(retVal, addTrueCheck)
 	return retVal
+}
+
+func addTrueCheck(in string) string {
+	if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ToLower(in) == "not" {
+		return in
+	}
+	return in + " = '1'"
 }

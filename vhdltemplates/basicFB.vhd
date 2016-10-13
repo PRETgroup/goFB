@@ -14,10 +14,14 @@ architecture rtl of {{.Name}} is
 
 	-- Register to hold the current state
 	signal state   : state_type;
-	signal entered : std_logic; --entered is used to trigger algorithms (algorithms should only run upon entering a state)
 
 	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
 	signal {{$alg.Name}}_alg_en : std_logic; {{end}}
+
+	-- signal for algorithm completion
+	signal AlgorithmsStart : std_logic;
+	signal AlgorithmsRun : std_logic;
+	signal AlgorithmsDone : std_logic;
 
 	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}}; --type was {{$var.Type}} {{end}}{{end}}
@@ -28,22 +32,22 @@ begin
 	begin
 		if reset = '1' then
 			state <= {{(index $basicFB.States 0).Name}};
-			entered <= '0';
+			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if enable = '1' then 
 				--default values
 				state <= state;
-				entered <= '1';
+				AlgorithmsStart <= '0';
 
 				--next state logic
-				if entered = '0' then
-					entered <= '1';
-				else
+				if AlgorithmsStart = '1' then
+					AlgorithmsStart <= '0';
+				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
 						{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}=>
 							{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{getVhdlECCTransitionCondition $trans.Condition}} then
 								state <= {{$trans.Destination}};
-								entered <= '0';
+								AlgorithmsStart <= '1';
 							{{end}}end if;
 						{{end}}
 					end case;
@@ -71,21 +75,32 @@ begin
 		end case;
 	end process;
 
-	-- Algorithms
-	{{range $algIndex, $alg := $basicFB.Algorithms}}
-	-- Algorithm {{$alg.Name}}
+	--Algorithm control signal
+	AlgorithmsRun <= (AlgorithmsStart or not AlgorithmsDone);
+
+	-- Algorithms process
 	process(clk)
 	begin
 		if rising_edge(clk) then
-			if (entered = '0' and {{$alg.Name}}_alg_en = '1') then
+			if AlgorithmsStart = '1' then			
+				AlgorithmsDone <= '0';
+			end if;
+
+			if AlgorithmsRun = '1' then 
+				{{range $algIndex, $alg := $basicFB.Algorithms}}
+				if {{$alg.Name}}_alg_en = '1' then -- Algorithm {{$alg.Name}}
 
 --begin algorithm raw text
 {{$alg.Other.Text}}
 --end algorithm raw text
 
+				end if;
+				{{end}}
 			end if;
 		end if;
 	end process;
-	{{end}}
+
+	--Done signal
+	Done <= not AlgorithmsRun;
 end rtl;
 {{end}}

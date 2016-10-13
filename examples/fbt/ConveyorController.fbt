@@ -48,15 +48,15 @@
   <ECTransition Source="Running" Destination="Pause" Condition="LasersChanged AND (InjectSiteLaser)" x="2143.75" y="2887.5" />
   <ECTransition Source="E_Stop" Destination="Running" Condition="EmergencyStopChanged AND (!EmergencyStop)" x="1881.25" y="2275" />
 </ECC><Algorithm Name="ConveyorStart" Comment="">
-  <Other Language="VHDL" Prototype="" Text="ConveyorSpeed &lt;= 1;" />
+  <Other Language="VHDL" Prototype="" Text="ConveyorSpeed &lt;= x&quot;01&quot;;&#xD;&#xA;AlgorithmsDone &lt;= '1';" />
 </Algorithm>
 <Algorithm Name="ConveyorStop" Comment="">
-  <Other Language="VHDL" Prototype="" Text="ConveyorSpeed &lt;= 0;" />
+  <Other Language="VHDL" Prototype="" Text="ConveyorSpeed &lt;= x&quot;00&quot;;&#xD;&#xA;AlgorithmsDone &lt;= '1';" />
 </Algorithm>
 <Algorithm Name="ConveyorRunning" Comment="">
-  <Other Language="VHDL" Prototype="" Text="" />
+  <Other Language="VHDL" Prototype="" Text="AlgorithmsDone &lt;= '1';" />
 </Algorithm>
 <Algorithm Name="ConveyorEStop" Comment="">
-  <Other Language="VHDL" Prototype="" Text="" />
+  <Other Language="VHDL" Prototype="" Text="AlgorithmsDone &lt;= '1';" />
 </Algorithm></BasicFB>
 </FBType>

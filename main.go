@@ -10,7 +10,7 @@ import (
 
 var (
 	inFileName  = flag.String("i", "", "Specifies the name of the source file to be assembled")
-	outFileName = flag.String("o", "out.txt", "Specifies the name of the output file")
+	outFileName = flag.String("o", "out.vhdl", "Specifies the name of the output file")
 )
 
 func main() {
@@ -33,5 +33,9 @@ func main() {
 		return
 	}
 
-	fmt.Printf("\n%s\n\n", vhdl)
+	err = ioutil.WriteFile(*outFileName, vhdl, 0644)
+	if err != nil {
+		fmt.Println("Error during file write:", err.Error())
+		return
+	}
 }
