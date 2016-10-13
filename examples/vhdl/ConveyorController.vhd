@@ -48,25 +48,24 @@ architecture rtl of ConveyorController is
 	type state_type is (E_Stop, Running, Pause);
 
 	-- Register to hold the current state
-	signal state   : state_type;
+	signal state   : state_type := E_Stop;
 
 	-- signals for enabling algorithms	
-	signal ConveyorStart_alg_en : std_logic; 
-	signal ConveyorStart_alg_done : std_logic;
+	signal ConveyorStart_alg_en : std_logic := '0'; 
+	signal ConveyorStart_alg_done : std_logic := '1';
 	
-	signal ConveyorStop_alg_en : std_logic; 
-	signal ConveyorStop_alg_done : std_logic;
+	signal ConveyorStop_alg_en : std_logic := '0'; 
+	signal ConveyorStop_alg_done : std_logic := '1';
 	
-	signal ConveyorRunning_alg_en : std_logic; 
-	signal ConveyorRunning_alg_done : std_logic;
+	signal ConveyorRunning_alg_en : std_logic := '0'; 
+	signal ConveyorRunning_alg_done : std_logic := '1';
 	
-	signal ConveyorEStop_alg_en : std_logic; 
-	signal ConveyorEStop_alg_done : std_logic;
+	signal ConveyorEStop_alg_en : std_logic := '0'; 
+	signal ConveyorEStop_alg_done : std_logic := '1';
 	
 
 	-- signal for algorithm completion
-	signal AlgorithmsStart : std_logic;
-	signal AlgorithmsRun : std_logic;
+	signal AlgorithmsStart : std_logic := '0';
 	signal AlgorithmsDone : std_logic;
 
 	--internal variables 
@@ -208,6 +207,6 @@ ConveyorEStop_alg_done <= '1';
 	end process;
 
 	--Done signal
-	AlgorithmsDone <= not AlgorithmsStart or not ( ConveyorStart_alg_done or ConveyorStop_alg_done or ConveyorRunning_alg_done or ConveyorEStop_alg_done);
+	AlgorithmsDone <= not AlgorithmsStart and  ConveyorStart_alg_done and ConveyorStop_alg_done and ConveyorRunning_alg_done and ConveyorEStop_alg_done;
 	Done <= AlgorithmsDone;
 end rtl;

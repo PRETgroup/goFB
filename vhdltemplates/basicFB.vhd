@@ -13,16 +13,15 @@ architecture rtl of {{.Name}} is
 	type state_type is ({{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}{{$state.Name}}{{end}});
 
 	-- Register to hold the current state
-	signal state   : state_type;
+	signal state   : state_type := {{(index $basicFB.States 0).Name}};
 
 	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
-	signal {{$alg.Name}}_alg_en : std_logic; 
-	signal {{$alg.Name}}_alg_done : std_logic;
+	signal {{$alg.Name}}_alg_en : std_logic := '0'; 
+	signal {{$alg.Name}}_alg_done : std_logic := '1';
 	{{end}}
 
 	-- signal for algorithm completion
-	signal AlgorithmsStart : std_logic;
-	signal AlgorithmsRun : std_logic;
+	signal AlgorithmsStart : std_logic := '0';
 	signal AlgorithmsDone : std_logic;
 
 	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}
@@ -102,7 +101,7 @@ begin
 	end process;
 
 	--Done signal
-	AlgorithmsDone <= not AlgorithmsStart{{if $basicFB.Algorithms}} and not ({{range $algIndex, $alg := $basicFB.Algorithms}}{{if $algIndex}} or{{end}} {{$alg.Name}}_alg_done{{end}}){{end}};
+	AlgorithmsDone <= not AlgorithmsStart{{if $basicFB.Algorithms}} and {{range $algIndex, $alg := $basicFB.Algorithms}}{{if $algIndex}} and{{end}} {{$alg.Name}}_alg_done{{end}}{{end}};
 	Done <= AlgorithmsDone;
 end rtl;
 {{end}}
