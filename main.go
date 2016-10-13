@@ -1,12 +1,11 @@
 package main
 
 import (
-	"encoding/xml"
 	"flag"
 	"fmt"
 	"io/ioutil"
 
-	"github.com/kiwih/go-iec61499-vhdl/iec61499"
+	"github.com/kiwih/go-iec61499-vhdl/iec61499vhdlconverter"
 )
 
 var (
@@ -28,10 +27,11 @@ func main() {
 		return
 	}
 
-	FB := iec61499.FB{}
-	if err := xml.Unmarshal(sourceFile, &FB); err != nil {
-		fmt.Println("Error unmarshalling file:", err.Error())
+	vhdl, err := iec61499vhdlconverter.IEC61499ToVHDL(sourceFile)
+	if err != nil {
+		fmt.Println("Error during conversion:", err.Error())
 		return
 	}
 
+	fmt.Println(vhdl)
 }
