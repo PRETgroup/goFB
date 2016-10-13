@@ -16,7 +16,9 @@ architecture rtl of {{.Name}} is
 	signal state   : state_type;
 
 	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
-	signal {{$alg.Name}}_alg_en : std_logic; {{end}}
+	signal {{$alg.Name}}_alg_en : std_logic; 
+	signal {{$alg.Name}}_alg_done : std_logic;
+	{{end}}
 
 	-- signal for algorithm completion
 	signal AlgorithmsStart : std_logic;
@@ -40,7 +42,7 @@ begin
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				if AlgorithmsStart = '1' then
+				if AlgorithmsStart = '1' then --algorithms should be triggered only once
 					AlgorithmsStart <= '0';
 				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
@@ -75,32 +77,32 @@ begin
 		end case;
 	end process;
 
-	--Algorithm control signal
-	AlgorithmsRun <= (AlgorithmsStart or not AlgorithmsDone);
-
 	-- Algorithms process
 	process(clk)
 	begin
 		if rising_edge(clk) then
 			if AlgorithmsStart = '1' then			
-				AlgorithmsDone <= '0';
-			end if;
-
-			if AlgorithmsRun = '1' then 
 				{{range $algIndex, $alg := $basicFB.Algorithms}}
 				if {{$alg.Name}}_alg_en = '1' then -- Algorithm {{$alg.Name}}
-
---begin algorithm raw text
-{{$alg.Other.Text}}
---end algorithm raw text
-
+					{{$alg.Name}}_alg_done <= '0';
 				end if;
 				{{end}}
 			end if;
+
+			{{range $algIndex, $alg := $basicFB.Algorithms}}
+			if {{$alg.Name}}_alg_done = '0' then -- Algorithm {{$alg.Name}}
+
+--begin algorithm raw text
+{{renameDoneSignal $alg.Other.Text $alg.Name}}
+--end algorithm raw text
+
+			end if;
+			{{end}}
 		end if;
 	end process;
 
 	--Done signal
-	Done <= not AlgorithmsRun;
+	AlgorithmsDone <= not AlgorithmsStart{{if $basicFB.Algorithms}} and not ({{range $algIndex, $alg := $basicFB.Algorithms}}{{if $algIndex}} or{{end}} {{$alg.Name}}_alg_done{{end}}){{end}};
+	Done <= AlgorithmsDone;
 end rtl;
 {{end}}

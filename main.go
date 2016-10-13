@@ -4,13 +4,14 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"github.com/kiwih/go-iec61499-vhdl/iec61499vhdlconverter"
 )
 
 var (
 	inFileName  = flag.String("i", "", "Specifies the name of the source file to be assembled")
-	outFileName = flag.String("o", "out.vhdl", "Specifies the name of the output file")
+	outFileName = flag.String("o", "", "Specifies the name of the output file")
 )
 
 func main() {
@@ -32,6 +33,12 @@ func main() {
 		fmt.Println("Error during conversion:", err.Error())
 		return
 	}
+
+	if *outFileName == "" {
+		outFileName = inFileName
+	}
+
+	*outFileName = strings.Replace(*outFileName, "fbt", "vhd", -1)
 
 	err = ioutil.WriteFile(*outFileName, vhdl, 0644)
 	if err != nil {

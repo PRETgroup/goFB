@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	vhdlTemplateFuncMap = template.FuncMap{"getVhdlType": getVhdlType, "getVhdlECCTransitionCondition": getVhdlECCTransitionCondition}
+	vhdlTemplateFuncMap = template.FuncMap{"getVhdlType": getVhdlType, "getVhdlECCTransitionCondition": getVhdlECCTransitionCondition, "renameDoneSignal": renameDoneSignal}
 	vhdlTemplates       = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./vhdltemplates/*"))
 )
 
@@ -80,4 +80,9 @@ func addTrueCheck(in string) string {
 		return in
 	}
 	return in + " = '1'"
+}
+
+//in our algorithms, DONE needs to be turned into the correct signal name
+func renameDoneSignal(in string, name string) string {
+	return strings.Replace(in, "DONE", name+"_alg_done", -1)
 }

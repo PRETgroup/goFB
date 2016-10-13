@@ -52,9 +52,17 @@ architecture rtl of ConveyorController is
 
 	-- signals for enabling algorithms	
 	signal ConveyorStart_alg_en : std_logic; 
+	signal ConveyorStart_alg_done : std_logic;
+	
 	signal ConveyorStop_alg_en : std_logic; 
+	signal ConveyorStop_alg_done : std_logic;
+	
 	signal ConveyorRunning_alg_en : std_logic; 
+	signal ConveyorRunning_alg_done : std_logic;
+	
 	signal ConveyorEStop_alg_en : std_logic; 
+	signal ConveyorEStop_alg_done : std_logic;
+	
 
 	-- signal for algorithm completion
 	signal AlgorithmsStart : std_logic;
@@ -78,7 +86,7 @@ begin
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				if AlgorithmsStart = '1' then
+				if AlgorithmsStart = '1' then --algorithms should be triggered only once
 					AlgorithmsStart <= '0';
 				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
@@ -137,57 +145,69 @@ begin
 		end case;
 	end process;
 
-	--Algorithm control signal
-	AlgorithmsRun <= (AlgorithmsStart or not AlgorithmsDone);
-
 	-- Algorithms process
 	process(clk)
 	begin
 		if rising_edge(clk) then
 			if AlgorithmsStart = '1' then			
-				AlgorithmsDone <= '0';
-			end if;
-
-			if AlgorithmsRun = '1' then 
 				
 				if ConveyorStart_alg_en = '1' then -- Algorithm ConveyorStart
-
---begin algorithm raw text
-ConveyorSpeed <= x"01";
-AlgorithmsDone <= '1';
---end algorithm raw text
-
+					ConveyorStart_alg_done <= '0';
 				end if;
 				
 				if ConveyorStop_alg_en = '1' then -- Algorithm ConveyorStop
-
---begin algorithm raw text
-ConveyorSpeed <= x"00";
-AlgorithmsDone <= '1';
---end algorithm raw text
-
+					ConveyorStop_alg_done <= '0';
 				end if;
 				
 				if ConveyorRunning_alg_en = '1' then -- Algorithm ConveyorRunning
-
---begin algorithm raw text
-AlgorithmsDone <= '1';
---end algorithm raw text
-
+					ConveyorRunning_alg_done <= '0';
 				end if;
 				
 				if ConveyorEStop_alg_en = '1' then -- Algorithm ConveyorEStop
-
---begin algorithm raw text
-AlgorithmsDone <= '1';
---end algorithm raw text
-
+					ConveyorEStop_alg_done <= '0';
 				end if;
 				
 			end if;
+
+			
+			if ConveyorStart_alg_done = '0' then -- Algorithm ConveyorStart
+
+--begin algorithm raw text
+ConveyorSpeed <= x"01";
+ConveyorStart_alg_done <= '1';
+--end algorithm raw text
+
+			end if;
+			
+			if ConveyorStop_alg_done = '0' then -- Algorithm ConveyorStop
+
+--begin algorithm raw text
+ConveyorSpeed <= x"00";
+ConveyorStop_alg_done <= '1';
+--end algorithm raw text
+
+			end if;
+			
+			if ConveyorRunning_alg_done = '0' then -- Algorithm ConveyorRunning
+
+--begin algorithm raw text
+ConveyorRunning_alg_done <= '1';
+--end algorithm raw text
+
+			end if;
+			
+			if ConveyorEStop_alg_done = '0' then -- Algorithm ConveyorEStop
+
+--begin algorithm raw text
+ConveyorEStop_alg_done <= '1';
+--end algorithm raw text
+
+			end if;
+			
 		end if;
 	end process;
 
 	--Done signal
-	Done <= not AlgorithmsRun;
+	AlgorithmsDone <= not AlgorithmsStart or not ( ConveyorStart_alg_done or ConveyorStop_alg_done or ConveyorRunning_alg_done or ConveyorEStop_alg_done);
+	Done <= AlgorithmsDone;
 end rtl;
