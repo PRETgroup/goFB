@@ -35,14 +35,15 @@ begin
 			state <= {{(index $basicFB.States 0).Name}};
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
-			if enable = '1' then 
+			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
+				AlgorithmsStart <= '0'
+			elsif enable = '1' then 
 				--default values
 				state <= state;
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				if AlgorithmsStart = '1' then --algorithms should be triggered only once
-					AlgorithmsStart <= '0';
+				;
 				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
 						{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}=>
