@@ -82,15 +82,15 @@
   <ECTransition Source="OpenValve" Destination="StartPump" Condition="true" x="4006.08854166667" y="1361.41666666667" />
   <ECTransition Source="StopVacuum" Destination="OpenValve" Condition="true" x="3124.3671875" y="1694.71875" />
 </ECC><Algorithm Name="StartVacuum" Comment="">
-  <Other Language="C" Prototype="" Text="me-&gt;InjectorVacuumRun = 1;&#xD;&#xA;//printf(&quot;Injector: Start vacuum\n&quot;);" />
+  <Other Language="VHDL" Prototype="" Text="me-&gt;InjectorVacuumRun = 1;&#xD;&#xA;//printf(&quot;Injector: Start vacuum\n&quot;);" />
 </Algorithm>
 <Algorithm Name="ClearControls" Comment="">
-  <Other Language="C" Prototype="" Text="me-&gt;InjectorContentsValveOpen = 0;&#xD;&#xA;me-&gt;InjectorPressurePumpRun = 0;&#xD;&#xA;me-&gt;InjectorVacuumRun = 0;&#xD;&#xA;//printf(&quot;Injector: Clear controls\n&quot;);" />
+  <Other Language="VHDL" Prototype="" Text="me-&gt;InjectorContentsValveOpen = 0;&#xD;&#xA;me-&gt;InjectorPressurePumpRun = 0;&#xD;&#xA;me-&gt;InjectorVacuumRun = 0;&#xD;&#xA;//printf(&quot;Injector: Clear controls\n&quot;);" />
 </Algorithm>
 <Algorithm Name="OpenValve" Comment="">
-  <Other Language="C" Prototype="" Text="me-&gt;InjectorContentsValveOpen = 1;&#xD;&#xA;//printf(&quot;Injector: Open valve\n&quot;);" />
+  <Other Language="VHDL" Prototype="" Text="me-&gt;InjectorContentsValveOpen = 1;&#xD;&#xA;//printf(&quot;Injector: Open valve\n&quot;);" />
 </Algorithm>
 <Algorithm Name="StartPump" Comment="">
-  <Other Language="C" Prototype="" Text="me-&gt;InjectorPressurePumpRun = 1;&#xD;&#xA;//printf(&quot;Injector: Start pump\n&quot;);" />
+  <Other Language="VHDL" Prototype="" Text="me-&gt;InjectorPressurePumpRun = 1;&#xD;&#xA;//printf(&quot;Injector: Start pump\n&quot;);" />
 </Algorithm></BasicFB>
 </FBType>

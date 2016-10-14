@@ -43,7 +43,6 @@ begin
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				;
 				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
 						{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}=>
@@ -77,7 +76,7 @@ begin
 		end case;
 	end process;
 
-	-- Algorithms process
+	{{if $basicFB.Algorithms}}-- Algorithms process
 	process(clk)
 	begin
 		if rising_edge(clk) then
@@ -99,10 +98,11 @@ begin
 			end if;
 			{{end}}
 		end if;
-	end process;
+	end process;{{else}}--This Basic FB had no algorithms
+	{{end}}
 
 	--Done signal
-	AlgorithmsDone <= not AlgorithmsStart{{if $basicFB.Algorithms}} and {{range $algIndex, $alg := $basicFB.Algorithms}}{{if $algIndex}} and{{end}} {{$alg.Name}}_alg_done{{end}}{{end}};
+	AlgorithmsDone <= (not AlgorithmsStart){{if $basicFB.Algorithms}} and{{range $algIndex, $alg := $basicFB.Algorithms}}{{if $algIndex}} and{{end}} {{$alg.Name}}_alg_done{{end}}{{end}};
 	Done <= AlgorithmsDone;
 end rtl;
 {{end}}

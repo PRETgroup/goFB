@@ -33,6 +33,6 @@
   </ECState>
   <ECTransition Source="Start" Destination="Start" Condition="LasersChanged" x="894" y="624.75" />
 </ECC><Algorithm Name="ChangeCount" Comment="">
-  <Other Language="C" Prototype="" Text="if(me-&gt;DoorSiteLaser) {&#xD;&#xA;	me-&gt;CanisterCount++;&#xD;&#xA;}&#xD;&#xA;if(me-&gt;RejectBinLaser) {&#xD;&#xA;	me-&gt;CanisterCount--;&#xD;&#xA;}&#xD;&#xA;if(me-&gt;AcceptBinLaser) {&#xD;&#xA;	me-&gt;CanisterCount--;&#xD;&#xA;}&#xD;&#xA;//printf(&quot;Canister count:%i\n&quot;, me-&gt;CanisterCount);" />
+  <Other Language="VHDL" Prototype="" Text="if(me-&gt;DoorSiteLaser) {&#xD;&#xA;	me-&gt;CanisterCount++;&#xD;&#xA;}&#xD;&#xA;if(me-&gt;RejectBinLaser) {&#xD;&#xA;	me-&gt;CanisterCount--;&#xD;&#xA;}&#xD;&#xA;if(me-&gt;AcceptBinLaser) {&#xD;&#xA;	me-&gt;CanisterCount--;&#xD;&#xA;}&#xD;&#xA;//printf(&quot;Canister count:%i\n&quot;, me-&gt;CanisterCount);" />
 </Algorithm></BasicFB>
 </FBType>
