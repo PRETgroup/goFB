@@ -150,12 +150,39 @@ func (b *BasicFB) GetTransitionsForState(source string) []ECTransition {
 	return trans
 }
 
+//VhdlName is used in templates to make a consistent and friendly name for the connections
+func (c *Connection) VhdlName() string {
+	return strings.Replace(c.Source, ".", "_", -1) + "_to_" + strings.Replace(c.Destination, ".", "_", -1)
+}
+
+//FromName is used in templates for location matching
+func (c *Connection) FromName(name string) bool {
+	return strings.HasPrefix(c.Source, name)
+}
+
+//ToName is used in templates for location matching
+func (c *Connection) ToName(name string) bool {
+	return strings.HasPrefix(c.Destination, name)
+}
+
+//SourceApiNameOnly is used in templates for getting rid of prefix stuff
+func (c *Connection) SourceApiNameOnly() string {
+	splitName := strings.Split(c.Source, ".")
+	return splitName[len(splitName)-1]
+}
+
+//DestApiNameOnly is used in templates for getting rid of prefix stuff
+func (c *Connection) DestApiNameOnly() string {
+	splitName := strings.Split(c.Destination, ".")
+	return splitName[len(splitName)-1]
+}
+
 type ConnectionWithType struct {
 	Connection
 	Type string
 }
 
-func (f *FB) GetDataConnectionTypes(otherBlocks []FB) ([]ConnectionWithType, error) {
+func (f FB) GetDataConnectionTypes(otherBlocks []FB) ([]ConnectionWithType, error) {
 	if f.CompositeFB == nil {
 		return nil, nil //basic function blocks don't have dataconnections
 	}
@@ -192,6 +219,7 @@ conns:
 			return nil, errors.New("Source of dataconnection '" + conn.Source + "' has an incorrect number of periods (should be 0 or 1).")
 		}
 		childName := splitSourceName[0]
+		sourceName := splitSourceName[1]
 		childType := ""
 
 		//find the child's real block name
@@ -209,7 +237,7 @@ conns:
 			if otherBlocks[j].Name == childType { //matched, now scan their API
 				if otherBlocks[j].InputVars != nil {
 					for k := 0; k < len(otherBlocks[j].OutputVars.Variables); k++ {
-						if otherBlocks[j].OutputVars.Variables[k].Name == conn.Source {
+						if otherBlocks[j].OutputVars.Variables[k].Name == sourceName {
 							found = true
 							connAndTypes[i].Type = otherBlocks[j].OutputVars.Variables[k].Type
 							continue conns

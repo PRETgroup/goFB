@@ -44,23 +44,26 @@ type VHDLOutput struct {
 	VHDL []byte
 }
 
+type TemplateData struct {
+	BlockIndex int
+	Blocks     []iec61499.FB
+}
+
 //AllToVHDL converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
 //Returns nil error on success
 func (c *Converter) AllToVHDL() ([]VHDLOutput, error) {
 
 	finishedConversions := make([]VHDLOutput, 0, len(c.Blocks))
 
-	output := &bytes.Buffer{}
-
 	for i := 0; i < len(c.Blocks); i++ {
-		output.Reset()
+		output := &bytes.Buffer{}
 
 		templateName := "basicFB"
 		if c.Blocks[i].BasicFB == nil {
 			templateName = "compositeFB"
 		}
 
-		if err := vhdlTemplates.ExecuteTemplate(output, templateName, c.Blocks[i]); err != nil {
+		if err := vhdlTemplates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks}); err != nil {
 			return nil, errors.New("Couldn't format template: " + err.Error())
 		}
 
