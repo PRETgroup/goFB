@@ -12,17 +12,12 @@ import (
 )
 
 var (
-	inFileName  = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled")
-	outLocation = flag.String("o", "", "Specifies the name of the directory to put output vhdl files")
+	inFileName  = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses this directory")
+	outLocation = flag.String("o", "", "Specifies the name of the directory to put output vhdl files. If blank, uses this directory")
 )
 
 func main() {
 	flag.Parse()
-
-	if len(*inFileName) == 0 {
-		fmt.Println("The source file or directory name must be specified using the -i=[name] flag")
-		return
-	}
 
 	*inFileName = strings.TrimSuffix(*inFileName, "/")
 	*inFileName = strings.TrimSuffix(*inFileName, "\\")
@@ -41,6 +36,7 @@ func main() {
 	fileNames := make([]string, 0)
 
 	if fileInfo.IsDir() {
+		fmt.Println("Running in Dir mode")
 		files, err := ioutil.ReadDir(*inFileName)
 		if err != nil {
 			log.Fatal(err)
@@ -57,7 +53,14 @@ func main() {
 			}
 		}
 	} else {
+		fmt.Println("Running in Single mode")
 		fileNames = append(fileNames, *inFileName)
+	}
+
+	conv, err := iec61499vhdlconverter.New()
+	if err != nil {
+		fmt.Println("Error creating converter:", err.Error())
+		return
 	}
 
 	for _, name := range fileNames {
@@ -67,19 +70,25 @@ func main() {
 			return
 		}
 
-		vhdl, err := iec61499vhdlconverter.IEC61499ToVHDL(sourceFile)
+		err = conv.AddBlock(sourceFile)
 		if err != nil {
-			fmt.Println("Error during conversion:", err.Error())
+			fmt.Println("Error during adding file for conversion:", err.Error())
 			return
 		}
+	}
 
-		nameComponents := strings.Split(name, ".")
-		nameComponents[len(nameComponents)-1] = "vhd" //change the lastmost extension to vhd
-		name = strings.Join(nameComponents, ".")
+	fmt.Println("Found", len(conv.Blocks), "blocks")
 
-		fmt.Println("Writing", name)
+	outputs, err := conv.AllToVHDL()
+	if err != nil {
+		fmt.Println("Error during conversion:", err.Error())
+		return
+	}
 
-		err = ioutil.WriteFile(fmt.Sprintf("%s%c%s", *outLocation, os.PathSeparator, name), vhdl, 0644)
+	for _, output := range outputs {
+		fmt.Println("Writing", output.Name)
+
+		err = ioutil.WriteFile(fmt.Sprintf("%s%c%s.vhd", *outLocation, os.PathSeparator, output.Name), output.VHDL, 0644)
 		if err != nil {
 			fmt.Println("Error during file write:", err.Error())
 			return

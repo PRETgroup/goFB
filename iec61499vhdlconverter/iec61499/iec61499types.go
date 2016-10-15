@@ -2,6 +2,8 @@ package iec61499
 
 import (
 	"encoding/xml"
+	"errors"
+	"strings"
 )
 
 //FB is the overall type for function blocks
@@ -146,4 +148,83 @@ func (b *BasicFB) GetTransitionsForState(source string) []ECTransition {
 		}
 	}
 	return trans
+}
+
+type ConnectionWithType struct {
+	Connection
+	Type string
+}
+
+func (f *FB) GetDataConnectionTypes(otherBlocks []FB) ([]ConnectionWithType, error) {
+	if f.CompositeFB == nil {
+		return nil, nil //basic function blocks don't have dataconnections
+	}
+
+	c := f.CompositeFB
+	connAndTypes := make([]ConnectionWithType, len(c.DataConnections))
+
+conns:
+	for i := 0; i < len(c.DataConnections); i++ {
+		//store all connection data
+		connAndTypes[i].Connection = c.DataConnections[i]
+
+		conn := &connAndTypes[i].Connection
+
+		found := false
+
+		//find the type based only off the source
+		if !strings.Contains(conn.Source, ".") {
+			//source is from this block's parent port
+			if f.InputVars != nil {
+				for j := 0; j < len(f.InputVars.Variables); j++ {
+					if f.InputVars.Variables[j].Name == conn.Source {
+						found = true
+						connAndTypes[i].Type = f.InputVars.Variables[j].Type
+						continue conns
+					}
+				}
+			}
+		}
+
+		//still here? source must be from a child block's output port
+		splitSourceName := strings.Split(conn.Source, ".")
+		if len(splitSourceName) != 2 {
+			return nil, errors.New("Source of dataconnection '" + conn.Source + "' has an incorrect number of periods (should be 0 or 1).")
+		}
+		childName := splitSourceName[0]
+		childType := ""
+
+		//find the child's real block name
+		for j := 0; j < len(c.FBs); j++ {
+			if c.FBs[j].Name == childName {
+				childType = c.FBs[j].Type
+			}
+		}
+		if childType == "" {
+			return nil, errors.New("Could not find source of dataconnection '" + conn.Source + "' as child block can't be found.")
+		}
+
+		//scan through all blocks trying to find correct API type
+		for j := 0; j < len(otherBlocks); j++ {
+			if otherBlocks[j].Name == childType { //matched, now scan their API
+				if otherBlocks[j].InputVars != nil {
+					for k := 0; k < len(otherBlocks[j].OutputVars.Variables); k++ {
+						if otherBlocks[j].OutputVars.Variables[k].Name == conn.Source {
+							found = true
+							connAndTypes[i].Type = otherBlocks[j].OutputVars.Variables[k].Type
+							continue conns
+						}
+					}
+				} else {
+					return nil, errors.New("Source of dataconnection '" + conn.Source + "' has no output vars!")
+				}
+			}
+		}
+
+		if found == false {
+			return nil, errors.New("Could not find source of dataconnection '" + conn.Source + "' in any included file.")
+		}
+	}
+
+	return connAndTypes, nil
 }

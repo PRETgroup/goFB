@@ -16,25 +16,57 @@ var (
 	vhdlTemplates       = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./vhdltemplates/*"))
 )
 
-//IEC61499ToVHDL converts iec61499 xml (stored as []byte) into vhdl []byte
-//Returns nil error on success
-func IEC61499ToVHDL(iec61499bytes []byte) ([]byte, error) {
+type Converter struct {
+	Blocks []iec61499.FB
+}
+
+func New() (*Converter, error) {
+	return &Converter{Blocks: make([]iec61499.FB, 0)}, nil
+}
+
+func (c *Converter) AddBlock(iec61499bytes []byte) error {
 	FB := iec61499.FB{}
 	if err := xml.Unmarshal(iec61499bytes, &FB); err != nil {
-		return nil, errors.New("Couldn't unmarshal iec61499 xml: " + err.Error())
+		return errors.New("Couldn't unmarshal iec61499 xml: " + err.Error())
 	}
+
+	if err := checkFB(&FB); err != nil {
+		return errors.New("FB is not suitable for conversion to VHDL: " + err.Error())
+	}
+	c.Blocks = append(c.Blocks, FB)
+
+	return nil
+}
+
+//VHDLOutput is used when returning the converted vhdl from the iec61499
+type VHDLOutput struct {
+	Name string
+	VHDL []byte
+}
+
+//AllToVHDL converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
+//Returns nil error on success
+func (c *Converter) AllToVHDL() ([]VHDLOutput, error) {
+
+	finishedConversions := make([]VHDLOutput, 0, len(c.Blocks))
 
 	output := &bytes.Buffer{}
 
-	if err := checkFB(&FB); err != nil {
-		return nil, errors.New("FB is not suitable for conversion to VHDL: " + err.Error())
-	}
+	for i := 0; i < len(c.Blocks); i++ {
+		output.Reset()
 
-	if err := vhdlTemplates.ExecuteTemplate(output, "basicFB", FB); err != nil {
-		return nil, errors.New("Couldn't format template: " + err.Error())
-	}
+		templateName := "basicFB"
+		if c.Blocks[i].BasicFB == nil {
+			templateName = "compositeFB"
+		}
 
-	return output.Bytes(), nil
+		if err := vhdlTemplates.ExecuteTemplate(output, templateName, c.Blocks[i]); err != nil {
+			return nil, errors.New("Couldn't format template: " + err.Error())
+		}
+
+		finishedConversions = append(finishedConversions, VHDLOutput{Name: c.Blocks[i].Name, VHDL: output.Bytes()})
+	}
+	return finishedConversions, nil
 }
 
 //getVhdlType returns the VHDL type to use with respect to an IEC61499 type
