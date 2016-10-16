@@ -79,6 +79,9 @@
 </InterfaceList>
 <BasicFB><InternalVars>
   <VarDeclaration Name="EmergencyStopped" Type="BOOL" Comment="" />
+  <VarDeclaration Name="UART_TX" Type="BYTE" Comment="TOPIO_OUT" />
+  <VarDeclaration Name="UART_TX_READY" Type="BOOL" Comment="TOPIO_IN" />
+  <VarDeclaration Name="UART_TX_SEND" Type="BOOL" Comment="TOPIO_OUT" />
 </InternalVars><ECC>
   <ECState Name="Start" Comment="" x="656.25" y="481.25">
     <ECAction Algorithm="IOAlgorithm" Output="EmergencyStopChanged" />

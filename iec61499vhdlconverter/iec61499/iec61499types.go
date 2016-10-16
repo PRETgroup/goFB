@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+const (
+	TOPIO_IN  = "TOPIO_IN" //if either of the TOPIO_ strings are in an event, var, or internal variable comment, it means these should be passed up to the top level file and used as global IO
+	TOPIO_OUT = "TOPIO_OUT"
+)
+
 //FB is the overall type for function blocks
 type FB struct {
 	Name           string `xml:"Name,attr"`
@@ -109,7 +114,7 @@ type OtherLanguage struct {
 	Text     string   `xml:"Text,attr"`
 }
 
-//VarDeclare is used to store variable declarations of BasicFBs
+//VarDeclare is used to store variable declarations of BasicFBs and for special IO of interface FBs
 type VarDeclare struct {
 	Variables []Variable `xml:"VarDeclaration"`
 }
@@ -180,6 +185,104 @@ func (c *Connection) DestApiNameOnly() string {
 type ConnectionWithType struct {
 	Connection
 	Type string
+}
+
+//IsTOPIO_OUT used in templates
+func (v *Variable) IsTOPIO_OUT() bool {
+	return v.Comment == TOPIO_OUT
+}
+
+//IsTOPIO_IN used in templates
+func (v *Variable) IsTOPIO_IN() bool {
+	return v.Comment == TOPIO_IN
+}
+
+func (e *Event) IsTOPIO_OUT() bool {
+	return e.Comment == TOPIO_OUT
+}
+
+func (e *Event) IsTOPIO_IN() bool {
+	return e.Comment == TOPIO_IN
+}
+
+type SpecialIO struct {
+	Events       []Event
+	Vars         []Variable
+	InternalVars []Variable
+}
+
+func (fr FBReference) GetSpecialIO(otherBlocks []FB) SpecialIO {
+	for j := 0; j < len(otherBlocks); j++ {
+		if otherBlocks[j].Name == fr.Type {
+			return otherBlocks[j].GetSpecialIO(otherBlocks)
+		}
+	}
+	return SpecialIO{}
+}
+
+//GetSpecialIO is used for service interface blocks and those blocks that contain service interface blocks
+func (f FB) GetSpecialIO(otherBlocks []FB) SpecialIO {
+	s := SpecialIO{
+		Events:       make([]Event, 0),
+		Vars:         make([]Variable, 0),
+		InternalVars: make([]Variable, 0),
+	}
+
+	if f.EventInputs != nil {
+		for i := 0; i < len(f.EventInputs.Events); i++ {
+			if f.EventInputs.Events[i].IsTOPIO_IN() || f.EventInputs.Events[i].IsTOPIO_OUT() {
+				s.Events = append(s.Events, f.EventInputs.Events[i])
+			}
+		}
+	}
+
+	if f.EventOutputs != nil {
+		for i := 0; i < len(f.EventOutputs.Events); i++ {
+			if f.EventOutputs.Events[i].IsTOPIO_IN() || f.EventOutputs.Events[i].IsTOPIO_OUT() {
+				s.Events = append(s.Events, f.EventOutputs.Events[i])
+			}
+		}
+	}
+
+	if f.InputVars != nil {
+		for i := 0; i < len(f.InputVars.Variables); i++ {
+			if f.InputVars.Variables[i].IsTOPIO_IN() || f.InputVars.Variables[i].IsTOPIO_OUT() {
+				s.Vars = append(s.Vars, f.InputVars.Variables[i])
+			}
+		}
+	}
+
+	if f.OutputVars != nil {
+		for i := 0; i < len(f.OutputVars.Variables); i++ {
+			if f.OutputVars.Variables[i].IsTOPIO_IN() || f.OutputVars.Variables[i].IsTOPIO_OUT() {
+				s.Vars = append(s.Vars, f.OutputVars.Variables[i])
+			}
+		}
+	}
+
+	if f.BasicFB != nil {
+		if f.BasicFB.InternalVars != nil {
+			for i := 0; i < len(f.BasicFB.InternalVars.Variables); i++ {
+				if f.BasicFB.InternalVars.Variables[i].IsTOPIO_IN() || f.BasicFB.InternalVars.Variables[i].IsTOPIO_OUT() {
+					s.InternalVars = append(s.InternalVars, f.BasicFB.InternalVars.Variables[i])
+				}
+			}
+		}
+	} else if f.CompositeFB != nil {
+		for i := 0; i < len(f.CompositeFB.FBs); i++ {
+			for j := 0; j < len(otherBlocks); j++ {
+				if otherBlocks[j].Name == f.CompositeFB.FBs[i].Type {
+					os := otherBlocks[j].GetSpecialIO(otherBlocks)
+					s.Events = append(s.Events, os.Events...)
+					s.Vars = append(s.Vars, os.Vars...)
+					s.InternalVars = append(s.InternalVars, os.InternalVars...)
+					continue
+				}
+			}
+		}
+	}
+
+	return s
 }
 
 func (f FB) GetDataConnectionTypes(otherBlocks []FB) ([]ConnectionWithType, error) {

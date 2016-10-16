@@ -47,6 +47,7 @@ entity InjectorController is
 		InjectorPressurePumpRun : out std_logic; --type was BOOL
 		FillContents : out std_logic; --type was BOOL
 		
+		
 		--for done signal
 		done : out std_logic
 	);
@@ -123,7 +124,7 @@ begin
 	
 	-- child I/O to signals
 	
-	Arm : work.InjectorMotorController port map(
+	Arm : entity work.InjectorMotorController port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -142,10 +143,12 @@ begin
 		EmergencyStop => EmergencyStop_to_Arm_EmergencyStop, --input
 		InjectorPosition => Arm_InjectorPosition_to_InjectorPosition, --output 
 		
+		
+
 		done => Arm_done
 	);
 	
-	Pumps : work.InjectorPumpsController port map(
+	Pumps : entity work.InjectorPumpsController port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -171,6 +174,8 @@ begin
 		InjectorPressurePumpRun => Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun, --output 
 		FillContents => Pumps_FillContents_to_FillContents, --output 
 		
+		
+
 		done => Pumps_done
 	);
 	

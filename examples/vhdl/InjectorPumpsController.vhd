@@ -43,6 +43,7 @@ entity InjectorPumpsController is
 		InjectorPressurePumpRun : out std_logic; --type was BOOL
 		FillContents : out std_logic; --type was BOOL
 		
+		
 		--for done signal
 		done : out std_logic
 	);

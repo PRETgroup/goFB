@@ -1,28 +1,41 @@
 {{define "_entityFB"}}
-
-entity {{.Name}} is
+{{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}{{$specialIO := $block.GetSpecialIO .Blocks}}
+entity {{$block.Name}} is
 
 	port(
 		--for clock and reset signal
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
-		{{if .EventInputs}}
+		{{if $block.EventInputs}}
 		--input events
-		{{range $index, $event := .EventInputs.Events}}{{$event.Name}} : in std_logic;
+		{{range $index, $event := $block.EventInputs.Events}}{{$event.Name}} : in std_logic;
 		{{end}}{{end}}
-		{{if .EventOutputs}}
+		{{if $block.EventOutputs}}
 		--output events
-		{{range $index, $event := .EventOutputs.Events}}{{$event.Name}} : out std_logic;
+		{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}} : out std_logic;
 		{{end}}{{end}}
-		{{if .InputVars}}
+		{{if $block.InputVars}}
 		--input variables
-		{{range $index, $var := .InputVars.Variables}}{{$var.Name}} : in {{getVhdlType $var.Type}}; --type was {{$var.Type}}
+		{{range $index, $var := $block.InputVars.Variables}}{{$var.Name}} : in {{getVhdlType $var.Type}}; --type was {{$var.Type}}
 		{{end}}{{end}}
-		{{if .OutputVars}}
+		{{if $block.OutputVars}}
 		--output variables
-		{{range $index, $var := .OutputVars.Variables}}{{$var.Name}} : out {{getVhdlType $var.Type}}; --type was {{$var.Type}}
+		{{range $index, $var := $block.OutputVars.Variables}}{{$var.Name}} : out {{getVhdlType $var.Type}}; --type was {{$var.Type}}
 		{{end}}{{end}}
+		{{if $block.BasicFB}}{{if $specialIO.InternalVars}}
+		--special emitted internal vars for I/O
+		{{range $index, $var := $specialIO.InternalVars}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}}
+		{{end}}{{end}}{{else if $block.CompositeFB}}{{/*THIS SECTION MAY BE USED IN FUTURE, BUT FOR NOW WE SHOULD ONLY USE SPECIAL IO OFF INTERNAL VARS{{if $specialIO.Events}}
+		--special emitted events for child I/O
+		{{range $index, $var := $specialIO.Events}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} std_logic; 
+		{{end}}{{end}}{{if $specialIO.Vars}}
+		--special emitted variables for child I/O
+		{{range $index, $var := $specialIO.Vars}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}} 
+		{{end}}{{end}}*/}}{{if $specialIO.InternalVars}}
+		--special emitted internal variables for child I/O
+		{{range $index, $var := $specialIO.InternalVars}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}} 
+		{{end}}{{end}}{{end}}
 		--for done signal
 		done : out std_logic
 	);

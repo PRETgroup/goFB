@@ -34,6 +34,7 @@ entity ConveyorController is
 		--output variables
 		ConveyorSpeed : out std_logic_vector(7 downto 0); --type was BYTE
 		
+		
 		--for done signal
 		done : out std_logic
 	);

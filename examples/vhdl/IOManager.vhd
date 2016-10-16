@@ -57,6 +57,12 @@ entity IOManager is
 		RejectBinLaser : out std_logic; --type was BOOL
 		AcceptBinLaser : out std_logic; --type was BOOL
 		
+		
+		--special emitted internal vars for I/O
+		UART_TX : out std_logic_vector(7 downto 0); --type was BYTE
+		UART_TX_READY : in std_logic; --type was BOOL
+		UART_TX_SEND : out std_logic; --type was BOOL
+		
 		--for done signal
 		done : out std_logic
 	);
@@ -82,6 +88,9 @@ architecture rtl of IOManager is
 
 	--internal variables 
 	signal EmergencyStopped : std_logic; --type was BOOL 
+	signal UART_TX : std_logic_vector(7 downto 0); --type was BYTE 
+	signal UART_TX_READY : std_logic; --type was BOOL 
+	signal UART_TX_SEND : std_logic; --type was BOOL 
 begin
 	
 	-- Logic to advance to the next state

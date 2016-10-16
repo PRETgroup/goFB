@@ -18,6 +18,12 @@ entity FlexPRET is
 		
 		
 		
+		
+		--special emitted internal variables for child I/O
+		UART_TX : out std_logic_vector(7 downto 0); --type was BYTE 
+		UART_TX_READY : in std_logic; --type was BOOL 
+		UART_TX_SEND : out std_logic; --type was BOOL 
+		
 		--for done signal
 		done : out std_logic
 	);
@@ -88,7 +94,7 @@ begin
 	
 	-- child I/O to signals
 	
-	IO : work.IOManager port map(
+	IO : entity work.IOManager port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -136,10 +142,16 @@ begin
 		FillContents => Pumps_FillContents_to_IO_FillContents, --input
 		InjectorPosition => Motor_InjectorPosition_to_IO_InjectorPosition, --input
 		
+		--specials
+		UART_TX => UART_TX, --output
+		UART_TX_READY => UART_TX_READY, --input
+		UART_TX_SEND => UART_TX_SEND, --output
+		
+
 		done => IO_done
 	);
 	
-	CCounter : work.CanisterCounter port map(
+	CCounter : entity work.CanisterCounter port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -154,10 +166,12 @@ begin
 		AcceptBinLaser => IO_AcceptBinLaser_to_CCounter_AcceptBinLaser, --input
 		CanisterCount => CCounter_CanisterCount_to_IO_CanisterCount, --output 
 		
+		
+
 		done => CCounter_done
 	);
 	
-	Door : work.DoorController port map(
+	Door : entity work.DoorController port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -171,10 +185,12 @@ begin
 		--data
 		EmergencyStop => IO_EmergencyStop_to_Door_EmergencyStop, --input
 		
+		
+
 		done => Door_done
 	);
 	
-	Conveyor : work.ConveyorController port map(
+	Conveyor : entity work.ConveyorController port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -191,10 +207,12 @@ begin
 		InjectSiteLaser => IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser, --input
 		ConveyorSpeed => Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed, --output 
 		
+		
+
 		done => Conveyor_done
 	);
 	
-	RejectArm : work.RejectArmController port map(
+	RejectArm : entity work.RejectArmController port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -207,10 +225,12 @@ begin
 		--data
 		RejectSiteLaser => IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser, --input
 		
+		
+
 		done => RejectArm_done
 	);
 	
-	Pumps : work.InjectorPumpsController port map(
+	Pumps : entity work.InjectorPumpsController port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -236,10 +256,12 @@ begin
 		InjectorPressurePumpRun => Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun, --output 
 		FillContents => Pumps_FillContents_to_IO_FillContents, --output 
 		
+		
+
 		done => Pumps_done
 	);
 	
-	Motor : work.InjectorMotorController port map(
+	Motor : entity work.InjectorMotorController port map(
 		clk => clk,
 		rst => rst,
 		enable => enable,
@@ -259,6 +281,8 @@ begin
 		EmergencyStop => IO_EmergencyStop_to_Motor_EmergencyStop, --input
 		InjectorPosition => Motor_InjectorPosition_to_IO_InjectorPosition, --output 
 		
+		
+
 		done => Motor_done
 	);
 	

@@ -28,6 +28,7 @@ entity RejectArmController is
 		RejectSiteLaser : in std_logic; --type was BOOL
 		
 		
+		
 		--for done signal
 		done : out std_logic
 	);

@@ -5,7 +5,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-{{template "_entityFB" $block}}
+{{template "_entityFB" .}}
 architecture rtl of {{$block.Name}} is
 	-- Signals needed for event connections {{range $curConnIndex, $conn := $compositeFB.EventConnections}}
 	signal {{$conn.VhdlName}} : std_logic;{{end}}
@@ -45,6 +45,10 @@ begin
 		{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if $conn.FromName $child.Name}}{{$conn.SourceApiNameOnly}} => {{$conn.VhdlName}}, --output 
 		{{else if $conn.ToName $child.Name}}{{$conn.DestApiNameOnly}} => {{$conn.VhdlName}}, --input
 		{{end}}{{end}}
+		{{$special := $child.GetSpecialIO $blocks}}{{if $special.InternalVars}}--specials
+		{{range $curSpecialIndex, $sInternal := $special.InternalVars}}{{$sInternal.Name}} => {{$sInternal.Name}}, --{{if $sInternal.IsTOPIO_IN}}input{{else}}output{{end}}
+		{{end}}{{end}}
+
 		done => {{$child.Name}}_done
 	);
 	{{end}}

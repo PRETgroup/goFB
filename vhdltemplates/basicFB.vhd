@@ -5,7 +5,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-{{template "_entityFB" $block}}
+{{template "_entityFB" .}}
 architecture rtl of {{$block.Name}} is
 	-- Build an enumerated type for the state machine
 	type state_type is ({{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}{{$state.Name}}{{end}});
