@@ -27,8 +27,8 @@ entity ConveyorController is
 		
 		
 		--input variables
-		EmergencyStop : in std_logic; --type was BOOL
-		InjectSiteLaser : in std_logic; --type was BOOL
+		EmergencyStop_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		InjectSiteLaser_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
 		
 		
 		--output variables
@@ -49,6 +49,12 @@ architecture rtl of ConveyorController is
 	-- Register to hold the current state
 	signal state   : state_type := E_Stop;
 
+	-- signals to store variable sampled on enable 
+	signal EmergencyStop : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	signal InjectSiteLaser : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	
 	-- signals for enabling algorithms	
 	signal ConveyorStart_alg_en : std_logic := '0'; 
 	signal ConveyorStart_alg_done : std_logic := '1';
@@ -70,6 +76,24 @@ architecture rtl of ConveyorController is
 	--internal variables 
 	signal Variable1 : std_logic; --type was BOOL 
 begin
+	-- Logic to update data inputs from unprocessed inputs
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			if enable = '1' then
+				
+				if EmergencyStopChanged = '1' then
+					EmergencyStop <= EmergencyStop_I;
+				end if;
+				
+				if LasersChanged = '1' then
+					InjectSiteLaser <= InjectSiteLaser_I;
+				end if;
+				
+			end if;
+		end if;
+	end process;
+			
 	
 	-- Logic to advance to the next state
 	process (clk, reset)

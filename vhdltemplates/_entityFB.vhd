@@ -17,7 +17,7 @@ entity {{$block.Name}} is
 		{{end}}{{end}}
 		{{if $block.InputVars}}
 		--input variables
-		{{range $index, $var := $block.InputVars.Variables}}{{$var.Name}} : in {{getVhdlType $var.Type}}; --type was {{$var.Type}}
+		{{range $index, $var := $block.InputVars.Variables}}{{$var.Name}}_I : in {{getVhdlType $var.Type}}; --type was {{$var.Type}}, _I to indicate unprocessed input
 		{{end}}{{end}}
 		{{if $block.OutputVars}}
 		--output variables

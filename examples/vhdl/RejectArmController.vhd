@@ -25,7 +25,7 @@ entity RejectArmController is
 		
 		
 		--input variables
-		RejectSiteLaser : in std_logic; --type was BOOL
+		RejectSiteLaser_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
 		
 		
 		
@@ -43,6 +43,10 @@ architecture rtl of RejectArmController is
 	-- Register to hold the current state
 	signal state   : state_type := Clear;
 
+	-- signals to store variable sampled on enable 
+	signal RejectSiteLaser : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	
 	-- signals for enabling algorithms	
 
 	-- signal for algorithm completion
@@ -51,6 +55,20 @@ architecture rtl of RejectArmController is
 
 	
 begin
+	-- Logic to update data inputs from unprocessed inputs
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			if enable = '1' then
+				
+				if LasersChanged = '1' then
+					RejectSiteLaser <= RejectSiteLaser_I;
+				end if;
+				
+			end if;
+		end if;
+	end process;
+			
 	
 	-- Logic to advance to the next state
 	process (clk, reset)

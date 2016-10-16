@@ -187,6 +187,16 @@ type ConnectionWithType struct {
 	Type string
 }
 
+//IsLoadFor used in templates for triggering updates of input data
+func (e *Event) IsLoadFor(v *Variable) bool {
+	for i := 0; i < len(e.With); i++ {
+		if e.With[i].Var == v.Name {
+			return true
+		}
+	}
+	return false
+}
+
 //IsTOPIO_OUT used in templates
 func (v *Variable) IsTOPIO_OUT() bool {
 	return v.Comment == TOPIO_OUT

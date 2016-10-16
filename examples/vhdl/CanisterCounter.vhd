@@ -24,9 +24,9 @@ entity CanisterCounter is
 		
 		
 		--input variables
-		DoorSiteLaser : in std_logic; --type was BOOL
-		RejectBinLaser : in std_logic; --type was BOOL
-		AcceptBinLaser : in std_logic; --type was BOOL
+		DoorSiteLaser_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		RejectBinLaser_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		AcceptBinLaser_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
 		
 		
 		--output variables
@@ -47,6 +47,14 @@ architecture rtl of CanisterCounter is
 	-- Register to hold the current state
 	signal state   : state_type := Start;
 
+	-- signals to store variable sampled on enable 
+	signal DoorSiteLaser : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	signal RejectBinLaser : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	signal AcceptBinLaser : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	
 	-- signals for enabling algorithms	
 	signal ChangeCount_alg_en : std_logic := '0'; 
 	signal ChangeCount_alg_done : std_logic := '1';
@@ -58,6 +66,22 @@ architecture rtl of CanisterCounter is
 
 	
 begin
+	-- Logic to update data inputs from unprocessed inputs
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			if enable = '1' then
+				
+				if LasersChanged = '1' then
+					DoorSiteLaser <= DoorSiteLaser_I;
+					RejectBinLaser <= RejectBinLaser_I;
+					AcceptBinLaser <= AcceptBinLaser_I;
+				end if;
+				
+			end if;
+		end if;
+	end process;
+			
 	
 	-- Logic to advance to the next state
 	process (clk, reset)

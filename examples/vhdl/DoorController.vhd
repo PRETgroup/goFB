@@ -26,7 +26,7 @@ entity DoorController is
 		
 		
 		--input variables
-		EmergencyStop : in std_logic; --type was BOOL
+		EmergencyStop_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
 		
 		
 		
@@ -44,6 +44,10 @@ architecture rtl of DoorController is
 	-- Register to hold the current state
 	signal state   : state_type := E_Stop;
 
+	-- signals to store variable sampled on enable 
+	signal EmergencyStop : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	
 	-- signals for enabling algorithms	
 
 	-- signal for algorithm completion
@@ -52,6 +56,20 @@ architecture rtl of DoorController is
 
 	
 begin
+	-- Logic to update data inputs from unprocessed inputs
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			if enable = '1' then
+				
+				if EmergencyStopChanged = '1' then
+					EmergencyStop <= EmergencyStop_I;
+				end if;
+				
+			end if;
+		end if;
+	end process;
+			
 	
 	-- Logic to advance to the next state
 	process (clk, reset)

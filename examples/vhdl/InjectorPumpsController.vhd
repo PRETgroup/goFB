@@ -32,9 +32,9 @@ entity InjectorPumpsController is
 		
 		
 		--input variables
-		EmergencyStop : in std_logic; --type was BOOL
-		CanisterPressure : in std_logic_vector(7 downto 0); --type was BYTE
-		FillContentsAvailable : in std_logic_vector(7 downto 0); --type was BYTE
+		EmergencyStop_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		CanisterPressure_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
+		FillContentsAvailable_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
 		
 		
 		--output variables
@@ -58,6 +58,14 @@ architecture rtl of InjectorPumpsController is
 	-- Register to hold the current state
 	signal state   : state_type := RejectCanister;
 
+	-- signals to store variable sampled on enable 
+	signal EmergencyStop : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	signal CanisterPressure : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
+	
+	signal FillContentsAvailable : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
+	
+	
 	-- signals for enabling algorithms	
 	signal StartVacuum_alg_en : std_logic := '0'; 
 	signal StartVacuum_alg_done : std_logic := '1';
@@ -78,6 +86,28 @@ architecture rtl of InjectorPumpsController is
 
 	
 begin
+	-- Logic to update data inputs from unprocessed inputs
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			if enable = '1' then
+				
+				if EmergencyStopChanged = '1' then
+					EmergencyStop <= EmergencyStop_I;
+				end if;
+				
+				if CanisterPressureChanged = '1' then
+					CanisterPressure <= CanisterPressure_I;
+				end if;
+				
+				if FillContentsAvailableChanged = '1' then
+					FillContentsAvailable <= FillContentsAvailable_I;
+				end if;
+				
+			end if;
+		end if;
+	end process;
+			
 	
 	-- Logic to advance to the next state
 	process (clk, reset)

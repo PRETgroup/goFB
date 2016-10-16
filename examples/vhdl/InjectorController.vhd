@@ -35,9 +35,9 @@ entity InjectorController is
 		
 		
 		--input variables
-		EmergencyStop : in std_logic; --type was BOOL
-		CanisterPressure : in std_logic_vector(7 downto 0); --type was BYTE
-		FillContentsAvailable : in std_logic_vector(7 downto 0); --type was BYTE
+		EmergencyStop_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		CanisterPressure_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
+		FillContentsAvailable_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
 		
 		
 		--output variables

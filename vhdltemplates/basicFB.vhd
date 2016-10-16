@@ -13,6 +13,10 @@ architecture rtl of {{$block.Name}} is
 	-- Register to hold the current state
 	signal state   : state_type := {{(index $basicFB.States 0).Name}};
 
+	-- signals to store variable sampled on enable {{range $index, $var := $block.InputVars.Variables}}
+	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; --used as "input" for data vars, only sampled on relevant event
+	{{end}}
+	
 	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
 	signal {{$alg.Name}}_alg_en : std_logic := '0'; 
 	signal {{$alg.Name}}_alg_done : std_logic := '1';
@@ -25,6 +29,20 @@ architecture rtl of {{$block.Name}} is
 	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}}; --type was {{$var.Type}} {{end}}{{end}}
 begin
+	{{if $block.EventInputs}}{{if $block.InputVars}}-- Registers for data variables (only updated on relevant events)
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			if enable = '1' then
+				{{range $eventIndex, $event := $block.EventInputs.Events}}{{if $event.With}}
+				if {{$event.Name}} = '1' then{{range $varIndex, $var := $block.InputVars.Variables}}{{if $event.IsLoadFor $var}}
+					{{$var.Name}} <= {{$var.Name}}_I;{{end}}{{end}}
+				end if;
+				{{end}}{{end}}
+			end if;
+		end if;
+	end process;{{end}}{{end}}
+			
 	
 	-- Logic to advance to the next state
 	process (clk, reset)

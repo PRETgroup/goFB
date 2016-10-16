@@ -38,13 +38,13 @@ entity IOManager is
 		
 		
 		--input variables
-		ConveyorSpeed : in std_logic_vector(7 downto 0); --type was BYTE
-		InjectorPosition : in std_logic_vector(7 downto 0); --type was BYTE
-		InjectorContentsValveOpen : in std_logic; --type was BOOL
-		InjectorVacuumRun : in std_logic; --type was BOOL
-		InjectorPressurePumpRun : in std_logic; --type was BOOL
-		FillContents : in std_logic; --type was BOOL
-		CanisterCount : in std_logic_vector(7 downto 0); --type was BYTE
+		ConveyorSpeed_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
+		InjectorPosition_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
+		InjectorContentsValveOpen_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		InjectorVacuumRun_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		InjectorPressurePumpRun_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		FillContents_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		CanisterCount_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
 		
 		
 		--output variables
@@ -77,6 +77,22 @@ architecture rtl of IOManager is
 	-- Register to hold the current state
 	signal state   : state_type := Start;
 
+	-- signals to store variable sampled on enable 
+	signal ConveyorSpeed : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
+	
+	signal InjectorPosition : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
+	
+	signal InjectorContentsValveOpen : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	signal InjectorVacuumRun : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	signal InjectorPressurePumpRun : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	signal FillContents : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	
+	signal CanisterCount : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
+	
+	
 	-- signals for enabling algorithms	
 	signal IOAlgorithm_alg_en : std_logic := '0'; 
 	signal IOAlgorithm_alg_done : std_logic := '1';
@@ -92,6 +108,38 @@ architecture rtl of IOManager is
 	signal UART_TX_READY : std_logic; --type was BOOL 
 	signal UART_TX_SEND : std_logic; --type was BOOL 
 begin
+	-- Logic to update data inputs from unprocessed inputs
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			if enable = '1' then
+				
+				if ConveyorChanged = '1' then
+					ConveyorSpeed <= ConveyorSpeed_I;
+				end if;
+				
+				if InjectorPositionChanged = '1' then
+					InjectorPosition <= InjectorPosition_I;
+				end if;
+				
+				if InjectorControlsChanged = '1' then
+					InjectorContentsValveOpen <= InjectorContentsValveOpen_I;
+					InjectorVacuumRun <= InjectorVacuumRun_I;
+					InjectorPressurePumpRun <= InjectorPressurePumpRun_I;
+				end if;
+				
+				if FillContentsChanged = '1' then
+					FillContents <= FillContents_I;
+				end if;
+				
+				if CanisterCountChanged = '1' then
+					CanisterCount <= CanisterCount_I;
+				end if;
+				
+			end if;
+		end if;
+	end process;
+			
 	
 	-- Logic to advance to the next state
 	process (clk, reset)
