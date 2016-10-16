@@ -89,7 +89,7 @@ func getVhdlType(iec61499type string) string {
 	case "string":
 		panic("String type not allowed in conversion")
 	case "byte":
-		vhdlType = "std_logic_vector(7 downto 0)"
+		vhdlType = "unsigned(7 downto 0)"
 	case "any":
 		panic("Any type not allowed in conversion")
 	default:
@@ -101,7 +101,7 @@ func getVhdlType(iec61499type string) string {
 
 //getVhdlECCTransitionCondition returns the VHDL "if" condition to use in state machine next state logic
 func getVhdlECCTransitionCondition(iec61499trans string) string {
-	re := regexp.MustCompile("([a-zA-Z_]+)")
+	re := regexp.MustCompile("([a-zA-Z_<>=]+)")
 	retVal := iec61499trans
 	retVal = strings.Replace(retVal, "!", "not ", -1)
 	retVal = strings.Replace(retVal, "AND", "and", -1)
@@ -111,9 +111,10 @@ func getVhdlECCTransitionCondition(iec61499trans string) string {
 }
 
 func addTrueCheck(in string) string {
-	if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ToLower(in) == "not" {
+	if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ToLower(in) == "not" || strings.ContainsAny(in, "<>=") || strings.ToLower(in) == "true" {
 		return in
 	}
+
 	return in + " = '1'"
 }
 

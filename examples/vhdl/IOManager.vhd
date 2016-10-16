@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 
 entity IOManager is
@@ -14,6 +16,7 @@ entity IOManager is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		
 		--input events
 		DoorReleaseCanister : in std_logic;
@@ -38,19 +41,19 @@ entity IOManager is
 		
 		
 		--input variables
-		ConveyorSpeed_I : in std_logic_vector(7 downto 0); --type was BYTE
-		InjectorPosition_I : in std_logic_vector(7 downto 0); --type was BYTE
+		ConveyorSpeed_I : in unsigned(7 downto 0); --type was BYTE
+		InjectorPosition_I : in unsigned(7 downto 0); --type was BYTE
 		InjectorContentsValveOpen_I : in std_logic; --type was BOOL
 		InjectorVacuumRun_I : in std_logic; --type was BOOL
 		InjectorPressurePumpRun_I : in std_logic; --type was BOOL
 		FillContents_I : in std_logic; --type was BOOL
-		CanisterCount_I : in std_logic_vector(7 downto 0); --type was BYTE
+		CanisterCount_I : in unsigned(7 downto 0); --type was BYTE
 		
 		
 		--output variables
 		EmergencyStop_O : out std_logic; --type was BOOL
-		CanisterPressure_O : out std_logic_vector(7 downto 0); --type was BYTE
-		FillContentsAvailable_O : out std_logic_vector(7 downto 0); --type was BYTE
+		CanisterPressure_O : out unsigned(7 downto 0); --type was BYTE
+		FillContentsAvailable_O : out unsigned(7 downto 0); --type was BYTE
 		DoorSiteLaser_O : out std_logic; --type was BOOL
 		InjectSiteLaser_O : out std_logic; --type was BOOL
 		RejectSiteLaser_O : out std_logic; --type was BOOL
@@ -59,7 +62,7 @@ entity IOManager is
 		
 		
 		--special emitted internal vars for I/O
-		UART_TX : out std_logic_vector(7 downto 0); --type was BYTE
+		UART_TX : out unsigned(7 downto 0); --type was BYTE
 		UART_TX_READY : in std_logic; --type was BOOL
 		UART_TX_SEND : out std_logic; --type was BOOL
 		
@@ -72,30 +75,30 @@ end entity;
 
 architecture rtl of IOManager is
 	-- Build an enumerated type for the state machine
-	type state_type is (Start);
+	type state_type is (Start_S);
 
 	-- Register to hold the current state
-	signal state   : state_type := Start;
+	signal state   : state_type := Start_S;
 
 	-- signals to store variable sampled on enable 
-	signal ConveyorSpeed : std_logic_vector(7 downto 0) := (others => '0'); --register for input
-	signal InjectorPosition : std_logic_vector(7 downto 0) := (others => '0'); --register for input
+	signal ConveyorSpeed : unsigned(7 downto 0) := (others => '0'); --register for input
+	signal InjectorPosition : unsigned(7 downto 0) := (others => '0'); --register for input
 	signal InjectorContentsValveOpen : std_logic := '0'; --register for input
 	signal InjectorVacuumRun : std_logic := '0'; --register for input
 	signal InjectorPressurePumpRun : std_logic := '0'; --register for input
 	signal FillContents : std_logic := '0'; --register for input
-	signal CanisterCount : std_logic_vector(7 downto 0) := (others => '0'); --register for input
+	signal CanisterCount : unsigned(7 downto 0) := (others => '0'); --register for input
 	
 	-- signals to rename outputs 
 	signal EmergencyStop : std_logic; 
-	signal CanisterPressure : std_logic_vector(7 downto 0); 
-	signal FillContentsAvailable : std_logic_vector(7 downto 0); 
+	signal CanisterPressure : unsigned(7 downto 0); 
+	signal FillContentsAvailable : unsigned(7 downto 0); 
 	signal DoorSiteLaser : std_logic; 
 	signal InjectSiteLaser : std_logic; 
 	signal RejectSiteLaser : std_logic; 
 	signal RejectBinLaser : std_logic; 
 	signal AcceptBinLaser : std_logic; 
-	
+
 	-- signals for enabling algorithms	
 	signal IOAlgorithm_alg_en : std_logic := '0'; 
 	signal IOAlgorithm_alg_done : std_logic := '1';
@@ -107,15 +110,12 @@ architecture rtl of IOManager is
 
 	--internal variables 
 	signal EmergencyStopped : std_logic; --type was BOOL 
-	signal UART_TX : std_logic_vector(7 downto 0); --type was BYTE 
-	signal UART_TX_READY : std_logic; --type was BOOL 
-	signal UART_TX_SEND : std_logic; --type was BOOL 
 begin
 	-- Registers for data variables (only updated on relevant events)
 	process (clk)
 	begin
 		if rising_edge(clk) then
-			if enable = '1' then
+			if sync = '1' then
 				
 				if ConveyorChanged = '1' then
 					ConveyorSpeed <= ConveyorSpeed_I;
@@ -158,22 +158,22 @@ begin
 	process (clk, reset)
 	begin
 		if reset = '1' then
-			state <= Start;
+			state <= Start_S;
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
-				AlgorithmsStart <= '0'
+				AlgorithmsStart <= '0';
 			elsif enable = '1' then 
 				--default values
 				state <= state;
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
+				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
-						when Start=>
-							if true = '1' then
-								state <= Start;
+						when Start_S=>
+							if true then
+								state <= Start_S;
 								AlgorithmsStart <= '1';
 							end if;
 						
@@ -200,7 +200,7 @@ begin
 		IOAlgorithm_alg_en <= '0'; 
 
 		case state is
-			when Start=>
+			when Start_S=>
 				IOAlgorithm_alg_en <= '1';
 				EmergencyStopChanged <= '1';
 				
@@ -224,157 +224,7 @@ begin
 			if IOAlgorithm_alg_done = '0' then -- Algorithm IOAlgorithm
 
 --begin algorithm raw text
-#define NUM_BOTTLES 4
-
-static int emergencyStopped = 1;
-
-static int conveyorSpeed = 0;
-
-int i;
-
-static int tickNum = 0;
-
-printf("ATTN: Tick number %i\n", tickNum);
-tickNum++;
-
-
-static int bottlePositions[NUM_BOTTLES] = {0};
-static int bottlesActive[NUM_BOTTLES] = {0};
-static int nextBottle = 0;
-
-//reset all the things
-me->EmergencyStop = 0;
-me->CanisterPressure = 255;
-me->FillContentsAvailable = 255;
-me->DoorSiteLaser = 0;
-me->InjectSiteLaser = 0;
-me->RejectSiteLaser = 0;
-me->RejectBinLaser = 0;
-me->AcceptBinLaser = 0;
-
-
-//printf("=====new tick\n");
-
-//continue progress
-if(conveyorSpeed) {
-	for(i = 0; i < NUM_BOTTLES; i++) {
-		if(bottlesActive[i]) {
-			bottlePositions[i] += conveyorSpeed;
-			printf("IO: Canister %i moves to %i\n", i, bottlePositions[i]);
-			
-			if(bottlePositions[i] == 5) {
-				printf("IO: Canister %i at 5, triggering InjectSiteLaser\n", i);
-				me->_output.event.LasersChanged = 1;
-				me->InjectSiteLaser = 1;
-			}
-
-			if(bottlePositions[i] == 10) {
-				printf("IO: Canister %i at 10, triggering RejectSiteLaser\n", i);
-				me->_output.event.LasersChanged = 1;
-				me->RejectSiteLaser = 1;
-			}
-
-			if(bottlePositions[i] == 20) {
-				printf("IO: Canister %i at 20, falls off conveyor, triggering AcceptBinLaser\n", i);
-				me->_output.event.LasersChanged = 1;
-				me->AcceptBinLaser = 1;
-				bottlesActive[i] = 0;
-				bottlePositions[i] = 0;
-			}
-
-			if(me->_input.event.GoRejectArm && (bottlePositions[i] == 10 || bottlePositions[i] == 11 || bottlePositions[i] == 12)) {
-				printf("IO: Go Reject Arm. Canister %i knocked from conveyor.\n", i);
-				//progress = 0;
-				me->_output.event.LasersChanged = 1;
-				me->RejectBinLaser = 1;
-				bottlesActive[i] = 0;
-				bottlePositions[i] = 0;
-			}
-		}
-	}
-}
-
-if(tickNum == 25) {
-	printf("Progress at 25, halting\n");
-	while(1);
-}
-
-if(me->_input.event.InjectDone) {
-	printf("IO: Inject done\n");
-}
-
-
-
-if(emergencyStopped == 1) {
-	printf("IO: Releasing emergency stop\n");
-	me->_output.event.EmergencyStopChanged = 1;
-	me->EmergencyStop = 0;
-	emergencyStopped++;
-} else {
-	
-	if(me->_input.event.DoorReleaseCanister) {
-		printf("IO: Door released. Adding canister %i\n", nextBottle);
-
-		me->_output.event.LasersChanged = 1;
-		me->DoorSiteLaser = 1;
-			
-		bottlesActive[nextBottle] = 1;
-
-		nextBottle++;
-		nextBottle = nextBottle % NUM_BOTTLES;
-		
-	}
-	if(me->_input.event.InjectorPositionChanged) {
-		printf("IO: Injector position changed. Setting move finished.\n");
-		me->_output.event.InjectorArmFinishMovement = 1;
-	}
-
-	if(me->_input.event.ConveyorChanged) {
-		conveyorSpeed = me->ConveyorSpeed;
-		printf("IO: Setting conveyor movement to %i\n", conveyorSpeed);
-	}
-
-	
-
-	if(me->_input.event.InjectorControlsChanged) {
-		printf("IO: Injector controls changed. Now they are Vac: %1i Val: %1i Pmp: %1i\n", me->InjectorVacuumRun, me->InjectorContentsValveOpen, me->InjectorPressurePumpRun);
-		if(me->InjectorVacuumRun) {
-			printf("IO: Due to vacuum, changing canister pressure to 5.\n");
-			me->CanisterPressure = 5;
-			me->_output.event.CanisterPressureChanged = 1;
-		}
-		if(me->InjectorContentsValveOpen) {
-			printf("IO: Contents valve now open. Pressure changes slightly, sucking in contents.\n");
-			me->CanisterPressure = 20;
-			me->_output.event.CanisterPressureChanged = 1;
-		}
-		if(me->InjectorPressurePumpRun) {
-			printf("IO: Due to pressure pump, changing canister pressure to 250.\n");
-			me->CanisterPressure = 250;
-			me->_output.event.CanisterPressureChanged = 1;
-		}
-	}
-	
-	if(me->_input.event.FillContentsChanged) {
-		printf("IO: Fill contents changed.\n");
-	}
-
-	if(me->_input.event.StartVacuumTimer) {
-		printf("IO: Start vacuum timer.\n");//Elapsing timer.\n");
-		//me->_output.event.VacuumTimerElapsed = 1;
-	}
-
-	
-
-	if(me->_input.event.CanisterCountChanged) {
-		printf("IO: Canister count changed. New value: %i\n", me->CanisterCount);
-	}
-
-
-}
-
-
-
+IOAlgorithm_alg_done <= '1';
 --end algorithm raw text
 
 			end if;

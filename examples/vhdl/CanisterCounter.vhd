@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 
 entity CanisterCounter is
@@ -14,6 +16,7 @@ entity CanisterCounter is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		
 		--input events
 		LasersChanged : in std_logic;
@@ -30,7 +33,7 @@ entity CanisterCounter is
 		
 		
 		--output variables
-		CanisterCount_O : out std_logic_vector(7 downto 0); --type was BYTE
+		CanisterCount_O : out unsigned(7 downto 0); --type was BYTE
 		
 		
 		--for done signal
@@ -42,10 +45,10 @@ end entity;
 
 architecture rtl of CanisterCounter is
 	-- Build an enumerated type for the state machine
-	type state_type is (Start);
+	type state_type is (Start_S);
 
 	-- Register to hold the current state
-	signal state   : state_type := Start;
+	signal state   : state_type := Start_S;
 
 	-- signals to store variable sampled on enable 
 	signal DoorSiteLaser : std_logic := '0'; --register for input
@@ -53,8 +56,8 @@ architecture rtl of CanisterCounter is
 	signal AcceptBinLaser : std_logic := '0'; --register for input
 	
 	-- signals to rename outputs 
-	signal CanisterCount : std_logic_vector(7 downto 0); 
-	
+	signal CanisterCount : unsigned(7 downto 0); 
+
 	-- signals for enabling algorithms	
 	signal ChangeCount_alg_en : std_logic := '0'; 
 	signal ChangeCount_alg_done : std_logic := '1';
@@ -70,7 +73,7 @@ begin
 	process (clk)
 	begin
 		if rising_edge(clk) then
-			if enable = '1' then
+			if sync = '1' then
 				
 				if LasersChanged = '1' then
 					DoorSiteLaser <= DoorSiteLaser_I;
@@ -90,22 +93,22 @@ begin
 	process (clk, reset)
 	begin
 		if reset = '1' then
-			state <= Start;
+			state <= Start_S;
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
-				AlgorithmsStart <= '0'
+				AlgorithmsStart <= '0';
 			elsif enable = '1' then 
 				--default values
 				state <= state;
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
+				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
-						when Start=>
+						when Start_S=>
 							if LasersChanged = '1' then
-								state <= Start;
+								state <= Start_S;
 								AlgorithmsStart <= '1';
 							end if;
 						
@@ -126,7 +129,7 @@ begin
 		ChangeCount_alg_en <= '0'; 
 
 		case state is
-			when Start=>
+			when Start_S=>
 				ChangeCount_alg_en <= '1';
 				CanisterCountChanged <= '1';
 				
@@ -150,16 +153,13 @@ begin
 			if ChangeCount_alg_done = '0' then -- Algorithm ChangeCount
 
 --begin algorithm raw text
-if(me->DoorSiteLaser) {
-	me->CanisterCount++;
-}
-if(me->RejectBinLaser) {
-	me->CanisterCount--;
-}
-if(me->AcceptBinLaser) {
-	me->CanisterCount--;
-}
-//printf("Canister count:%i\n", me->CanisterCount);
+if DoorSiteLaser='1' then 
+	CanisterCount <= CanisterCount + '1';
+end if;
+if RejectBinLaser = '1' or AcceptBinLaser = '1' then 
+CanisterCount <= CanisterCount - 1;
+end if;
+ChangeCount_alg_done<='1';
 --end algorithm raw text
 
 			end if;

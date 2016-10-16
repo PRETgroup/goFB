@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 
 entity InjectorPumpsController is
@@ -14,6 +16,7 @@ entity InjectorPumpsController is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		
 		--input events
 		StartPump : in std_logic;
@@ -33,8 +36,8 @@ entity InjectorPumpsController is
 		
 		--input variables
 		EmergencyStop_I : in std_logic; --type was BOOL
-		CanisterPressure_I : in std_logic_vector(7 downto 0); --type was BYTE
-		FillContentsAvailable_I : in std_logic_vector(7 downto 0); --type was BYTE
+		CanisterPressure_I : in unsigned(7 downto 0); --type was BYTE
+		FillContentsAvailable_I : in unsigned(7 downto 0); --type was BYTE
 		
 		
 		--output variables
@@ -53,22 +56,22 @@ end entity;
 
 architecture rtl of InjectorPumpsController is
 	-- Build an enumerated type for the state machine
-	type state_type is (RejectCanister, AwaitPump, VacuumPump, FinishPump, StartPump, OpenValve, StopVacuum);
+	type state_type is (RejectCanister_S, AwaitPump_S, VacuumPump_S, FinishPump_S, StartPump_S, OpenValve_S, StopVacuum_S);
 
 	-- Register to hold the current state
-	signal state   : state_type := RejectCanister;
+	signal state   : state_type := RejectCanister_S;
 
 	-- signals to store variable sampled on enable 
 	signal EmergencyStop : std_logic := '0'; --register for input
-	signal CanisterPressure : std_logic_vector(7 downto 0) := (others => '0'); --register for input
-	signal FillContentsAvailable : std_logic_vector(7 downto 0) := (others => '0'); --register for input
+	signal CanisterPressure : unsigned(7 downto 0) := (others => '0'); --register for input
+	signal FillContentsAvailable : unsigned(7 downto 0) := (others => '0'); --register for input
 	
 	-- signals to rename outputs 
 	signal InjectorContentsValveOpen : std_logic; 
 	signal InjectorVacuumRun : std_logic; 
 	signal InjectorPressurePumpRun : std_logic; 
 	signal FillContents : std_logic; 
-	
+
 	-- signals for enabling algorithms	
 	signal StartVacuum_alg_en : std_logic := '0'; 
 	signal StartVacuum_alg_done : std_logic := '1';
@@ -93,7 +96,7 @@ begin
 	process (clk)
 	begin
 		if rising_edge(clk) then
-			if enable = '1' then
+			if sync = '1' then
 				
 				if EmergencyStopChanged = '1' then
 					EmergencyStop <= EmergencyStop_I;
@@ -122,55 +125,55 @@ begin
 	process (clk, reset)
 	begin
 		if reset = '1' then
-			state <= RejectCanister;
+			state <= RejectCanister_S;
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
-				AlgorithmsStart <= '0'
+				AlgorithmsStart <= '0';
 			elsif enable = '1' then 
 				--default values
 				state <= state;
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
+				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
-						when RejectCanister=>
-							if true = '1' then
-								state <= AwaitPump;
+						when RejectCanister_S=>
+							if true then
+								state <= AwaitPump_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when AwaitPump=>
+						when AwaitPump_S=>
 							if StartPump = '1' then
-								state <= VacuumPump;
+								state <= VacuumPump_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when VacuumPump=>
+						when VacuumPump_S=>
 							if VacuumTimerElapsed = '1' then
-								state <= RejectCanister;
+								state <= RejectCanister_S;
 								AlgorithmsStart <= '1';
-							elsif CanisterPressureChanged = '1' and (CanisterPressure = '1'<=10) then
-								state <= StopVacuum;
-								AlgorithmsStart <= '1';
-							end if;
-						when FinishPump=>
-							if true = '1' then
-								state <= AwaitPump;
+							elsif CanisterPressureChanged = '1' and (CanisterPressure<=10) then
+								state <= StopVacuum_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when StartPump=>
-							if CanisterPressureChanged = '1' and (CanisterPressure = '1'>=245) then
-								state <= FinishPump;
+						when FinishPump_S=>
+							if true then
+								state <= AwaitPump_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when OpenValve=>
-							if true = '1' then
-								state <= StartPump;
+						when StartPump_S=>
+							if CanisterPressureChanged = '1' and (CanisterPressure>=245) then
+								state <= FinishPump_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when StopVacuum=>
-							if true = '1' then
-								state <= OpenValve;
+						when OpenValve_S=>
+							if true then
+								state <= StartPump_S;
+								AlgorithmsStart <= '1';
+							end if;
+						when StopVacuum_S=>
+							if true then
+								state <= OpenValve_S;
 								AlgorithmsStart <= '1';
 							end if;
 						
@@ -198,32 +201,32 @@ begin
 		StartPump_alg_en <= '0'; 
 
 		case state is
-			when RejectCanister=>
+			when RejectCanister_S=>
 				ClearControls_alg_en <= '1';
 				RejectCanister <= '1';
 				InjectorControlsChanged <= '1';
 				
-			when AwaitPump=>
+			when AwaitPump_S=>
 				PumpFinished <= '1';
 				
-			when VacuumPump=>
+			when VacuumPump_S=>
 				StartVacuum_alg_en <= '1';
 				InjectorControlsChanged <= '1';
 				StartVacuumTimer <= '1';
 				
-			when FinishPump=>
+			when FinishPump_S=>
 				ClearControls_alg_en <= '1';
 				InjectorControlsChanged <= '1';
 				
-			when StartPump=>
+			when StartPump_S=>
 				StartPump_alg_en <= '1';
 				InjectorControlsChanged <= '1';
 				
-			when OpenValve=>
+			when OpenValve_S=>
 				OpenValve_alg_en <= '1';
 				InjectorControlsChanged <= '1';
 				
-			when StopVacuum=>
+			when StopVacuum_S=>
 				ClearControls_alg_en <= '1';
 				InjectorControlsChanged <= '1';
 				
@@ -259,8 +262,8 @@ begin
 			if StartVacuum_alg_done = '0' then -- Algorithm StartVacuum
 
 --begin algorithm raw text
-me->InjectorVacuumRun = 1;
-//printf("Injector: Start vacuum\n");
+InjectorVacuumRun <= '1';
+ StartVacuum_alg_done <= '1';
 --end algorithm raw text
 
 			end if;
@@ -268,10 +271,10 @@ me->InjectorVacuumRun = 1;
 			if ClearControls_alg_done = '0' then -- Algorithm ClearControls
 
 --begin algorithm raw text
-me->InjectorContentsValveOpen = 0;
-me->InjectorPressurePumpRun = 0;
-me->InjectorVacuumRun = 0;
-//printf("Injector: Clear controls\n");
+InjectorContentsValveOpen <= '0';
+ InjectorPressurePumpRun <= '0';
+ InjectorVacuumRun <= '0';
+ ClearControls_alg_done <= '1';
 --end algorithm raw text
 
 			end if;
@@ -279,8 +282,8 @@ me->InjectorVacuumRun = 0;
 			if OpenValve_alg_done = '0' then -- Algorithm OpenValve
 
 --begin algorithm raw text
-me->InjectorContentsValveOpen = 1;
-//printf("Injector: Open valve\n");
+InjectorContentsValveOpen <= '1';
+ OpenValve_alg_done <= '1';
 --end algorithm raw text
 
 			end if;
@@ -288,8 +291,8 @@ me->InjectorContentsValveOpen = 1;
 			if StartPump_alg_done = '0' then -- Algorithm StartPump
 
 --begin algorithm raw text
-me->InjectorPressurePumpRun = 1;
-//printf("Injector: Start pump\n");
+InjectorPressurePumpRun <= '1';
+ StartPump_alg_done <= '1';
 --end algorithm raw text
 
 			end if;

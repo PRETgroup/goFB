@@ -7,6 +7,7 @@ entity {{$block.Name}} is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		{{if $block.EventInputs}}
 		--input events
 		{{range $index, $event := $block.EventInputs.Events}}{{$event.Name}} : in std_logic;

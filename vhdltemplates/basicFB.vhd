@@ -5,20 +5,22 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 {{template "_entityFB" .}}
 architecture rtl of {{$block.Name}} is
 	-- Build an enumerated type for the state machine
-	type state_type is ({{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}{{$state.Name}}{{end}});
+	type state_type is ({{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}{{$state.Name}}_S{{end}});
 
 	-- Register to hold the current state
-	signal state   : state_type := {{(index $basicFB.States 0).Name}};
+	signal state   : state_type := {{(index $basicFB.States 0).Name}}_S;
 
 	{{if $block.InputVars}}-- signals to store variable sampled on enable {{range $index, $var := $block.InputVars.Variables}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; --register for input{{end}}
 	{{end}}
 	{{if $block.OutputVars}}-- signals to rename outputs {{range $index, $var := $block.OutputVars.Variables}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}}; {{end}}{{end}}
-	
+
 	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
 	signal {{$alg.Name}}_alg_en : std_logic := '0'; 
 	signal {{$alg.Name}}_alg_done : std_logic := '1';
@@ -28,14 +30,14 @@ architecture rtl of {{$block.Name}} is
 	signal AlgorithmsStart : std_logic := '0';
 	signal AlgorithmsDone : std_logic;
 
-	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}
-	signal {{$var.Name}} : {{getVhdlType $var.Type}}; --type was {{$var.Type}} {{end}}{{end}}
+	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}{{if not (or $var.IsTOPIO_IN $var.IsTOPIO_OUT)}}{{/*ignore the special IO cos they are in the port list*/}}
+	signal {{$var.Name}} : {{getVhdlType $var.Type}}; --type was {{$var.Type}} {{end}}{{end}}{{end}}
 begin
 	{{if $block.EventInputs}}{{if $block.InputVars}}-- Registers for data variables (only updated on relevant events)
 	process (clk)
 	begin
 		if rising_edge(clk) then
-			if enable = '1' then
+			if sync = '1' then
 				{{range $eventIndex, $event := $block.EventInputs.Events}}{{if $event.With}}
 				if {{$event.Name}} = '1' then{{range $varIndex, $var := $block.InputVars.Variables}}{{if $event.IsLoadFor $var}}
 					{{$var.Name}} <= {{$var.Name}}_I;{{end}}{{end}}
@@ -53,22 +55,22 @@ begin
 	process (clk, reset)
 	begin
 		if reset = '1' then
-			state <= {{(index $basicFB.States 0).Name}};
+			state <= {{(index $basicFB.States 0).Name}}_S;
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
-				AlgorithmsStart <= '0'
+				AlgorithmsStart <= '0';
 			elsif enable = '1' then 
 				--default values
 				state <= state;
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
+				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
-						{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}=>
+						{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}_S=>
 							{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{getVhdlECCTransitionCondition $trans.Condition}} then
-								state <= {{$trans.Destination}};
+								state <= {{$trans.Destination}}_S;
 								AlgorithmsStart <= '1';
 							{{end}}end if;
 						{{end}}
@@ -89,7 +91,7 @@ begin
 		{{$alg.Name}}_alg_en <= '0'; {{end}}{{end}}
 
 		case state is
-			{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}=>
+			{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}_S=>
 				{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$action.Algorithm}}_alg_en <= '1';
 				{{end}}{{if $action.Output}}{{$action.Output}} <= '1';
 				{{end}}{{end}}

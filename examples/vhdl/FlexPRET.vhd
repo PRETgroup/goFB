@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 
 entity FlexPRET is
@@ -14,13 +16,14 @@ entity FlexPRET is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		
 		
 		
 		
 		
 		--special emitted internal variables for child I/O
-		UART_TX : out std_logic_vector(7 downto 0); --type was BYTE 
+		UART_TX : out unsigned(7 downto 0); --type was BYTE 
 		UART_TX_READY : in std_logic; --type was BOOL 
 		UART_TX_SEND : out std_logic; --type was BOOL 
 		
@@ -66,20 +69,20 @@ architecture rtl of FlexPRET is
 	signal IO_EmergencyStop_to_Conveyor_EmergencyStop : std_logic; --type was BOOL
 	signal IO_EmergencyStop_to_Motor_EmergencyStop : std_logic; --type was BOOL
 	signal IO_EmergencyStop_to_Pumps_EmergencyStop : std_logic; --type was BOOL
-	signal IO_CanisterPressure_to_Pumps_CanisterPressure : std_logic_vector(7 downto 0); --type was BYTE
-	signal IO_FillContentsAvailable_to_Pumps_FillContentsAvailable : std_logic_vector(7 downto 0); --type was BYTE
+	signal IO_CanisterPressure_to_Pumps_CanisterPressure : unsigned(7 downto 0); --type was BYTE
+	signal IO_FillContentsAvailable_to_Pumps_FillContentsAvailable : unsigned(7 downto 0); --type was BYTE
 	signal IO_DoorSiteLaser_to_CCounter_DoorSiteLaser : std_logic; --type was BOOL
 	signal IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser : std_logic; --type was BOOL
 	signal IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser : std_logic; --type was BOOL
 	signal IO_RejectBinLaser_to_CCounter_RejectBinLaser : std_logic; --type was BOOL
 	signal IO_AcceptBinLaser_to_CCounter_AcceptBinLaser : std_logic; --type was BOOL
-	signal CCounter_CanisterCount_to_IO_CanisterCount : std_logic_vector(7 downto 0); --type was BYTE
-	signal Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed : std_logic_vector(7 downto 0); --type was BYTE
+	signal CCounter_CanisterCount_to_IO_CanisterCount : unsigned(7 downto 0); --type was BYTE
+	signal Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed : unsigned(7 downto 0); --type was BYTE
 	signal Pumps_InjectorContentsValveOpen_to_IO_InjectorContentsValveOpen : std_logic; --type was BOOL
 	signal Pumps_InjectorVacuumRun_to_IO_InjectorVacuumRun : std_logic; --type was BOOL
 	signal Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun : std_logic; --type was BOOL
 	signal Pumps_FillContents_to_IO_FillContents : std_logic; --type was BOOL
-	signal Motor_InjectorPosition_to_IO_InjectorPosition : std_logic_vector(7 downto 0); --type was BYTE
+	signal Motor_InjectorPosition_to_IO_InjectorPosition : unsigned(7 downto 0); --type was BYTE
 
 	-- Signals needed for the done signals 
 	signal IO_done : std_logic;
@@ -96,8 +99,9 @@ begin
 	
 	IO : entity work.IOManager port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		InjectorArmFinishMovement => IO_InjectorArmFinishMovement_to_Motor_InjectorArmFinishedMovement, --output
@@ -147,14 +151,14 @@ begin
 		UART_TX_READY => UART_TX_READY, --input
 		UART_TX_SEND => UART_TX_SEND, --output
 		
-
 		done => IO_done
 	);
 	
 	CCounter : entity work.CanisterCounter port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		LasersChanged => IO_LasersChanged_to_CCounter_LasersChanged, --input
@@ -167,14 +171,14 @@ begin
 		CanisterCount_O => CCounter_CanisterCount_to_IO_CanisterCount, --output 
 		
 		
-
 		done => CCounter_done
 	);
 	
 	Door : entity work.DoorController port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		EmergencyStopChanged => IO_EmergencyStopChanged_to_Door_EmergencyStopChanged, --input
@@ -186,14 +190,14 @@ begin
 		EmergencyStop_I => IO_EmergencyStop_to_Door_EmergencyStop, --input
 		
 		
-
 		done => Door_done
 	);
 	
 	Conveyor : entity work.ConveyorController port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		EmergencyStopChanged => IO_EmergencyStopChanged_to_Conveyor_EmergencyStopChanged, --input
@@ -208,14 +212,14 @@ begin
 		ConveyorSpeed_O => Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed, --output 
 		
 		
-
 		done => Conveyor_done
 	);
 	
 	RejectArm : entity work.RejectArmController port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		LasersChanged => IO_LasersChanged_to_RejectArm_LasersChanged, --input
@@ -226,14 +230,14 @@ begin
 		RejectSiteLaser_I => IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser, --input
 		
 		
-
 		done => RejectArm_done
 	);
 	
 	Pumps : entity work.InjectorPumpsController port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		EmergencyStopChanged => IO_EmergencyStopChanged_to_Pumps_EmergencyStopChanged, --input
@@ -257,14 +261,14 @@ begin
 		FillContents_O => Pumps_FillContents_to_IO_FillContents, --output 
 		
 		
-
 		done => Pumps_done
 	);
 	
 	Motor : entity work.InjectorMotorController port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		InjectorArmFinishedMovement => IO_InjectorArmFinishMovement_to_Motor_InjectorArmFinishedMovement, --input
@@ -282,7 +286,6 @@ begin
 		InjectorPosition_O => Motor_InjectorPosition_to_IO_InjectorPosition, --output 
 		
 		
-
 		done => Motor_done
 	);
 	

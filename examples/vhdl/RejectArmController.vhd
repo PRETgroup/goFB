@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 
 entity RejectArmController is
@@ -14,6 +16,7 @@ entity RejectArmController is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		
 		--input events
 		RejectCanister : in std_logic;
@@ -38,16 +41,16 @@ end entity;
 
 architecture rtl of RejectArmController is
 	-- Build an enumerated type for the state machine
-	type state_type is (Clear, AwaitCanister, GoReject);
+	type state_type is (Clear_S, AwaitCanister_S, GoReject_S);
 
 	-- Register to hold the current state
-	signal state   : state_type := Clear;
+	signal state   : state_type := Clear_S;
 
 	-- signals to store variable sampled on enable 
 	signal RejectSiteLaser : std_logic := '0'; --register for input
 	
 	
-	
+
 	-- signals for enabling algorithms	
 
 	-- signal for algorithm completion
@@ -60,7 +63,7 @@ begin
 	process (clk)
 	begin
 		if rising_edge(clk) then
-			if enable = '1' then
+			if sync = '1' then
 				
 				if LasersChanged = '1' then
 					RejectSiteLaser <= RejectSiteLaser_I;
@@ -76,32 +79,32 @@ begin
 	process (clk, reset)
 	begin
 		if reset = '1' then
-			state <= Clear;
+			state <= Clear_S;
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
-				AlgorithmsStart <= '0'
+				AlgorithmsStart <= '0';
 			elsif enable = '1' then 
 				--default values
 				state <= state;
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
+				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
-						when Clear=>
+						when Clear_S=>
 							if RejectCanister = '1' then
-								state <= AwaitCanister;
+								state <= AwaitCanister_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when AwaitCanister=>
+						when AwaitCanister_S=>
 							if LasersChanged = '1' and (RejectSiteLaser = '1') then
-								state <= GoReject;
+								state <= GoReject_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when GoReject=>
+						when GoReject_S=>
 							if RejectCanister = '1' then
-								state <= AwaitCanister;
+								state <= AwaitCanister_S;
 								AlgorithmsStart <= '1';
 							end if;
 						
@@ -121,11 +124,11 @@ begin
 		
 
 		case state is
-			when Clear=>
+			when Clear_S=>
 				
-			when AwaitCanister=>
+			when AwaitCanister_S=>
 				
-			when GoReject=>
+			when GoReject_S=>
 				GoRejectArm <= '1';
 				
 			

@@ -66,13 +66,13 @@ func main() {
 	for _, name := range fileNames {
 		sourceFile, err := ioutil.ReadFile(fmt.Sprintf("%s%c%s", *inFileName, os.PathSeparator, name))
 		if err != nil {
-			fmt.Println("Error reading file:", err.Error())
+			fmt.Printf("Error reading file '%s' for conversion: %s\n", name, err.Error())
 			return
 		}
 
 		err = conv.AddBlock(sourceFile)
 		if err != nil {
-			fmt.Println("Error during adding file for conversion:", err.Error())
+			fmt.Printf("Error during adding file '%s' for conversion: %s\n", name, err.Error())
 			return
 		}
 	}

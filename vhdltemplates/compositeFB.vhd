@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 {{template "_entityFB" .}}
 architecture rtl of {{$block.Name}} is
 	-- Signals needed for event connections {{range $curConnIndex, $conn := $compositeFB.EventConnections}}
@@ -24,18 +26,19 @@ begin
 	{{range $index, $event := $block.EventOutputs.Events}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Destination $event.Name}}{{$event.Name}} <= {{$conn.VhdlName}};
 	{{end}}{{end}}{{end}}
 	{{end}}{{if $block.InputVars}}--input variables
-	{{range $index, $var := $block.InputVars.Variables}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Source $var.Name}}{{$conn.VhdlName}} <= {{$var.Name}};
+	{{range $index, $var := $block.InputVars.Variables}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Source $var.Name}}{{$conn.VhdlName}} <= {{$var.Name}}_I;
 	{{end}}{{end}}{{end}}
 	{{end}}{{if $block.OutputVars}}--output events
-	{{range $index, $var := $block.OutputVars.Variables}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Destination $var.Name}}{{$var.Name}} <= {{$conn.VhdlName}};
+	{{range $index, $var := $block.OutputVars.Variables}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Destination $var.Name}}{{$var.Name}}_O <= {{$conn.VhdlName}};
 	{{end}}{{end}}{{end}}
 	{{end}}
 	-- child I/O to signals
 	{{range $currChildIndex, $child := $compositeFB.FBs}}
 	{{$child.Name}} : entity work.{{$child.Type}} port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if $conn.FromName $child.Name}}{{$conn.SourceApiNameOnly}} => {{$conn.VhdlName}}, --output

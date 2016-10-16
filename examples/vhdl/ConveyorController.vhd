@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 
 entity ConveyorController is
@@ -14,6 +16,7 @@ entity ConveyorController is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		
 		--input events
 		InjectDone : in std_logic;
@@ -32,7 +35,7 @@ entity ConveyorController is
 		
 		
 		--output variables
-		ConveyorSpeed_O : out std_logic_vector(7 downto 0); --type was BYTE
+		ConveyorSpeed_O : out unsigned(7 downto 0); --type was BYTE
 		
 		
 		--for done signal
@@ -44,18 +47,18 @@ end entity;
 
 architecture rtl of ConveyorController is
 	-- Build an enumerated type for the state machine
-	type state_type is (E_Stop, Running, Pause);
+	type state_type is (E_Stop_S, Running_S, Pause_S);
 
 	-- Register to hold the current state
-	signal state   : state_type := E_Stop;
+	signal state   : state_type := E_Stop_S;
 
 	-- signals to store variable sampled on enable 
 	signal EmergencyStop : std_logic := '0'; --register for input
 	signal InjectSiteLaser : std_logic := '0'; --register for input
 	
 	-- signals to rename outputs 
-	signal ConveyorSpeed : std_logic_vector(7 downto 0); 
-	
+	signal ConveyorSpeed : unsigned(7 downto 0); 
+
 	-- signals for enabling algorithms	
 	signal ConveyorStart_alg_en : std_logic := '0'; 
 	signal ConveyorStart_alg_done : std_logic := '1';
@@ -81,7 +84,7 @@ begin
 	process (clk)
 	begin
 		if rising_edge(clk) then
-			if enable = '1' then
+			if sync = '1' then
 				
 				if EmergencyStopChanged = '1' then
 					EmergencyStop <= EmergencyStop_I;
@@ -103,35 +106,35 @@ begin
 	process (clk, reset)
 	begin
 		if reset = '1' then
-			state <= E_Stop;
+			state <= E_Stop_S;
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
-				AlgorithmsStart <= '0'
+				AlgorithmsStart <= '0';
 			elsif enable = '1' then 
 				--default values
 				state <= state;
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
+				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
-						when E_Stop=>
+						when E_Stop_S=>
 							if EmergencyStopChanged = '1' and (not EmergencyStop = '1') then
-								state <= Running;
+								state <= Running_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when Running=>
+						when Running_S=>
 							if LasersChanged = '1' and (InjectSiteLaser = '1') then
-								state <= Pause;
+								state <= Pause_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when Pause=>
+						when Pause_S=>
 							if InjectDone = '1' then
-								state <= Running;
+								state <= Running_S;
 								AlgorithmsStart <= '1';
 							elsif EmergencyStopChanged = '1' and (EmergencyStop = '1') then
-								state <= E_Stop;
+								state <= E_Stop_S;
 								AlgorithmsStart <= '1';
 							end if;
 						
@@ -156,13 +159,13 @@ begin
 		ConveyorEStop_alg_en <= '0'; 
 
 		case state is
-			when E_Stop=>
+			when E_Stop_S=>
 				
-			when Running=>
+			when Running_S=>
 				ConveyorStart_alg_en <= '1';
 				ConveyorChanged <= '1';
 				
-			when Pause=>
+			when Pause_S=>
 				ConveyorStop_alg_en <= '1';
 				ConveyorChanged <= '1';
 				ConveyorStoppedForInject <= '1';

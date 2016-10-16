@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 
 entity InjectorController is
@@ -14,6 +16,7 @@ entity InjectorController is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		
 		--input events
 		InjectorArmFinishedMovement : in std_logic;
@@ -36,12 +39,12 @@ entity InjectorController is
 		
 		--input variables
 		EmergencyStop_I : in std_logic; --type was BOOL
-		CanisterPressure_I : in std_logic_vector(7 downto 0); --type was BYTE
-		FillContentsAvailable_I : in std_logic_vector(7 downto 0); --type was BYTE
+		CanisterPressure_I : in unsigned(7 downto 0); --type was BYTE
+		FillContentsAvailable_I : in unsigned(7 downto 0); --type was BYTE
 		
 		
 		--output variables
-		InjectorPosition_O : out std_logic_vector(7 downto 0); --type was BYTE
+		InjectorPosition_O : out unsigned(7 downto 0); --type was BYTE
 		InjectorContentsValveOpen_O : out std_logic; --type was BOOL
 		InjectorVacuumRun_O : out std_logic; --type was BOOL
 		InjectorPressurePumpRun_O : out std_logic; --type was BOOL
@@ -77,9 +80,9 @@ architecture rtl of InjectorController is
 	-- Signals needed for data connections 
 	signal EmergencyStop_to_Arm_EmergencyStop : std_logic; --type was BOOL
 	signal EmergencyStop_to_Pumps_EmergencyStop : std_logic; --type was BOOL
-	signal CanisterPressure_to_Pumps_CanisterPressure : std_logic_vector(7 downto 0); --type was BYTE
-	signal FillContentsAvailable_to_Pumps_FillContentsAvailable : std_logic_vector(7 downto 0); --type was BYTE
-	signal Arm_InjectorPosition_to_InjectorPosition : std_logic_vector(7 downto 0); --type was BYTE
+	signal CanisterPressure_to_Pumps_CanisterPressure : unsigned(7 downto 0); --type was BYTE
+	signal FillContentsAvailable_to_Pumps_FillContentsAvailable : unsigned(7 downto 0); --type was BYTE
+	signal Arm_InjectorPosition_to_InjectorPosition : unsigned(7 downto 0); --type was BYTE
 	signal Pumps_InjectorContentsValveOpen_to_InjectorContentsValveOpen : std_logic; --type was BOOL
 	signal Pumps_InjectorVacuumRun_to_InjectorVacuumRun : std_logic; --type was BOOL
 	signal Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun : std_logic; --type was BOOL
@@ -109,25 +112,26 @@ begin
 	InjectRunning <= Arm_InjectRunning_to_InjectRunning;
 	
 	--input variables
-	EmergencyStop_to_Arm_EmergencyStop <= EmergencyStop;
-	EmergencyStop_to_Pumps_EmergencyStop <= EmergencyStop;
-	CanisterPressure_to_Pumps_CanisterPressure <= CanisterPressure;
-	FillContentsAvailable_to_Pumps_FillContentsAvailable <= FillContentsAvailable;
+	EmergencyStop_to_Arm_EmergencyStop <= EmergencyStop_I;
+	EmergencyStop_to_Pumps_EmergencyStop <= EmergencyStop_I;
+	CanisterPressure_to_Pumps_CanisterPressure <= CanisterPressure_I;
+	FillContentsAvailable_to_Pumps_FillContentsAvailable <= FillContentsAvailable_I;
 	
 	--output events
-	InjectorPosition <= Arm_InjectorPosition_to_InjectorPosition;
-	InjectorContentsValveOpen <= Pumps_InjectorContentsValveOpen_to_InjectorContentsValveOpen;
-	InjectorVacuumRun <= Pumps_InjectorVacuumRun_to_InjectorVacuumRun;
-	InjectorPressurePumpRun <= Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun;
-	FillContents <= Pumps_FillContents_to_FillContents;
+	InjectorPosition_O <= Arm_InjectorPosition_to_InjectorPosition;
+	InjectorContentsValveOpen_O <= Pumps_InjectorContentsValveOpen_to_InjectorContentsValveOpen;
+	InjectorVacuumRun_O <= Pumps_InjectorVacuumRun_to_InjectorVacuumRun;
+	InjectorPressurePumpRun_O <= Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun;
+	FillContents_O <= Pumps_FillContents_to_FillContents;
 	
 	
 	-- child I/O to signals
 	
 	Arm : entity work.InjectorMotorController port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		InjectorArmFinishedMovement => InjectorArmFinishedMovement_to_Arm_InjectorArmFinishedMovement, --input
@@ -144,14 +148,14 @@ begin
 		InjectorPosition_O => Arm_InjectorPosition_to_InjectorPosition, --output 
 		
 		
-
 		done => Arm_done
 	);
 	
 	Pumps : entity work.InjectorPumpsController port map(
 		clk => clk,
-		rst => rst,
+		reset => reset,
 		enable => enable,
+		sync => sync,
 
 		--events
 		EmergencyStopChanged => EmergencyStopChanged_to_Pumps_EmergencyStopChanged, --input
@@ -175,7 +179,6 @@ begin
 		FillContents_O => Pumps_FillContents_to_FillContents, --output 
 		
 		
-
 		done => Pumps_done
 	);
 	

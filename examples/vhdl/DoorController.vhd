@@ -5,6 +5,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 
 
 entity DoorController is
@@ -14,6 +16,7 @@ entity DoorController is
 		clk		: in	std_logic;
 		reset	: in	std_logic;
 		enable	: in	std_logic;
+		sync	: in	std_logic;
 		
 		--input events
 		ReleaseDoorOverride : in std_logic;
@@ -39,16 +42,16 @@ end entity;
 
 architecture rtl of DoorController is
 	-- Build an enumerated type for the state machine
-	type state_type is (E_Stop, Run, Await);
+	type state_type is (E_Stop_S, Run_S, Await_S);
 
 	-- Register to hold the current state
-	signal state   : state_type := E_Stop;
+	signal state   : state_type := E_Stop_S;
 
 	-- signals to store variable sampled on enable 
 	signal EmergencyStop : std_logic := '0'; --register for input
 	
 	
-	
+
 	-- signals for enabling algorithms	
 
 	-- signal for algorithm completion
@@ -61,7 +64,7 @@ begin
 	process (clk)
 	begin
 		if rising_edge(clk) then
-			if enable = '1' then
+			if sync = '1' then
 				
 				if EmergencyStopChanged = '1' then
 					EmergencyStop <= EmergencyStop_I;
@@ -77,35 +80,35 @@ begin
 	process (clk, reset)
 	begin
 		if reset = '1' then
-			state <= E_Stop;
+			state <= E_Stop_S;
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
-				AlgorithmsStart <= '0'
+				AlgorithmsStart <= '0';
 			elsif enable = '1' then 
 				--default values
 				state <= state;
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				elsif AlgorithmsStart = '0' and AlgorithmsDone = '1' then
+				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
-						when E_Stop=>
+						when E_Stop_S=>
 							if EmergencyStopChanged = '1' and (not EmergencyStop = '1') then
-								state <= Await;
+								state <= Await_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when Run=>
+						when Run_S=>
 							if EmergencyStopChanged = '1' and (EmergencyStop = '1') then
-								state <= E_Stop;
+								state <= E_Stop_S;
 								AlgorithmsStart <= '1';
 							elsif ReleaseDoorOverride = '1' or BottlingDone = '1' then
-								state <= Run;
+								state <= Run_S;
 								AlgorithmsStart <= '1';
 							end if;
-						when Await=>
+						when Await_S=>
 							if ReleaseDoorOverride = '1' or BottlingDone = '1' then
-								state <= Run;
+								state <= Run_S;
 								AlgorithmsStart <= '1';
 							end if;
 						
@@ -125,12 +128,12 @@ begin
 		
 
 		case state is
-			when E_Stop=>
+			when E_Stop_S=>
 				
-			when Run=>
+			when Run_S=>
 				DoorReleaseCanister <= '1';
 				
-			when Await=>
+			when Await_S=>
 				
 			
 		end case;
