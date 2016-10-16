@@ -13,9 +13,11 @@ architecture rtl of {{$block.Name}} is
 	-- Register to hold the current state
 	signal state   : state_type := {{(index $basicFB.States 0).Name}};
 
-	-- signals to store variable sampled on enable {{range $index, $var := $block.InputVars.Variables}}
-	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; --used as "input" for data vars, only sampled on relevant event
+	{{if $block.InputVars}}-- signals to store variable sampled on enable {{range $index, $var := $block.InputVars.Variables}}
+	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; --register for input{{end}}
 	{{end}}
+	{{if $block.OutputVars}}-- signals to rename outputs {{range $index, $var := $block.OutputVars.Variables}}
+	signal {{$var.Name}} : {{getVhdlType $var.Type}}; {{end}}{{end}}
 	
 	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
 	signal {{$alg.Name}}_alg_en : std_logic := '0'; 
@@ -42,7 +44,10 @@ begin
 			end if;
 		end if;
 	end process;{{end}}{{end}}
-			
+	
+	{{if $block.OutputVars}}--output var renaming, no output registers as inputs are stored where they are processed
+	{{range $varIndex, $var := $block.OutputVars.Variables}}{{$var.Name}}_O <= {{$var.Name}};
+	{{end}}{{end}}		
 	
 	-- Logic to advance to the next state
 	process (clk, reset)

@@ -35,17 +35,17 @@ entity InjectorController is
 		
 		
 		--input variables
-		EmergencyStop_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
-		CanisterPressure_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
-		FillContentsAvailable_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
+		EmergencyStop_I : in std_logic; --type was BOOL
+		CanisterPressure_I : in std_logic_vector(7 downto 0); --type was BYTE
+		FillContentsAvailable_I : in std_logic_vector(7 downto 0); --type was BYTE
 		
 		
 		--output variables
-		InjectorPosition : out std_logic_vector(7 downto 0); --type was BYTE
-		InjectorContentsValveOpen : out std_logic; --type was BOOL
-		InjectorVacuumRun : out std_logic; --type was BOOL
-		InjectorPressurePumpRun : out std_logic; --type was BOOL
-		FillContents : out std_logic; --type was BOOL
+		InjectorPosition_O : out std_logic_vector(7 downto 0); --type was BYTE
+		InjectorContentsValveOpen_O : out std_logic; --type was BOOL
+		InjectorVacuumRun_O : out std_logic; --type was BOOL
+		InjectorPressurePumpRun_O : out std_logic; --type was BOOL
+		FillContents_O : out std_logic; --type was BOOL
 		
 		
 		--for done signal
@@ -140,8 +140,8 @@ begin
 		PumpFinished => Pumps_PumpFinished_to_Arm_PumpFinished, --input
 		
 		--data
-		EmergencyStop => EmergencyStop_to_Arm_EmergencyStop, --input
-		InjectorPosition => Arm_InjectorPosition_to_InjectorPosition, --output 
+		EmergencyStop_I => EmergencyStop_to_Arm_EmergencyStop, --input
+		InjectorPosition_O => Arm_InjectorPosition_to_InjectorPosition, --output 
 		
 		
 
@@ -166,13 +166,13 @@ begin
 		PumpFinished => Pumps_PumpFinished_to_Arm_PumpFinished, --output
 		
 		--data
-		EmergencyStop => EmergencyStop_to_Pumps_EmergencyStop, --input
-		CanisterPressure => CanisterPressure_to_Pumps_CanisterPressure, --input
-		FillContentsAvailable => FillContentsAvailable_to_Pumps_FillContentsAvailable, --input
-		InjectorContentsValveOpen => Pumps_InjectorContentsValveOpen_to_InjectorContentsValveOpen, --output 
-		InjectorVacuumRun => Pumps_InjectorVacuumRun_to_InjectorVacuumRun, --output 
-		InjectorPressurePumpRun => Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun, --output 
-		FillContents => Pumps_FillContents_to_FillContents, --output 
+		EmergencyStop_I => EmergencyStop_to_Pumps_EmergencyStop, --input
+		CanisterPressure_I => CanisterPressure_to_Pumps_CanisterPressure, --input
+		FillContentsAvailable_I => FillContentsAvailable_to_Pumps_FillContentsAvailable, --input
+		InjectorContentsValveOpen_O => Pumps_InjectorContentsValveOpen_to_InjectorContentsValveOpen, --output 
+		InjectorVacuumRun_O => Pumps_InjectorVacuumRun_to_InjectorVacuumRun, --output 
+		InjectorPressurePumpRun_O => Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun, --output 
+		FillContents_O => Pumps_FillContents_to_FillContents, --output 
 		
 		
 

@@ -30,11 +30,11 @@ entity InjectorMotorController is
 		
 		
 		--input variables
-		EmergencyStop_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
+		EmergencyStop_I : in std_logic; --type was BOOL
 		
 		
 		--output variables
-		InjectorPosition : out std_logic_vector(7 downto 0); --type was BYTE
+		InjectorPosition_O : out std_logic_vector(7 downto 0); --type was BYTE
 		
 		
 		--for done signal
@@ -52,8 +52,10 @@ architecture rtl of InjectorMotorController is
 	signal state   : state_type := MoveArmUp;
 
 	-- signals to store variable sampled on enable 
-	signal EmergencyStop : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	signal EmergencyStop : std_logic := '0'; --register for input
 	
+	-- signals to rename outputs 
+	signal InjectorPosition : std_logic_vector(7 downto 0); 
 	
 	-- signals for enabling algorithms	
 	signal SetArmDownPosition_alg_en : std_logic := '0'; 
@@ -72,7 +74,7 @@ architecture rtl of InjectorMotorController is
 
 	
 begin
-	-- Logic to update data inputs from unprocessed inputs
+	-- Registers for data variables (only updated on relevant events)
 	process (clk)
 	begin
 		if rising_edge(clk) then
@@ -85,6 +87,9 @@ begin
 			end if;
 		end if;
 	end process;
+	
+	--output var renaming, no output registers as inputs are stored where they are processed
+	InjectorPosition_O <= InjectorPosition;
 			
 	
 	-- Logic to advance to the next state

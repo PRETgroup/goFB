@@ -42,13 +42,12 @@ begin
 		{{else if $conn.ToName $child.Name}}{{$conn.DestApiNameOnly}} => {{$conn.VhdlName}}, --input
 		{{end}}{{end}}
 		--data
-		{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if $conn.FromName $child.Name}}{{$conn.SourceApiNameOnly}} => {{$conn.VhdlName}}, --output 
-		{{else if $conn.ToName $child.Name}}{{$conn.DestApiNameOnly}} => {{$conn.VhdlName}}, --input
+		{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if $conn.FromName $child.Name}}{{$conn.SourceApiNameOnly}}_O => {{$conn.VhdlName}}, --output 
+		{{else if $conn.ToName $child.Name}}{{$conn.DestApiNameOnly}}_I => {{$conn.VhdlName}}, --input
 		{{end}}{{end}}
 		{{$special := $child.GetSpecialIO $blocks}}{{if $special.InternalVars}}--specials
 		{{range $curSpecialIndex, $sInternal := $special.InternalVars}}{{$sInternal.Name}} => {{$sInternal.Name}}, --{{if $sInternal.IsTOPIO_IN}}input{{else}}output{{end}}
 		{{end}}{{end}}
-
 		done => {{$child.Name}}_done
 	);
 	{{end}}

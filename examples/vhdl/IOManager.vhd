@@ -38,24 +38,24 @@ entity IOManager is
 		
 		
 		--input variables
-		ConveyorSpeed_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
-		InjectorPosition_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
-		InjectorContentsValveOpen_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
-		InjectorVacuumRun_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
-		InjectorPressurePumpRun_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
-		FillContents_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
-		CanisterCount_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
+		ConveyorSpeed_I : in std_logic_vector(7 downto 0); --type was BYTE
+		InjectorPosition_I : in std_logic_vector(7 downto 0); --type was BYTE
+		InjectorContentsValveOpen_I : in std_logic; --type was BOOL
+		InjectorVacuumRun_I : in std_logic; --type was BOOL
+		InjectorPressurePumpRun_I : in std_logic; --type was BOOL
+		FillContents_I : in std_logic; --type was BOOL
+		CanisterCount_I : in std_logic_vector(7 downto 0); --type was BYTE
 		
 		
 		--output variables
-		EmergencyStop : out std_logic; --type was BOOL
-		CanisterPressure : out std_logic_vector(7 downto 0); --type was BYTE
-		FillContentsAvailable : out std_logic_vector(7 downto 0); --type was BYTE
-		DoorSiteLaser : out std_logic; --type was BOOL
-		InjectSiteLaser : out std_logic; --type was BOOL
-		RejectSiteLaser : out std_logic; --type was BOOL
-		RejectBinLaser : out std_logic; --type was BOOL
-		AcceptBinLaser : out std_logic; --type was BOOL
+		EmergencyStop_O : out std_logic; --type was BOOL
+		CanisterPressure_O : out std_logic_vector(7 downto 0); --type was BYTE
+		FillContentsAvailable_O : out std_logic_vector(7 downto 0); --type was BYTE
+		DoorSiteLaser_O : out std_logic; --type was BOOL
+		InjectSiteLaser_O : out std_logic; --type was BOOL
+		RejectSiteLaser_O : out std_logic; --type was BOOL
+		RejectBinLaser_O : out std_logic; --type was BOOL
+		AcceptBinLaser_O : out std_logic; --type was BOOL
 		
 		
 		--special emitted internal vars for I/O
@@ -78,20 +78,23 @@ architecture rtl of IOManager is
 	signal state   : state_type := Start;
 
 	-- signals to store variable sampled on enable 
-	signal ConveyorSpeed : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
+	signal ConveyorSpeed : std_logic_vector(7 downto 0) := (others => '0'); --register for input
+	signal InjectorPosition : std_logic_vector(7 downto 0) := (others => '0'); --register for input
+	signal InjectorContentsValveOpen : std_logic := '0'; --register for input
+	signal InjectorVacuumRun : std_logic := '0'; --register for input
+	signal InjectorPressurePumpRun : std_logic := '0'; --register for input
+	signal FillContents : std_logic := '0'; --register for input
+	signal CanisterCount : std_logic_vector(7 downto 0) := (others => '0'); --register for input
 	
-	signal InjectorPosition : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
-	
-	signal InjectorContentsValveOpen : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
-	
-	signal InjectorVacuumRun : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
-	
-	signal InjectorPressurePumpRun : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
-	
-	signal FillContents : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
-	
-	signal CanisterCount : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
-	
+	-- signals to rename outputs 
+	signal EmergencyStop : std_logic; 
+	signal CanisterPressure : std_logic_vector(7 downto 0); 
+	signal FillContentsAvailable : std_logic_vector(7 downto 0); 
+	signal DoorSiteLaser : std_logic; 
+	signal InjectSiteLaser : std_logic; 
+	signal RejectSiteLaser : std_logic; 
+	signal RejectBinLaser : std_logic; 
+	signal AcceptBinLaser : std_logic; 
 	
 	-- signals for enabling algorithms	
 	signal IOAlgorithm_alg_en : std_logic := '0'; 
@@ -108,7 +111,7 @@ architecture rtl of IOManager is
 	signal UART_TX_READY : std_logic; --type was BOOL 
 	signal UART_TX_SEND : std_logic; --type was BOOL 
 begin
-	-- Logic to update data inputs from unprocessed inputs
+	-- Registers for data variables (only updated on relevant events)
 	process (clk)
 	begin
 		if rising_edge(clk) then
@@ -139,6 +142,16 @@ begin
 			end if;
 		end if;
 	end process;
+	
+	--output var renaming, no output registers as inputs are stored where they are processed
+	EmergencyStop_O <= EmergencyStop;
+	CanisterPressure_O <= CanisterPressure;
+	FillContentsAvailable_O <= FillContentsAvailable;
+	DoorSiteLaser_O <= DoorSiteLaser;
+	InjectSiteLaser_O <= InjectSiteLaser;
+	RejectSiteLaser_O <= RejectSiteLaser;
+	RejectBinLaser_O <= RejectBinLaser;
+	AcceptBinLaser_O <= AcceptBinLaser;
 			
 	
 	-- Logic to advance to the next state

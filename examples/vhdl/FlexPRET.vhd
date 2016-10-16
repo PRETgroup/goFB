@@ -123,24 +123,24 @@ begin
 		InjectorPositionChanged => Motor_InjectorPositionChanged_to_IO_InjectorPositionChanged, --input
 		
 		--data
-		EmergencyStop => IO_EmergencyStop_to_Door_EmergencyStop, --output 
-		EmergencyStop => IO_EmergencyStop_to_Conveyor_EmergencyStop, --output 
-		EmergencyStop => IO_EmergencyStop_to_Motor_EmergencyStop, --output 
-		EmergencyStop => IO_EmergencyStop_to_Pumps_EmergencyStop, --output 
-		CanisterPressure => IO_CanisterPressure_to_Pumps_CanisterPressure, --output 
-		FillContentsAvailable => IO_FillContentsAvailable_to_Pumps_FillContentsAvailable, --output 
-		DoorSiteLaser => IO_DoorSiteLaser_to_CCounter_DoorSiteLaser, --output 
-		InjectSiteLaser => IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser, --output 
-		RejectSiteLaser => IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser, --output 
-		RejectBinLaser => IO_RejectBinLaser_to_CCounter_RejectBinLaser, --output 
-		AcceptBinLaser => IO_AcceptBinLaser_to_CCounter_AcceptBinLaser, --output 
-		CanisterCount => CCounter_CanisterCount_to_IO_CanisterCount, --input
-		ConveyorSpeed => Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed, --input
-		InjectorContentsValveOpen => Pumps_InjectorContentsValveOpen_to_IO_InjectorContentsValveOpen, --input
-		InjectorVacuumRun => Pumps_InjectorVacuumRun_to_IO_InjectorVacuumRun, --input
-		InjectorPressurePumpRun => Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun, --input
-		FillContents => Pumps_FillContents_to_IO_FillContents, --input
-		InjectorPosition => Motor_InjectorPosition_to_IO_InjectorPosition, --input
+		EmergencyStop_O => IO_EmergencyStop_to_Door_EmergencyStop, --output 
+		EmergencyStop_O => IO_EmergencyStop_to_Conveyor_EmergencyStop, --output 
+		EmergencyStop_O => IO_EmergencyStop_to_Motor_EmergencyStop, --output 
+		EmergencyStop_O => IO_EmergencyStop_to_Pumps_EmergencyStop, --output 
+		CanisterPressure_O => IO_CanisterPressure_to_Pumps_CanisterPressure, --output 
+		FillContentsAvailable_O => IO_FillContentsAvailable_to_Pumps_FillContentsAvailable, --output 
+		DoorSiteLaser_O => IO_DoorSiteLaser_to_CCounter_DoorSiteLaser, --output 
+		InjectSiteLaser_O => IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser, --output 
+		RejectSiteLaser_O => IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser, --output 
+		RejectBinLaser_O => IO_RejectBinLaser_to_CCounter_RejectBinLaser, --output 
+		AcceptBinLaser_O => IO_AcceptBinLaser_to_CCounter_AcceptBinLaser, --output 
+		CanisterCount_I => CCounter_CanisterCount_to_IO_CanisterCount, --input
+		ConveyorSpeed_I => Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed, --input
+		InjectorContentsValveOpen_I => Pumps_InjectorContentsValveOpen_to_IO_InjectorContentsValveOpen, --input
+		InjectorVacuumRun_I => Pumps_InjectorVacuumRun_to_IO_InjectorVacuumRun, --input
+		InjectorPressurePumpRun_I => Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun, --input
+		FillContents_I => Pumps_FillContents_to_IO_FillContents, --input
+		InjectorPosition_I => Motor_InjectorPosition_to_IO_InjectorPosition, --input
 		
 		--specials
 		UART_TX => UART_TX, --output
@@ -161,10 +161,10 @@ begin
 		CanisterCountChanged => CCounter_CanisterCountChanged_to_IO_CanisterCountChanged, --output
 		
 		--data
-		DoorSiteLaser => IO_DoorSiteLaser_to_CCounter_DoorSiteLaser, --input
-		RejectBinLaser => IO_RejectBinLaser_to_CCounter_RejectBinLaser, --input
-		AcceptBinLaser => IO_AcceptBinLaser_to_CCounter_AcceptBinLaser, --input
-		CanisterCount => CCounter_CanisterCount_to_IO_CanisterCount, --output 
+		DoorSiteLaser_I => IO_DoorSiteLaser_to_CCounter_DoorSiteLaser, --input
+		RejectBinLaser_I => IO_RejectBinLaser_to_CCounter_RejectBinLaser, --input
+		AcceptBinLaser_I => IO_AcceptBinLaser_to_CCounter_AcceptBinLaser, --input
+		CanisterCount_O => CCounter_CanisterCount_to_IO_CanisterCount, --output 
 		
 		
 
@@ -183,7 +183,7 @@ begin
 		BottlingDone => Motor_InjectDone_to_Door_BottlingDone, --input
 		
 		--data
-		EmergencyStop => IO_EmergencyStop_to_Door_EmergencyStop, --input
+		EmergencyStop_I => IO_EmergencyStop_to_Door_EmergencyStop, --input
 		
 		
 
@@ -203,9 +203,9 @@ begin
 		InjectDone => Motor_InjectDone_to_Conveyor_InjectDone, --input
 		
 		--data
-		EmergencyStop => IO_EmergencyStop_to_Conveyor_EmergencyStop, --input
-		InjectSiteLaser => IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser, --input
-		ConveyorSpeed => Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed, --output 
+		EmergencyStop_I => IO_EmergencyStop_to_Conveyor_EmergencyStop, --input
+		InjectSiteLaser_I => IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser, --input
+		ConveyorSpeed_O => Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed, --output 
 		
 		
 
@@ -223,7 +223,7 @@ begin
 		RejectCanister => Pumps_RejectCanister_to_RejectArm_RejectCanister, --input
 		
 		--data
-		RejectSiteLaser => IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser, --input
+		RejectSiteLaser_I => IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser, --input
 		
 		
 
@@ -248,13 +248,13 @@ begin
 		StartPump => Motor_StartPump_to_Pumps_StartPump, --input
 		
 		--data
-		EmergencyStop => IO_EmergencyStop_to_Pumps_EmergencyStop, --input
-		CanisterPressure => IO_CanisterPressure_to_Pumps_CanisterPressure, --input
-		FillContentsAvailable => IO_FillContentsAvailable_to_Pumps_FillContentsAvailable, --input
-		InjectorContentsValveOpen => Pumps_InjectorContentsValveOpen_to_IO_InjectorContentsValveOpen, --output 
-		InjectorVacuumRun => Pumps_InjectorVacuumRun_to_IO_InjectorVacuumRun, --output 
-		InjectorPressurePumpRun => Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun, --output 
-		FillContents => Pumps_FillContents_to_IO_FillContents, --output 
+		EmergencyStop_I => IO_EmergencyStop_to_Pumps_EmergencyStop, --input
+		CanisterPressure_I => IO_CanisterPressure_to_Pumps_CanisterPressure, --input
+		FillContentsAvailable_I => IO_FillContentsAvailable_to_Pumps_FillContentsAvailable, --input
+		InjectorContentsValveOpen_O => Pumps_InjectorContentsValveOpen_to_IO_InjectorContentsValveOpen, --output 
+		InjectorVacuumRun_O => Pumps_InjectorVacuumRun_to_IO_InjectorVacuumRun, --output 
+		InjectorPressurePumpRun_O => Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun, --output 
+		FillContents_O => Pumps_FillContents_to_IO_FillContents, --output 
 		
 		
 
@@ -278,8 +278,8 @@ begin
 		InjectorPositionChanged => Motor_InjectorPositionChanged_to_IO_InjectorPositionChanged, --output
 		
 		--data
-		EmergencyStop => IO_EmergencyStop_to_Motor_EmergencyStop, --input
-		InjectorPosition => Motor_InjectorPosition_to_IO_InjectorPosition, --output 
+		EmergencyStop_I => IO_EmergencyStop_to_Motor_EmergencyStop, --input
+		InjectorPosition_O => Motor_InjectorPosition_to_IO_InjectorPosition, --output 
 		
 		
 

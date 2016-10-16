@@ -32,16 +32,16 @@ entity InjectorPumpsController is
 		
 		
 		--input variables
-		EmergencyStop_I : in std_logic; --type was BOOL, _I to indicate unprocessed input
-		CanisterPressure_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
-		FillContentsAvailable_I : in std_logic_vector(7 downto 0); --type was BYTE, _I to indicate unprocessed input
+		EmergencyStop_I : in std_logic; --type was BOOL
+		CanisterPressure_I : in std_logic_vector(7 downto 0); --type was BYTE
+		FillContentsAvailable_I : in std_logic_vector(7 downto 0); --type was BYTE
 		
 		
 		--output variables
-		InjectorContentsValveOpen : out std_logic; --type was BOOL
-		InjectorVacuumRun : out std_logic; --type was BOOL
-		InjectorPressurePumpRun : out std_logic; --type was BOOL
-		FillContents : out std_logic; --type was BOOL
+		InjectorContentsValveOpen_O : out std_logic; --type was BOOL
+		InjectorVacuumRun_O : out std_logic; --type was BOOL
+		InjectorPressurePumpRun_O : out std_logic; --type was BOOL
+		FillContents_O : out std_logic; --type was BOOL
 		
 		
 		--for done signal
@@ -59,12 +59,15 @@ architecture rtl of InjectorPumpsController is
 	signal state   : state_type := RejectCanister;
 
 	-- signals to store variable sampled on enable 
-	signal EmergencyStop : std_logic := '0'; --used as "input" for data vars, only sampled on enable=1
+	signal EmergencyStop : std_logic := '0'; --register for input
+	signal CanisterPressure : std_logic_vector(7 downto 0) := (others => '0'); --register for input
+	signal FillContentsAvailable : std_logic_vector(7 downto 0) := (others => '0'); --register for input
 	
-	signal CanisterPressure : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
-	
-	signal FillContentsAvailable : std_logic_vector(7 downto 0) := (others => '0'); --used as "input" for data vars, only sampled on enable=1
-	
+	-- signals to rename outputs 
+	signal InjectorContentsValveOpen : std_logic; 
+	signal InjectorVacuumRun : std_logic; 
+	signal InjectorPressurePumpRun : std_logic; 
+	signal FillContents : std_logic; 
 	
 	-- signals for enabling algorithms	
 	signal StartVacuum_alg_en : std_logic := '0'; 
@@ -86,7 +89,7 @@ architecture rtl of InjectorPumpsController is
 
 	
 begin
-	-- Logic to update data inputs from unprocessed inputs
+	-- Registers for data variables (only updated on relevant events)
 	process (clk)
 	begin
 		if rising_edge(clk) then
@@ -107,6 +110,12 @@ begin
 			end if;
 		end if;
 	end process;
+	
+	--output var renaming, no output registers as inputs are stored where they are processed
+	InjectorContentsValveOpen_O <= InjectorContentsValveOpen;
+	InjectorVacuumRun_O <= InjectorVacuumRun;
+	InjectorPressurePumpRun_O <= InjectorPressurePumpRun;
+	FillContents_O <= FillContents;
 			
 	
 	-- Logic to advance to the next state
