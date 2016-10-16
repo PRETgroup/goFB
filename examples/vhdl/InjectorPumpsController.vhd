@@ -67,10 +67,11 @@ architecture rtl of InjectorPumpsController is
 	signal FillContentsAvailable : unsigned(7 downto 0) := (others => '0'); --register for input
 	
 	-- signals to rename outputs 
-	signal InjectorContentsValveOpen : std_logic; 
-	signal InjectorVacuumRun : std_logic; 
-	signal InjectorPressurePumpRun : std_logic; 
-	signal FillContents : std_logic; 
+	signal InjectorContentsValveOpen : std_logic := '0'; 
+	signal InjectorVacuumRun : std_logic := '0'; 
+	signal InjectorPressurePumpRun : std_logic := '0'; 
+	signal FillContents : std_logic := '0'; 
+	
 
 	-- signals for enabling algorithms	
 	signal StartVacuum_alg_en : std_logic := '0'; 

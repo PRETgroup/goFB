@@ -19,7 +19,8 @@ architecture rtl of {{$block.Name}} is
 	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; --register for input{{end}}
 	{{end}}
 	{{if $block.OutputVars}}-- signals to rename outputs {{range $index, $var := $block.OutputVars.Variables}}
-	signal {{$var.Name}} : {{getVhdlType $var.Type}}; {{end}}{{end}}
+	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; {{end}}
+	{{end}}
 
 	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
 	signal {{$alg.Name}}_alg_en : std_logic := '0'; 

@@ -90,14 +90,15 @@ architecture rtl of IOManager is
 	signal CanisterCount : unsigned(7 downto 0) := (others => '0'); --register for input
 	
 	-- signals to rename outputs 
-	signal EmergencyStop : std_logic; 
-	signal CanisterPressure : unsigned(7 downto 0); 
-	signal FillContentsAvailable : unsigned(7 downto 0); 
-	signal DoorSiteLaser : std_logic; 
-	signal InjectSiteLaser : std_logic; 
-	signal RejectSiteLaser : std_logic; 
-	signal RejectBinLaser : std_logic; 
-	signal AcceptBinLaser : std_logic; 
+	signal EmergencyStop : std_logic := '0'; 
+	signal CanisterPressure : unsigned(7 downto 0) := (others => '0'); 
+	signal FillContentsAvailable : unsigned(7 downto 0) := (others => '0'); 
+	signal DoorSiteLaser : std_logic := '0'; 
+	signal InjectSiteLaser : std_logic := '0'; 
+	signal RejectSiteLaser : std_logic := '0'; 
+	signal RejectBinLaser : std_logic := '0'; 
+	signal AcceptBinLaser : std_logic := '0'; 
+	
 
 	-- signals for enabling algorithms	
 	signal IOAlgorithm_alg_en : std_logic := '0'; 

@@ -56,7 +56,8 @@ architecture rtl of CanisterCounter is
 	signal AcceptBinLaser : std_logic := '0'; --register for input
 	
 	-- signals to rename outputs 
-	signal CanisterCount : unsigned(7 downto 0); 
+	signal CanisterCount : unsigned(7 downto 0) := (others => '0'); 
+	
 
 	-- signals for enabling algorithms	
 	signal ChangeCount_alg_en : std_logic := '0'; 
@@ -154,7 +155,7 @@ begin
 
 --begin algorithm raw text
 if DoorSiteLaser='1' then 
-	CanisterCount <= CanisterCount + '1';
+	CanisterCount <= CanisterCount + 1;
 end if;
 if RejectBinLaser = '1' or AcceptBinLaser = '1' then 
 CanisterCount <= CanisterCount - 1;

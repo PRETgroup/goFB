@@ -155,33 +155,6 @@ func (b *BasicFB) GetTransitionsForState(source string) []ECTransition {
 	return trans
 }
 
-//VhdlName is used in templates to make a consistent and friendly name for the connections
-func (c *Connection) VhdlName() string {
-	return strings.Replace(c.Source, ".", "_", -1) + "_to_" + strings.Replace(c.Destination, ".", "_", -1)
-}
-
-//FromName is used in templates for location matching
-func (c *Connection) FromName(name string) bool {
-	return strings.HasPrefix(c.Source, name)
-}
-
-//ToName is used in templates for location matching
-func (c *Connection) ToName(name string) bool {
-	return strings.HasPrefix(c.Destination, name)
-}
-
-//SourceApiNameOnly is used in templates for getting rid of prefix stuff
-func (c *Connection) SourceApiNameOnly() string {
-	splitName := strings.Split(c.Source, ".")
-	return splitName[len(splitName)-1]
-}
-
-//DestApiNameOnly is used in templates for getting rid of prefix stuff
-func (c *Connection) DestApiNameOnly() string {
-	splitName := strings.Split(c.Destination, ".")
-	return splitName[len(splitName)-1]
-}
-
 type ConnectionWithType struct {
 	Connection
 	Type string
@@ -213,6 +186,61 @@ func (e *Event) IsTOPIO_OUT() bool {
 
 func (e *Event) IsTOPIO_IN() bool {
 	return e.Comment == TOPIO_IN
+}
+
+func (c *CompositeFB) GetUniqueEventConnSources() []string {
+	sources := make([]string, 0, len(c.EventConnections)) //preallocate for speed
+nextConn:
+	for i := 0; i < len(c.EventConnections); i++ {
+		//check if source already found
+		for j := 0; j < len(sources); j++ {
+			if sources[j] == c.EventConnections[i].Source {
+				continue nextConn
+			}
+		}
+		sources = append(sources, c.EventConnections[i].Source)
+	}
+	return sources
+}
+
+func (c *CompositeFB) GetUniqueDataConnSources() []string {
+	sources := make([]string, 0, len(c.DataConnections)) //preallocate for speed
+nextConn:
+	for i := 0; i < len(c.DataConnections); i++ {
+		//check if source already found
+		for j := 0; j < len(sources); j++ {
+			if sources[j] == c.DataConnections[i].Source {
+				continue nextConn
+			}
+		}
+		sources = append(sources, c.DataConnections[i].Source)
+	}
+	return sources
+}
+
+type SourceAndType struct {
+	Source string
+	Type   string
+}
+
+func (f FB) GetUniqueDataConnSourcesWithTypes(otherBlocks []FB) ([]SourceAndType, error) {
+	cats, err := f.GetDataConnectionTypes(otherBlocks)
+	if err != nil {
+		return nil, err
+	}
+
+	sources := make([]SourceAndType, 0, len(cats)) //preallocate for speed
+nextConn:
+	for i := 0; i < len(cats); i++ {
+		//check if source already found
+		for j := 0; j < len(sources); j++ {
+			if sources[j].Source == cats[i].Source {
+				continue nextConn
+			}
+		}
+		sources = append(sources, SourceAndType{Source: cats[i].Source, Type: cats[i].Type})
+	}
+	return sources, nil
 }
 
 type SpecialIO struct {

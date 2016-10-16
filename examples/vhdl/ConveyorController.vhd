@@ -57,7 +57,8 @@ architecture rtl of ConveyorController is
 	signal InjectSiteLaser : std_logic := '0'; --register for input
 	
 	-- signals to rename outputs 
-	signal ConveyorSpeed : unsigned(7 downto 0); 
+	signal ConveyorSpeed : unsigned(7 downto 0) := (others => '0'); 
+	
 
 	-- signals for enabling algorithms	
 	signal ConveyorStart_alg_en : std_logic := '0'; 

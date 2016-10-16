@@ -36,53 +36,43 @@ end entity;
 
 architecture rtl of FlexPRET is
 	-- Signals needed for event connections 
-	signal IO_InjectorArmFinishMovement_to_Motor_InjectorArmFinishedMovement : std_logic;
-	signal IO_EmergencyStopChanged_to_Door_EmergencyStopChanged : std_logic;
-	signal IO_EmergencyStopChanged_to_Conveyor_EmergencyStopChanged : std_logic;
-	signal IO_EmergencyStopChanged_to_Motor_EmergencyStopChanged : std_logic;
-	signal IO_EmergencyStopChanged_to_Pumps_EmergencyStopChanged : std_logic;
-	signal IO_CanisterPressureChanged_to_Pumps_CanisterPressureChanged : std_logic;
-	signal IO_FillContentsAvailableChanged_to_Pumps_FillContentsAvailableChanged : std_logic;
-	signal IO_LasersChanged_to_CCounter_LasersChanged : std_logic;
-	signal IO_LasersChanged_to_RejectArm_LasersChanged : std_logic;
-	signal IO_LasersChanged_to_Conveyor_LasersChanged : std_logic;
-	signal IO_DoorOverride_to_Door_ReleaseDoorOverride : std_logic;
-	signal IO_VacuumTimerElapsed_to_Pumps_VacuumTimerElapsed : std_logic;
-	signal CCounter_CanisterCountChanged_to_IO_CanisterCountChanged : std_logic;
-	signal Door_DoorReleaseCanister_to_IO_DoorReleaseCanister : std_logic;
-	signal Conveyor_ConveyorChanged_to_IO_ConveyorChanged : std_logic;
-	signal Conveyor_ConveyorStoppedForInject_to_Motor_ConveyorStoppedForInject : std_logic;
-	signal RejectArm_GoRejectArm_to_IO_GoRejectArm : std_logic;
-	signal Pumps_PumpFinished_to_Motor_PumpFinished : std_logic;
-	signal Pumps_RejectCanister_to_RejectArm_RejectCanister : std_logic;
-	signal Pumps_InjectorControlsChanged_to_IO_InjectorControlsChanged : std_logic;
-	signal Pumps_FillContentsChanged_to_IO_FillContentsChanged : std_logic;
-	signal Pumps_StartVacuumTimer_to_IO_StartVacuumTimer : std_logic;
-	signal Motor_StartPump_to_Pumps_StartPump : std_logic;
-	signal Motor_InjectDone_to_Door_BottlingDone : std_logic;
-	signal Motor_InjectDone_to_Conveyor_InjectDone : std_logic;
-	signal Motor_InjectDone_to_IO_InjectDone : std_logic;
-	signal Motor_InjectorPositionChanged_to_IO_InjectorPositionChanged : std_logic;
+	signal IO_InjectorArmFinishMovement_conn : std_logic;
+	signal IO_EmergencyStopChanged_conn : std_logic;
+	signal IO_CanisterPressureChanged_conn : std_logic;
+	signal IO_FillContentsAvailableChanged_conn : std_logic;
+	signal IO_LasersChanged_conn : std_logic;
+	signal IO_DoorOverride_conn : std_logic;
+	signal IO_VacuumTimerElapsed_conn : std_logic;
+	signal CCounter_CanisterCountChanged_conn : std_logic;
+	signal Door_DoorReleaseCanister_conn : std_logic;
+	signal Conveyor_ConveyorChanged_conn : std_logic;
+	signal Conveyor_ConveyorStoppedForInject_conn : std_logic;
+	signal RejectArm_GoRejectArm_conn : std_logic;
+	signal Pumps_PumpFinished_conn : std_logic;
+	signal Pumps_RejectCanister_conn : std_logic;
+	signal Pumps_InjectorControlsChanged_conn : std_logic;
+	signal Pumps_FillContentsChanged_conn : std_logic;
+	signal Pumps_StartVacuumTimer_conn : std_logic;
+	signal Motor_StartPump_conn : std_logic;
+	signal Motor_InjectDone_conn : std_logic;
+	signal Motor_InjectorPositionChanged_conn : std_logic;
 
 	-- Signals needed for data connections 
-	signal IO_EmergencyStop_to_Door_EmergencyStop : std_logic; --type was BOOL
-	signal IO_EmergencyStop_to_Conveyor_EmergencyStop : std_logic; --type was BOOL
-	signal IO_EmergencyStop_to_Motor_EmergencyStop : std_logic; --type was BOOL
-	signal IO_EmergencyStop_to_Pumps_EmergencyStop : std_logic; --type was BOOL
-	signal IO_CanisterPressure_to_Pumps_CanisterPressure : unsigned(7 downto 0); --type was BYTE
-	signal IO_FillContentsAvailable_to_Pumps_FillContentsAvailable : unsigned(7 downto 0); --type was BYTE
-	signal IO_DoorSiteLaser_to_CCounter_DoorSiteLaser : std_logic; --type was BOOL
-	signal IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser : std_logic; --type was BOOL
-	signal IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser : std_logic; --type was BOOL
-	signal IO_RejectBinLaser_to_CCounter_RejectBinLaser : std_logic; --type was BOOL
-	signal IO_AcceptBinLaser_to_CCounter_AcceptBinLaser : std_logic; --type was BOOL
-	signal CCounter_CanisterCount_to_IO_CanisterCount : unsigned(7 downto 0); --type was BYTE
-	signal Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed : unsigned(7 downto 0); --type was BYTE
-	signal Pumps_InjectorContentsValveOpen_to_IO_InjectorContentsValveOpen : std_logic; --type was BOOL
-	signal Pumps_InjectorVacuumRun_to_IO_InjectorVacuumRun : std_logic; --type was BOOL
-	signal Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun : std_logic; --type was BOOL
-	signal Pumps_FillContents_to_IO_FillContents : std_logic; --type was BOOL
-	signal Motor_InjectorPosition_to_IO_InjectorPosition : unsigned(7 downto 0); --type was BYTE
+	signal IO_EmergencyStop_conn : std_logic; --type was BOOL
+	signal IO_CanisterPressure_conn : unsigned(7 downto 0); --type was BYTE
+	signal IO_FillContentsAvailable_conn : unsigned(7 downto 0); --type was BYTE
+	signal IO_DoorSiteLaser_conn : std_logic; --type was BOOL
+	signal IO_InjectSiteLaser_conn : std_logic; --type was BOOL
+	signal IO_RejectSiteLaser_conn : std_logic; --type was BOOL
+	signal IO_RejectBinLaser_conn : std_logic; --type was BOOL
+	signal IO_AcceptBinLaser_conn : std_logic; --type was BOOL
+	signal CCounter_CanisterCount_conn : unsigned(7 downto 0); --type was BYTE
+	signal Conveyor_ConveyorSpeed_conn : unsigned(7 downto 0); --type was BYTE
+	signal Pumps_InjectorContentsValveOpen_conn : std_logic; --type was BOOL
+	signal Pumps_InjectorVacuumRun_conn : std_logic; --type was BOOL
+	signal Pumps_InjectorPressurePumpRun_conn : std_logic; --type was BOOL
+	signal Pumps_FillContents_conn : std_logic; --type was BOOL
+	signal Motor_InjectorPosition_conn : unsigned(7 downto 0); --type was BYTE
 
 	-- Signals needed for the done signals 
 	signal IO_done : std_logic;
@@ -103,49 +93,46 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		InjectorArmFinishMovement => IO_InjectorArmFinishMovement_to_Motor_InjectorArmFinishedMovement, --output
-		EmergencyStopChanged => IO_EmergencyStopChanged_to_Door_EmergencyStopChanged, --output
-		EmergencyStopChanged => IO_EmergencyStopChanged_to_Conveyor_EmergencyStopChanged, --output
-		EmergencyStopChanged => IO_EmergencyStopChanged_to_Motor_EmergencyStopChanged, --output
-		EmergencyStopChanged => IO_EmergencyStopChanged_to_Pumps_EmergencyStopChanged, --output
-		CanisterPressureChanged => IO_CanisterPressureChanged_to_Pumps_CanisterPressureChanged, --output
-		FillContentsAvailableChanged => IO_FillContentsAvailableChanged_to_Pumps_FillContentsAvailableChanged, --output
-		LasersChanged => IO_LasersChanged_to_CCounter_LasersChanged, --output
-		LasersChanged => IO_LasersChanged_to_RejectArm_LasersChanged, --output
-		LasersChanged => IO_LasersChanged_to_Conveyor_LasersChanged, --output
-		DoorOverride => IO_DoorOverride_to_Door_ReleaseDoorOverride, --output
-		VacuumTimerElapsed => IO_VacuumTimerElapsed_to_Pumps_VacuumTimerElapsed, --output
-		CanisterCountChanged => CCounter_CanisterCountChanged_to_IO_CanisterCountChanged, --input
-		DoorReleaseCanister => Door_DoorReleaseCanister_to_IO_DoorReleaseCanister, --input
-		ConveyorChanged => Conveyor_ConveyorChanged_to_IO_ConveyorChanged, --input
-		GoRejectArm => RejectArm_GoRejectArm_to_IO_GoRejectArm, --input
-		InjectorControlsChanged => Pumps_InjectorControlsChanged_to_IO_InjectorControlsChanged, --input
-		FillContentsChanged => Pumps_FillContentsChanged_to_IO_FillContentsChanged, --input
-		StartVacuumTimer => Pumps_StartVacuumTimer_to_IO_StartVacuumTimer, --input
-		InjectDone => Motor_InjectDone_to_IO_InjectDone, --input
-		InjectorPositionChanged => Motor_InjectorPositionChanged_to_IO_InjectorPositionChanged, --input
+		--event outputs 
+		InjectorArmFinishMovement => IO_InjectorArmFinishMovement_conn,
+		EmergencyStopChanged => IO_EmergencyStopChanged_conn,
+		CanisterPressureChanged => IO_CanisterPressureChanged_conn,
+		FillContentsAvailableChanged => IO_FillContentsAvailableChanged_conn,
+		LasersChanged => IO_LasersChanged_conn,
+		DoorOverride => IO_DoorOverride_conn,
+		VacuumTimerElapsed => IO_VacuumTimerElapsed_conn,
 		
-		--data
-		EmergencyStop_O => IO_EmergencyStop_to_Door_EmergencyStop, --output 
-		EmergencyStop_O => IO_EmergencyStop_to_Conveyor_EmergencyStop, --output 
-		EmergencyStop_O => IO_EmergencyStop_to_Motor_EmergencyStop, --output 
-		EmergencyStop_O => IO_EmergencyStop_to_Pumps_EmergencyStop, --output 
-		CanisterPressure_O => IO_CanisterPressure_to_Pumps_CanisterPressure, --output 
-		FillContentsAvailable_O => IO_FillContentsAvailable_to_Pumps_FillContentsAvailable, --output 
-		DoorSiteLaser_O => IO_DoorSiteLaser_to_CCounter_DoorSiteLaser, --output 
-		InjectSiteLaser_O => IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser, --output 
-		RejectSiteLaser_O => IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser, --output 
-		RejectBinLaser_O => IO_RejectBinLaser_to_CCounter_RejectBinLaser, --output 
-		AcceptBinLaser_O => IO_AcceptBinLaser_to_CCounter_AcceptBinLaser, --output 
-		CanisterCount_I => CCounter_CanisterCount_to_IO_CanisterCount, --input
-		ConveyorSpeed_I => Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed, --input
-		InjectorContentsValveOpen_I => Pumps_InjectorContentsValveOpen_to_IO_InjectorContentsValveOpen, --input
-		InjectorVacuumRun_I => Pumps_InjectorVacuumRun_to_IO_InjectorVacuumRun, --input
-		InjectorPressurePumpRun_I => Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun, --input
-		FillContents_I => Pumps_FillContents_to_IO_FillContents, --input
-		InjectorPosition_I => Motor_InjectorPosition_to_IO_InjectorPosition, --input
+		--event inputs
+		CanisterCountChanged => CCounter_CanisterCountChanged_conn, 
+		DoorReleaseCanister => Door_DoorReleaseCanister_conn, 
+		ConveyorChanged => Conveyor_ConveyorChanged_conn, 
+		GoRejectArm => RejectArm_GoRejectArm_conn, 
+		InjectorControlsChanged => Pumps_InjectorControlsChanged_conn, 
+		FillContentsChanged => Pumps_FillContentsChanged_conn, 
+		StartVacuumTimer => Pumps_StartVacuumTimer_conn, 
+		InjectDone => Motor_InjectDone_conn, 
+		InjectorPositionChanged => Motor_InjectorPositionChanged_conn, 
 		
+		--data outputs
+		EmergencyStop_O => IO_EmergencyStop_conn, 
+		CanisterPressure_O => IO_CanisterPressure_conn, 
+		FillContentsAvailable_O => IO_FillContentsAvailable_conn, 
+		DoorSiteLaser_O => IO_DoorSiteLaser_conn, 
+		InjectSiteLaser_O => IO_InjectSiteLaser_conn, 
+		RejectSiteLaser_O => IO_RejectSiteLaser_conn, 
+		RejectBinLaser_O => IO_RejectBinLaser_conn, 
+		AcceptBinLaser_O => IO_AcceptBinLaser_conn, 
+		
+		--data inputs
+		CanisterCount_I => CCounter_CanisterCount_conn, --input
+		ConveyorSpeed_I => Conveyor_ConveyorSpeed_conn, --input
+		InjectorContentsValveOpen_I => Pumps_InjectorContentsValveOpen_conn, --input
+		InjectorVacuumRun_I => Pumps_InjectorVacuumRun_conn, --input
+		InjectorPressurePumpRun_I => Pumps_InjectorPressurePumpRun_conn, --input
+		FillContents_I => Pumps_FillContents_conn, --input
+		InjectorPosition_I => Motor_InjectorPosition_conn, --input
+		
+
 		--specials
 		UART_TX => UART_TX, --output
 		UART_TX_READY => UART_TX_READY, --input
@@ -160,16 +147,21 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		LasersChanged => IO_LasersChanged_to_CCounter_LasersChanged, --input
-		CanisterCountChanged => CCounter_CanisterCountChanged_to_IO_CanisterCountChanged, --output
+		--event outputs 
+		CanisterCountChanged => CCounter_CanisterCountChanged_conn,
 		
-		--data
-		DoorSiteLaser_I => IO_DoorSiteLaser_to_CCounter_DoorSiteLaser, --input
-		RejectBinLaser_I => IO_RejectBinLaser_to_CCounter_RejectBinLaser, --input
-		AcceptBinLaser_I => IO_AcceptBinLaser_to_CCounter_AcceptBinLaser, --input
-		CanisterCount_O => CCounter_CanisterCount_to_IO_CanisterCount, --output 
+		--event inputs
+		LasersChanged => IO_LasersChanged_conn, 
 		
+		--data outputs
+		CanisterCount_O => CCounter_CanisterCount_conn, 
+		
+		--data inputs
+		DoorSiteLaser_I => IO_DoorSiteLaser_conn, --input
+		RejectBinLaser_I => IO_RejectBinLaser_conn, --input
+		AcceptBinLaser_I => IO_AcceptBinLaser_conn, --input
+		
+
 		
 		done => CCounter_done
 	);
@@ -180,15 +172,20 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		EmergencyStopChanged => IO_EmergencyStopChanged_to_Door_EmergencyStopChanged, --input
-		ReleaseDoorOverride => IO_DoorOverride_to_Door_ReleaseDoorOverride, --input
-		DoorReleaseCanister => Door_DoorReleaseCanister_to_IO_DoorReleaseCanister, --output
-		BottlingDone => Motor_InjectDone_to_Door_BottlingDone, --input
+		--event outputs 
+		DoorReleaseCanister => Door_DoorReleaseCanister_conn,
 		
-		--data
-		EmergencyStop_I => IO_EmergencyStop_to_Door_EmergencyStop, --input
+		--event inputs
+		EmergencyStopChanged => IO_EmergencyStopChanged_conn, 
+		ReleaseDoorOverride => IO_DoorOverride_conn, 
+		BottlingDone => Motor_InjectDone_conn, 
 		
+		--data outputs
+		
+		--data inputs
+		EmergencyStop_I => IO_EmergencyStop_conn, --input
+		
+
 		
 		done => Door_done
 	);
@@ -199,18 +196,23 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		EmergencyStopChanged => IO_EmergencyStopChanged_to_Conveyor_EmergencyStopChanged, --input
-		LasersChanged => IO_LasersChanged_to_Conveyor_LasersChanged, --input
-		ConveyorChanged => Conveyor_ConveyorChanged_to_IO_ConveyorChanged, --output
-		ConveyorStoppedForInject => Conveyor_ConveyorStoppedForInject_to_Motor_ConveyorStoppedForInject, --output
-		InjectDone => Motor_InjectDone_to_Conveyor_InjectDone, --input
+		--event outputs 
+		ConveyorChanged => Conveyor_ConveyorChanged_conn,
+		ConveyorStoppedForInject => Conveyor_ConveyorStoppedForInject_conn,
 		
-		--data
-		EmergencyStop_I => IO_EmergencyStop_to_Conveyor_EmergencyStop, --input
-		InjectSiteLaser_I => IO_InjectSiteLaser_to_Conveyor_InjectSiteLaser, --input
-		ConveyorSpeed_O => Conveyor_ConveyorSpeed_to_IO_ConveyorSpeed, --output 
+		--event inputs
+		EmergencyStopChanged => IO_EmergencyStopChanged_conn, 
+		LasersChanged => IO_LasersChanged_conn, 
+		InjectDone => Motor_InjectDone_conn, 
 		
+		--data outputs
+		ConveyorSpeed_O => Conveyor_ConveyorSpeed_conn, 
+		
+		--data inputs
+		EmergencyStop_I => IO_EmergencyStop_conn, --input
+		InjectSiteLaser_I => IO_InjectSiteLaser_conn, --input
+		
+
 		
 		done => Conveyor_done
 	);
@@ -221,14 +223,19 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		LasersChanged => IO_LasersChanged_to_RejectArm_LasersChanged, --input
-		GoRejectArm => RejectArm_GoRejectArm_to_IO_GoRejectArm, --output
-		RejectCanister => Pumps_RejectCanister_to_RejectArm_RejectCanister, --input
+		--event outputs 
+		GoRejectArm => RejectArm_GoRejectArm_conn,
 		
-		--data
-		RejectSiteLaser_I => IO_RejectSiteLaser_to_RejectArm_RejectSiteLaser, --input
+		--event inputs
+		LasersChanged => IO_LasersChanged_conn, 
+		RejectCanister => Pumps_RejectCanister_conn, 
 		
+		--data outputs
+		
+		--data inputs
+		RejectSiteLaser_I => IO_RejectSiteLaser_conn, --input
+		
+
 		
 		done => RejectArm_done
 	);
@@ -239,27 +246,32 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		EmergencyStopChanged => IO_EmergencyStopChanged_to_Pumps_EmergencyStopChanged, --input
-		CanisterPressureChanged => IO_CanisterPressureChanged_to_Pumps_CanisterPressureChanged, --input
-		FillContentsAvailableChanged => IO_FillContentsAvailableChanged_to_Pumps_FillContentsAvailableChanged, --input
-		VacuumTimerElapsed => IO_VacuumTimerElapsed_to_Pumps_VacuumTimerElapsed, --input
-		PumpFinished => Pumps_PumpFinished_to_Motor_PumpFinished, --output
-		RejectCanister => Pumps_RejectCanister_to_RejectArm_RejectCanister, --output
-		InjectorControlsChanged => Pumps_InjectorControlsChanged_to_IO_InjectorControlsChanged, --output
-		FillContentsChanged => Pumps_FillContentsChanged_to_IO_FillContentsChanged, --output
-		StartVacuumTimer => Pumps_StartVacuumTimer_to_IO_StartVacuumTimer, --output
-		StartPump => Motor_StartPump_to_Pumps_StartPump, --input
+		--event outputs 
+		PumpFinished => Pumps_PumpFinished_conn,
+		RejectCanister => Pumps_RejectCanister_conn,
+		InjectorControlsChanged => Pumps_InjectorControlsChanged_conn,
+		FillContentsChanged => Pumps_FillContentsChanged_conn,
+		StartVacuumTimer => Pumps_StartVacuumTimer_conn,
 		
-		--data
-		EmergencyStop_I => IO_EmergencyStop_to_Pumps_EmergencyStop, --input
-		CanisterPressure_I => IO_CanisterPressure_to_Pumps_CanisterPressure, --input
-		FillContentsAvailable_I => IO_FillContentsAvailable_to_Pumps_FillContentsAvailable, --input
-		InjectorContentsValveOpen_O => Pumps_InjectorContentsValveOpen_to_IO_InjectorContentsValveOpen, --output 
-		InjectorVacuumRun_O => Pumps_InjectorVacuumRun_to_IO_InjectorVacuumRun, --output 
-		InjectorPressurePumpRun_O => Pumps_InjectorPressurePumpRun_to_IO_InjectorPressurePumpRun, --output 
-		FillContents_O => Pumps_FillContents_to_IO_FillContents, --output 
+		--event inputs
+		EmergencyStopChanged => IO_EmergencyStopChanged_conn, 
+		CanisterPressureChanged => IO_CanisterPressureChanged_conn, 
+		FillContentsAvailableChanged => IO_FillContentsAvailableChanged_conn, 
+		VacuumTimerElapsed => IO_VacuumTimerElapsed_conn, 
+		StartPump => Motor_StartPump_conn, 
 		
+		--data outputs
+		InjectorContentsValveOpen_O => Pumps_InjectorContentsValveOpen_conn, 
+		InjectorVacuumRun_O => Pumps_InjectorVacuumRun_conn, 
+		InjectorPressurePumpRun_O => Pumps_InjectorPressurePumpRun_conn, 
+		FillContents_O => Pumps_FillContents_conn, 
+		
+		--data inputs
+		EmergencyStop_I => IO_EmergencyStop_conn, --input
+		CanisterPressure_I => IO_CanisterPressure_conn, --input
+		FillContentsAvailable_I => IO_FillContentsAvailable_conn, --input
+		
+
 		
 		done => Pumps_done
 	);
@@ -270,21 +282,24 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		InjectorArmFinishedMovement => IO_InjectorArmFinishMovement_to_Motor_InjectorArmFinishedMovement, --input
-		EmergencyStopChanged => IO_EmergencyStopChanged_to_Motor_EmergencyStopChanged, --input
-		ConveyorStoppedForInject => Conveyor_ConveyorStoppedForInject_to_Motor_ConveyorStoppedForInject, --input
-		PumpFinished => Pumps_PumpFinished_to_Motor_PumpFinished, --input
-		StartPump => Motor_StartPump_to_Pumps_StartPump, --output
-		InjectDone => Motor_InjectDone_to_Door_BottlingDone, --output
-		InjectDone => Motor_InjectDone_to_Conveyor_InjectDone, --output
-		InjectDone => Motor_InjectDone_to_IO_InjectDone, --output
-		InjectorPositionChanged => Motor_InjectorPositionChanged_to_IO_InjectorPositionChanged, --output
+		--event outputs 
+		StartPump => Motor_StartPump_conn,
+		InjectDone => Motor_InjectDone_conn,
+		InjectorPositionChanged => Motor_InjectorPositionChanged_conn,
 		
-		--data
-		EmergencyStop_I => IO_EmergencyStop_to_Motor_EmergencyStop, --input
-		InjectorPosition_O => Motor_InjectorPosition_to_IO_InjectorPosition, --output 
+		--event inputs
+		InjectorArmFinishedMovement => IO_InjectorArmFinishMovement_conn, 
+		EmergencyStopChanged => IO_EmergencyStopChanged_conn, 
+		ConveyorStoppedForInject => Conveyor_ConveyorStoppedForInject_conn, 
+		PumpFinished => Pumps_PumpFinished_conn, 
 		
+		--data outputs
+		InjectorPosition_O => Motor_InjectorPosition_conn, 
+		
+		--data inputs
+		EmergencyStop_I => IO_EmergencyStop_conn, --input
+		
+
 		
 		done => Motor_done
 	);

@@ -60,33 +60,31 @@ end entity;
 
 architecture rtl of InjectorController is
 	-- Signals needed for event connections 
-	signal InjectorArmFinishedMovement_to_Arm_InjectorArmFinishedMovement : std_logic;
-	signal EmergencyStopChanged_to_Arm_EmergencyStopChanged : std_logic;
-	signal EmergencyStopChanged_to_Pumps_EmergencyStopChanged : std_logic;
-	signal CanisterPressureChanged_to_Pumps_CanisterPressureChanged : std_logic;
-	signal FillContentsAvailableChanged_to_Pumps_FillContentsAvailableChanged : std_logic;
-	signal ConveyorStoppedForInject_to_Arm_ConveyorStoppedForInject : std_logic;
-	signal VacuumTimerElapsed_to_Pumps_VacuumTimerElapsed : std_logic;
-	signal Arm_InjectDone_to_InjectDone : std_logic;
-	signal Arm_InjectorPositionChanged_to_InjectorPositionChanged : std_logic;
-	signal Pumps_InjectorControlsChanged_to_InjectorControlsChanged : std_logic;
-	signal Pumps_RejectCanister_to_RejectCanister : std_logic;
-	signal Pumps_FillContentsChanged_to_FillContentsChanged : std_logic;
-	signal Pumps_StartVacuumTimer_to_StartVacuumTimer : std_logic;
-	signal Arm_InjectRunning_to_InjectRunning : std_logic;
-	signal Arm_StartPump_to_Pumps_StartPump : std_logic;
-	signal Pumps_PumpFinished_to_Arm_PumpFinished : std_logic;
+	signal InjectorArmFinishedMovement_conn : std_logic;
+	signal EmergencyStopChanged_conn : std_logic;
+	signal CanisterPressureChanged_conn : std_logic;
+	signal FillContentsAvailableChanged_conn : std_logic;
+	signal ConveyorStoppedForInject_conn : std_logic;
+	signal VacuumTimerElapsed_conn : std_logic;
+	signal Arm_InjectDone_conn : std_logic;
+	signal Arm_InjectorPositionChanged_conn : std_logic;
+	signal Pumps_InjectorControlsChanged_conn : std_logic;
+	signal Pumps_RejectCanister_conn : std_logic;
+	signal Pumps_FillContentsChanged_conn : std_logic;
+	signal Pumps_StartVacuumTimer_conn : std_logic;
+	signal Arm_InjectRunning_conn : std_logic;
+	signal Arm_StartPump_conn : std_logic;
+	signal Pumps_PumpFinished_conn : std_logic;
 
 	-- Signals needed for data connections 
-	signal EmergencyStop_to_Arm_EmergencyStop : std_logic; --type was BOOL
-	signal EmergencyStop_to_Pumps_EmergencyStop : std_logic; --type was BOOL
-	signal CanisterPressure_to_Pumps_CanisterPressure : unsigned(7 downto 0); --type was BYTE
-	signal FillContentsAvailable_to_Pumps_FillContentsAvailable : unsigned(7 downto 0); --type was BYTE
-	signal Arm_InjectorPosition_to_InjectorPosition : unsigned(7 downto 0); --type was BYTE
-	signal Pumps_InjectorContentsValveOpen_to_InjectorContentsValveOpen : std_logic; --type was BOOL
-	signal Pumps_InjectorVacuumRun_to_InjectorVacuumRun : std_logic; --type was BOOL
-	signal Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun : std_logic; --type was BOOL
-	signal Pumps_FillContents_to_FillContents : std_logic; --type was BOOL
+	signal EmergencyStop_conn : std_logic; --type was BOOL
+	signal CanisterPressure_conn : unsigned(7 downto 0); --type was BYTE
+	signal FillContentsAvailable_conn : unsigned(7 downto 0); --type was BYTE
+	signal Arm_InjectorPosition_conn : unsigned(7 downto 0); --type was BYTE
+	signal Pumps_InjectorContentsValveOpen_conn : std_logic; --type was BOOL
+	signal Pumps_InjectorVacuumRun_conn : std_logic; --type was BOOL
+	signal Pumps_InjectorPressurePumpRun_conn : std_logic; --type was BOOL
+	signal Pumps_FillContents_conn : std_logic; --type was BOOL
 
 	-- Signals needed for the done signals 
 	signal Arm_done : std_logic;
@@ -94,35 +92,35 @@ architecture rtl of InjectorController is
 begin
 	--top level I/O to signals
 	--input events
-	InjectorArmFinishedMovement_to_Arm_InjectorArmFinishedMovement <= InjectorArmFinishedMovement;
-	EmergencyStopChanged_to_Arm_EmergencyStopChanged <= EmergencyStopChanged;
-	EmergencyStopChanged_to_Pumps_EmergencyStopChanged <= EmergencyStopChanged;
-	CanisterPressureChanged_to_Pumps_CanisterPressureChanged <= CanisterPressureChanged;
-	FillContentsAvailableChanged_to_Pumps_FillContentsAvailableChanged <= FillContentsAvailableChanged;
-	ConveyorStoppedForInject_to_Arm_ConveyorStoppedForInject <= ConveyorStoppedForInject;
-	VacuumTimerElapsed_to_Pumps_VacuumTimerElapsed <= VacuumTimerElapsed;
+	InjectorArmFinishedMovement_conn <= InjectorArmFinishedMovement;
+	EmergencyStopChanged_conn <= EmergencyStopChanged;
+	EmergencyStopChanged_conn <= EmergencyStopChanged;
+	CanisterPressureChanged_conn <= CanisterPressureChanged;
+	FillContentsAvailableChanged_conn <= FillContentsAvailableChanged;
+	ConveyorStoppedForInject_conn <= ConveyorStoppedForInject;
+	VacuumTimerElapsed_conn <= VacuumTimerElapsed;
 	
 	--output events
-	InjectDone <= Arm_InjectDone_to_InjectDone;
-	InjectorPositionChanged <= Arm_InjectorPositionChanged_to_InjectorPositionChanged;
-	InjectorControlsChanged <= Pumps_InjectorControlsChanged_to_InjectorControlsChanged;
-	RejectCanister <= Pumps_RejectCanister_to_RejectCanister;
-	FillContentsChanged <= Pumps_FillContentsChanged_to_FillContentsChanged;
-	StartVacuumTimer <= Pumps_StartVacuumTimer_to_StartVacuumTimer;
-	InjectRunning <= Arm_InjectRunning_to_InjectRunning;
+	InjectDone <= Arm_InjectDone_conn;
+	InjectorPositionChanged <= Arm_InjectorPositionChanged_conn;
+	InjectorControlsChanged <= Pumps_InjectorControlsChanged_conn;
+	RejectCanister <= Pumps_RejectCanister_conn;
+	FillContentsChanged <= Pumps_FillContentsChanged_conn;
+	StartVacuumTimer <= Pumps_StartVacuumTimer_conn;
+	InjectRunning <= Arm_InjectRunning_conn;
 	
 	--input variables
-	EmergencyStop_to_Arm_EmergencyStop <= EmergencyStop_I;
-	EmergencyStop_to_Pumps_EmergencyStop <= EmergencyStop_I;
-	CanisterPressure_to_Pumps_CanisterPressure <= CanisterPressure_I;
-	FillContentsAvailable_to_Pumps_FillContentsAvailable <= FillContentsAvailable_I;
+	EmergencyStop_conn <= EmergencyStop_I;
+	EmergencyStop_conn <= EmergencyStop_I;
+	CanisterPressure_conn <= CanisterPressure_I;
+	FillContentsAvailable_conn <= FillContentsAvailable_I;
 	
 	--output events
-	InjectorPosition_O <= Arm_InjectorPosition_to_InjectorPosition;
-	InjectorContentsValveOpen_O <= Pumps_InjectorContentsValveOpen_to_InjectorContentsValveOpen;
-	InjectorVacuumRun_O <= Pumps_InjectorVacuumRun_to_InjectorVacuumRun;
-	InjectorPressurePumpRun_O <= Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun;
-	FillContents_O <= Pumps_FillContents_to_FillContents;
+	InjectorPosition_O <= Arm_InjectorPosition_conn;
+	InjectorContentsValveOpen_O <= Pumps_InjectorContentsValveOpen_conn;
+	InjectorVacuumRun_O <= Pumps_InjectorVacuumRun_conn;
+	InjectorPressurePumpRun_O <= Pumps_InjectorPressurePumpRun_conn;
+	FillContents_O <= Pumps_FillContents_conn;
 	
 	
 	-- child I/O to signals
@@ -133,20 +131,25 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		InjectorArmFinishedMovement => InjectorArmFinishedMovement_to_Arm_InjectorArmFinishedMovement, --input
-		EmergencyStopChanged => EmergencyStopChanged_to_Arm_EmergencyStopChanged, --input
-		ConveyorStoppedForInject => ConveyorStoppedForInject_to_Arm_ConveyorStoppedForInject, --input
-		InjectDone => Arm_InjectDone_to_InjectDone, --output
-		InjectorPositionChanged => Arm_InjectorPositionChanged_to_InjectorPositionChanged, --output
-		InjectRunning => Arm_InjectRunning_to_InjectRunning, --output
-		StartPump => Arm_StartPump_to_Pumps_StartPump, --output
-		PumpFinished => Pumps_PumpFinished_to_Arm_PumpFinished, --input
+		--event outputs 
+		InjectDone => Arm_InjectDone_conn,
+		InjectorPositionChanged => Arm_InjectorPositionChanged_conn,
+		InjectRunning => Arm_InjectRunning_conn,
+		StartPump => Arm_StartPump_conn,
 		
-		--data
-		EmergencyStop_I => EmergencyStop_to_Arm_EmergencyStop, --input
-		InjectorPosition_O => Arm_InjectorPosition_to_InjectorPosition, --output 
+		--event inputs
+		InjectorArmFinishedMovement => InjectorArmFinishedMovement_conn, 
+		EmergencyStopChanged => EmergencyStopChanged_conn, 
+		ConveyorStoppedForInject => ConveyorStoppedForInject_conn, 
+		PumpFinished => Pumps_PumpFinished_conn, 
 		
+		--data outputs
+		InjectorPosition_O => Arm_InjectorPosition_conn, 
+		
+		--data inputs
+		EmergencyStop_I => EmergencyStop_conn, --input
+		
+
 		
 		done => Arm_done
 	);
@@ -157,27 +160,32 @@ begin
 		enable => enable,
 		sync => sync,
 
-		--events
-		EmergencyStopChanged => EmergencyStopChanged_to_Pumps_EmergencyStopChanged, --input
-		CanisterPressureChanged => CanisterPressureChanged_to_Pumps_CanisterPressureChanged, --input
-		FillContentsAvailableChanged => FillContentsAvailableChanged_to_Pumps_FillContentsAvailableChanged, --input
-		VacuumTimerElapsed => VacuumTimerElapsed_to_Pumps_VacuumTimerElapsed, --input
-		InjectorControlsChanged => Pumps_InjectorControlsChanged_to_InjectorControlsChanged, --output
-		RejectCanister => Pumps_RejectCanister_to_RejectCanister, --output
-		FillContentsChanged => Pumps_FillContentsChanged_to_FillContentsChanged, --output
-		StartVacuumTimer => Pumps_StartVacuumTimer_to_StartVacuumTimer, --output
-		StartPump => Arm_StartPump_to_Pumps_StartPump, --input
-		PumpFinished => Pumps_PumpFinished_to_Arm_PumpFinished, --output
+		--event outputs 
+		InjectorControlsChanged => Pumps_InjectorControlsChanged_conn,
+		RejectCanister => Pumps_RejectCanister_conn,
+		FillContentsChanged => Pumps_FillContentsChanged_conn,
+		StartVacuumTimer => Pumps_StartVacuumTimer_conn,
+		PumpFinished => Pumps_PumpFinished_conn,
 		
-		--data
-		EmergencyStop_I => EmergencyStop_to_Pumps_EmergencyStop, --input
-		CanisterPressure_I => CanisterPressure_to_Pumps_CanisterPressure, --input
-		FillContentsAvailable_I => FillContentsAvailable_to_Pumps_FillContentsAvailable, --input
-		InjectorContentsValveOpen_O => Pumps_InjectorContentsValveOpen_to_InjectorContentsValveOpen, --output 
-		InjectorVacuumRun_O => Pumps_InjectorVacuumRun_to_InjectorVacuumRun, --output 
-		InjectorPressurePumpRun_O => Pumps_InjectorPressurePumpRun_to_InjectorPressurePumpRun, --output 
-		FillContents_O => Pumps_FillContents_to_FillContents, --output 
+		--event inputs
+		EmergencyStopChanged => EmergencyStopChanged_conn, 
+		CanisterPressureChanged => CanisterPressureChanged_conn, 
+		FillContentsAvailableChanged => FillContentsAvailableChanged_conn, 
+		VacuumTimerElapsed => VacuumTimerElapsed_conn, 
+		StartPump => Arm_StartPump_conn, 
 		
+		--data outputs
+		InjectorContentsValveOpen_O => Pumps_InjectorContentsValveOpen_conn, 
+		InjectorVacuumRun_O => Pumps_InjectorVacuumRun_conn, 
+		InjectorPressurePumpRun_O => Pumps_InjectorPressurePumpRun_conn, 
+		FillContents_O => Pumps_FillContents_conn, 
+		
+		--data inputs
+		EmergencyStop_I => EmergencyStop_conn, --input
+		CanisterPressure_I => CanisterPressure_conn, --input
+		FillContentsAvailable_I => FillContentsAvailable_conn, --input
+		
+
 		
 		done => Pumps_done
 	);

@@ -58,7 +58,8 @@ architecture rtl of InjectorMotorController is
 	signal EmergencyStop : std_logic := '0'; --register for input
 	
 	-- signals to rename outputs 
-	signal InjectorPosition : unsigned(7 downto 0); 
+	signal InjectorPosition : unsigned(7 downto 0) := (others => '0'); 
+	
 
 	-- signals for enabling algorithms	
 	signal SetArmDownPosition_alg_en : std_logic := '0'; 
