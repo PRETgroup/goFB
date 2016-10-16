@@ -124,13 +124,13 @@ begin
 		AcceptBinLaser_O => IO_AcceptBinLaser_conn, 
 		
 		--data inputs
-		CanisterCount_I => CCounter_CanisterCount_conn, --input
-		ConveyorSpeed_I => Conveyor_ConveyorSpeed_conn, --input
-		InjectorContentsValveOpen_I => Pumps_InjectorContentsValveOpen_conn, --input
-		InjectorVacuumRun_I => Pumps_InjectorVacuumRun_conn, --input
-		InjectorPressurePumpRun_I => Pumps_InjectorPressurePumpRun_conn, --input
-		FillContents_I => Pumps_FillContents_conn, --input
-		InjectorPosition_I => Motor_InjectorPosition_conn, --input
+		CanisterCount_I => CCounter_CanisterCount_conn,
+		ConveyorSpeed_I => Conveyor_ConveyorSpeed_conn,
+		InjectorContentsValveOpen_I => Pumps_InjectorContentsValveOpen_conn,
+		InjectorVacuumRun_I => Pumps_InjectorVacuumRun_conn,
+		InjectorPressurePumpRun_I => Pumps_InjectorPressurePumpRun_conn,
+		FillContents_I => Pumps_FillContents_conn,
+		InjectorPosition_I => Motor_InjectorPosition_conn,
 		
 
 		--specials
@@ -157,9 +157,9 @@ begin
 		CanisterCount_O => CCounter_CanisterCount_conn, 
 		
 		--data inputs
-		DoorSiteLaser_I => IO_DoorSiteLaser_conn, --input
-		RejectBinLaser_I => IO_RejectBinLaser_conn, --input
-		AcceptBinLaser_I => IO_AcceptBinLaser_conn, --input
+		DoorSiteLaser_I => IO_DoorSiteLaser_conn,
+		RejectBinLaser_I => IO_RejectBinLaser_conn,
+		AcceptBinLaser_I => IO_AcceptBinLaser_conn,
 		
 
 		
@@ -183,7 +183,7 @@ begin
 		--data outputs
 		
 		--data inputs
-		EmergencyStop_I => IO_EmergencyStop_conn, --input
+		EmergencyStop_I => IO_EmergencyStop_conn,
 		
 
 		
@@ -209,8 +209,8 @@ begin
 		ConveyorSpeed_O => Conveyor_ConveyorSpeed_conn, 
 		
 		--data inputs
-		EmergencyStop_I => IO_EmergencyStop_conn, --input
-		InjectSiteLaser_I => IO_InjectSiteLaser_conn, --input
+		EmergencyStop_I => IO_EmergencyStop_conn,
+		InjectSiteLaser_I => IO_InjectSiteLaser_conn,
 		
 
 		
@@ -233,7 +233,7 @@ begin
 		--data outputs
 		
 		--data inputs
-		RejectSiteLaser_I => IO_RejectSiteLaser_conn, --input
+		RejectSiteLaser_I => IO_RejectSiteLaser_conn,
 		
 
 		
@@ -267,9 +267,9 @@ begin
 		FillContents_O => Pumps_FillContents_conn, 
 		
 		--data inputs
-		EmergencyStop_I => IO_EmergencyStop_conn, --input
-		CanisterPressure_I => IO_CanisterPressure_conn, --input
-		FillContentsAvailable_I => IO_FillContentsAvailable_conn, --input
+		EmergencyStop_I => IO_EmergencyStop_conn,
+		CanisterPressure_I => IO_CanisterPressure_conn,
+		FillContentsAvailable_I => IO_FillContentsAvailable_conn,
 		
 
 		
@@ -297,7 +297,7 @@ begin
 		InjectorPosition_O => Motor_InjectorPosition_conn, 
 		
 		--data inputs
-		EmergencyStop_I => IO_EmergencyStop_conn, --input
+		EmergencyStop_I => IO_EmergencyStop_conn,
 		
 
 		

@@ -50,7 +50,7 @@ begin
 		{{range $curConnIndex, $connName := $compositeFB.GetUniqueDataConnSources}}{{if connChildNameMatches $connName $child.Name}}{{connChildSourceOnly $connName}}_O => {{renameConnSignal $connName}}, 
 		{{end}}{{end}}
 		--data inputs
-		{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if connChildNameMatches $conn.Destination $child.Name}}{{connChildSourceOnly $conn.Destination}}_I => {{renameConnSignal $conn.Source}}, --input
+		{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if connChildNameMatches $conn.Destination $child.Name}}{{connChildSourceOnly $conn.Destination}}_I => {{renameConnSignal $conn.Source}},
 		{{end}}{{end}}
 
 		{{$special := $child.GetSpecialIO $blocks}}{{if $special.InternalVars}}--specials

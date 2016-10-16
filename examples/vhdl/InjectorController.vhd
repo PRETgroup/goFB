@@ -147,7 +147,7 @@ begin
 		InjectorPosition_O => Arm_InjectorPosition_conn, 
 		
 		--data inputs
-		EmergencyStop_I => EmergencyStop_conn, --input
+		EmergencyStop_I => EmergencyStop_conn,
 		
 
 		
@@ -181,9 +181,9 @@ begin
 		FillContents_O => Pumps_FillContents_conn, 
 		
 		--data inputs
-		EmergencyStop_I => EmergencyStop_conn, --input
-		CanisterPressure_I => CanisterPressure_conn, --input
-		FillContentsAvailable_I => FillContentsAvailable_conn, --input
+		EmergencyStop_I => EmergencyStop_conn,
+		CanisterPressure_I => CanisterPressure_conn,
+		FillContentsAvailable_I => FillContentsAvailable_conn,
 		
 
 		
