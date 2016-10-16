@@ -26,13 +26,7 @@ entity {{$block.Name}} is
 		{{if $block.BasicFB}}{{if $specialIO.InternalVars}}
 		--special emitted internal vars for I/O
 		{{range $index, $var := $specialIO.InternalVars}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}}
-		{{end}}{{end}}{{else if $block.CompositeFB}}{{/*THIS SECTION MAY BE USED IN FUTURE, BUT FOR NOW WE SHOULD ONLY USE SPECIAL IO OFF INTERNAL VARS{{if $specialIO.Events}}
-		--special emitted events for child I/O
-		{{range $index, $var := $specialIO.Events}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} std_logic; 
-		{{end}}{{end}}{{if $specialIO.Vars}}
-		--special emitted variables for child I/O
-		{{range $index, $var := $specialIO.Vars}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}} 
-		{{end}}{{end}}*/}}{{if $specialIO.InternalVars}}
+		{{end}}{{end}}{{else if $block.CompositeFB}}{{if $specialIO.InternalVars}}
 		--special emitted internal variables for child I/O
 		{{range $index, $var := $specialIO.InternalVars}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}} 
 		{{end}}{{end}}{{end}}

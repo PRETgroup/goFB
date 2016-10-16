@@ -206,8 +206,7 @@ func (e *Event) IsTOPIO_IN() bool {
 }
 
 type SpecialIO struct {
-	Events       []Event
-	Vars         []Variable
+	//Perhaps in future we will have special []Event and []Variable for normal event and data API
 	InternalVars []Variable
 }
 
@@ -223,41 +222,7 @@ func (fr FBReference) GetSpecialIO(otherBlocks []FB) SpecialIO {
 //GetSpecialIO is used for service interface blocks and those blocks that contain service interface blocks
 func (f FB) GetSpecialIO(otherBlocks []FB) SpecialIO {
 	s := SpecialIO{
-		Events:       make([]Event, 0),
-		Vars:         make([]Variable, 0),
 		InternalVars: make([]Variable, 0),
-	}
-
-	if f.EventInputs != nil {
-		for i := 0; i < len(f.EventInputs.Events); i++ {
-			if f.EventInputs.Events[i].IsTOPIO_IN() || f.EventInputs.Events[i].IsTOPIO_OUT() {
-				s.Events = append(s.Events, f.EventInputs.Events[i])
-			}
-		}
-	}
-
-	if f.EventOutputs != nil {
-		for i := 0; i < len(f.EventOutputs.Events); i++ {
-			if f.EventOutputs.Events[i].IsTOPIO_IN() || f.EventOutputs.Events[i].IsTOPIO_OUT() {
-				s.Events = append(s.Events, f.EventOutputs.Events[i])
-			}
-		}
-	}
-
-	if f.InputVars != nil {
-		for i := 0; i < len(f.InputVars.Variables); i++ {
-			if f.InputVars.Variables[i].IsTOPIO_IN() || f.InputVars.Variables[i].IsTOPIO_OUT() {
-				s.Vars = append(s.Vars, f.InputVars.Variables[i])
-			}
-		}
-	}
-
-	if f.OutputVars != nil {
-		for i := 0; i < len(f.OutputVars.Variables); i++ {
-			if f.OutputVars.Variables[i].IsTOPIO_IN() || f.OutputVars.Variables[i].IsTOPIO_OUT() {
-				s.Vars = append(s.Vars, f.OutputVars.Variables[i])
-			}
-		}
 	}
 
 	if f.BasicFB != nil {
@@ -273,8 +238,6 @@ func (f FB) GetSpecialIO(otherBlocks []FB) SpecialIO {
 			for j := 0; j < len(otherBlocks); j++ {
 				if otherBlocks[j].Name == f.CompositeFB.FBs[i].Type {
 					os := otherBlocks[j].GetSpecialIO(otherBlocks)
-					s.Events = append(s.Events, os.Events...)
-					s.Vars = append(s.Vars, os.Vars...)
 					s.InternalVars = append(s.InternalVars, os.InternalVars...)
 					continue
 				}
