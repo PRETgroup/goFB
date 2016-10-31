@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BFB_Reaction" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-31" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="rx_change" Comment="">
+    <With Var="rx" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="tx_change" Comment="">
+    <With Var="tx" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="rx" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="tx" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Update" Comment="" x="1575" y="1225">
+    <ECAction Algorithm="REACTION_TO_CHANGE" Output="tx_change" />
+  </ECState>
+  <ECTransition Source="Update" Destination="Update" Condition="rx_change" x="1579" y="1321" />
+</ECC><Algorithm Name="REACTION_TO_CHANGE" Comment="">
+  <Other Language="VHDL" Prototype="" Text="tx &lt;= rx;&#xD;&#xA;DONE &lt;= '1';" />
+</Algorithm></BasicFB>
+</FBType>

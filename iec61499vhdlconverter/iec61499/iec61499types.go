@@ -155,11 +155,6 @@ func (b *BasicFB) GetTransitionsForState(source string) []ECTransition {
 	return trans
 }
 
-type ConnectionWithType struct {
-	Connection
-	Type string
-}
-
 //IsLoadFor used in templates for triggering updates of input data
 func (e *Event) IsLoadFor(v *Variable) bool {
 	for i := 0; i < len(e.With); i++ {
@@ -180,14 +175,17 @@ func (v *Variable) IsTOPIO_IN() bool {
 	return v.Comment == TOPIO_IN
 }
 
+//IsTOPIO_OUT used in templates
 func (e *Event) IsTOPIO_OUT() bool {
 	return e.Comment == TOPIO_OUT
 }
 
+//IsTOPIO_IN used in templates
 func (e *Event) IsTOPIO_IN() bool {
 	return e.Comment == TOPIO_IN
 }
 
+//GetUniqueEventConnSources is used to list all unique sources for event connections (useful when templating as we don't want duplicate signal wires)
 func (c *CompositeFB) GetUniqueEventConnSources() []string {
 	sources := make([]string, 0, len(c.EventConnections)) //preallocate for speed
 nextConn:
@@ -203,6 +201,7 @@ nextConn:
 	return sources
 }
 
+//GetUniqueDataConnSources is used to list all unique sources for data connections (useful when templating as we don't want duplicate signal wires)
 func (c *CompositeFB) GetUniqueDataConnSources() []string {
 	sources := make([]string, 0, len(c.DataConnections)) //preallocate for speed
 nextConn:
@@ -218,11 +217,19 @@ nextConn:
 	return sources
 }
 
+//ConnectionWithType struct used in cases when we want to know what a Connection's Data Type is (this can store it)
+type ConnectionWithType struct {
+	Connection
+	Type string
+}
+
+//SourceAndType is used in similiar cases to ConnectionWithType, when we want to know both the source's name and the data type (this can store it)
 type SourceAndType struct {
 	Source string
 	Type   string
 }
 
+//GetUniqueDataConnSourcesWithTypes is used to list all unique sources for data connections and their types (useful when templating as we don't want duplicate signal wires)
 func (f FB) GetUniqueDataConnSourcesWithTypes(otherBlocks []FB) ([]SourceAndType, error) {
 	cats, err := f.GetDataConnectionTypes(otherBlocks)
 	if err != nil {
@@ -243,49 +250,7 @@ nextConn:
 	return sources, nil
 }
 
-type SpecialIO struct {
-	//Perhaps in future we will have special []Event and []Variable for normal event and data API
-	InternalVars []Variable
-}
-
-func (fr FBReference) GetSpecialIO(otherBlocks []FB) SpecialIO {
-	for j := 0; j < len(otherBlocks); j++ {
-		if otherBlocks[j].Name == fr.Type {
-			return otherBlocks[j].GetSpecialIO(otherBlocks)
-		}
-	}
-	return SpecialIO{}
-}
-
-//GetSpecialIO is used for service interface blocks and those blocks that contain service interface blocks
-func (f FB) GetSpecialIO(otherBlocks []FB) SpecialIO {
-	s := SpecialIO{
-		InternalVars: make([]Variable, 0),
-	}
-
-	if f.BasicFB != nil {
-		if f.BasicFB.InternalVars != nil {
-			for i := 0; i < len(f.BasicFB.InternalVars.Variables); i++ {
-				if f.BasicFB.InternalVars.Variables[i].IsTOPIO_IN() || f.BasicFB.InternalVars.Variables[i].IsTOPIO_OUT() {
-					s.InternalVars = append(s.InternalVars, f.BasicFB.InternalVars.Variables[i])
-				}
-			}
-		}
-	} else if f.CompositeFB != nil {
-		for i := 0; i < len(f.CompositeFB.FBs); i++ {
-			for j := 0; j < len(otherBlocks); j++ {
-				if otherBlocks[j].Name == f.CompositeFB.FBs[i].Type {
-					os := otherBlocks[j].GetSpecialIO(otherBlocks)
-					s.InternalVars = append(s.InternalVars, os.InternalVars...)
-					continue
-				}
-			}
-		}
-	}
-
-	return s
-}
-
+//GetDataConnectionTypes is used to list all data connections in a given FB with their types as well (required when templating as we need to know what to define signals as)
 func (f FB) GetDataConnectionTypes(otherBlocks []FB) ([]ConnectionWithType, error) {
 	if f.CompositeFB == nil {
 		return nil, nil //basic function blocks don't have dataconnections
@@ -359,4 +324,49 @@ conns:
 	}
 
 	return connAndTypes, nil
+}
+
+//SpecialIO is used to store internal variables that are "special" (i.e. exported because they are for debugging or service interfaces)
+type SpecialIO struct {
+	//Perhaps in future we will have special []Event and []Variable for normal event and data API
+	InternalVars []Variable
+}
+
+//GetSpecialIO returns all SpecialIO for a given FBReference
+func (fr FBReference) GetSpecialIO(otherBlocks []FB) SpecialIO {
+	for j := 0; j < len(otherBlocks); j++ {
+		if otherBlocks[j].Name == fr.Type {
+			return otherBlocks[j].GetSpecialIO(otherBlocks)
+		}
+	}
+	return SpecialIO{}
+}
+
+//GetSpecialIO is used for service interface blocks and those blocks that contain service interface blocks
+func (f FB) GetSpecialIO(otherBlocks []FB) SpecialIO {
+	s := SpecialIO{
+		InternalVars: make([]Variable, 0),
+	}
+
+	if f.BasicFB != nil {
+		if f.BasicFB.InternalVars != nil {
+			for i := 0; i < len(f.BasicFB.InternalVars.Variables); i++ {
+				if f.BasicFB.InternalVars.Variables[i].IsTOPIO_IN() || f.BasicFB.InternalVars.Variables[i].IsTOPIO_OUT() {
+					s.InternalVars = append(s.InternalVars, f.BasicFB.InternalVars.Variables[i])
+				}
+			}
+		}
+	} else if f.CompositeFB != nil {
+		for i := 0; i < len(f.CompositeFB.FBs); i++ {
+			for j := 0; j < len(otherBlocks); j++ {
+				if otherBlocks[j].Name == f.CompositeFB.FBs[i].Type {
+					os := otherBlocks[j].GetSpecialIO(otherBlocks)
+					s.InternalVars = append(s.InternalVars, os.InternalVars...)
+					continue
+				}
+			}
+		}
+	}
+
+	return s
 }

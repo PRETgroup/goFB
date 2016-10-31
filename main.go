@@ -14,6 +14,7 @@ import (
 var (
 	inFileName  = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses this directory")
 	outLocation = flag.String("o", "", "Specifies the name of the directory to put output vhdl files. If blank, uses this directory")
+	topName     = flag.String("t", "", "Specifies the name of the top level fbt file. If blank, no top file will be generated.")
 )
 
 func main() {
@@ -78,6 +79,11 @@ func main() {
 	}
 
 	fmt.Println("Found", len(conv.Blocks), "blocks")
+
+	if err := conv.SetTopName(*topName); err != nil {
+		fmt.Printf("Error with provided top name:%s\n", err.Error())
+		return
+	}
 
 	outputs, err := conv.AllToVHDL()
 	if err != nil {

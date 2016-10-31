@@ -6,7 +6,9 @@ import (
 	"github.com/kiwih/go-iec61499-vhdl/iec61499vhdlconverter/iec61499"
 )
 
+//checkFB is used internally to ensure that a given inputted function block is amenable to this conversion tool
 func checkFB(fb *iec61499.FB) error {
+	//1. Make sure all algorithms are written in VHDL
 	if fb.BasicFB != nil {
 		for i := 0; i < len(fb.BasicFB.Algorithms); i++ {
 			if fb.BasicFB.Algorithms[i].Other.Language != "VHDL" {
@@ -14,5 +16,7 @@ func checkFB(fb *iec61499.FB) error {
 			}
 		}
 	}
+
+	//2. Ensure no use of STRING or ANY types in data or internal variables TODO
 	return nil
 }

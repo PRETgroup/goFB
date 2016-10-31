@@ -23,14 +23,18 @@ var (
 	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./vhdltemplates/*"))
 )
 
+//Converter is the struct we use to store all blocks for conversion (and what we operate from)
 type Converter struct {
-	Blocks []iec61499.FB
+	Blocks  []iec61499.FB
+	topName string
 }
 
+//New returns a new instance of a Converter
 func New() (*Converter, error) {
 	return &Converter{Blocks: make([]iec61499.FB, 0)}, nil
 }
 
+//AddBlock should be called for each block in the network
 func (c *Converter) AddBlock(iec61499bytes []byte) error {
 	FB := iec61499.FB{}
 	if err := xml.Unmarshal(iec61499bytes, &FB); err != nil {
@@ -51,9 +55,33 @@ type VHDLOutput struct {
 	VHDL []byte
 }
 
+//TemplateData is the structure used to hold data being passed into the templating engine
 type TemplateData struct {
 	BlockIndex int
 	Blocks     []iec61499.FB
+}
+
+//SetTopName sets the IEC61499 top level entity to the name provided
+//This checks to ensure a valid name
+func (c *Converter) SetTopName(name string) error {
+	if name == "" { //no name provided is valid
+		return nil
+	}
+
+	found := false
+	for i := 0; i < len(c.Blocks); i++ {
+		if c.Blocks[i].Name == name {
+			found = true
+			break
+		}
+	}
+
+	if found == false {
+		return errors.New("Can't find provided top-level name '" + name + "'")
+	}
+
+	c.topName = name
+	return nil
 }
 
 //AllToVHDL converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
@@ -64,7 +92,6 @@ func (c *Converter) AllToVHDL() ([]VHDLOutput, error) {
 
 	for i := 0; i < len(c.Blocks); i++ {
 		output := &bytes.Buffer{}
-
 		templateName := "basicFB"
 		if c.Blocks[i].BasicFB == nil {
 			templateName = "compositeFB"
@@ -76,6 +103,29 @@ func (c *Converter) AllToVHDL() ([]VHDLOutput, error) {
 
 		finishedConversions = append(finishedConversions, VHDLOutput{Name: c.Blocks[i].Name, VHDL: output.Bytes()})
 	}
+
+	if c.topName != "" {
+		output := &bytes.Buffer{}
+		topIndex := -1
+		for i := 0; i < len(c.Blocks); i++ {
+			if c.Blocks[i].Name == c.topName {
+				topIndex = i
+				break
+			}
+		}
+
+		if topIndex == -1 {
+			return nil, errors.New("Can't find provided top-level name '" + c.topName + "'")
+		}
+
+		if err := vhdlTemplates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks}); err != nil {
+			return nil, errors.New("Couldn't format template: " + err.Error())
+		}
+
+		finishedConversions = append(finishedConversions, VHDLOutput{Name: "iec61499_network_top", VHDL: output.Bytes()})
+
+	}
+
 	return finishedConversions, nil
 }
 
@@ -117,6 +167,8 @@ func getVhdlECCTransitionCondition(iec61499trans string) string {
 	return retVal
 }
 
+//addTrueCheck is used in conjunction with getVhdlECCTransitionCondition to format the ECC transition in a VHDL-friendly manner
+//it is responsible for converting things such as "if variable and variable2" to "if variable = '1' and variable2 = '1'"
 func addTrueCheck(in string) string {
 	if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ToLower(in) == "not" || strings.ContainsAny(in, "<>=") || strings.ToLower(in) == "true" {
 		return in

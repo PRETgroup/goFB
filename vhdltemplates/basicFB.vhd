@@ -10,10 +10,10 @@ use ieee.numeric_std.all;
 {{template "_entityFB" .}}
 architecture rtl of {{$block.Name}} is
 	-- Build an enumerated type for the state machine
-	type state_type is ({{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}{{$state.Name}}_S{{end}});
+	type state_type is ({{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}STATE_{{$state.Name}}{{end}});
 
 	-- Register to hold the current state
-	signal state   : state_type := {{(index $basicFB.States 0).Name}}_S;
+	signal state   : state_type := STATE_{{(index $basicFB.States 0).Name}};
 
 	{{if $block.InputVars}}-- signals to store variable sampled on enable {{range $index, $var := $block.InputVars.Variables}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; --register for input{{end}}
@@ -56,7 +56,7 @@ begin
 	process (clk, reset)
 	begin
 		if reset = '1' then
-			state <= {{(index $basicFB.States 0).Name}}_S;
+			state <= STATE_{{(index $basicFB.States 0).Name}};
 			AlgorithmsStart <= '1';
 		elsif (rising_edge(clk)) then
 			if AlgorithmsStart = '1' then --algorithms should be triggered only once via this pulse signal
@@ -69,9 +69,9 @@ begin
 				--next state logic
 				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
-						{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}_S=>
+						{{range $curStateIndex, $curState := $basicFB.States}}when STATE_{{$curState.Name}} =>
 							{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{getVhdlECCTransitionCondition $trans.Condition}} then
-								state <= {{$trans.Destination}}_S;
+								state <= STATE_{{$trans.Destination}};
 								AlgorithmsStart <= '1';
 							{{end}}end if;
 						{{end}}
@@ -92,7 +92,7 @@ begin
 		{{$alg.Name}}_alg_en <= '0'; {{end}}{{end}}
 
 		case state is
-			{{range $curStateIndex, $curState := $basicFB.States}}when {{$curState.Name}}_S=>
+			{{range $curStateIndex, $curState := $basicFB.States}}when STATE_{{$curState.Name}} =>
 				{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$action.Algorithm}}_alg_en <= '1';
 				{{end}}{{if $action.Output}}{{$action.Output}} <= '1';
 				{{end}}{{end}}
