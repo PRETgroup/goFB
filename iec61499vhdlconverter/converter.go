@@ -27,11 +27,18 @@ var (
 type Converter struct {
 	Blocks  []iec61499.FB
 	topName string
+
+	ignoreLanguages bool
 }
 
 //New returns a new instance of a Converter
 func New() (*Converter, error) {
 	return &Converter{Blocks: make([]iec61499.FB, 0)}, nil
+}
+
+//DisableLanguageChecks prevents checking for compatible languages and assumes VHDL
+func (c *Converter) DisableLanguageChecks() {
+	c.ignoreLanguages = true
 }
 
 //AddBlock should be called for each block in the network
@@ -41,7 +48,7 @@ func (c *Converter) AddBlock(iec61499bytes []byte) error {
 		return errors.New("Couldn't unmarshal iec61499 xml: " + err.Error())
 	}
 
-	if err := checkFB(&FB); err != nil {
+	if err := checkFB(&FB, c.ignoreLanguages); err != nil {
 		return errors.New("FB is not suitable for conversion to VHDL: " + err.Error())
 	}
 	c.Blocks = append(c.Blocks, FB)

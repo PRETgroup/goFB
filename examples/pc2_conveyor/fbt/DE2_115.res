@@ -12,7 +12,7 @@
   <FB Name="boxdropper" Type="BoxDropper_SIFB" x="3018.75" y="1925" />
   <EventConnections><Connection Source="globals.global_run_changed" Destination="conveyor.conveyor_run_changed" />
 <Connection Source="globals.global_run_changed" Destination="boxdropper.box_dropper_run_changed" /></EventConnections>
-  <DataConnections><Connection Source="globals.global_run_infinite" Destination="conveyor.conveyor_run" />
+  <DataConnections><Connection Source="globals.global_run" Destination="conveyor.conveyor_run" />
 <Connection Source="globals.global_run_infinite" Destination="boxdropper.box_dropper_run" /></DataConnections>
 </FBNetwork>
 </ResourceType>

@@ -12,9 +12,10 @@ import (
 )
 
 var (
-	inFileName  = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses this directory")
-	outLocation = flag.String("o", "", "Specifies the name of the directory to put output vhdl files. If blank, uses this directory")
-	topName     = flag.String("t", "", "Specifies the name of the top level fbt file. If blank, no top file will be generated.")
+	inFileName           = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses this directory")
+	outLocation          = flag.String("o", "", "Specifies the name of the directory to put output vhdl files. If blank, uses this directory")
+	topName              = flag.String("t", "", "Specifies the name of the top level fbt file. If blank, no top file will be generated.")
+	disableLanguageCheck = flag.Bool("disableLanguageCheck", false, "Disables check for compatible languages and assumes all languages are VHDL")
 )
 
 func main() {
@@ -62,6 +63,10 @@ func main() {
 	if err != nil {
 		fmt.Println("Error creating converter:", err.Error())
 		return
+	}
+
+	if *disableLanguageCheck {
+		conv.DisableLanguageChecks()
 	}
 
 	for _, name := range fileNames {

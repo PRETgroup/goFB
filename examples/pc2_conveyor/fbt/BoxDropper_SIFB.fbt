@@ -25,6 +25,6 @@
   </ECState>
   <ECTransition Source="Start" Destination="Start" Condition="true" x="350" y="350" />
 </ECC><Algorithm Name="boxdropper_alg" Comment="">
-  <Other Language="VHDL" Prototype="" Text="tx_box_dropper &lt;= box_dropper;&#xD;&#xA;DONE &lt;= '1';" />
+  <Other Language="C" Prototype="" Text="tx_box_dropper_run &lt;= box_dropper_run;&#xD;&#xA;DONE &lt;= '1';" />
 </Algorithm></BasicFB>
 </FBType>

@@ -94,16 +94,15 @@ begin
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				--if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
-					case state is
-						when STATE_Start =>
-							if true then
-								state <= STATE_Start;
-								AlgorithmsStart <= '1';
-							end if;
-						
-					end case;
-				--end if;
+				case state is
+					when STATE_Start =>
+						if true then
+							state <= STATE_Start;
+							AlgorithmsStart <= '1';
+						end if;
+					
+				end case;
+
 			end if;
 		end if;
 	end process;
@@ -141,7 +140,7 @@ begin
 			if boxdropper_alg_alg_done = '0' then -- Algorithm boxdropper_alg
 
 --begin algorithm raw text
-tx_box_dropper <= box_dropper;
+tx_box_dropper_run <= box_dropper_run;
 boxdropper_alg_alg_done <= '1';
 --end algorithm raw text
 

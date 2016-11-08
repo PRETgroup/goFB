@@ -43,6 +43,7 @@ architecture rtl of DE2_115 is
 	signal globals_global_run_changed_conn : std_logic;
 
 	-- Signals needed for data connections 
+	signal globals_global_run_conn : std_logic; --type was BOOL
 	signal globals_global_run_infinite_conn : std_logic; --type was BOOL
 
 	-- Signals needed for the done signals 
@@ -68,7 +69,7 @@ begin
 		--data outputs
 		
 		--data inputs
-		conveyor_run_I => globals_global_run_infinite_conn,
+		conveyor_run_I => globals_global_run_conn,
 		
 
 		--specials
@@ -91,6 +92,7 @@ begin
 		--event inputs
 		
 		--data outputs
+		global_run_O => globals_global_run_conn, 
 		global_run_infinite_O => globals_global_run_infinite_conn, 
 		
 		--data inputs

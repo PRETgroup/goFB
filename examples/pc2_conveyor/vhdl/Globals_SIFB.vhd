@@ -102,16 +102,15 @@ begin
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				--if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
-					case state is
-						when STATE_Start =>
-							if true then
-								state <= STATE_Start;
-								AlgorithmsStart <= '1';
-							end if;
-						
-					end case;
-				--end if;
+				case state is
+					when STATE_Start =>
+						if true then
+							state <= STATE_Start;
+							AlgorithmsStart <= '1';
+						end if;
+					
+				end case;
+
 			end if;
 		end if;
 	end process;
