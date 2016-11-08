@@ -73,16 +73,15 @@ begin
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
-					case state is
-						{{range $curStateIndex, $curState := $basicFB.States}}when STATE_{{$curState.Name}} =>
-							{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{getVhdlECCTransitionCondition $trans.Condition}} then
-								state <= STATE_{{$trans.Destination}};
-								AlgorithmsStart <= '1';
-							{{end}}end if;
-						{{end}}
-					end case;
-				end if;
+				case state is
+					{{range $curStateIndex, $curState := $basicFB.States}}when STATE_{{$curState.Name}} =>
+						{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{getVhdlECCTransitionCondition $trans.Condition}} then
+							state <= STATE_{{$trans.Destination}};
+							AlgorithmsStart <= '1';
+						{{end}}end if;
+					{{end}}
+				end case;
+
 			end if;
 		end if;
 	end process;
@@ -136,7 +135,7 @@ begin
 	{{end}}
 
 	--Done signal
-	AlgorithmsDone <= (not AlgorithmsStart){{if $basicFB.Algorithms}} and{{range $algIndex, $alg := $basicFB.Algorithms}}{{if $algIndex}} and{{end}} {{$alg.Name}}_alg_done{{end}}{{end}};
+	AlgorithmsDone <= (not AlgorithmsStart) and (not enable){{if $basicFB.Algorithms}} and{{range $algIndex, $alg := $basicFB.Algorithms}}{{if $algIndex}} and{{end}} {{$alg.Name}}_alg_done{{end}}{{end}};
 	Done <= AlgorithmsDone;
 
 	{{if $block.EventOutputs}}

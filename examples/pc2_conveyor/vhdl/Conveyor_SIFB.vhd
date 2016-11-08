@@ -118,7 +118,7 @@ begin
 				AlgorithmsStart <= '0';
 
 				--next state logic
-				if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
+				--if AlgorithmsStart = '0' and AlgorithmsDone = '1' then
 					case state is
 						when STATE_Start =>
 							if true then
@@ -127,7 +127,7 @@ begin
 							end if;
 						
 					end case;
-				end if;
+				--end if;
 			end if;
 		end if;
 	end process;
@@ -202,7 +202,7 @@ conveyor_sifb_alg_alg_done <= '1';
 	end process;
 
 	--Done signal
-	AlgorithmsDone <= (not AlgorithmsStart) and conveyor_sifb_alg_alg_done;
+	AlgorithmsDone <= (not AlgorithmsStart) and (not enable) and conveyor_sifb_alg_alg_done;
 	Done <= AlgorithmsDone;
 
 	
