@@ -57,10 +57,10 @@ begin
 		sync => sync,
 
 		--event outputs 
-		rx_rd => gpio_rx_rd_conn,
+		rx_rd_eO => gpio_rx_rd_conn,
 		
 		--event inputs
-		tx_rd => reaction_tx_change_conn, 
+		tx_rd_eI => reaction_tx_change_conn, 
 		
 		--data outputs
 		rx_data_O => gpio_rx_data_conn, 
@@ -83,10 +83,10 @@ begin
 		sync => sync,
 
 		--event outputs 
-		tx_change => reaction_tx_change_conn,
+		tx_change_eO => reaction_tx_change_conn,
 		
 		--event inputs
-		rx_change => gpio_rx_rd_conn, 
+		rx_change_eI => gpio_rx_rd_conn, 
 		
 		--data outputs
 		tx_O => reaction_tx_conn, 

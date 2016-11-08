@@ -19,11 +19,11 @@ entity BFB_GPIO is
 		sync	: in	std_logic;
 		
 		--input events
-		tx_rd : in std_logic;
+		tx_rd_eI : in std_logic;
 		
 		
 		--output events
-		rx_rd : out std_logic;
+		rx_rd_eO : out std_logic;
 		
 		
 		--input variables
@@ -59,6 +59,12 @@ architecture rtl of BFB_GPIO is
 	signal rx_data : std_logic := '0'; 
 	
 
+	
+	--signals to rename output events
+	signal rx_rd_eO_ecc_out : std_logic := '0'; --used when event driven from ECC (normal FB behaviour)
+	signal rx_rd_eO_alg_out : std_logic := '0'; --used when event driven from algorithm (normal SIFB behaviour)
+	
+
 	-- signals for enabling algorithms	
 	signal BFB_GPIO_UPDATE_alg_en : std_logic := '0'; 
 	signal BFB_GPIO_UPDATE_alg_done : std_logic := '1';
@@ -76,7 +82,7 @@ begin
 		if rising_edge(clk) then
 			if sync = '1' then
 				
-				if tx_rd = '1' then
+				if tx_rd_eI = '1' then
 					tx_data <= tx_data_I;
 				end if;
 				
@@ -130,7 +136,7 @@ begin
 		case state is
 			when STATE_Start =>
 				BFB_GPIO_UPDATE_alg_en <= '1';
-				rx_rd <= '1';
+				rx_rd_eO_ecc_out <= '1';
 				
 			
 		end case;
@@ -165,4 +171,10 @@ BFB_GPIO_UPDATE_alg_done <= '1';
 	--Done signal
 	AlgorithmsDone <= (not AlgorithmsStart) and BFB_GPIO_UPDATE_alg_done;
 	Done <= AlgorithmsDone;
+
+	
+	--logic for renamed output events
+	rx_rd_eO <= rx_rd_eO_ecc_out or rx_rd_eO_alg_out;
+	
+
 end rtl;

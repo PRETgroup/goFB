@@ -10,15 +10,15 @@ entity {{$block.Name}} is
 		sync	: in	std_logic;
 		{{if $block.EventInputs}}
 		--input events
-		{{range $index, $event := $block.EventInputs.Events}}{{$event.Name}} : in std_logic;
+		{{range $index, $event := $block.EventInputs.Events}}{{$event.Name}}_eI : in std_logic := '0';
 		{{end}}{{end}}
 		{{if $block.EventOutputs}}
 		--output events
-		{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}} : out std_logic;
+		{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}}_eO : out std_logic;
 		{{end}}{{end}}
 		{{if $block.InputVars}}
 		--input variables
-		{{range $index, $var := $block.InputVars.Variables}}{{$var.Name}}_I : in {{getVhdlType $var.Type}}; --type was {{$var.Type}}
+		{{range $index, $var := $block.InputVars.Variables}}{{$var.Name}}_I : in {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; --type was {{$var.Type}}
 		{{end}}{{end}}
 		{{if $block.OutputVars}}
 		--output variables

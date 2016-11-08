@@ -304,7 +304,7 @@ conns:
 		//scan through all blocks trying to find correct API type
 		for j := 0; j < len(otherBlocks); j++ {
 			if otherBlocks[j].Name == childType { //matched, now scan their API
-				if otherBlocks[j].InputVars != nil {
+				if otherBlocks[j].OutputVars != nil {
 					for k := 0; k < len(otherBlocks[j].OutputVars.Variables); k++ {
 						if otherBlocks[j].OutputVars.Variables[k].Name == sourceName {
 							found = true

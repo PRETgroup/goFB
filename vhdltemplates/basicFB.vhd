@@ -22,6 +22,12 @@ architecture rtl of {{$block.Name}} is
 	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; {{end}}
 	{{end}}
 
+	{{if $block.EventOutputs}}
+	--signals to rename output events
+	{{range $index, $event := $block.EventOutputs.Events}}signal {{$event.Name}}_eO_ecc_out : std_logic := '0'; --used when event driven from ECC (normal FB behaviour)
+	signal {{$event.Name}}_eO_alg_out : std_logic := '0'; --used when event driven from algorithm (normal SIFB behaviour)
+	{{end}}{{end}}
+
 	-- signals for enabling algorithms	{{range $algIndex, $alg := $basicFB.Algorithms}}
 	signal {{$alg.Name}}_alg_en : std_logic := '0'; 
 	signal {{$alg.Name}}_alg_done : std_logic := '1';
@@ -40,7 +46,7 @@ begin
 		if rising_edge(clk) then
 			if sync = '1' then
 				{{range $eventIndex, $event := $block.EventInputs.Events}}{{if $event.With}}
-				if {{$event.Name}} = '1' then{{range $varIndex, $var := $block.InputVars.Variables}}{{if $event.IsLoadFor $var}}
+				if {{$event.Name}}_eI = '1' then{{range $varIndex, $var := $block.InputVars.Variables}}{{if $event.IsLoadFor $var}}
 					{{$var.Name}} <= {{$var.Name}}_I;{{end}}{{end}}
 				end if;
 				{{end}}{{end}}
@@ -86,7 +92,7 @@ begin
 	begin
 		--default values
 		{{if $block.EventOutputs}}--events
-		{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}} <= '0';
+		{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}}_eO_ecc_out <= '0';
 		{{end}}{{end}}
 		{{if $basicFB.Algorithms}}--algorithms{{range $algIndex, $alg := $basicFB.Algorithms}}
 		{{$alg.Name}}_alg_en <= '0'; {{end}}{{end}}
@@ -94,7 +100,7 @@ begin
 		case state is
 			{{range $curStateIndex, $curState := $basicFB.States}}when STATE_{{$curState.Name}} =>
 				{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$action.Algorithm}}_alg_en <= '1';
-				{{end}}{{if $action.Output}}{{$action.Output}} <= '1';
+				{{end}}{{if $action.Output}}{{$action.Output}}_eO_ecc_out <= '1';
 				{{end}}{{end}}
 			{{end}}
 		end case;
@@ -108,6 +114,10 @@ begin
 				{{range $algIndex, $alg := $basicFB.Algorithms}}
 				if {{$alg.Name}}_alg_en = '1' then -- Algorithm {{$alg.Name}}
 					{{$alg.Name}}_alg_done <= '0';
+					{{if $block.EventOutputs}}
+					--logic for resetting algorithm-driven output events
+					{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}}_eO_alg_out <= '0';
+					{{end}}{{end}}
 				end if;
 				{{end}}
 			end if;
@@ -128,5 +138,11 @@ begin
 	--Done signal
 	AlgorithmsDone <= (not AlgorithmsStart){{if $basicFB.Algorithms}} and{{range $algIndex, $alg := $basicFB.Algorithms}}{{if $algIndex}} and{{end}} {{$alg.Name}}_alg_done{{end}}{{end}};
 	Done <= AlgorithmsDone;
+
+	{{if $block.EventOutputs}}
+	--logic for renamed output events
+	{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}}_eO <= {{$event.Name}}_eO_ecc_out or {{$event.Name}}_eO_alg_out;
+	{{end}}{{end}}
+
 end rtl;
 {{end}}

@@ -19,11 +19,11 @@ entity BFB_Reaction is
 		sync	: in	std_logic;
 		
 		--input events
-		rx_change : in std_logic;
+		rx_change_eI : in std_logic;
 		
 		
 		--output events
-		tx_change : out std_logic;
+		tx_change_eO : out std_logic;
 		
 		
 		--input variables
@@ -55,6 +55,12 @@ architecture rtl of BFB_Reaction is
 	signal tx : std_logic := '0'; 
 	
 
+	
+	--signals to rename output events
+	signal tx_change_eO_ecc_out : std_logic := '0'; --used when event driven from ECC (normal FB behaviour)
+	signal tx_change_eO_alg_out : std_logic := '0'; --used when event driven from algorithm (normal SIFB behaviour)
+	
+
 	-- signals for enabling algorithms	
 	signal REACTION_TO_CHANGE_alg_en : std_logic := '0'; 
 	signal REACTION_TO_CHANGE_alg_done : std_logic := '1';
@@ -72,7 +78,7 @@ begin
 		if rising_edge(clk) then
 			if sync = '1' then
 				
-				if rx_change = '1' then
+				if rx_change_eI = '1' then
 					rx <= rx_I;
 				end if;
 				
@@ -126,7 +132,7 @@ begin
 		case state is
 			when STATE_Update =>
 				REACTION_TO_CHANGE_alg_en <= '1';
-				tx_change <= '1';
+				tx_change_eO_ecc_out <= '1';
 				
 			
 		end case;
@@ -160,4 +166,10 @@ REACTION_TO_CHANGE_alg_done <= '1';
 	--Done signal
 	AlgorithmsDone <= (not AlgorithmsStart) and REACTION_TO_CHANGE_alg_done;
 	Done <= AlgorithmsDone;
+
+	
+	--logic for renamed output events
+	tx_change_eO <= tx_change_eO_ecc_out or tx_change_eO_alg_out;
+	
+
 end rtl;

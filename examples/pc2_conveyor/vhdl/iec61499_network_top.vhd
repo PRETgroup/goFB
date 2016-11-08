@@ -16,8 +16,13 @@ entity iec61499_network_top is
 		reset	: in	std_logic;
 		
 		--special emitted internal variables for child I/O
-		tx_gpio : out std_logic; --type was BOOL 
-		rx_gpio : in std_logic; --type was BOOL 
+		rx_conveyor_moving : in std_logic; --type was BOOL 
+		rx_conveyor_jammed : in std_logic; --type was BOOL 
+		tx_conveyor_run : out std_logic; --type was BOOL 
+		rx_global_run : in std_logic; --type was BOOL 
+		rx_global_run_infinite : in std_logic; --type was BOOL 
+		rx_global_fault : in std_logic; --type was BOOL 
+		tx_box_dropper_run : out std_logic; --type was BOOL 
 		
 		
 		--signals in case external components want to measure time
@@ -49,8 +54,13 @@ begin
 		
 		
 		--special emitted internal variables for child I/O
-		tx_gpio => tx_gpio, --going out 
-		rx_gpio => rx_gpio, --going in 
+		rx_conveyor_moving => rx_conveyor_moving, --going in 
+		rx_conveyor_jammed => rx_conveyor_jammed, --going in 
+		tx_conveyor_run => tx_conveyor_run, --going out 
+		rx_global_run => rx_global_run, --going in 
+		rx_global_run_infinite => rx_global_run_infinite, --going in 
+		rx_global_fault => rx_global_fault, --going in 
+		tx_box_dropper_run => tx_box_dropper_run, --going out 
 		
 
 		done => done

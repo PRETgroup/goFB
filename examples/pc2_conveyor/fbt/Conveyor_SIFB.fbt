@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Conveyor_SIFB" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-08" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="conveyor_run_changed" Comment="">
+    <With Var="conveyor_run" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="conveyor_moving_changed" Comment="">
+    <With Var="conveyor_moving" />
+  </Event>
+  <Event Name="conveyor_jammed_changed" Comment="">
+    <With Var="conveyor_jammed" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="conveyor_run" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="conveyor_moving" Type="BOOL" Comment="" />
+  <VarDeclaration Name="conveyor_jammed" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="rx_conveyor_moving" Type="BOOL" Comment="TOPIO_IN" />
+  <VarDeclaration Name="rx_conveyor_moving_prev" Type="BOOL" Comment="" />
+  <VarDeclaration Name="rx_conveyor_jammed" Type="BOOL" Comment="TOPIO_IN" />
+  <VarDeclaration Name="rx_conveyor_jammed_prev" Type="BOOL" Comment="" />
+  <VarDeclaration Name="tx_conveyor_run" Type="BOOL" Comment="TOPIO_OUT" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="787.5" y="568.75">
+    <ECAction Algorithm="conveyor_sifb_alg" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Start" Condition="true" x="778.5" y="566.75" />
+</ECC><Algorithm Name="conveyor_sifb_alg" Comment="">
+  <Other Language="VHDL" Prototype="" Text="--update previous values&#xD;&#xA;rx_conveyor_moving_prev &lt;= rx_conveyor_moving;&#xD;&#xA;rx_conveyor_jammed_prev &lt;= rx_conveyor_jammed;&#xD;&#xA;&#xD;&#xA;--these are what we use to drive events&#xD;&#xA;--conveyor_moving_changed_eO_alg_out;&#xD;&#xA;--conveyor_jammed_changed_eO_alg_out;&#xD;&#xA;&#xD;&#xA;if rx_conveyor_moving_prev /= rx_conveyor_moving then&#xD;&#xA;	conveyor_moving_changed_eO_alg_out &lt;= '1';&#xD;&#xA;	conveyor_moving &lt;= rx_conveyor_moving;&#xD;&#xA;end if;&#xD;&#xA;&#xD;&#xA;if rx_conveyor_jammed_prev /= rx_conveyor_jammed then&#xD;&#xA;	conveyor_jammed_changed_eO_alg_out &lt;= '1';&#xD;&#xA;	conveyor_jammed &lt;= rx_conveyor_jammed;&#xD;&#xA;end if;&#xD;&#xA;&#xD;&#xA;--emit outputs (input is already registered to only update on tick boundary with correct input event)&#xD;&#xA;tx_conveyor_run &lt;= conveyor_run;&#xD;&#xA;&#xD;&#xA;DONE &lt;= '1';" />
+</Algorithm></BasicFB>
+</FBType>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BoxDropper_SIFB" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-08" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="box_dropper_run_changed" Comment="">
+    <With Var="box_dropper_run" />
+  </Event>
+</EventInputs>
+
+<InputVars>
+  <VarDeclaration Name="box_dropper_run" Type="BOOL" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="tx_box_dropper_run" Type="BOOL" Comment="TOPIO_OUT" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+    <ECAction Algorithm="boxdropper_alg" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Start" Condition="true" x="350" y="350" />
+</ECC><Algorithm Name="boxdropper_alg" Comment="">
+  <Other Language="VHDL" Prototype="" Text="tx_box_dropper &lt;= box_dropper;&#xD;&#xA;DONE &lt;= '1';" />
+</Algorithm></BasicFB>
+</FBType>

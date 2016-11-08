@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Globals_SIFB" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-08" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="global_run_changed" Comment="">
+    <With Var="global_run" />
+    <With Var="global_run_infinite" />
+  </Event>
+  <Event Name="global_fault_changed" Comment="">
+    <With Var="global_fault" />
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="global_run" Type="BOOL" Comment="" />
+  <VarDeclaration Name="global_run_infinite" Type="BOOL" Comment="" />
+  <VarDeclaration Name="global_fault" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="rx_global_run" Type="BOOL" Comment="TOPIO_IN" />
+  <VarDeclaration Name="rx_global_run_prev" Type="BOOL" Comment="" />
+  <VarDeclaration Name="rx_global_run_infinite" Type="BOOL" Comment="TOPIO_IN" />
+  <VarDeclaration Name="rx_global_run_infinite_prev" Type="BOOL" Comment="" />
+  <VarDeclaration Name="rx_global_fault" Type="BOOL" Comment="TOPIO_IN" />
+  <VarDeclaration Name="rx_global_fault_prev" Type="BOOL" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+    <ECAction Algorithm="globals_alg" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Start" Condition="true" x="350" y="350" />
+</ECC><Algorithm Name="globals_alg" Comment="">
+  <Other Language="VHDL" Prototype="" Text="--update previous values&#xD;&#xA;rx_global_run_prev &lt;= rx_global_run;&#xD;&#xA;rx_global_run_infinite_prev &lt;= rx_global_run_infinite;&#xD;&#xA;rx_global_fault_prev &lt;= rx_global_fault;&#xD;&#xA;&#xD;&#xA;--these are what we use to drive events&#xD;&#xA;--global_run_changed_eO_alg_out;&#xD;&#xA;--global_fault_changed_eO_alg_out;&#xD;&#xA;&#xD;&#xA;if rx_global_run_prev /= rx_global_run or rx_global_run_infinite_prev /= rx_global_run_infinite then&#xD;&#xA;	global_run_changed_eO_alg_out &lt;= '1';&#xD;&#xA;	global_run &lt;= rx_global_run;&#xD;&#xA;	global_run_infinite &lt;= rx_global_run_infinite;&#xD;&#xA;end if;&#xD;&#xA;&#xD;&#xA;if rx_global_fault_prev /= rx_global_fault then&#xD;&#xA;	global_fault_changed_eO_alg_out &lt;= '1';&#xD;&#xA;	global_fault &lt;= rx_global_fault;&#xD;&#xA;end if;&#xD;&#xA;&#xD;&#xA;DONE &lt;= '1';&#xD;&#xA;" />
+</Algorithm></BasicFB>
+</FBType>

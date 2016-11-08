@@ -20,10 +20,10 @@ architecture rtl of {{$block.Name}} is
 begin
 	--top level I/O to signals
 	{{if $block.EventInputs}}--input events
-	{{range $index, $event := $block.EventInputs.Events}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Source $event.Name}}{{renameConnSignal $conn.Source}} <= {{$event.Name}};
+	{{range $index, $event := $block.EventInputs.Events}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Source $event.Name}}{{renameConnSignal $conn.Source}}_eI <= {{$event.Name}};
 	{{end}}{{end}}{{end}}
 	{{end}}{{if $block.EventOutputs}}--output events
-	{{range $index, $event := $block.EventOutputs.Events}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Destination $event.Name}}{{$event.Name}} <= {{renameConnSignal $conn.Source}};
+	{{range $index, $event := $block.EventOutputs.Events}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Destination $event.Name}}{{$event.Name}}_eO <= {{renameConnSignal $conn.Source}};
 	{{end}}{{end}}{{end}}
 	{{end}}{{if $block.InputVars}}--input variables
 	{{range $index, $var := $block.InputVars.Variables}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Source $var.Name}}{{renameConnSignal $conn.Source}} <= {{$var.Name}}_I;
@@ -41,10 +41,10 @@ begin
 		sync => sync,
 
 		--event outputs {{/* For both events and data connection outputs, we need to only output the *unique* signals (vhdl can't drive many signals from a single output). Hence this rigmarole. */}}
-		{{range $curConnIndex, $connName := $compositeFB.GetUniqueEventConnSources}}{{if connChildNameMatches $connName $child.Name}}{{connChildSourceOnly $connName}} => {{renameConnSignal $connName}},
+		{{range $curConnIndex, $connName := $compositeFB.GetUniqueEventConnSources}}{{if connChildNameMatches $connName $child.Name}}{{connChildSourceOnly $connName}}_eO => {{renameConnSignal $connName}},
 		{{end}}{{end}}
 		--event inputs
-		{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if connChildNameMatches $conn.Destination $child.Name}}{{connChildSourceOnly $conn.Destination}} => {{renameConnSignal $conn.Source}}, 
+		{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if connChildNameMatches $conn.Destination $child.Name}}{{connChildSourceOnly $conn.Destination}}_eI => {{renameConnSignal $conn.Source}}, 
 		{{end}}{{end}}
 		--data outputs
 		{{range $curConnIndex, $connName := $compositeFB.GetUniqueDataConnSources}}{{if connChildNameMatches $connName $child.Name}}{{connChildSourceOnly $connName}}_O => {{renameConnSignal $connName}}, 
