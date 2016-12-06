@@ -91,7 +91,7 @@ func main() {
 		return
 	}
 
-	outputs, err := conv.AllToVHDL()
+	outputs, err := conv.ConvertAll()
 	if err != nil {
 		fmt.Println("Error during conversion:", err.Error())
 		return
@@ -100,7 +100,7 @@ func main() {
 	for _, output := range outputs {
 		fmt.Println("Writing", output.Name)
 
-		err = ioutil.WriteFile(fmt.Sprintf("%s%c%s.vhd", *outLocation, os.PathSeparator, output.Name), output.VHDL, 0644)
+		err = ioutil.WriteFile(fmt.Sprintf("%s%c%s.%s", *outLocation, os.PathSeparator, output.Name, output.Extension), output.Contents, 0644)
 		if err != nil {
 			fmt.Println("Error during file write:", err.Error())
 			return

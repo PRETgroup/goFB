@@ -73,10 +73,11 @@ func (c *Converter) AddBlock(iec61499bytes []byte) error {
 	return nil
 }
 
-//VHDLOutput is used when returning the converted vhdl from the iec61499
-type VHDLOutput struct {
-	Name string
-	VHDL []byte
+//OutputFile is used when returning the converted data from the iec61499
+type OutputFile struct {
+	Name      string
+	Extension string
+	Contents  []byte
 }
 
 //TemplateData is the structure used to hold data being passed into the templating engine
@@ -108,11 +109,11 @@ func (c *Converter) SetTopName(name string) error {
 	return nil
 }
 
-//AllToVHDL converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
+//ConvertAll converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
 //Returns nil error on success
-func (c *Converter) AllToVHDL() ([]VHDLOutput, error) {
+func (c *Converter) ConvertAll() ([]OutputFile, error) {
 
-	finishedConversions := make([]VHDLOutput, 0, len(c.Blocks))
+	finishedConversions := make([]OutputFile, 0, len(c.Blocks))
 
 	for i := 0; i < len(c.Blocks); i++ {
 		output := &bytes.Buffer{}
@@ -121,11 +122,11 @@ func (c *Converter) AllToVHDL() ([]VHDLOutput, error) {
 			templateName = "compositeFB"
 		}
 
-		if err := vhdlTemplates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks}); err != nil {
+		if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks}); err != nil {
 			return nil, errors.New("Couldn't format template: " + err.Error())
 		}
 
-		finishedConversions = append(finishedConversions, VHDLOutput{Name: c.Blocks[i].Name, VHDL: output.Bytes()})
+		finishedConversions = append(finishedConversions, OutputFile{Name: c.Blocks[i].Name, Extension: c.outputLanguage, Contents: output.Bytes()})
 	}
 
 	if c.topName != "" {
@@ -142,11 +143,11 @@ func (c *Converter) AllToVHDL() ([]VHDLOutput, error) {
 			return nil, errors.New("Can't find provided top-level name '" + c.topName + "'")
 		}
 
-		if err := vhdlTemplates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks}); err != nil {
+		if err := c.templates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks}); err != nil {
 			return nil, errors.New("Couldn't format template: " + err.Error())
 		}
 
-		finishedConversions = append(finishedConversions, VHDLOutput{Name: "iec61499_network_top", VHDL: output.Bytes()})
+		finishedConversions = append(finishedConversions, OutputFile{Name: "iec61499_network_top", Extension: c.outputLanguage, Contents: output.Bytes()})
 
 	}
 
