@@ -8,14 +8,15 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kiwih/go-iec61499-vhdl/iec61499vhdlconverter"
+	"github.com/kiwih/go-iec61499-vhdl/iec61499converter"
 )
 
 var (
-	inFileName           = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses this directory")
-	outLocation          = flag.String("o", "", "Specifies the name of the directory to put output vhdl files. If blank, uses this directory")
-	topName              = flag.String("t", "", "Specifies the name of the top level fbt file. If blank, no top file will be generated.")
-	disableLanguageCheck = flag.Bool("disableLanguageCheck", false, "Disables check for compatible languages and assumes all languages are VHDL")
+	inFileName             = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses this directory")
+	outLocation            = flag.String("o", "", "Specifies the name of the directory to put output vhdl files. If blank, uses this directory")
+	topName                = flag.String("t", "", "Specifies the name of the top level fbt file. If blank, no top file will be generated.")
+	outputLanguage         = flag.String("l", "vhdl", "Specifies the output language for the program.")
+	algorithmLanguageCheck = flag.Bool("alc", false, "Sets flag for checking algorithm language compatibility with output language.")
 )
 
 func main() {
@@ -59,14 +60,14 @@ func main() {
 		fileNames = append(fileNames, *inFileName)
 	}
 
-	conv, err := iec61499vhdlconverter.New()
+	conv, err := iec61499converter.New(*outputLanguage)
 	if err != nil {
 		fmt.Println("Error creating converter:", err.Error())
 		return
 	}
 
-	if *disableLanguageCheck {
-		conv.DisableLanguageChecks()
+	if *algorithmLanguageCheck == false {
+		conv.DisableAlgorithmLanguageChecks()
 	}
 
 	for _, name := range fileNames {
