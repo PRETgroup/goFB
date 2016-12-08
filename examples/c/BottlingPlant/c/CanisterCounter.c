@@ -4,19 +4,31 @@
 // This file represents the implementation of the Basic Function Block for CanisterCounter
 #include "CanisterCounter.h"
 
+enum CanisterCounter_states { STATE_Start }
+
 void CanisterCounter_init(struct CanisterCounter *me) {
 	//if there are output events, reset them
-	CanisterCountChanged[0] = 0;
-	CanisterCountChanged[1] = 0;
+	me->outputEvents.CanisterCountChanged[0] = 0;
+	me->outputEvents->CanisterCountChanged[1] = 0;
 	
 	//if there are output vars, reset them
-	CanisterCount = 0;
+	me->outputVars.CanisterCount = 0;
 	
 	//if there are internal vars, reset them
 	
 }
 
 void CanisterCounter_run(struct CanisterCounter *me) {
+	static enum CanisterCounter_states state = STATE_Start;
+	//first, update variables that have changed based on the input events
 
+	//now, let's advance state
+	switch(state) {
+	case STATE_Start :
+		if(*(me->inputEvents.LasersChanged)) {
+			state <= STATE_Start;
+		};
+	
+	}
 }
 

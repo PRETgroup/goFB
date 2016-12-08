@@ -4,22 +4,44 @@
 // This file represents the implementation of the Basic Function Block for ConveyorController
 #include "ConveyorController.h"
 
+enum ConveyorController_states { STATE_E_Stop, STATE_Running, STATE_Pause }
+
 void ConveyorController_init(struct ConveyorController *me) {
 	//if there are output events, reset them
-	ConveyorChanged[0] = 0;
-	ConveyorChanged[1] = 0;
-	ConveyorStoppedForInject[0] = 0;
-	ConveyorStoppedForInject[1] = 0;
+	me->outputEvents.ConveyorChanged[0] = 0;
+	me->outputEvents->ConveyorChanged[1] = 0;
+	me->outputEvents.ConveyorStoppedForInject[0] = 0;
+	me->outputEvents->ConveyorStoppedForInject[1] = 0;
 	
 	//if there are output vars, reset them
-	ConveyorSpeed = 0;
+	me->outputVars.ConveyorSpeed = 0;
 	
 	//if there are internal vars, reset them
-	Variable1 = 0;
+	me->internalVars.Variable1 = 0;
 	
 }
 
 void ConveyorController_run(struct ConveyorController *me) {
+	static enum ConveyorController_states state = STATE_E_Stop;
+	//first, update variables that have changed based on the input events
 
+	//now, let's advance state
+	switch(state) {
+	case STATE_E_Stop :
+		if(*(me->inputEvents.EmergencyStopChanged) AND (!me->inputVars.EmergencyStop)) {
+			state <= STATE_Running;
+		};
+	case STATE_Running :
+		if(*(me->inputEvents.LasersChanged) AND (me->inputVars.InjectSiteLaser)) {
+			state <= STATE_Pause;
+		};
+	case STATE_Pause :
+		if(*(me->inputEvents.InjectDone)) {
+			state <= STATE_Running;
+		} else if(*(me->inputEvents.EmergencyStopChanged) AND (me->inputVars.EmergencyStop)) {
+			state <= STATE_E_Stop;
+		};
+	
+	}
 }
 

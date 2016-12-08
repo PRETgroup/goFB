@@ -34,6 +34,6 @@ struct {{$block.Name}} {
 
 void {{$block.Name}}_init(struct {{$block.Name}} *me);
 
-void {{$block.Name}}_run(struct {{$block.Name}} *me);
+void {{$block.Name}}_run(struct {{$block.Name}} *me, int ev_offset);
 
 {{end}}

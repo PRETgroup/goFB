@@ -3,6 +3,8 @@ package iec61499converter
 import (
 	"regexp"
 	"strings"
+
+	"github.com/kiwih/go-iec61499-vhdl/iec61499converter/iec61499"
 )
 
 //getVhdlType returns the VHDL type to use with respect to an IEC61499 type
@@ -46,7 +48,7 @@ func getVhdlECCTransitionCondition(iec61499trans string) string {
 //addTrueCheck is used in conjunction with getVhdlECCTransitionCondition to format the ECC transition in a VHDL-friendly manner
 //it is responsible for converting things such as "if variable and variable2" to "if variable = '1' and variable2 = '1'"
 func addTrueCheck(in string) string {
-	if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ToLower(in) == "not" || strings.ContainsAny(in, "<>=") || strings.ToLower(in) == "true" {
+	if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ToLower(in) == "not" || strings.ContainsAny(in, "<>=") || strings.ToLower(in) == "true" || strings.ToLower(in) == "false" {
 		return in
 	}
 
@@ -72,4 +74,28 @@ func connChildSourceOnly(in string) string {
 //connChildNameMatches is used in templates for location matching
 func connChildNameMatches(in string, name string) bool {
 	return strings.HasPrefix(in, name+".")
+}
+
+//getCECCTransitionCondition returns the C "if" condition to use in state machine next state logic
+func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string {
+	re := regexp.MustCompile("([a-zA-Z_<>=]+)")
+	retVal := iec61499trans
+	retVal = re.ReplaceAllStringFunc(retVal, func(in string) string {
+		if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ContainsAny(in, "!<>=") || strings.ToLower(in) == "true" || strings.ToLower(in) == "false" {
+			//no need to make changes, these aren't variables or events
+			return in
+		}
+		//check to see if it is an input event
+		if block.EventInputs != nil {
+			for _, event := range block.EventInputs.Events {
+				if event.Name == in {
+					return "*(me->inputEvents." + in + " + ev_offset)"
+				}
+			}
+		}
+		//else, return it assuming input data
+		return "me->inputVars." + in
+	})
+
+	return retVal
 }

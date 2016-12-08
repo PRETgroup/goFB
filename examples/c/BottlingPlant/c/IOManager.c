@@ -4,42 +4,54 @@
 // This file represents the implementation of the Basic Function Block for IOManager
 #include "IOManager.h"
 
+enum IOManager_states { STATE_Start }
+
 void IOManager_init(struct IOManager *me) {
 	//if there are output events, reset them
-	InjectorArmFinishMovement[0] = 0;
-	InjectorArmFinishMovement[1] = 0;
-	EmergencyStopChanged[0] = 0;
-	EmergencyStopChanged[1] = 0;
-	CanisterPressureChanged[0] = 0;
-	CanisterPressureChanged[1] = 0;
-	FillContentsAvailableChanged[0] = 0;
-	FillContentsAvailableChanged[1] = 0;
-	LasersChanged[0] = 0;
-	LasersChanged[1] = 0;
-	DoorOverride[0] = 0;
-	DoorOverride[1] = 0;
-	VacuumTimerElapsed[0] = 0;
-	VacuumTimerElapsed[1] = 0;
+	me->outputEvents.InjectorArmFinishMovement[0] = 0;
+	me->outputEvents->InjectorArmFinishMovement[1] = 0;
+	me->outputEvents.EmergencyStopChanged[0] = 0;
+	me->outputEvents->EmergencyStopChanged[1] = 0;
+	me->outputEvents.CanisterPressureChanged[0] = 0;
+	me->outputEvents->CanisterPressureChanged[1] = 0;
+	me->outputEvents.FillContentsAvailableChanged[0] = 0;
+	me->outputEvents->FillContentsAvailableChanged[1] = 0;
+	me->outputEvents.LasersChanged[0] = 0;
+	me->outputEvents->LasersChanged[1] = 0;
+	me->outputEvents.DoorOverride[0] = 0;
+	me->outputEvents->DoorOverride[1] = 0;
+	me->outputEvents.VacuumTimerElapsed[0] = 0;
+	me->outputEvents->VacuumTimerElapsed[1] = 0;
 	
 	//if there are output vars, reset them
-	EmergencyStop = 0;
-	CanisterPressure = 0;
-	FillContentsAvailable = 0;
-	DoorSiteLaser = 0;
-	InjectSiteLaser = 0;
-	RejectSiteLaser = 0;
-	RejectBinLaser = 0;
-	AcceptBinLaser = 0;
+	me->outputVars.EmergencyStop = 0;
+	me->outputVars.CanisterPressure = 0;
+	me->outputVars.FillContentsAvailable = 0;
+	me->outputVars.DoorSiteLaser = 0;
+	me->outputVars.InjectSiteLaser = 0;
+	me->outputVars.RejectSiteLaser = 0;
+	me->outputVars.RejectBinLaser = 0;
+	me->outputVars.AcceptBinLaser = 0;
 	
 	//if there are internal vars, reset them
-	EmergencyStopped = 0;
-	UART_TX = 0;
-	UART_TX_READY = 0;
-	UART_TX_SEND = 0;
+	me->internalVars.EmergencyStopped = 0;
+	me->internalVars.UART_TX = 0;
+	me->internalVars.UART_TX_READY = 0;
+	me->internalVars.UART_TX_SEND = 0;
 	
 }
 
 void IOManager_run(struct IOManager *me) {
+	static enum IOManager_states state = STATE_Start;
+	//first, update variables that have changed based on the input events
 
+	//now, let's advance state
+	switch(state) {
+	case STATE_Start :
+		if(true) {
+			state <= STATE_Start;
+		};
+	
+	}
 }
 

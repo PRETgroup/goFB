@@ -67,6 +67,8 @@ var (
 	}
 	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./templates/vhdl/*"))
 
-	cTemplateFuncMap = template.FuncMap{}
-	cTemplates       = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob("./templates/c/*"))
+	cTemplateFuncMap = template.FuncMap{
+		"getCECCTransitionCondition": getCECCTransitionCondition,
+	}
+	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob("./templates/c/*"))
 )

@@ -4,21 +4,36 @@
 // This file represents the implementation of the Basic Function Block for {{$block.Name}}
 #include "{{$block.Name}}.h"
 
+enum {{$block.Name}}_states { {{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}STATE_{{$state.Name}}{{end}} }
+
 void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}}[0] = 0;
-	{{$event.Name}}[1] = 0;
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.{{$event.Name}}[0] = 0;
+	me->outputEvents->{{$event.Name}}[1] = 0;
 	{{end}}{{end}}
 	//if there are output vars, reset them
-	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}{{$var.Name}} = 0;
+	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->outputVars.{{$var.Name}} = 0;
 	{{end}}{{end}}
 	//if there are internal vars, reset them
-	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Name}} = 0;
+	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}me->internalVars.{{$var.Name}} = 0;
 	{{end}}{{end}}
 }
 
-void {{$block.Name}}_run(struct {{$block.Name}} *me) {
+void {{$block.Name}}_run(struct {{$block.Name}} *me, int ev_offset) {
+	static enum {{$block.Name}}_states state = STATE_{{(index $basicFB.States 0).Name}};
+	//first, update variables that have changed based on the input events
 
+	//now, let's advance state
+	//remember that ev_offset is used to choose between the 0 and 1 elements of the output event
+	//arrays, so it will only ever be 0 or 1
+	//we use these arrays to prevent unnecessary memory copying
+	switch(state) {
+	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}} :
+		{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{getCECCTransitionCondition $block $trans.Condition}}) {
+			state <= STATE_{{$trans.Destination}};
+		{{end}}};
+	{{end}}
+	}
 }
 
 {{end}}

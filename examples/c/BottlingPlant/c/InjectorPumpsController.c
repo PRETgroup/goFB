@@ -4,30 +4,68 @@
 // This file represents the implementation of the Basic Function Block for InjectorPumpsController
 #include "InjectorPumpsController.h"
 
+enum InjectorPumpsController_states { STATE_RejectCanister, STATE_AwaitPump, STATE_VacuumPump, STATE_FinishPump, STATE_StartPump, STATE_OpenValve, STATE_StopVacuum }
+
 void InjectorPumpsController_init(struct InjectorPumpsController *me) {
 	//if there are output events, reset them
-	PumpFinished[0] = 0;
-	PumpFinished[1] = 0;
-	RejectCanister[0] = 0;
-	RejectCanister[1] = 0;
-	InjectorControlsChanged[0] = 0;
-	InjectorControlsChanged[1] = 0;
-	FillContentsChanged[0] = 0;
-	FillContentsChanged[1] = 0;
-	StartVacuumTimer[0] = 0;
-	StartVacuumTimer[1] = 0;
+	me->outputEvents.PumpFinished[0] = 0;
+	me->outputEvents->PumpFinished[1] = 0;
+	me->outputEvents.RejectCanister[0] = 0;
+	me->outputEvents->RejectCanister[1] = 0;
+	me->outputEvents.InjectorControlsChanged[0] = 0;
+	me->outputEvents->InjectorControlsChanged[1] = 0;
+	me->outputEvents.FillContentsChanged[0] = 0;
+	me->outputEvents->FillContentsChanged[1] = 0;
+	me->outputEvents.StartVacuumTimer[0] = 0;
+	me->outputEvents->StartVacuumTimer[1] = 0;
 	
 	//if there are output vars, reset them
-	InjectorContentsValveOpen = 0;
-	InjectorVacuumRun = 0;
-	InjectorPressurePumpRun = 0;
-	FillContents = 0;
+	me->outputVars.InjectorContentsValveOpen = 0;
+	me->outputVars.InjectorVacuumRun = 0;
+	me->outputVars.InjectorPressurePumpRun = 0;
+	me->outputVars.FillContents = 0;
 	
 	//if there are internal vars, reset them
 	
 }
 
 void InjectorPumpsController_run(struct InjectorPumpsController *me) {
+	static enum InjectorPumpsController_states state = STATE_RejectCanister;
+	//first, update variables that have changed based on the input events
 
+	//now, let's advance state
+	switch(state) {
+	case STATE_RejectCanister :
+		if(true) {
+			state <= STATE_AwaitPump;
+		};
+	case STATE_AwaitPump :
+		if(*(me->inputEvents.StartPump)) {
+			state <= STATE_VacuumPump;
+		};
+	case STATE_VacuumPump :
+		if(*(me->inputEvents.VacuumTimerElapsed)) {
+			state <= STATE_RejectCanister;
+		} else if(*(me->inputEvents.CanisterPressureChanged) AND (CanisterPressure<=10)) {
+			state <= STATE_StopVacuum;
+		};
+	case STATE_FinishPump :
+		if(true) {
+			state <= STATE_AwaitPump;
+		};
+	case STATE_StartPump :
+		if(*(me->inputEvents.CanisterPressureChanged) AND (CanisterPressure>=245)) {
+			state <= STATE_FinishPump;
+		};
+	case STATE_OpenValve :
+		if(true) {
+			state <= STATE_StartPump;
+		};
+	case STATE_StopVacuum :
+		if(true) {
+			state <= STATE_OpenValve;
+		};
+	
+	}
 }
 

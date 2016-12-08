@@ -4,25 +4,49 @@
 // This file represents the implementation of the Basic Function Block for InjectorMotorController
 #include "InjectorMotorController.h"
 
+enum InjectorMotorController_states { STATE_MoveArmUp, STATE_Await_Bottle, STATE_MoveArmDown, STATE_Await_Pumping }
+
 void InjectorMotorController_init(struct InjectorMotorController *me) {
 	//if there are output events, reset them
-	StartPump[0] = 0;
-	StartPump[1] = 0;
-	InjectDone[0] = 0;
-	InjectDone[1] = 0;
-	InjectorPositionChanged[0] = 0;
-	InjectorPositionChanged[1] = 0;
-	InjectRunning[0] = 0;
-	InjectRunning[1] = 0;
+	me->outputEvents.StartPump[0] = 0;
+	me->outputEvents->StartPump[1] = 0;
+	me->outputEvents.InjectDone[0] = 0;
+	me->outputEvents->InjectDone[1] = 0;
+	me->outputEvents.InjectorPositionChanged[0] = 0;
+	me->outputEvents->InjectorPositionChanged[1] = 0;
+	me->outputEvents.InjectRunning[0] = 0;
+	me->outputEvents->InjectRunning[1] = 0;
 	
 	//if there are output vars, reset them
-	InjectorPosition = 0;
+	me->outputVars.InjectorPosition = 0;
 	
 	//if there are internal vars, reset them
 	
 }
 
 void InjectorMotorController_run(struct InjectorMotorController *me) {
+	static enum InjectorMotorController_states state = STATE_MoveArmUp;
+	//first, update variables that have changed based on the input events
 
+	//now, let's advance state
+	switch(state) {
+	case STATE_MoveArmUp :
+		if(*(me->inputEvents.InjectorArmFinishedMovement)) {
+			state <= STATE_Await_Bottle;
+		};
+	case STATE_Await_Bottle :
+		if(*(me->inputEvents.ConveyorStoppedForInject)) {
+			state <= STATE_MoveArmDown;
+		};
+	case STATE_MoveArmDown :
+		if(*(me->inputEvents.InjectorArmFinishedMovement)) {
+			state <= STATE_Await_Pumping;
+		};
+	case STATE_Await_Pumping :
+		if(*(me->inputEvents.PumpFinished)) {
+			state <= STATE_MoveArmUp;
+		};
+	
+	}
 }
 

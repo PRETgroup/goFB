@@ -4,10 +4,12 @@
 // This file represents the implementation of the Basic Function Block for DoorController
 #include "DoorController.h"
 
+enum DoorController_states { STATE_E_Stop, STATE_Run, STATE_Await }
+
 void DoorController_init(struct DoorController *me) {
 	//if there are output events, reset them
-	DoorReleaseCanister[0] = 0;
-	DoorReleaseCanister[1] = 0;
+	me->outputEvents.DoorReleaseCanister[0] = 0;
+	me->outputEvents->DoorReleaseCanister[1] = 0;
 	
 	//if there are output vars, reset them
 	
@@ -16,6 +18,26 @@ void DoorController_init(struct DoorController *me) {
 }
 
 void DoorController_run(struct DoorController *me) {
+	static enum DoorController_states state = STATE_E_Stop;
+	//first, update variables that have changed based on the input events
 
+	//now, let's advance state
+	switch(state) {
+	case STATE_E_Stop :
+		if(*(me->inputEvents.EmergencyStopChanged) AND (!me->inputVars.EmergencyStop)) {
+			state <= STATE_Await;
+		};
+	case STATE_Run :
+		if(*(me->inputEvents.EmergencyStopChanged) AND (me->inputVars.EmergencyStop)) {
+			state <= STATE_E_Stop;
+		} else if(*(me->inputEvents.ReleaseDoorOverride) OR *(me->inputEvents.BottlingDone)) {
+			state <= STATE_Run;
+		};
+	case STATE_Await :
+		if(*(me->inputEvents.ReleaseDoorOverride) OR *(me->inputEvents.BottlingDone)) {
+			state <= STATE_Run;
+		};
+	
+	}
 }
 
