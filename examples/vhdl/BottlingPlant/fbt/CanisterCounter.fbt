@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="CanisterCounter" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="LasersChanged" Comment="">
+    <With Var="DoorSiteLaser" />
+    <With Var="RejectBinLaser" />
+    <With Var="AcceptBinLaser" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="CanisterCountChanged" Comment="">
+    <With Var="CanisterCount" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DoorSiteLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="RejectBinLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="AcceptBinLaser" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="CanisterCount" Type="BYTE" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="875" y="568.75">
+    <ECAction Algorithm="ChangeCount" Output="CanisterCountChanged" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Start" Condition="LasersChanged" x="894" y="624.75" />
+</ECC><Algorithm Name="ChangeCount" Comment="">
+  <Other Language="VHDL" Prototype="" Text="if DoorSiteLaser='1' then &#xD;&#xA;	CanisterCount &lt;= CanisterCount + 1;&#xD;&#xA;end if;&#xD;&#xA;if RejectBinLaser = '1' or AcceptBinLaser = '1' then &#xD;&#xA;CanisterCount &lt;= CanisterCount - 1;&#xD;&#xA;end if;&#xD;&#xA;DONE&lt;='1';" />
+</Algorithm></BasicFB>
+</FBType>

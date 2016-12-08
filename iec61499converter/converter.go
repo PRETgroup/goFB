@@ -10,26 +10,6 @@ import (
 	"github.com/kiwih/go-iec61499-vhdl/iec61499converter/iec61499"
 )
 
-const (
-	languageVHDL = "vhdl"
-	languageC    = "c"
-)
-
-var (
-	vhdlTemplateFuncMap = template.FuncMap{
-		"getVhdlType":                   getVhdlType,
-		"getVhdlECCTransitionCondition": getVhdlECCTransitionCondition,
-		"renameDoneSignal":              renameDoneSignal,
-		"renameConnSignal":              renameConnSignal,
-		"connChildSourceOnly":           connChildSourceOnly,
-		"connChildNameMatches":          connChildNameMatches,
-	}
-	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./templates/vhdl/*"))
-
-	cTemplateFuncMap = template.FuncMap{}
-	cTemplates       = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob("./templates/c/*"))
-)
-
 //Converter is the struct we use to store all blocks for conversion (and what we operate from)
 type Converter struct {
 	Blocks  []iec61499.FB
@@ -37,11 +17,11 @@ type Converter struct {
 
 	ignoreAlgorithmLanguages bool
 
-	outputLanguage string
+	outputLanguage language
 	templates      *template.Template
 }
 
-//New returns a new instance of a Converter
+//New returns a new instance of a Converter based on the provided language
 func New(language string) (*Converter, error) {
 	if strings.ToLower(language) == "vhdl" {
 		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageVHDL, templates: vhdlTemplates}, nil
@@ -112,9 +92,9 @@ func (c *Converter) SetTopName(name string) error {
 //ConvertAll converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
 //Returns nil error on success
 func (c *Converter) ConvertAll() ([]OutputFile, error) {
-
 	finishedConversions := make([]OutputFile, 0, len(c.Blocks))
 
+	//convert all function blocks
 	for i := 0; i < len(c.Blocks); i++ {
 		output := &bytes.Buffer{}
 		templateName := "basicFB"
@@ -126,9 +106,21 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			return nil, errors.New("Couldn't format template: " + err.Error())
 		}
 
-		finishedConversions = append(finishedConversions, OutputFile{Name: c.Blocks[i].Name, Extension: c.outputLanguage, Contents: output.Bytes()})
+		finishedConversions = append(finishedConversions, OutputFile{Name: c.Blocks[i].Name, Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
+
+		if c.outputLanguage.hasHeaders() {
+			output := &bytes.Buffer{}
+			templateName := "FBheader"
+
+			if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks}); err != nil {
+				return nil, errors.New("Couldn't format template: " + err.Error())
+			}
+
+			finishedConversions = append(finishedConversions, OutputFile{Name: c.Blocks[i].Name, Extension: c.outputLanguage.getHeaderExtension(), Contents: output.Bytes()})
+		}
 	}
 
+	//convert the top file
 	if c.topName != "" {
 		output := &bytes.Buffer{}
 		topIndex := -1
@@ -147,8 +139,19 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			return nil, errors.New("Couldn't format template: " + err.Error())
 		}
 
-		finishedConversions = append(finishedConversions, OutputFile{Name: "iec61499_network_top", Extension: c.outputLanguage, Contents: output.Bytes()})
+		finishedConversions = append(finishedConversions, OutputFile{Name: "iec61499_network_top", Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
 
+	}
+
+	//convert any supporting files
+	for _, st := range c.outputLanguage.supportFileTemplates() {
+		output := &bytes.Buffer{}
+
+		if err := c.templates.ExecuteTemplate(output, st.templateName, TemplateData{Blocks: c.Blocks}); err != nil {
+			return nil, errors.New("Couldn't format template: " + err.Error())
+		}
+
+		finishedConversions = append(finishedConversions, OutputFile{Name: st.fileName, Extension: st.extension, Contents: output.Bytes()})
 	}
 
 	return finishedConversions, nil

@@ -12,11 +12,11 @@ import (
 )
 
 var (
-	inFileName             = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses this directory")
-	outLocation            = flag.String("o", "", "Specifies the name of the directory to put output vhdl files. If blank, uses this directory")
+	inFileName             = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses current directory")
+	outLocation            = flag.String("o", "", "Specifies the name of the directory to put output files. If blank, uses current directory")
 	topName                = flag.String("t", "", "Specifies the name of the top level fbt file. If blank, no top file will be generated.")
-	outputLanguage         = flag.String("l", "vhdl", "Specifies the output language for the program.")
-	algorithmLanguageCheck = flag.Bool("alc", false, "Sets flag for checking algorithm language compatibility with output language.")
+	outputLanguage         = flag.String("l", "c", "Specifies the output language for the program.")
+	algorithmLanguageCheck = flag.Bool("alc", false, "Enable checking algorithm language compatibility with output language.")
 )
 
 func main() {
@@ -98,7 +98,7 @@ func main() {
 	}
 
 	for _, output := range outputs {
-		fmt.Println("Writing", output.Name)
+		fmt.Printf("Writing %s.%s\n", output.Name, output.Extension)
 
 		err = ioutil.WriteFile(fmt.Sprintf("%s%c%s.%s", *outLocation, os.PathSeparator, output.Name, output.Extension), output.Contents, 0644)
 		if err != nil {

@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="InjectorMotorController" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="InjectorArmFinishedMovement" Comment="">
+  </Event>
+  <Event Name="EmergencyStopChanged" Comment="">
+    <With Var="EmergencyStop" />
+  </Event>
+  <Event Name="ConveyorStoppedForInject" Comment="">
+  </Event>
+  <Event Name="PumpFinished" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="StartPump" Comment="">
+  </Event>
+  <Event Name="InjectDone" Comment="">
+  </Event>
+  <Event Name="InjectorPositionChanged" Comment="">
+    <With Var="InjectorPosition" />
+  </Event>
+  <Event Name="InjectRunning" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="EmergencyStop" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="InjectorPosition" Type="BYTE" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="MoveArmUp" Comment="" x="1709.89583333333" y="1480.20833333333">
+    <ECAction Algorithm="SetArmUpPosition" Output="InjectorPositionChanged" />
+  </ECState>
+  <ECState Name="Await_Bottle" Comment="" x="696.354166666667" y="1483.85416666667">
+    <ECAction Output="InjectDone" />
+  </ECState>
+  <ECState Name="MoveArmDown" Comment="" x="743.75" y="2231.25">
+    <ECAction Algorithm="SetArmDownPosition" Output="InjectorPositionChanged" />
+    <ECAction Output="InjectRunning" />
+  </ECState>
+  <ECState Name="Await_Pumping" Comment="" x="1739.0625" y="1895.83333333333">
+    <ECAction Output="StartPump" />
+  </ECState>
+  <ECTransition Source="Await_Bottle" Destination="MoveArmDown" Condition="ConveyorStoppedForInject" x="723.052083333333" y="1901.55208333333" />
+  <ECTransition Source="MoveArmDown" Destination="Await_Pumping" Condition="InjectorArmFinishedMovement" x="1311.40625" y="2077.54166666667" />
+  <ECTransition Source="Await_Pumping" Destination="MoveArmUp" Condition="PumpFinished" x="1722.47916666667" y="1705.02083333333" />
+  <ECTransition Source="MoveArmUp" Destination="Await_Bottle" Condition="InjectorArmFinishedMovement" x="1237.125" y="1482.03125" />
+</ECC><Algorithm Name="SetArmDownPosition" Comment="">
+  <Other Language="VHDL" Prototype="" Text="InjectorPosition &lt;= x&quot;FF&quot;;&#xD;&#xA;DONE &lt;= '1';" />
+</Algorithm>
+<Algorithm Name="SetArmUpPosition" Comment="">
+  <Other Language="VHDL" Prototype="" Text="InjectorPosition &lt;= x&quot;00&quot;;&#xD;&#xA;DONE &lt;= '1';" />
+</Algorithm>
+<Algorithm Name="Algorithm1" Comment="">
+  <Other Language="VHDL" Prototype="" Text="DONE &lt;= '1';" />
+</Algorithm></BasicFB>
+</FBType>

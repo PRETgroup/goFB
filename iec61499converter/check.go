@@ -2,7 +2,6 @@ package iec61499converter
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/kiwih/go-iec61499-vhdl/iec61499converter/iec61499"
 )
@@ -13,7 +12,7 @@ func (c *Converter) checkFB(fb *iec61499.FB) error {
 	if c.ignoreAlgorithmLanguages == false {
 		if fb.BasicFB != nil {
 			for i := 0; i < len(fb.BasicFB.Algorithms); i++ {
-				if strings.ToLower(fb.BasicFB.Algorithms[i].Other.Language) != c.outputLanguage {
+				if !c.outputLanguage.equals(fb.BasicFB.Algorithms[i].Other.Language) {
 					return errors.New("Algorithm " + fb.BasicFB.Algorithms[i].Name + " in block " + fb.Name + " is not written in VHDL")
 				}
 			}
