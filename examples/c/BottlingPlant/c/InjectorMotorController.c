@@ -25,28 +25,46 @@ void InjectorMotorController_init(struct InjectorMotorController *me) {
 }
 
 void InjectorMotorController_run(struct InjectorMotorController *me) {
+	//current state storage
 	static enum InjectorMotorController_states state = STATE_MoveArmUp;
-	//first, update variables that have changed based on the input events
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_MoveArmUp :
-		if(*(me->inputEvents.InjectorArmFinishedMovement)) {
-			state <= STATE_Await_Bottle;
+		if(me->inputEvents.InjectorArmFinishedMovement) {
+			state = STATE_Await_Bottle;
 		};
 	case STATE_Await_Bottle :
-		if(*(me->inputEvents.ConveyorStoppedForInject)) {
-			state <= STATE_MoveArmDown;
+		if(me->inputEvents.ConveyorStoppedForInject) {
+			state = STATE_MoveArmDown;
 		};
 	case STATE_MoveArmDown :
-		if(*(me->inputEvents.InjectorArmFinishedMovement)) {
-			state <= STATE_Await_Pumping;
+		if(me->inputEvents.InjectorArmFinishedMovement) {
+			state = STATE_Await_Pumping;
 		};
 	case STATE_Await_Pumping :
-		if(*(me->inputEvents.PumpFinished)) {
-			state <= STATE_MoveArmUp;
+		if(me->inputEvents.PumpFinished) {
+			state = STATE_MoveArmUp;
 		};
 	
 	}
 }
+
+//algorithms
+
+void InjectorMotorController_SetArmDownPosition(struct InjectorMotorController *me) {
+InjectorPosition <= x"FF";
+DONE <= '1';
+}
+
+void InjectorMotorController_SetArmUpPosition(struct InjectorMotorController *me) {
+InjectorPosition <= x"00";
+DONE <= '1';
+}
+
+void InjectorMotorController_Algorithm1(struct InjectorMotorController *me) {
+DONE <= '1';
+}
+
+
 

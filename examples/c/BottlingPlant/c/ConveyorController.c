@@ -22,26 +22,48 @@ void ConveyorController_init(struct ConveyorController *me) {
 }
 
 void ConveyorController_run(struct ConveyorController *me) {
+	//current state storage
 	static enum ConveyorController_states state = STATE_E_Stop;
-	//first, update variables that have changed based on the input events
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_E_Stop :
-		if(*(me->inputEvents.EmergencyStopChanged) AND (!me->inputVars.EmergencyStop)) {
-			state <= STATE_Running;
+		if(me->inputEvents.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
+			state = STATE_Running;
 		};
 	case STATE_Running :
-		if(*(me->inputEvents.LasersChanged) AND (me->inputVars.InjectSiteLaser)) {
-			state <= STATE_Pause;
+		if(me->inputEvents.LasersChanged AND (me->inputVars.InjectSiteLaser)) {
+			state = STATE_Pause;
 		};
 	case STATE_Pause :
-		if(*(me->inputEvents.InjectDone)) {
-			state <= STATE_Running;
-		} else if(*(me->inputEvents.EmergencyStopChanged) AND (me->inputVars.EmergencyStop)) {
-			state <= STATE_E_Stop;
+		if(me->inputEvents.InjectDone) {
+			state = STATE_Running;
+		} else if(me->inputEvents.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
+			state = STATE_E_Stop;
 		};
 	
 	}
 }
+
+//algorithms
+
+void ConveyorController_ConveyorStart(struct ConveyorController *me) {
+ConveyorSpeed <= x"01";
+DONE <= '1';
+}
+
+void ConveyorController_ConveyorStop(struct ConveyorController *me) {
+ConveyorSpeed <= x"00";
+DONE <= '1';
+}
+
+void ConveyorController_ConveyorRunning(struct ConveyorController *me) {
+DONE <= '1';
+}
+
+void ConveyorController_ConveyorEStop(struct ConveyorController *me) {
+DONE <= '1';
+}
+
+
 

@@ -30,42 +30,68 @@ void InjectorPumpsController_init(struct InjectorPumpsController *me) {
 }
 
 void InjectorPumpsController_run(struct InjectorPumpsController *me) {
+	//current state storage
 	static enum InjectorPumpsController_states state = STATE_RejectCanister;
-	//first, update variables that have changed based on the input events
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_RejectCanister :
 		if(true) {
-			state <= STATE_AwaitPump;
+			state = STATE_AwaitPump;
 		};
 	case STATE_AwaitPump :
-		if(*(me->inputEvents.StartPump)) {
-			state <= STATE_VacuumPump;
+		if(me->inputEvents.StartPump) {
+			state = STATE_VacuumPump;
 		};
 	case STATE_VacuumPump :
-		if(*(me->inputEvents.VacuumTimerElapsed)) {
-			state <= STATE_RejectCanister;
-		} else if(*(me->inputEvents.CanisterPressureChanged) AND (CanisterPressure<=10)) {
-			state <= STATE_StopVacuum;
+		if(me->inputEvents.VacuumTimerElapsed) {
+			state = STATE_RejectCanister;
+		} else if(me->inputEvents.CanisterPressureChanged AND (CanisterPressure<=10)) {
+			state = STATE_StopVacuum;
 		};
 	case STATE_FinishPump :
 		if(true) {
-			state <= STATE_AwaitPump;
+			state = STATE_AwaitPump;
 		};
 	case STATE_StartPump :
-		if(*(me->inputEvents.CanisterPressureChanged) AND (CanisterPressure>=245)) {
-			state <= STATE_FinishPump;
+		if(me->inputEvents.CanisterPressureChanged AND (CanisterPressure>=245)) {
+			state = STATE_FinishPump;
 		};
 	case STATE_OpenValve :
 		if(true) {
-			state <= STATE_StartPump;
+			state = STATE_StartPump;
 		};
 	case STATE_StopVacuum :
 		if(true) {
-			state <= STATE_OpenValve;
+			state = STATE_OpenValve;
 		};
 	
 	}
 }
+
+//algorithms
+
+void InjectorPumpsController_StartVacuum(struct InjectorPumpsController *me) {
+InjectorVacuumRun <= '1';
+ DONE <= '1';
+}
+
+void InjectorPumpsController_ClearControls(struct InjectorPumpsController *me) {
+InjectorContentsValveOpen <= '0';
+ InjectorPressurePumpRun <= '0';
+ InjectorVacuumRun <= '0';
+ DONE <= '1';
+}
+
+void InjectorPumpsController_OpenValve(struct InjectorPumpsController *me) {
+InjectorContentsValveOpen <= '1';
+ DONE <= '1';
+}
+
+void InjectorPumpsController_StartPump(struct InjectorPumpsController *me) {
+InjectorPressurePumpRun <= '1';
+ DONE <= '1';
+}
+
+
 

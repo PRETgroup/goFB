@@ -5,46 +5,54 @@
 #include "fbtypes.h"
 
 struct InjectorPumpsControllerInputEvents {
-	EVENT *StartPump;
-	EVENT *EmergencyStopChanged;
-	EVENT *CanisterPressureChanged;
-	EVENT *FillContentsAvailableChanged;
-	EVENT *VacuumTimerElapsed;
+	EVENT StartPump;
+	EVENT EmergencyStopChanged;
+	EVENT CanisterPressureChanged;
+	EVENT FillContentsAvailableChanged;
+	EVENT VacuumTimerElapsed;
 }
 
 struct InjectorPumpsControllerOutputEvents {
-	EVENT PumpFinished[2];
-	EVENT RejectCanister[2];
-	EVENT InjectorControlsChanged[2];
-	EVENT FillContentsChanged[2];
-	EVENT StartVacuumTimer[2];
+	EVENT PumpFinished;
+	EVENT RejectCanister;
+	EVENT InjectorControlsChanged;
+	EVENT FillContentsChanged;
+	EVENT StartVacuumTimer;
 }
 
-struct InjectorPumpsControllerInputVars {
-	BOOL EmergencyStop;
-	BYTE CanisterPressure;
-	BYTE FillContentsAvailable;
-}
 
-struct InjectorPumpsControllerOutputVars {
-	BOOL InjectorContentsValveOpen;
-	BOOL InjectorVacuumRun;
-	BOOL InjectorPressurePumpRun;
-	BOOL FillContents;
-}
 
-struct InjectorPumpsControllerInternalVars {
-}
+
+
+
 
 struct InjectorPumpsController {
+    //input events
     struct InjectorPumpsControllerInputEvents inputEvents;
+
+    //output events
     struct InjectorPumpsControllerOutputEvents outputEvents;
-    struct InjectorPumpsControllerInputVars inputVars;
-    struct InjectorPumpsControllerOutputVars outputVars;
-    struct InjectorPumpsControllerInternalVars internalVars;
+
+    //input vars
+    
+    BOOL EmergencyStop;
+    BYTE CanisterPressure;
+    BYTE FillContentsAvailable;
+
+    //output vars
+    
+    BOOL InjectorContentsValveOpen;
+    BOOL InjectorVacuumRun;
+    BOOL InjectorPressurePumpRun;
+    BOOL FillContents;
+
+    //internal vars
+    
+
+    
 }
 
 void InjectorPumpsController_init(struct InjectorPumpsController *me);
 
-void InjectorPumpsController_run(struct InjectorPumpsController *me);
+void InjectorPumpsController_run(struct InjectorPumpsController *me, int ev_offset);
 

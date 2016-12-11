@@ -94,6 +94,21 @@ func (c *Converter) SetTopName(name string) error {
 func (c *Converter) ConvertAll() ([]OutputFile, error) {
 	finishedConversions := make([]OutputFile, 0, len(c.Blocks))
 
+	//if a top block is present
+	topIndex := -1
+	if c.topName != "" {
+		for i := 0; i < len(c.Blocks); i++ {
+			if c.Blocks[i].Name == c.topName {
+				topIndex = i
+				break
+			}
+		}
+
+		if topIndex == -1 {
+			return nil, errors.New("Can't find provided top-level name '" + c.topName + "'")
+		}
+	}
+
 	//convert all function blocks
 	for i := 0; i < len(c.Blocks); i++ {
 		output := &bytes.Buffer{}
@@ -120,20 +135,9 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 		}
 	}
 
-	//convert the top file
-	if c.topName != "" {
+	//interface with the top file if it is present
+	if topIndex != -1 {
 		output := &bytes.Buffer{}
-		topIndex := -1
-		for i := 0; i < len(c.Blocks); i++ {
-			if c.Blocks[i].Name == c.topName {
-				topIndex = i
-				break
-			}
-		}
-
-		if topIndex == -1 {
-			return nil, errors.New("Can't find provided top-level name '" + c.topName + "'")
-		}
 
 		if err := c.templates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks}); err != nil {
 			return nil, errors.New("Couldn't format template: " + err.Error())

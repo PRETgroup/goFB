@@ -5,35 +5,43 @@
 #include "fbtypes.h"
 
 struct CanisterCounterInputEvents {
-	EVENT *LasersChanged;
+	EVENT LasersChanged;
 }
 
 struct CanisterCounterOutputEvents {
-	EVENT CanisterCountChanged[2];
+	EVENT CanisterCountChanged;
 }
 
-struct CanisterCounterInputVars {
-	BOOL DoorSiteLaser;
-	BOOL RejectBinLaser;
-	BOOL AcceptBinLaser;
-}
 
-struct CanisterCounterOutputVars {
-	BYTE CanisterCount;
-}
 
-struct CanisterCounterInternalVars {
-}
+
+
+
 
 struct CanisterCounter {
+    //input events
     struct CanisterCounterInputEvents inputEvents;
+
+    //output events
     struct CanisterCounterOutputEvents outputEvents;
-    struct CanisterCounterInputVars inputVars;
-    struct CanisterCounterOutputVars outputVars;
-    struct CanisterCounterInternalVars internalVars;
+
+    //input vars
+    
+    BOOL DoorSiteLaser;
+    BOOL RejectBinLaser;
+    BOOL AcceptBinLaser;
+
+    //output vars
+    
+    BYTE CanisterCount;
+
+    //internal vars
+    
+
+    
 }
 
 void CanisterCounter_init(struct CanisterCounter *me);
 
-void CanisterCounter_run(struct CanisterCounter *me);
+void CanisterCounter_run(struct CanisterCounter *me, int ev_offset);
 

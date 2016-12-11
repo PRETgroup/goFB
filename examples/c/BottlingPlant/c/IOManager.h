@@ -5,64 +5,72 @@
 #include "fbtypes.h"
 
 struct IOManagerInputEvents {
-	EVENT *DoorReleaseCanister;
-	EVENT *ConveyorChanged;
-	EVENT *InjectorPositionChanged;
-	EVENT *InjectorControlsChanged;
-	EVENT *FillContentsChanged;
-	EVENT *StartVacuumTimer;
-	EVENT *GoRejectArm;
-	EVENT *CanisterCountChanged;
-	EVENT *InjectDone;
+	EVENT DoorReleaseCanister;
+	EVENT ConveyorChanged;
+	EVENT InjectorPositionChanged;
+	EVENT InjectorControlsChanged;
+	EVENT FillContentsChanged;
+	EVENT StartVacuumTimer;
+	EVENT GoRejectArm;
+	EVENT CanisterCountChanged;
+	EVENT InjectDone;
 }
 
 struct IOManagerOutputEvents {
-	EVENT InjectorArmFinishMovement[2];
-	EVENT EmergencyStopChanged[2];
-	EVENT CanisterPressureChanged[2];
-	EVENT FillContentsAvailableChanged[2];
-	EVENT LasersChanged[2];
-	EVENT DoorOverride[2];
-	EVENT VacuumTimerElapsed[2];
+	EVENT InjectorArmFinishMovement;
+	EVENT EmergencyStopChanged;
+	EVENT CanisterPressureChanged;
+	EVENT FillContentsAvailableChanged;
+	EVENT LasersChanged;
+	EVENT DoorOverride;
+	EVENT VacuumTimerElapsed;
 }
 
-struct IOManagerInputVars {
-	BYTE ConveyorSpeed;
-	BYTE InjectorPosition;
-	BOOL InjectorContentsValveOpen;
-	BOOL InjectorVacuumRun;
-	BOOL InjectorPressurePumpRun;
-	BOOL FillContents;
-	BYTE CanisterCount;
-}
 
-struct IOManagerOutputVars {
-	BOOL EmergencyStop;
-	BYTE CanisterPressure;
-	BYTE FillContentsAvailable;
-	BOOL DoorSiteLaser;
-	BOOL InjectSiteLaser;
-	BOOL RejectSiteLaser;
-	BOOL RejectBinLaser;
-	BOOL AcceptBinLaser;
-}
 
-struct IOManagerInternalVars {
-	BOOL EmergencyStopped;
-	BYTE UART_TX;
-	BOOL UART_TX_READY;
-	BOOL UART_TX_SEND;
-}
+
+
+
 
 struct IOManager {
+    //input events
     struct IOManagerInputEvents inputEvents;
+
+    //output events
     struct IOManagerOutputEvents outputEvents;
-    struct IOManagerInputVars inputVars;
-    struct IOManagerOutputVars outputVars;
-    struct IOManagerInternalVars internalVars;
+
+    //input vars
+    
+    BYTE ConveyorSpeed;
+    BYTE InjectorPosition;
+    BOOL InjectorContentsValveOpen;
+    BOOL InjectorVacuumRun;
+    BOOL InjectorPressurePumpRun;
+    BOOL FillContents;
+    BYTE CanisterCount;
+
+    //output vars
+    
+    BOOL EmergencyStop;
+    BYTE CanisterPressure;
+    BYTE FillContentsAvailable;
+    BOOL DoorSiteLaser;
+    BOOL InjectSiteLaser;
+    BOOL RejectSiteLaser;
+    BOOL RejectBinLaser;
+    BOOL AcceptBinLaser;
+
+    //internal vars
+    
+    BOOL EmergencyStopped;
+    BYTE UART_TX;
+    BOOL UART_TX_READY;
+    BOOL UART_TX_SEND;
+
+    
 }
 
 void IOManager_init(struct IOManager *me);
 
-void IOManager_run(struct IOManager *me);
+void IOManager_run(struct IOManager *me, int ev_offset);
 

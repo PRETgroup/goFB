@@ -89,7 +89,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string 
 		if block.EventInputs != nil {
 			for _, event := range block.EventInputs.Events {
 				if event.Name == in {
-					return "*(me->inputEvents." + in + " + ev_offset)"
+					return "me->inputEvents." + event.Name //FUTURE WORK: Consider use of pointers and offsets to minimise memory footprint for events? i.e. "*(me->inputEvents." + in + " + ev_offset)"
 				}
 			}
 		}

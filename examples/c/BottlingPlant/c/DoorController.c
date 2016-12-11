@@ -18,26 +18,29 @@ void DoorController_init(struct DoorController *me) {
 }
 
 void DoorController_run(struct DoorController *me) {
+	//current state storage
 	static enum DoorController_states state = STATE_E_Stop;
-	//first, update variables that have changed based on the input events
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_E_Stop :
-		if(*(me->inputEvents.EmergencyStopChanged) AND (!me->inputVars.EmergencyStop)) {
-			state <= STATE_Await;
+		if(me->inputEvents.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
+			state = STATE_Await;
 		};
 	case STATE_Run :
-		if(*(me->inputEvents.EmergencyStopChanged) AND (me->inputVars.EmergencyStop)) {
-			state <= STATE_E_Stop;
-		} else if(*(me->inputEvents.ReleaseDoorOverride) OR *(me->inputEvents.BottlingDone)) {
-			state <= STATE_Run;
+		if(me->inputEvents.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
+			state = STATE_E_Stop;
+		} else if(me->inputEvents.ReleaseDoorOverride OR me->inputEvents.BottlingDone) {
+			state = STATE_Run;
 		};
 	case STATE_Await :
-		if(*(me->inputEvents.ReleaseDoorOverride) OR *(me->inputEvents.BottlingDone)) {
-			state <= STATE_Run;
+		if(me->inputEvents.ReleaseDoorOverride OR me->inputEvents.BottlingDone) {
+			state = STATE_Run;
 		};
 	
 	}
 }
+
+//no algorithms were present for this function block
+
 

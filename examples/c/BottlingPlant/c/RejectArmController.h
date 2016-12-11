@@ -5,33 +5,41 @@
 #include "fbtypes.h"
 
 struct RejectArmControllerInputEvents {
-	EVENT *RejectCanister;
-	EVENT *LasersChanged;
+	EVENT RejectCanister;
+	EVENT LasersChanged;
 }
 
 struct RejectArmControllerOutputEvents {
-	EVENT GoRejectArm[2];
+	EVENT GoRejectArm;
 }
 
-struct RejectArmControllerInputVars {
-	BOOL RejectSiteLaser;
-}
 
-struct RejectArmControllerOutputVars {
-}
 
-struct RejectArmControllerInternalVars {
-}
+
+
+
 
 struct RejectArmController {
+    //input events
     struct RejectArmControllerInputEvents inputEvents;
+
+    //output events
     struct RejectArmControllerOutputEvents outputEvents;
-    struct RejectArmControllerInputVars inputVars;
-    struct RejectArmControllerOutputVars outputVars;
-    struct RejectArmControllerInternalVars internalVars;
+
+    //input vars
+    
+    BOOL RejectSiteLaser;
+
+    //output vars
+    
+
+    //internal vars
+    
+
+    
 }
 
 void RejectArmController_init(struct RejectArmController *me);
 
-void RejectArmController_run(struct RejectArmController *me);
+void RejectArmController_run(struct RejectArmController *me, int ev_offset);
 

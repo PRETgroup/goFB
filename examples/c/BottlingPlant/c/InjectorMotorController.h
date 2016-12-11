@@ -5,39 +5,47 @@
 #include "fbtypes.h"
 
 struct InjectorMotorControllerInputEvents {
-	EVENT *InjectorArmFinishedMovement;
-	EVENT *EmergencyStopChanged;
-	EVENT *ConveyorStoppedForInject;
-	EVENT *PumpFinished;
+	EVENT InjectorArmFinishedMovement;
+	EVENT EmergencyStopChanged;
+	EVENT ConveyorStoppedForInject;
+	EVENT PumpFinished;
 }
 
 struct InjectorMotorControllerOutputEvents {
-	EVENT StartPump[2];
-	EVENT InjectDone[2];
-	EVENT InjectorPositionChanged[2];
-	EVENT InjectRunning[2];
+	EVENT StartPump;
+	EVENT InjectDone;
+	EVENT InjectorPositionChanged;
+	EVENT InjectRunning;
 }
 
-struct InjectorMotorControllerInputVars {
-	BOOL EmergencyStop;
-}
 
-struct InjectorMotorControllerOutputVars {
-	BYTE InjectorPosition;
-}
 
-struct InjectorMotorControllerInternalVars {
-}
+
+
+
 
 struct InjectorMotorController {
+    //input events
     struct InjectorMotorControllerInputEvents inputEvents;
+
+    //output events
     struct InjectorMotorControllerOutputEvents outputEvents;
-    struct InjectorMotorControllerInputVars inputVars;
-    struct InjectorMotorControllerOutputVars outputVars;
-    struct InjectorMotorControllerInternalVars internalVars;
+
+    //input vars
+    
+    BOOL EmergencyStop;
+
+    //output vars
+    
+    BYTE InjectorPosition;
+
+    //internal vars
+    
+
+    
 }
 
 void InjectorMotorController_init(struct InjectorMotorController *me);
 
-void InjectorMotorController_run(struct InjectorMotorController *me);
+void InjectorMotorController_run(struct InjectorMotorController *me, int ev_offset);
 

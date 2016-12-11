@@ -19,16 +19,30 @@ void CanisterCounter_init(struct CanisterCounter *me) {
 }
 
 void CanisterCounter_run(struct CanisterCounter *me) {
+	//current state storage
 	static enum CanisterCounter_states state = STATE_Start;
-	//first, update variables that have changed based on the input events
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_Start :
-		if(*(me->inputEvents.LasersChanged)) {
-			state <= STATE_Start;
+		if(me->inputEvents.LasersChanged) {
+			state = STATE_Start;
 		};
 	
 	}
 }
+
+//algorithms
+
+void CanisterCounter_ChangeCount(struct CanisterCounter *me) {
+if DoorSiteLaser='1' then 
+	CanisterCount <= CanisterCount + 1;
+end if;
+if RejectBinLaser = '1' or AcceptBinLaser = '1' then 
+CanisterCount <= CanisterCount - 1;
+end if;
+DONE<='1';
+}
+
+
 

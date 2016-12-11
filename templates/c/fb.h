@@ -5,31 +5,47 @@
 #include "fbtypes.h"
 
 struct {{$block.Name}}InputEvents {
-{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	EVENT *{{$event.Name}};
+{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	EVENT {{$event.Name}};
 {{end}}{{end}}}
 
 struct {{$block.Name}}OutputEvents {
-{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	EVENT {{$event.Name}}[2];
+{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	EVENT {{$event.Name}};
 {{end}}{{end}}}
 
-struct {{$block.Name}}InputVars {
+{{/*struct {{$block.Name}}InputVars {
 {{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}	{{$var.Type}} {{$var.Name}};
-{{end}}{{end}}}
+{{end}}{{end}}}*/}}
 
-struct {{$block.Name}}OutputVars {
+{{/*struct {{$block.Name}}OutputVars {
 {{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}	{{$var.Type}} {{$var.Name}};
-{{end}}{{end}}}
+{{end}}{{end}}}*/}}
 
-{{if $block.BasicFB}}struct {{$block.Name}}InternalVars {
+{{/*{{if $block.BasicFB}}struct {{$block.Name}}InternalVars {
 {{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}	{{$var.Type}} {{$var.Name}};
-{{end}}{{end}}}{{end}}
+{{end}}{{end}}}{{end}}*/}}
 
 struct {{$block.Name}} {
+    //input events
     struct {{$block.Name}}InputEvents inputEvents;
+
+    //output events
     struct {{$block.Name}}OutputEvents outputEvents;
-    struct {{$block.Name}}InputVars inputVars;
+
+    //input vars
+    {{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}
+    {{$var.Type}} {{$var.Name}};{{end}}{{end}}
+
+    //output vars
+    {{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}
+    {{$var.Type}} {{$var.Name}};{{end}}{{end}}
+
+    {{if $block.BasicFB}}//internal vars
+    {{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}
+    {{$var.Type}} {{$var.Name}};{{end}}{{end}}{{end}}
+
+    {{/*struct {{$block.Name}}InputVars inputVars;
     struct {{$block.Name}}OutputVars outputVars;
-    {{if $block.BasicFB}}struct {{$block.Name}}InternalVars internalVars;{{end}}
+    {{if $block.BasicFB}}struct {{$block.Name}}InternalVars internalVars;{{end}}*/}}
 }
 
 void {{$block.Name}}_init(struct {{$block.Name}} *me);

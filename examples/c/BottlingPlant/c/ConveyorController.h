@@ -5,38 +5,46 @@
 #include "fbtypes.h"
 
 struct ConveyorControllerInputEvents {
-	EVENT *InjectDone;
-	EVENT *EmergencyStopChanged;
-	EVENT *LasersChanged;
+	EVENT InjectDone;
+	EVENT EmergencyStopChanged;
+	EVENT LasersChanged;
 }
 
 struct ConveyorControllerOutputEvents {
-	EVENT ConveyorChanged[2];
-	EVENT ConveyorStoppedForInject[2];
+	EVENT ConveyorChanged;
+	EVENT ConveyorStoppedForInject;
 }
 
-struct ConveyorControllerInputVars {
-	BOOL EmergencyStop;
-	BOOL InjectSiteLaser;
-}
 
-struct ConveyorControllerOutputVars {
-	BYTE ConveyorSpeed;
-}
 
-struct ConveyorControllerInternalVars {
-	BOOL Variable1;
-}
+
+
+
 
 struct ConveyorController {
+    //input events
     struct ConveyorControllerInputEvents inputEvents;
+
+    //output events
     struct ConveyorControllerOutputEvents outputEvents;
-    struct ConveyorControllerInputVars inputVars;
-    struct ConveyorControllerOutputVars outputVars;
-    struct ConveyorControllerInternalVars internalVars;
+
+    //input vars
+    
+    BOOL EmergencyStop;
+    BOOL InjectSiteLaser;
+
+    //output vars
+    
+    BYTE ConveyorSpeed;
+
+    //internal vars
+    
+    BOOL Variable1;
+
+    
 }
 
 void ConveyorController_init(struct ConveyorController *me);
 
-void ConveyorController_run(struct ConveyorController *me);
+void ConveyorController_run(struct ConveyorController *me, int ev_offset);
 

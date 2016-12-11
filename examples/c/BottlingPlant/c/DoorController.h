@@ -5,34 +5,42 @@
 #include "fbtypes.h"
 
 struct DoorControllerInputEvents {
-	EVENT *ReleaseDoorOverride;
-	EVENT *BottlingDone;
-	EVENT *EmergencyStopChanged;
+	EVENT ReleaseDoorOverride;
+	EVENT BottlingDone;
+	EVENT EmergencyStopChanged;
 }
 
 struct DoorControllerOutputEvents {
-	EVENT DoorReleaseCanister[2];
+	EVENT DoorReleaseCanister;
 }
 
-struct DoorControllerInputVars {
-	BOOL EmergencyStop;
-}
 
-struct DoorControllerOutputVars {
-}
 
-struct DoorControllerInternalVars {
-}
+
+
+
 
 struct DoorController {
+    //input events
     struct DoorControllerInputEvents inputEvents;
+
+    //output events
     struct DoorControllerOutputEvents outputEvents;
-    struct DoorControllerInputVars inputVars;
-    struct DoorControllerOutputVars outputVars;
-    struct DoorControllerInternalVars internalVars;
+
+    //input vars
+    
+    BOOL EmergencyStop;
+
+    //output vars
+    
+
+    //internal vars
+    
+
+    
 }
 
 void DoorController_init(struct DoorController *me);
 
-void DoorController_run(struct DoorController *me);
+void DoorController_run(struct DoorController *me, int ev_offset);
 

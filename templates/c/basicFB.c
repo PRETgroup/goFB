@@ -19,21 +19,27 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	{{end}}{{end}}
 }
 
-void {{$block.Name}}_run(struct {{$block.Name}} *me, int ev_offset) {
+void {{$block.Name}}_run(struct {{$block.Name}} *me) {
+	//current state storage
 	static enum {{$block.Name}}_states state = STATE_{{(index $basicFB.States 0).Name}};
-	//first, update variables that have changed based on the input events
 
 	//now, let's advance state
-	//remember that ev_offset is used to choose between the 0 and 1 elements of the output event
-	//arrays, so it will only ever be 0 or 1
-	//we use these arrays to prevent unnecessary memory copying
 	switch(state) {
 	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}} :
 		{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{getCECCTransitionCondition $block $trans.Condition}}) {
-			state <= STATE_{{$trans.Destination}};
+			state = STATE_{{$trans.Destination}};
 		{{end}}};
 	{{end}}
 	}
 }
+
+{{if $basicFB.Algorithms}}//algorithms
+{{range $algIndex, $alg := $basicFB.Algorithms}}
+void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} *me) {
+{{$alg.Other.Text}}
+}
+{{end}}
+{{else}}//no algorithms were present for this function block
+{{end}}
 
 {{end}}

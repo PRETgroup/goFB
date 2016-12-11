@@ -5,49 +5,57 @@
 #include "fbtypes.h"
 
 struct InjectorControllerInputEvents {
-	EVENT *InjectorArmFinishedMovement;
-	EVENT *EmergencyStopChanged;
-	EVENT *CanisterPressureChanged;
-	EVENT *FillContentsAvailableChanged;
-	EVENT *ConveyorStoppedForInject;
-	EVENT *VacuumTimerElapsed;
+	EVENT InjectorArmFinishedMovement;
+	EVENT EmergencyStopChanged;
+	EVENT CanisterPressureChanged;
+	EVENT FillContentsAvailableChanged;
+	EVENT ConveyorStoppedForInject;
+	EVENT VacuumTimerElapsed;
 }
 
 struct InjectorControllerOutputEvents {
-	EVENT InjectDone[2];
-	EVENT InjectorPositionChanged[2];
-	EVENT InjectorControlsChanged[2];
-	EVENT RejectCanister[2];
-	EVENT FillContentsChanged[2];
-	EVENT StartVacuumTimer[2];
-	EVENT InjectRunning[2];
+	EVENT InjectDone;
+	EVENT InjectorPositionChanged;
+	EVENT InjectorControlsChanged;
+	EVENT RejectCanister;
+	EVENT FillContentsChanged;
+	EVENT StartVacuumTimer;
+	EVENT InjectRunning;
 }
 
-struct InjectorControllerInputVars {
-	BOOL EmergencyStop;
-	BYTE CanisterPressure;
-	BYTE FillContentsAvailable;
-}
 
-struct InjectorControllerOutputVars {
-	BYTE InjectorPosition;
-	BOOL InjectorContentsValveOpen;
-	BOOL InjectorVacuumRun;
-	BOOL InjectorPressurePumpRun;
-	BOOL FillContents;
-}
+
+
 
 
 
 struct InjectorController {
+    //input events
     struct InjectorControllerInputEvents inputEvents;
+
+    //output events
     struct InjectorControllerOutputEvents outputEvents;
-    struct InjectorControllerInputVars inputVars;
-    struct InjectorControllerOutputVars outputVars;
+
+    //input vars
+    
+    BOOL EmergencyStop;
+    BYTE CanisterPressure;
+    BYTE FillContentsAvailable;
+
+    //output vars
+    
+    BYTE InjectorPosition;
+    BOOL InjectorContentsValveOpen;
+    BOOL InjectorVacuumRun;
+    BOOL InjectorPressurePumpRun;
+    BOOL FillContents;
+
+    
+
     
 }
 
 void InjectorController_init(struct InjectorController *me);
 
-void InjectorController_run(struct InjectorController *me);
+void InjectorController_run(struct InjectorController *me, int ev_offset);
 

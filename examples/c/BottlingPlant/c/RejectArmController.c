@@ -18,24 +18,27 @@ void RejectArmController_init(struct RejectArmController *me) {
 }
 
 void RejectArmController_run(struct RejectArmController *me) {
+	//current state storage
 	static enum RejectArmController_states state = STATE_Clear;
-	//first, update variables that have changed based on the input events
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_Clear :
-		if(*(me->inputEvents.RejectCanister)) {
-			state <= STATE_AwaitCanister;
+		if(me->inputEvents.RejectCanister) {
+			state = STATE_AwaitCanister;
 		};
 	case STATE_AwaitCanister :
-		if(*(me->inputEvents.LasersChanged) AND (me->inputVars.RejectSiteLaser)) {
-			state <= STATE_GoReject;
+		if(me->inputEvents.LasersChanged AND (me->inputVars.RejectSiteLaser)) {
+			state = STATE_GoReject;
 		};
 	case STATE_GoReject :
-		if(*(me->inputEvents.RejectCanister)) {
-			state <= STATE_AwaitCanister;
+		if(me->inputEvents.RejectCanister) {
+			state = STATE_AwaitCanister;
 		};
 	
 	}
 }
+
+//no algorithms were present for this function block
+
 
