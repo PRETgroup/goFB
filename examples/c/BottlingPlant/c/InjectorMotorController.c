@@ -8,14 +8,10 @@ enum InjectorMotorController_states { STATE_MoveArmUp, STATE_Await_Bottle, STATE
 
 void InjectorMotorController_init(struct InjectorMotorController *me) {
 	//if there are output events, reset them
-	me->outputEvents.StartPump[0] = 0;
-	me->outputEvents->StartPump[1] = 0;
-	me->outputEvents.InjectDone[0] = 0;
-	me->outputEvents->InjectDone[1] = 0;
-	me->outputEvents.InjectorPositionChanged[0] = 0;
-	me->outputEvents->InjectorPositionChanged[1] = 0;
-	me->outputEvents.InjectRunning[0] = 0;
-	me->outputEvents->InjectRunning[1] = 0;
+	me->outputEvents.StartPump = 0;
+	me->outputEvents.InjectDone = 0;
+	me->outputEvents.InjectorPositionChanged = 0;
+	me->outputEvents.InjectRunning = 0;
 	
 	//if there are output vars, reset them
 	me->outputVars.InjectorPosition = 0;
@@ -27,26 +23,43 @@ void InjectorMotorController_init(struct InjectorMotorController *me) {
 void InjectorMotorController_run(struct InjectorMotorController *me) {
 	//current state storage
 	static enum InjectorMotorController_states state = STATE_MoveArmUp;
+	static BOOL trigger = false;
+
+	//if there are output events, reset them
+	me->outputEvents.StartPump = 0;
+	me->outputEvents.InjectDone = 0;
+	me->outputEvents.InjectorPositionChanged = 0;
+	me->outputEvents.InjectRunning = 0;
+	
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_MoveArmUp :
 		if(me->inputEvents.InjectorArmFinishedMovement) {
 			state = STATE_Await_Bottle;
+			trigger = true;
 		};
 	case STATE_Await_Bottle :
 		if(me->inputEvents.ConveyorStoppedForInject) {
 			state = STATE_MoveArmDown;
+			trigger = true;
 		};
 	case STATE_MoveArmDown :
 		if(me->inputEvents.InjectorArmFinishedMovement) {
 			state = STATE_Await_Pumping;
+			trigger = true;
 		};
 	case STATE_Await_Pumping :
 		if(me->inputEvents.PumpFinished) {
 			state = STATE_MoveArmUp;
+			trigger = true;
 		};
 	
+	}
+
+	//now, let's run any algorithms and emit any events that need to occur due to the trigger
+	if(trigger == true) {
+
 	}
 }
 

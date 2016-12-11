@@ -8,8 +8,7 @@ enum RejectArmController_states { STATE_Clear, STATE_AwaitCanister, STATE_GoReje
 
 void RejectArmController_init(struct RejectArmController *me) {
 	//if there are output events, reset them
-	me->outputEvents.GoRejectArm[0] = 0;
-	me->outputEvents->GoRejectArm[1] = 0;
+	me->outputEvents.GoRejectArm = 0;
 	
 	//if there are output vars, reset them
 	
@@ -20,22 +19,35 @@ void RejectArmController_init(struct RejectArmController *me) {
 void RejectArmController_run(struct RejectArmController *me) {
 	//current state storage
 	static enum RejectArmController_states state = STATE_Clear;
+	static BOOL trigger = false;
+
+	//if there are output events, reset them
+	me->outputEvents.GoRejectArm = 0;
+	
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_Clear :
 		if(me->inputEvents.RejectCanister) {
 			state = STATE_AwaitCanister;
+			trigger = true;
 		};
 	case STATE_AwaitCanister :
 		if(me->inputEvents.LasersChanged AND (me->inputVars.RejectSiteLaser)) {
 			state = STATE_GoReject;
+			trigger = true;
 		};
 	case STATE_GoReject :
 		if(me->inputEvents.RejectCanister) {
 			state = STATE_AwaitCanister;
+			trigger = true;
 		};
 	
+	}
+
+	//now, let's run any algorithms and emit any events that need to occur due to the trigger
+	if(trigger == true) {
+
 	}
 }
 

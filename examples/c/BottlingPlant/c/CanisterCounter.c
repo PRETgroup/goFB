@@ -8,8 +8,7 @@ enum CanisterCounter_states { STATE_Start }
 
 void CanisterCounter_init(struct CanisterCounter *me) {
 	//if there are output events, reset them
-	me->outputEvents.CanisterCountChanged[0] = 0;
-	me->outputEvents->CanisterCountChanged[1] = 0;
+	me->outputEvents.CanisterCountChanged = 0;
 	
 	//if there are output vars, reset them
 	me->outputVars.CanisterCount = 0;
@@ -21,14 +20,25 @@ void CanisterCounter_init(struct CanisterCounter *me) {
 void CanisterCounter_run(struct CanisterCounter *me) {
 	//current state storage
 	static enum CanisterCounter_states state = STATE_Start;
+	static BOOL trigger = false;
+
+	//if there are output events, reset them
+	me->outputEvents.CanisterCountChanged = 0;
+	
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_Start :
 		if(me->inputEvents.LasersChanged) {
 			state = STATE_Start;
+			trigger = true;
 		};
 	
+	}
+
+	//now, let's run any algorithms and emit any events that need to occur due to the trigger
+	if(trigger == true) {
+
 	}
 }
 

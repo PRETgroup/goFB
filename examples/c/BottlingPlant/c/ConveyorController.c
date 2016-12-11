@@ -8,10 +8,8 @@ enum ConveyorController_states { STATE_E_Stop, STATE_Running, STATE_Pause }
 
 void ConveyorController_init(struct ConveyorController *me) {
 	//if there are output events, reset them
-	me->outputEvents.ConveyorChanged[0] = 0;
-	me->outputEvents->ConveyorChanged[1] = 0;
-	me->outputEvents.ConveyorStoppedForInject[0] = 0;
-	me->outputEvents->ConveyorStoppedForInject[1] = 0;
+	me->outputEvents.ConveyorChanged = 0;
+	me->outputEvents.ConveyorStoppedForInject = 0;
 	
 	//if there are output vars, reset them
 	me->outputVars.ConveyorSpeed = 0;
@@ -24,24 +22,39 @@ void ConveyorController_init(struct ConveyorController *me) {
 void ConveyorController_run(struct ConveyorController *me) {
 	//current state storage
 	static enum ConveyorController_states state = STATE_E_Stop;
+	static BOOL trigger = false;
+
+	//if there are output events, reset them
+	me->outputEvents.ConveyorChanged = 0;
+	me->outputEvents.ConveyorStoppedForInject = 0;
+	
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_E_Stop :
 		if(me->inputEvents.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
 			state = STATE_Running;
+			trigger = true;
 		};
 	case STATE_Running :
 		if(me->inputEvents.LasersChanged AND (me->inputVars.InjectSiteLaser)) {
 			state = STATE_Pause;
+			trigger = true;
 		};
 	case STATE_Pause :
 		if(me->inputEvents.InjectDone) {
 			state = STATE_Running;
+			trigger = true;
 		} else if(me->inputEvents.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
 			state = STATE_E_Stop;
+			trigger = true;
 		};
 	
+	}
+
+	//now, let's run any algorithms and emit any events that need to occur due to the trigger
+	if(trigger == true) {
+
 	}
 }
 

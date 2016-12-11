@@ -8,16 +8,11 @@ enum InjectorPumpsController_states { STATE_RejectCanister, STATE_AwaitPump, STA
 
 void InjectorPumpsController_init(struct InjectorPumpsController *me) {
 	//if there are output events, reset them
-	me->outputEvents.PumpFinished[0] = 0;
-	me->outputEvents->PumpFinished[1] = 0;
-	me->outputEvents.RejectCanister[0] = 0;
-	me->outputEvents->RejectCanister[1] = 0;
-	me->outputEvents.InjectorControlsChanged[0] = 0;
-	me->outputEvents->InjectorControlsChanged[1] = 0;
-	me->outputEvents.FillContentsChanged[0] = 0;
-	me->outputEvents->FillContentsChanged[1] = 0;
-	me->outputEvents.StartVacuumTimer[0] = 0;
-	me->outputEvents->StartVacuumTimer[1] = 0;
+	me->outputEvents.PumpFinished = 0;
+	me->outputEvents.RejectCanister = 0;
+	me->outputEvents.InjectorControlsChanged = 0;
+	me->outputEvents.FillContentsChanged = 0;
+	me->outputEvents.StartVacuumTimer = 0;
 	
 	//if there are output vars, reset them
 	me->outputVars.InjectorContentsValveOpen = 0;
@@ -32,40 +27,62 @@ void InjectorPumpsController_init(struct InjectorPumpsController *me) {
 void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 	//current state storage
 	static enum InjectorPumpsController_states state = STATE_RejectCanister;
+	static BOOL trigger = false;
+
+	//if there are output events, reset them
+	me->outputEvents.PumpFinished = 0;
+	me->outputEvents.RejectCanister = 0;
+	me->outputEvents.InjectorControlsChanged = 0;
+	me->outputEvents.FillContentsChanged = 0;
+	me->outputEvents.StartVacuumTimer = 0;
+	
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_RejectCanister :
 		if(true) {
 			state = STATE_AwaitPump;
+			trigger = true;
 		};
 	case STATE_AwaitPump :
 		if(me->inputEvents.StartPump) {
 			state = STATE_VacuumPump;
+			trigger = true;
 		};
 	case STATE_VacuumPump :
 		if(me->inputEvents.VacuumTimerElapsed) {
 			state = STATE_RejectCanister;
+			trigger = true;
 		} else if(me->inputEvents.CanisterPressureChanged AND (CanisterPressure<=10)) {
 			state = STATE_StopVacuum;
+			trigger = true;
 		};
 	case STATE_FinishPump :
 		if(true) {
 			state = STATE_AwaitPump;
+			trigger = true;
 		};
 	case STATE_StartPump :
 		if(me->inputEvents.CanisterPressureChanged AND (CanisterPressure>=245)) {
 			state = STATE_FinishPump;
+			trigger = true;
 		};
 	case STATE_OpenValve :
 		if(true) {
 			state = STATE_StartPump;
+			trigger = true;
 		};
 	case STATE_StopVacuum :
 		if(true) {
 			state = STATE_OpenValve;
+			trigger = true;
 		};
 	
+	}
+
+	//now, let's run any algorithms and emit any events that need to occur due to the trigger
+	if(trigger == true) {
+
 	}
 }
 

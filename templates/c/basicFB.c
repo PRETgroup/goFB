@@ -8,8 +8,7 @@ enum {{$block.Name}}_states { {{range $index, $state := $basicFB.States}}{{if $i
 
 void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.{{$event.Name}}[0] = 0;
-	me->outputEvents->{{$event.Name}}[1] = 0;
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.{{$event.Name}} = 0;
 	{{end}}{{end}}
 	//if there are output vars, reset them
 	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->outputVars.{{$var.Name}} = 0;
@@ -22,14 +21,25 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 	//current state storage
 	static enum {{$block.Name}}_states state = STATE_{{(index $basicFB.States 0).Name}};
+	static BOOL trigger = false;
+
+	//if there are output events, reset them
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.{{$event.Name}} = 0;
+	{{end}}{{end}}
 
 	//now, let's advance state
 	switch(state) {
 	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}} :
 		{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{getCECCTransitionCondition $block $trans.Condition}}) {
 			state = STATE_{{$trans.Destination}};
+			trigger = true;
 		{{end}}};
 	{{end}}
+	}
+
+	//now, let's run any algorithms and emit any events that need to occur due to the trigger
+	if(trigger == true) {
+
 	}
 }
 

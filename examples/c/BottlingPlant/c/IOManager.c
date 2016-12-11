@@ -8,20 +8,13 @@ enum IOManager_states { STATE_Start }
 
 void IOManager_init(struct IOManager *me) {
 	//if there are output events, reset them
-	me->outputEvents.InjectorArmFinishMovement[0] = 0;
-	me->outputEvents->InjectorArmFinishMovement[1] = 0;
-	me->outputEvents.EmergencyStopChanged[0] = 0;
-	me->outputEvents->EmergencyStopChanged[1] = 0;
-	me->outputEvents.CanisterPressureChanged[0] = 0;
-	me->outputEvents->CanisterPressureChanged[1] = 0;
-	me->outputEvents.FillContentsAvailableChanged[0] = 0;
-	me->outputEvents->FillContentsAvailableChanged[1] = 0;
-	me->outputEvents.LasersChanged[0] = 0;
-	me->outputEvents->LasersChanged[1] = 0;
-	me->outputEvents.DoorOverride[0] = 0;
-	me->outputEvents->DoorOverride[1] = 0;
-	me->outputEvents.VacuumTimerElapsed[0] = 0;
-	me->outputEvents->VacuumTimerElapsed[1] = 0;
+	me->outputEvents.InjectorArmFinishMovement = 0;
+	me->outputEvents.EmergencyStopChanged = 0;
+	me->outputEvents.CanisterPressureChanged = 0;
+	me->outputEvents.FillContentsAvailableChanged = 0;
+	me->outputEvents.LasersChanged = 0;
+	me->outputEvents.DoorOverride = 0;
+	me->outputEvents.VacuumTimerElapsed = 0;
 	
 	//if there are output vars, reset them
 	me->outputVars.EmergencyStop = 0;
@@ -44,14 +37,31 @@ void IOManager_init(struct IOManager *me) {
 void IOManager_run(struct IOManager *me) {
 	//current state storage
 	static enum IOManager_states state = STATE_Start;
+	static BOOL trigger = false;
+
+	//if there are output events, reset them
+	me->outputEvents.InjectorArmFinishMovement = 0;
+	me->outputEvents.EmergencyStopChanged = 0;
+	me->outputEvents.CanisterPressureChanged = 0;
+	me->outputEvents.FillContentsAvailableChanged = 0;
+	me->outputEvents.LasersChanged = 0;
+	me->outputEvents.DoorOverride = 0;
+	me->outputEvents.VacuumTimerElapsed = 0;
+	
 
 	//now, let's advance state
 	switch(state) {
 	case STATE_Start :
 		if(true) {
 			state = STATE_Start;
+			trigger = true;
 		};
 	
+	}
+
+	//now, let's run any algorithms and emit any events that need to occur due to the trigger
+	if(trigger == true) {
+
 	}
 }
 
