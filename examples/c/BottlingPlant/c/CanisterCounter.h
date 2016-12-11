@@ -12,12 +12,6 @@ struct CanisterCounterOutputEvents {
 	EVENT CanisterCountChanged;
 }
 
-
-
-
-
-
-
 struct CanisterCounter {
     //input events
     struct CanisterCounterInputEvents inputEvents;
@@ -26,22 +20,18 @@ struct CanisterCounter {
     struct CanisterCounterOutputEvents outputEvents;
 
     //input vars
-    
-    BOOL DoorSiteLaser;
+	BOOL DoorSiteLaser;
     BOOL RejectBinLaser;
     BOOL AcceptBinLaser;
-
+    
     //output vars
+	BYTE CanisterCount;
     
-    BYTE CanisterCount;
-
     //internal vars
-    
-
-    
+	
 }
 
 void CanisterCounter_init(struct CanisterCounter *me);
 
-void CanisterCounter_run(struct CanisterCounter *me, int ev_offset);
+void CanisterCounter_run(struct CanisterCounter *me);
 

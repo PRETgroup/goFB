@@ -13,12 +13,6 @@ struct RejectArmControllerOutputEvents {
 	EVENT GoRejectArm;
 }
 
-
-
-
-
-
-
 struct RejectArmController {
     //input events
     struct RejectArmControllerInputEvents inputEvents;
@@ -27,19 +21,15 @@ struct RejectArmController {
     struct RejectArmControllerOutputEvents outputEvents;
 
     //input vars
+	BOOL RejectSiteLaser;
     
-    BOOL RejectSiteLaser;
-
     //output vars
-    
-
+	
     //internal vars
-    
-
-    
+	
 }
 
 void RejectArmController_init(struct RejectArmController *me);
 
-void RejectArmController_run(struct RejectArmController *me, int ev_offset);
+void RejectArmController_run(struct RejectArmController *me);
 

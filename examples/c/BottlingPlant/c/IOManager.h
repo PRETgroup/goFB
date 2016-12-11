@@ -26,12 +26,6 @@ struct IOManagerOutputEvents {
 	EVENT VacuumTimerElapsed;
 }
 
-
-
-
-
-
-
 struct IOManager {
     //input events
     struct IOManagerInputEvents inputEvents;
@@ -40,18 +34,16 @@ struct IOManager {
     struct IOManagerOutputEvents outputEvents;
 
     //input vars
-    
-    BYTE ConveyorSpeed;
+	BYTE ConveyorSpeed;
     BYTE InjectorPosition;
     BOOL InjectorContentsValveOpen;
     BOOL InjectorVacuumRun;
     BOOL InjectorPressurePumpRun;
     BOOL FillContents;
     BYTE CanisterCount;
-
-    //output vars
     
-    BOOL EmergencyStop;
+    //output vars
+	BOOL EmergencyStop;
     BYTE CanisterPressure;
     BYTE FillContentsAvailable;
     BOOL DoorSiteLaser;
@@ -59,18 +51,16 @@ struct IOManager {
     BOOL RejectSiteLaser;
     BOOL RejectBinLaser;
     BOOL AcceptBinLaser;
-
-    //internal vars
     
-    BOOL EmergencyStopped;
+    //internal vars
+	BOOL EmergencyStopped;
     BYTE UART_TX;
     BOOL UART_TX_READY;
     BOOL UART_TX_SEND;
-
     
 }
 
 void IOManager_init(struct IOManager *me);
 
-void IOManager_run(struct IOManager *me, int ev_offset);
+void IOManager_run(struct IOManager *me);
 

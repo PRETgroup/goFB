@@ -18,12 +18,6 @@ struct InjectorMotorControllerOutputEvents {
 	EVENT InjectRunning;
 }
 
-
-
-
-
-
-
 struct InjectorMotorController {
     //input events
     struct InjectorMotorControllerInputEvents inputEvents;
@@ -32,20 +26,16 @@ struct InjectorMotorController {
     struct InjectorMotorControllerOutputEvents outputEvents;
 
     //input vars
+	BOOL EmergencyStop;
     
-    BOOL EmergencyStop;
-
     //output vars
+	BYTE InjectorPosition;
     
-    BYTE InjectorPosition;
-
     //internal vars
-    
-
-    
+	
 }
 
 void InjectorMotorController_init(struct InjectorMotorController *me);
 
-void InjectorMotorController_run(struct InjectorMotorController *me, int ev_offset);
+void InjectorMotorController_run(struct InjectorMotorController *me);
 

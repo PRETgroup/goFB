@@ -10,12 +10,6 @@ struct FlexPRETInputEvents {
 struct FlexPRETOutputEvents {
 }
 
-
-
-
-
-
-
 struct FlexPRET {
     //input events
     struct FlexPRETInputEvents inputEvents;
@@ -24,17 +18,13 @@ struct FlexPRET {
     struct FlexPRETOutputEvents outputEvents;
 
     //input vars
-    
-
+	
     //output vars
-    
-
-    
-
+	
     
 }
 
 void FlexPRET_init(struct FlexPRET *me);
 
-void FlexPRET_run(struct FlexPRET *me, int ev_offset);
+void FlexPRET_run(struct FlexPRET *me);
 

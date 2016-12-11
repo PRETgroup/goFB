@@ -12,18 +12,6 @@ struct {{$block.Name}}OutputEvents {
 {{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	EVENT {{$event.Name}};
 {{end}}{{end}}}
 
-{{/*struct {{$block.Name}}InputVars {
-{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}	{{$var.Type}} {{$var.Name}};
-{{end}}{{end}}}*/}}
-
-{{/*struct {{$block.Name}}OutputVars {
-{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}	{{$var.Type}} {{$var.Name}};
-{{end}}{{end}}}*/}}
-
-{{/*{{if $block.BasicFB}}struct {{$block.Name}}InternalVars {
-{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}	{{$var.Type}} {{$var.Name}};
-{{end}}{{end}}}{{end}}*/}}
-
 struct {{$block.Name}} {
     //input events
     struct {{$block.Name}}InputEvents inputEvents;
@@ -32,24 +20,18 @@ struct {{$block.Name}} {
     struct {{$block.Name}}OutputEvents outputEvents;
 
     //input vars
-    {{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}
-    {{$var.Type}} {{$var.Name}};{{end}}{{end}}
-
+	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}{{$var.Type}} {{$var.Name}};
+    {{end}}{{end}}
     //output vars
-    {{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}
-    {{$var.Type}} {{$var.Name}};{{end}}{{end}}
-
+	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}{{$var.Type}} {{$var.Name}};
+    {{end}}{{end}}
     {{if $block.BasicFB}}//internal vars
-    {{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}
-    {{$var.Type}} {{$var.Name}};{{end}}{{end}}{{end}}
-
-    {{/*struct {{$block.Name}}InputVars inputVars;
-    struct {{$block.Name}}OutputVars outputVars;
-    {{if $block.BasicFB}}struct {{$block.Name}}InternalVars internalVars;{{end}}*/}}
+	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Type}} {{$var.Name}};
+    {{end}}{{end}}{{end}}
 }
 
 void {{$block.Name}}_init(struct {{$block.Name}} *me);
 
-void {{$block.Name}}_run(struct {{$block.Name}} *me, int ev_offset);
+void {{$block.Name}}_run(struct {{$block.Name}} *me);
 
 {{end}}

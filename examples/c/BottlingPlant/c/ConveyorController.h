@@ -15,12 +15,6 @@ struct ConveyorControllerOutputEvents {
 	EVENT ConveyorStoppedForInject;
 }
 
-
-
-
-
-
-
 struct ConveyorController {
     //input events
     struct ConveyorControllerInputEvents inputEvents;
@@ -29,22 +23,18 @@ struct ConveyorController {
     struct ConveyorControllerOutputEvents outputEvents;
 
     //input vars
-    
-    BOOL EmergencyStop;
+	BOOL EmergencyStop;
     BOOL InjectSiteLaser;
-
+    
     //output vars
+	BYTE ConveyorSpeed;
     
-    BYTE ConveyorSpeed;
-
     //internal vars
-    
-    BOOL Variable1;
-
+	BOOL Variable1;
     
 }
 
 void ConveyorController_init(struct ConveyorController *me);
 
-void ConveyorController_run(struct ConveyorController *me, int ev_offset);
+void ConveyorController_run(struct ConveyorController *me);
 

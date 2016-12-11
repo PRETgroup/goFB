@@ -23,12 +23,6 @@ struct InjectorControllerOutputEvents {
 	EVENT InjectRunning;
 }
 
-
-
-
-
-
-
 struct InjectorController {
     //input events
     struct InjectorControllerInputEvents inputEvents;
@@ -37,25 +31,21 @@ struct InjectorController {
     struct InjectorControllerOutputEvents outputEvents;
 
     //input vars
-    
-    BOOL EmergencyStop;
+	BOOL EmergencyStop;
     BYTE CanisterPressure;
     BYTE FillContentsAvailable;
-
-    //output vars
     
-    BYTE InjectorPosition;
+    //output vars
+	BYTE InjectorPosition;
     BOOL InjectorContentsValveOpen;
     BOOL InjectorVacuumRun;
     BOOL InjectorPressurePumpRun;
     BOOL FillContents;
-
     
-
     
 }
 
 void InjectorController_init(struct InjectorController *me);
 
-void InjectorController_run(struct InjectorController *me, int ev_offset);
+void InjectorController_run(struct InjectorController *me);
 

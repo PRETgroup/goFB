@@ -20,12 +20,6 @@ struct InjectorPumpsControllerOutputEvents {
 	EVENT StartVacuumTimer;
 }
 
-
-
-
-
-
-
 struct InjectorPumpsController {
     //input events
     struct InjectorPumpsControllerInputEvents inputEvents;
@@ -34,25 +28,21 @@ struct InjectorPumpsController {
     struct InjectorPumpsControllerOutputEvents outputEvents;
 
     //input vars
-    
-    BOOL EmergencyStop;
+	BOOL EmergencyStop;
     BYTE CanisterPressure;
     BYTE FillContentsAvailable;
-
-    //output vars
     
-    BOOL InjectorContentsValveOpen;
+    //output vars
+	BOOL InjectorContentsValveOpen;
     BOOL InjectorVacuumRun;
     BOOL InjectorPressurePumpRun;
     BOOL FillContents;
-
+    
     //internal vars
-    
-
-    
+	
 }
 
 void InjectorPumpsController_init(struct InjectorPumpsController *me);
 
-void InjectorPumpsController_run(struct InjectorPumpsController *me, int ev_offset);
+void InjectorPumpsController_run(struct InjectorPumpsController *me);
 

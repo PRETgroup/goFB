@@ -14,12 +14,6 @@ struct DoorControllerOutputEvents {
 	EVENT DoorReleaseCanister;
 }
 
-
-
-
-
-
-
 struct DoorController {
     //input events
     struct DoorControllerInputEvents inputEvents;
@@ -28,19 +22,15 @@ struct DoorController {
     struct DoorControllerOutputEvents outputEvents;
 
     //input vars
+	BOOL EmergencyStop;
     
-    BOOL EmergencyStop;
-
     //output vars
-    
-
+	
     //internal vars
-    
-
-    
+	
 }
 
 void DoorController_init(struct DoorController *me);
 
-void DoorController_run(struct DoorController *me, int ev_offset);
+void DoorController_run(struct DoorController *me);
 
