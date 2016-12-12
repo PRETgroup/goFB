@@ -4,26 +4,32 @@
 // This file represents the interface of Function Block InjectorMotorController
 #include "fbtypes.h"
 
-struct InjectorMotorControllerInputEvents {
-	EVENT InjectorArmFinishedMovement;
-	EVENT EmergencyStopChanged;
-	EVENT ConveyorStoppedForInject;
-	EVENT PumpFinished;
-}
+union InjectorMotorControllerInputEvents {
+	struct {
+		UDINT InjectorArmFinishedMovement : 1;
+		UDINT EmergencyStopChanged : 1;
+		UDINT ConveyorStoppedForInject : 1;
+		UDINT PumpFinished : 1;
+	} event;
+	UDINT events[1];
+};
 
-struct InjectorMotorControllerOutputEvents {
-	EVENT StartPump;
-	EVENT InjectDone;
-	EVENT InjectorPositionChanged;
-	EVENT InjectRunning;
-}
+union InjectorMotorControllerOutputEvents {
+	struct {
+		UDINT StartPump : 1;
+		UDINT InjectDone : 1;
+		UDINT InjectorPositionChanged : 1;
+		UDINT InjectRunning : 1;
+	} event;
+	UDINT events[1];
+};
 
 struct InjectorMotorController {
     //input events
-    struct InjectorMotorControllerInputEvents inputEvents;
+    union InjectorMotorControllerInputEvents inputEvents;
 
     //output events
-    struct InjectorMotorControllerOutputEvents outputEvents;
+    union InjectorMotorControllerOutputEvents outputEvents;
 
     //input vars
 	BOOL EmergencyStop;
@@ -33,9 +39,19 @@ struct InjectorMotorController {
     
     //internal vars
 	
-}
+};
 
 void InjectorMotorController_init(struct InjectorMotorController *me);
 
 void InjectorMotorController_run(struct InjectorMotorController *me);
+
+
+//algorithms
+
+void InjectorMotorController_SetArmDownPosition(struct InjectorMotorController *me);
+
+void InjectorMotorController_SetArmUpPosition(struct InjectorMotorController *me);
+
+void InjectorMotorController_Algorithm1(struct InjectorMotorController *me);
+
 

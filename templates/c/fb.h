@@ -4,20 +4,26 @@
 // This file represents the interface of Function Block {{$block.Name}}
 #include "fbtypes.h"
 
-struct {{$block.Name}}InputEvents {
-{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	EVENT {{$event.Name}};
-{{end}}{{end}}}
+union {{$block.Name}}InputEvents {
+	struct {
+	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	UDINT {{$event.Name}} : 1;
+	{{end}}{{end}}} event;
+	UDINT events[{{if $block.EventInputs}}{{add (div (len $block.EventInputs.Events) 32) 1}}{{else}}1{{end}}];
+};
 
-struct {{$block.Name}}OutputEvents {
-{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	EVENT {{$event.Name}};
-{{end}}{{end}}}
+union {{$block.Name}}OutputEvents {
+	struct {
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	UDINT {{$event.Name}} : 1;
+	{{end}}{{end}}} event;
+	UDINT events[{{if $block.EventOutputs}}{{add (div (len $block.EventOutputs.Events) 32) 1}}{{else}}1{{end}}];
+};
 
 struct {{$block.Name}} {
     //input events
-    struct {{$block.Name}}InputEvents inputEvents;
+    union {{$block.Name}}InputEvents inputEvents;
 
     //output events
-    struct {{$block.Name}}OutputEvents outputEvents;
+    union {{$block.Name}}OutputEvents outputEvents;
 
     //input vars
 	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}{{$var.Type}} {{$var.Name}};
@@ -28,10 +34,16 @@ struct {{$block.Name}} {
     {{if $block.BasicFB}}//internal vars
 	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Type}} {{$var.Name}};
     {{end}}{{end}}{{end}}
-}
+};
 
 void {{$block.Name}}_init(struct {{$block.Name}} *me);
 
 void {{$block.Name}}_run(struct {{$block.Name}} *me);
+
+{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
+{{if $basicFB.Algorithms}}//algorithms
+{{range $algIndex, $alg := $basicFB.Algorithms}}
+void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} *me);
+{{end}}{{end}}{{end}}
 
 {{end}}

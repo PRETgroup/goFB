@@ -4,34 +4,40 @@
 // This file represents the interface of Function Block IOManager
 #include "fbtypes.h"
 
-struct IOManagerInputEvents {
-	EVENT DoorReleaseCanister;
-	EVENT ConveyorChanged;
-	EVENT InjectorPositionChanged;
-	EVENT InjectorControlsChanged;
-	EVENT FillContentsChanged;
-	EVENT StartVacuumTimer;
-	EVENT GoRejectArm;
-	EVENT CanisterCountChanged;
-	EVENT InjectDone;
-}
+union IOManagerInputEvents {
+	struct {
+		UDINT DoorReleaseCanister : 1;
+		UDINT ConveyorChanged : 1;
+		UDINT InjectorPositionChanged : 1;
+		UDINT InjectorControlsChanged : 1;
+		UDINT FillContentsChanged : 1;
+		UDINT StartVacuumTimer : 1;
+		UDINT GoRejectArm : 1;
+		UDINT CanisterCountChanged : 1;
+		UDINT InjectDone : 1;
+	} event;
+	UDINT events[1];
+};
 
-struct IOManagerOutputEvents {
-	EVENT InjectorArmFinishMovement;
-	EVENT EmergencyStopChanged;
-	EVENT CanisterPressureChanged;
-	EVENT FillContentsAvailableChanged;
-	EVENT LasersChanged;
-	EVENT DoorOverride;
-	EVENT VacuumTimerElapsed;
-}
+union IOManagerOutputEvents {
+	struct {
+		UDINT InjectorArmFinishMovement : 1;
+		UDINT EmergencyStopChanged : 1;
+		UDINT CanisterPressureChanged : 1;
+		UDINT FillContentsAvailableChanged : 1;
+		UDINT LasersChanged : 1;
+		UDINT DoorOverride : 1;
+		UDINT VacuumTimerElapsed : 1;
+	} event;
+	UDINT events[1];
+};
 
 struct IOManager {
     //input events
-    struct IOManagerInputEvents inputEvents;
+    union IOManagerInputEvents inputEvents;
 
     //output events
-    struct IOManagerOutputEvents outputEvents;
+    union IOManagerOutputEvents outputEvents;
 
     //input vars
 	BYTE ConveyorSpeed;
@@ -54,13 +60,16 @@ struct IOManager {
     
     //internal vars
 	BOOL EmergencyStopped;
-    BYTE UART_TX;
-    BOOL UART_TX_READY;
-    BOOL UART_TX_SEND;
     
-}
+};
 
 void IOManager_init(struct IOManager *me);
 
 void IOManager_run(struct IOManager *me);
+
+
+//algorithms
+
+void IOManager_IOAlgorithm(struct IOManager *me);
+
 

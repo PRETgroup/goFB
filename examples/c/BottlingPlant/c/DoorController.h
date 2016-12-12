@@ -4,22 +4,28 @@
 // This file represents the interface of Function Block DoorController
 #include "fbtypes.h"
 
-struct DoorControllerInputEvents {
-	EVENT ReleaseDoorOverride;
-	EVENT BottlingDone;
-	EVENT EmergencyStopChanged;
-}
+union DoorControllerInputEvents {
+	struct {
+		UDINT ReleaseDoorOverride : 1;
+		UDINT BottlingDone : 1;
+		UDINT EmergencyStopChanged : 1;
+	} event;
+	UDINT events[1];
+};
 
-struct DoorControllerOutputEvents {
-	EVENT DoorReleaseCanister;
-}
+union DoorControllerOutputEvents {
+	struct {
+		UDINT DoorReleaseCanister : 1;
+	} event;
+	UDINT events[1];
+};
 
 struct DoorController {
     //input events
-    struct DoorControllerInputEvents inputEvents;
+    union DoorControllerInputEvents inputEvents;
 
     //output events
-    struct DoorControllerOutputEvents outputEvents;
+    union DoorControllerOutputEvents outputEvents;
 
     //input vars
 	BOOL EmergencyStop;
@@ -28,9 +34,12 @@ struct DoorController {
 	
     //internal vars
 	
-}
+};
 
 void DoorController_init(struct DoorController *me);
 
 void DoorController_run(struct DoorController *me);
+
+
+
 

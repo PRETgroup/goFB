@@ -58,7 +58,4 @@ typedef char FBstring[STRING_LENGTH];
 typedef FBstring STRING;
 typedef FBstring WSTRING;
 
-// Events
-typedef bool EVENT;
-
 #endif // FBTYPES_H_

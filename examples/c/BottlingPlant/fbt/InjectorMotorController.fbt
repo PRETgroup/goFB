@@ -54,12 +54,12 @@
   <ECTransition Source="Await_Pumping" Destination="MoveArmUp" Condition="PumpFinished" x="1722.47916666667" y="1705.02083333333" />
   <ECTransition Source="MoveArmUp" Destination="Await_Bottle" Condition="InjectorArmFinishedMovement" x="1237.125" y="1482.03125" />
 </ECC><Algorithm Name="SetArmDownPosition" Comment="">
-  <Other Language="VHDL" Prototype="" Text="InjectorPosition &lt;= x&quot;FF&quot;;&#xD;&#xA;DONE &lt;= '1';" />
+  <Other Language="C" Prototype="" Text="me-&gt;InjectorPosition = 255;&#xD;&#xA;//printf(&quot;Injector: Set Injector Arm to Down position\n&quot;);" />
 </Algorithm>
 <Algorithm Name="SetArmUpPosition" Comment="">
-  <Other Language="VHDL" Prototype="" Text="InjectorPosition &lt;= x&quot;00&quot;;&#xD;&#xA;DONE &lt;= '1';" />
+  <Other Language="C" Prototype="" Text="printf(&quot;Injector: Set injector arm to up position\n&quot;);&#xD;&#xA;me-&gt;InjectorPosition = 0;&#xD;&#xA;" />
 </Algorithm>
 <Algorithm Name="Algorithm1" Comment="">
-  <Other Language="VHDL" Prototype="" Text="DONE &lt;= '1';" />
+  <Other Language="C" Prototype="" Text="printf(&quot;lalalala\n&quot;);" />
 </Algorithm></BasicFB>
 </FBType>

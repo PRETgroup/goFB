@@ -4,17 +4,23 @@
 // This file represents the implementation of the Basic Function Block for {{$block.Name}}
 #include "{{$block.Name}}.h"
 
-enum {{$block.Name}}_states { {{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}STATE_{{$state.Name}}{{end}} }
+enum {{$block.Name}}_states { {{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}STATE_{{$state.Name}}{{end}} };
 
 void {{$block.Name}}_init(struct {{$block.Name}} *me) {
+	//if there are input events, reset them
+	{{if $block.EventInputs}}{{range $index, $count := count (add (div (len $block.EventInputs.Events) 32) 1)}}me->inputEvents.events[{{$count}}] = 0;
+	{{end}}{{end}}
 	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.{{$event.Name}} = 0;
+	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
+	{{end}}{{end}}
+	//if there are input vars, reset them
+	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}me->{{$var.Name}} = 0;
 	{{end}}{{end}}
 	//if there are output vars, reset them
-	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->outputVars.{{$var.Name}} = 0;
+	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->{{$var.Name}} = 0;
 	{{end}}{{end}}
 	//if there are internal vars, reset them
-	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}me->internalVars.{{$var.Name}} = 0;
+	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}me->{{$var.Name}} = 0;
 	{{end}}{{end}}
 }
 
@@ -24,9 +30,8 @@ void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 	static BOOL trigger = false;
 
 	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.{{$event.Name}} = 0;
+	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
 	{{end}}{{end}}
-
 	//now, let's advance state
 	switch(state) {
 	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}} :
@@ -39,7 +44,14 @@ void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
-
+		switch(state) {
+			{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}} :
+				{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
+				{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
+				break;
+				{{end}}{{end}}
+			{{end}}
+		}
 	}
 }
 

@@ -4,17 +4,20 @@
 // This file represents the implementation of the Basic Function Block for InjectorMotorController
 #include "InjectorMotorController.h"
 
-enum InjectorMotorController_states { STATE_MoveArmUp, STATE_Await_Bottle, STATE_MoveArmDown, STATE_Await_Pumping }
+enum InjectorMotorController_states { STATE_MoveArmUp, STATE_Await_Bottle, STATE_MoveArmDown, STATE_Await_Pumping };
 
 void InjectorMotorController_init(struct InjectorMotorController *me) {
+	//if there are input events, reset them
+	me->inputEvents.events[0] = 0;
+	
 	//if there are output events, reset them
-	me->outputEvents.StartPump = 0;
-	me->outputEvents.InjectDone = 0;
-	me->outputEvents.InjectorPositionChanged = 0;
-	me->outputEvents.InjectRunning = 0;
+	me->outputEvents.events[0] = 0;
+	
+	//if there are input vars, reset them
+	me->EmergencyStop = 0;
 	
 	//if there are output vars, reset them
-	me->outputVars.InjectorPosition = 0;
+	me->InjectorPosition = 0;
 	
 	//if there are internal vars, reset them
 	
@@ -26,31 +29,27 @@ void InjectorMotorController_run(struct InjectorMotorController *me) {
 	static BOOL trigger = false;
 
 	//if there are output events, reset them
-	me->outputEvents.StartPump = 0;
-	me->outputEvents.InjectDone = 0;
-	me->outputEvents.InjectorPositionChanged = 0;
-	me->outputEvents.InjectRunning = 0;
+	me->outputEvents.events[0] = 0;
 	
-
 	//now, let's advance state
 	switch(state) {
 	case STATE_MoveArmUp :
-		if(me->inputEvents.InjectorArmFinishedMovement) {
+		if(me->inputEvents.event.InjectorArmFinishedMovement) {
 			state = STATE_Await_Bottle;
 			trigger = true;
 		};
 	case STATE_Await_Bottle :
-		if(me->inputEvents.ConveyorStoppedForInject) {
+		if(me->inputEvents.event.ConveyorStoppedForInject) {
 			state = STATE_MoveArmDown;
 			trigger = true;
 		};
 	case STATE_MoveArmDown :
-		if(me->inputEvents.InjectorArmFinishedMovement) {
+		if(me->inputEvents.event.InjectorArmFinishedMovement) {
 			state = STATE_Await_Pumping;
 			trigger = true;
 		};
 	case STATE_Await_Pumping :
-		if(me->inputEvents.PumpFinished) {
+		if(me->inputEvents.event.PumpFinished) {
 			state = STATE_MoveArmUp;
 			trigger = true;
 		};
@@ -59,24 +58,47 @@ void InjectorMotorController_run(struct InjectorMotorController *me) {
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
-
+		switch(state) {
+			case STATE_MoveArmUp :
+				InjectorMotorController_SetArmUpPosition(me);
+				me->outputEvents.event.InjectorPositionChanged = 1;
+				break;
+				
+			case STATE_Await_Bottle :
+				me->outputEvents.event.InjectDone = 1;
+				break;
+				
+			case STATE_MoveArmDown :
+				InjectorMotorController_SetArmDownPosition(me);
+				me->outputEvents.event.InjectorPositionChanged = 1;
+				break;
+				me->outputEvents.event.InjectRunning = 1;
+				break;
+				
+			case STATE_Await_Pumping :
+				me->outputEvents.event.StartPump = 1;
+				break;
+				
+			
+		}
 	}
 }
 
 //algorithms
 
 void InjectorMotorController_SetArmDownPosition(struct InjectorMotorController *me) {
-InjectorPosition <= x"FF";
-DONE <= '1';
+me->InjectorPosition = 255;
+//printf("Injector: Set Injector Arm to Down position\n");
 }
 
 void InjectorMotorController_SetArmUpPosition(struct InjectorMotorController *me) {
-InjectorPosition <= x"00";
-DONE <= '1';
+printf("Injector: Set injector arm to up position\n");
+me->InjectorPosition = 0;
+
 }
 
 void InjectorMotorController_Algorithm1(struct InjectorMotorController *me) {
-DONE <= '1';
+printf("lalalala\n");
 }
 
 

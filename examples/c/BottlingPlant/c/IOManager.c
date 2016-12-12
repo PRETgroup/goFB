@@ -4,33 +4,36 @@
 // This file represents the implementation of the Basic Function Block for IOManager
 #include "IOManager.h"
 
-enum IOManager_states { STATE_Start }
+enum IOManager_states { STATE_Start };
 
 void IOManager_init(struct IOManager *me) {
+	//if there are input events, reset them
+	me->inputEvents.events[0] = 0;
+	
 	//if there are output events, reset them
-	me->outputEvents.InjectorArmFinishMovement = 0;
-	me->outputEvents.EmergencyStopChanged = 0;
-	me->outputEvents.CanisterPressureChanged = 0;
-	me->outputEvents.FillContentsAvailableChanged = 0;
-	me->outputEvents.LasersChanged = 0;
-	me->outputEvents.DoorOverride = 0;
-	me->outputEvents.VacuumTimerElapsed = 0;
+	me->outputEvents.events[0] = 0;
+	
+	//if there are input vars, reset them
+	me->ConveyorSpeed = 0;
+	me->InjectorPosition = 0;
+	me->InjectorContentsValveOpen = 0;
+	me->InjectorVacuumRun = 0;
+	me->InjectorPressurePumpRun = 0;
+	me->FillContents = 0;
+	me->CanisterCount = 0;
 	
 	//if there are output vars, reset them
-	me->outputVars.EmergencyStop = 0;
-	me->outputVars.CanisterPressure = 0;
-	me->outputVars.FillContentsAvailable = 0;
-	me->outputVars.DoorSiteLaser = 0;
-	me->outputVars.InjectSiteLaser = 0;
-	me->outputVars.RejectSiteLaser = 0;
-	me->outputVars.RejectBinLaser = 0;
-	me->outputVars.AcceptBinLaser = 0;
+	me->EmergencyStop = 0;
+	me->CanisterPressure = 0;
+	me->FillContentsAvailable = 0;
+	me->DoorSiteLaser = 0;
+	me->InjectSiteLaser = 0;
+	me->RejectSiteLaser = 0;
+	me->RejectBinLaser = 0;
+	me->AcceptBinLaser = 0;
 	
 	//if there are internal vars, reset them
-	me->internalVars.EmergencyStopped = 0;
-	me->internalVars.UART_TX = 0;
-	me->internalVars.UART_TX_READY = 0;
-	me->internalVars.UART_TX_SEND = 0;
+	me->EmergencyStopped = 0;
 	
 }
 
@@ -40,15 +43,8 @@ void IOManager_run(struct IOManager *me) {
 	static BOOL trigger = false;
 
 	//if there are output events, reset them
-	me->outputEvents.InjectorArmFinishMovement = 0;
-	me->outputEvents.EmergencyStopChanged = 0;
-	me->outputEvents.CanisterPressureChanged = 0;
-	me->outputEvents.FillContentsAvailableChanged = 0;
-	me->outputEvents.LasersChanged = 0;
-	me->outputEvents.DoorOverride = 0;
-	me->outputEvents.VacuumTimerElapsed = 0;
+	me->outputEvents.events[0] = 0;
 	
-
 	//now, let's advance state
 	switch(state) {
 	case STATE_Start :
@@ -61,7 +57,14 @@ void IOManager_run(struct IOManager *me) {
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
-
+		switch(state) {
+			case STATE_Start :
+				IOManager_IOAlgorithm(me);
+				me->outputEvents.event.EmergencyStopChanged = 1;
+				break;
+				
+			
+		}
 	}
 }
 
@@ -218,7 +221,7 @@ if(emergencyStopped == 1) {
 }
 
 
-DONE <= '1';
+
 }
 
 

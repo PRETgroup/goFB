@@ -4,28 +4,34 @@
 // This file represents the interface of Function Block InjectorPumpsController
 #include "fbtypes.h"
 
-struct InjectorPumpsControllerInputEvents {
-	EVENT StartPump;
-	EVENT EmergencyStopChanged;
-	EVENT CanisterPressureChanged;
-	EVENT FillContentsAvailableChanged;
-	EVENT VacuumTimerElapsed;
-}
+union InjectorPumpsControllerInputEvents {
+	struct {
+		UDINT StartPump : 1;
+		UDINT EmergencyStopChanged : 1;
+		UDINT CanisterPressureChanged : 1;
+		UDINT FillContentsAvailableChanged : 1;
+		UDINT VacuumTimerElapsed : 1;
+	} event;
+	UDINT events[1];
+};
 
-struct InjectorPumpsControllerOutputEvents {
-	EVENT PumpFinished;
-	EVENT RejectCanister;
-	EVENT InjectorControlsChanged;
-	EVENT FillContentsChanged;
-	EVENT StartVacuumTimer;
-}
+union InjectorPumpsControllerOutputEvents {
+	struct {
+		UDINT PumpFinished : 1;
+		UDINT RejectCanister : 1;
+		UDINT InjectorControlsChanged : 1;
+		UDINT FillContentsChanged : 1;
+		UDINT StartVacuumTimer : 1;
+	} event;
+	UDINT events[1];
+};
 
 struct InjectorPumpsController {
     //input events
-    struct InjectorPumpsControllerInputEvents inputEvents;
+    union InjectorPumpsControllerInputEvents inputEvents;
 
     //output events
-    struct InjectorPumpsControllerOutputEvents outputEvents;
+    union InjectorPumpsControllerOutputEvents outputEvents;
 
     //input vars
 	BOOL EmergencyStop;
@@ -40,9 +46,21 @@ struct InjectorPumpsController {
     
     //internal vars
 	
-}
+};
 
 void InjectorPumpsController_init(struct InjectorPumpsController *me);
 
 void InjectorPumpsController_run(struct InjectorPumpsController *me);
+
+
+//algorithms
+
+void InjectorPumpsController_StartVacuum(struct InjectorPumpsController *me);
+
+void InjectorPumpsController_ClearControls(struct InjectorPumpsController *me);
+
+void InjectorPumpsController_OpenValve(struct InjectorPumpsController *me);
+
+void InjectorPumpsController_StartPump(struct InjectorPumpsController *me);
+
 

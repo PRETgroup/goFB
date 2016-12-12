@@ -4,11 +4,17 @@
 // This file represents the implementation of the Basic Function Block for DoorController
 #include "DoorController.h"
 
-enum DoorController_states { STATE_E_Stop, STATE_Run, STATE_Await }
+enum DoorController_states { STATE_E_Stop, STATE_Run, STATE_Await };
 
 void DoorController_init(struct DoorController *me) {
+	//if there are input events, reset them
+	me->inputEvents.events[0] = 0;
+	
 	//if there are output events, reset them
-	me->outputEvents.DoorReleaseCanister = 0;
+	me->outputEvents.events[0] = 0;
+	
+	//if there are input vars, reset them
+	me->EmergencyStop = 0;
 	
 	//if there are output vars, reset them
 	
@@ -22,26 +28,25 @@ void DoorController_run(struct DoorController *me) {
 	static BOOL trigger = false;
 
 	//if there are output events, reset them
-	me->outputEvents.DoorReleaseCanister = 0;
+	me->outputEvents.events[0] = 0;
 	
-
 	//now, let's advance state
 	switch(state) {
 	case STATE_E_Stop :
-		if(me->inputEvents.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
+		if(me->inputEvents.event.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
 			state = STATE_Await;
 			trigger = true;
 		};
 	case STATE_Run :
-		if(me->inputEvents.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
+		if(me->inputEvents.event.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
 			state = STATE_E_Stop;
 			trigger = true;
-		} else if(me->inputEvents.ReleaseDoorOverride OR me->inputEvents.BottlingDone) {
+		} else if(me->inputEvents.event.ReleaseDoorOverride OR me->inputEvents.event.BottlingDone) {
 			state = STATE_Run;
 			trigger = true;
 		};
 	case STATE_Await :
-		if(me->inputEvents.ReleaseDoorOverride OR me->inputEvents.BottlingDone) {
+		if(me->inputEvents.event.ReleaseDoorOverride OR me->inputEvents.event.BottlingDone) {
 			state = STATE_Run;
 			trigger = true;
 		};
@@ -50,7 +55,17 @@ void DoorController_run(struct DoorController *me) {
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
-
+		switch(state) {
+			case STATE_E_Stop :
+				
+			case STATE_Run :
+				me->outputEvents.event.DoorReleaseCanister = 1;
+				break;
+				
+			case STATE_Await :
+				
+			
+		}
 	}
 }
 

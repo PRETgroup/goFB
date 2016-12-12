@@ -4,11 +4,17 @@
 // This file represents the implementation of the Basic Function Block for RejectArmController
 #include "RejectArmController.h"
 
-enum RejectArmController_states { STATE_Clear, STATE_AwaitCanister, STATE_GoReject }
+enum RejectArmController_states { STATE_Clear, STATE_AwaitCanister, STATE_GoReject };
 
 void RejectArmController_init(struct RejectArmController *me) {
+	//if there are input events, reset them
+	me->inputEvents.events[0] = 0;
+	
 	//if there are output events, reset them
-	me->outputEvents.GoRejectArm = 0;
+	me->outputEvents.events[0] = 0;
+	
+	//if there are input vars, reset them
+	me->RejectSiteLaser = 0;
 	
 	//if there are output vars, reset them
 	
@@ -22,23 +28,22 @@ void RejectArmController_run(struct RejectArmController *me) {
 	static BOOL trigger = false;
 
 	//if there are output events, reset them
-	me->outputEvents.GoRejectArm = 0;
+	me->outputEvents.events[0] = 0;
 	
-
 	//now, let's advance state
 	switch(state) {
 	case STATE_Clear :
-		if(me->inputEvents.RejectCanister) {
+		if(me->inputEvents.event.RejectCanister) {
 			state = STATE_AwaitCanister;
 			trigger = true;
 		};
 	case STATE_AwaitCanister :
-		if(me->inputEvents.LasersChanged AND (me->inputVars.RejectSiteLaser)) {
+		if(me->inputEvents.event.LasersChanged AND (me->inputVars.RejectSiteLaser)) {
 			state = STATE_GoReject;
 			trigger = true;
 		};
 	case STATE_GoReject :
-		if(me->inputEvents.RejectCanister) {
+		if(me->inputEvents.event.RejectCanister) {
 			state = STATE_AwaitCanister;
 			trigger = true;
 		};
@@ -47,7 +52,17 @@ void RejectArmController_run(struct RejectArmController *me) {
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
-
+		switch(state) {
+			case STATE_Clear :
+				
+			case STATE_AwaitCanister :
+				
+			case STATE_GoReject :
+				me->outputEvents.event.GoRejectArm = 1;
+				break;
+				
+			
+		}
 	}
 }
 

@@ -4,20 +4,26 @@
 // This file represents the interface of Function Block CanisterCounter
 #include "fbtypes.h"
 
-struct CanisterCounterInputEvents {
-	EVENT LasersChanged;
-}
+union CanisterCounterInputEvents {
+	struct {
+		UDINT LasersChanged : 1;
+	} event;
+	UDINT events[1];
+};
 
-struct CanisterCounterOutputEvents {
-	EVENT CanisterCountChanged;
-}
+union CanisterCounterOutputEvents {
+	struct {
+		UDINT CanisterCountChanged : 1;
+	} event;
+	UDINT events[1];
+};
 
 struct CanisterCounter {
     //input events
-    struct CanisterCounterInputEvents inputEvents;
+    union CanisterCounterInputEvents inputEvents;
 
     //output events
-    struct CanisterCounterOutputEvents outputEvents;
+    union CanisterCounterOutputEvents outputEvents;
 
     //input vars
 	BOOL DoorSiteLaser;
@@ -29,9 +35,15 @@ struct CanisterCounter {
     
     //internal vars
 	
-}
+};
 
 void CanisterCounter_init(struct CanisterCounter *me);
 
 void CanisterCounter_run(struct CanisterCounter *me);
+
+
+//algorithms
+
+void CanisterCounter_ChangeCount(struct CanisterCounter *me);
+
 

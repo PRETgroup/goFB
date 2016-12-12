@@ -4,23 +4,29 @@
 // This file represents the interface of Function Block ConveyorController
 #include "fbtypes.h"
 
-struct ConveyorControllerInputEvents {
-	EVENT InjectDone;
-	EVENT EmergencyStopChanged;
-	EVENT LasersChanged;
-}
+union ConveyorControllerInputEvents {
+	struct {
+		UDINT InjectDone : 1;
+		UDINT EmergencyStopChanged : 1;
+		UDINT LasersChanged : 1;
+	} event;
+	UDINT events[1];
+};
 
-struct ConveyorControllerOutputEvents {
-	EVENT ConveyorChanged;
-	EVENT ConveyorStoppedForInject;
-}
+union ConveyorControllerOutputEvents {
+	struct {
+		UDINT ConveyorChanged : 1;
+		UDINT ConveyorStoppedForInject : 1;
+	} event;
+	UDINT events[1];
+};
 
 struct ConveyorController {
     //input events
-    struct ConveyorControllerInputEvents inputEvents;
+    union ConveyorControllerInputEvents inputEvents;
 
     //output events
-    struct ConveyorControllerOutputEvents outputEvents;
+    union ConveyorControllerOutputEvents outputEvents;
 
     //input vars
 	BOOL EmergencyStop;
@@ -32,9 +38,21 @@ struct ConveyorController {
     //internal vars
 	BOOL Variable1;
     
-}
+};
 
 void ConveyorController_init(struct ConveyorController *me);
 
 void ConveyorController_run(struct ConveyorController *me);
+
+
+//algorithms
+
+void ConveyorController_ConveyorStart(struct ConveyorController *me);
+
+void ConveyorController_ConveyorStop(struct ConveyorController *me);
+
+void ConveyorController_ConveyorRunning(struct ConveyorController *me);
+
+void ConveyorController_ConveyorEStop(struct ConveyorController *me);
+
 

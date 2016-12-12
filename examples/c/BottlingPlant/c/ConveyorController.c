@@ -4,18 +4,24 @@
 // This file represents the implementation of the Basic Function Block for ConveyorController
 #include "ConveyorController.h"
 
-enum ConveyorController_states { STATE_E_Stop, STATE_Running, STATE_Pause }
+enum ConveyorController_states { STATE_E_Stop, STATE_Running, STATE_Pause };
 
 void ConveyorController_init(struct ConveyorController *me) {
+	//if there are input events, reset them
+	me->inputEvents.events[0] = 0;
+	
 	//if there are output events, reset them
-	me->outputEvents.ConveyorChanged = 0;
-	me->outputEvents.ConveyorStoppedForInject = 0;
+	me->outputEvents.events[0] = 0;
+	
+	//if there are input vars, reset them
+	me->EmergencyStop = 0;
+	me->InjectSiteLaser = 0;
 	
 	//if there are output vars, reset them
-	me->outputVars.ConveyorSpeed = 0;
+	me->ConveyorSpeed = 0;
 	
 	//if there are internal vars, reset them
-	me->internalVars.Variable1 = 0;
+	me->Variable1 = 0;
 	
 }
 
@@ -25,27 +31,25 @@ void ConveyorController_run(struct ConveyorController *me) {
 	static BOOL trigger = false;
 
 	//if there are output events, reset them
-	me->outputEvents.ConveyorChanged = 0;
-	me->outputEvents.ConveyorStoppedForInject = 0;
+	me->outputEvents.events[0] = 0;
 	
-
 	//now, let's advance state
 	switch(state) {
 	case STATE_E_Stop :
-		if(me->inputEvents.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
+		if(me->inputEvents.event.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
 			state = STATE_Running;
 			trigger = true;
 		};
 	case STATE_Running :
-		if(me->inputEvents.LasersChanged AND (me->inputVars.InjectSiteLaser)) {
+		if(me->inputEvents.event.LasersChanged AND (me->inputVars.InjectSiteLaser)) {
 			state = STATE_Pause;
 			trigger = true;
 		};
 	case STATE_Pause :
-		if(me->inputEvents.InjectDone) {
+		if(me->inputEvents.event.InjectDone) {
 			state = STATE_Running;
 			trigger = true;
-		} else if(me->inputEvents.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
+		} else if(me->inputEvents.event.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
 			state = STATE_E_Stop;
 			trigger = true;
 		};
@@ -54,28 +58,44 @@ void ConveyorController_run(struct ConveyorController *me) {
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
-
+		switch(state) {
+			case STATE_E_Stop :
+				
+			case STATE_Running :
+				ConveyorController_ConveyorStart(me);
+				me->outputEvents.event.ConveyorChanged = 1;
+				break;
+				
+			case STATE_Pause :
+				ConveyorController_ConveyorStop(me);
+				me->outputEvents.event.ConveyorChanged = 1;
+				break;
+				me->outputEvents.event.ConveyorStoppedForInject = 1;
+				break;
+				
+			
+		}
 	}
 }
 
 //algorithms
 
 void ConveyorController_ConveyorStart(struct ConveyorController *me) {
-ConveyorSpeed <= x"01";
-DONE <= '1';
+me->ConveyorSpeed = 1;
+printf("Conveyor: Start\n");
 }
 
 void ConveyorController_ConveyorStop(struct ConveyorController *me) {
-ConveyorSpeed <= x"00";
-DONE <= '1';
+me->ConveyorSpeed = 0;
+printf("Conveyor: Stop\n");
 }
 
 void ConveyorController_ConveyorRunning(struct ConveyorController *me) {
-DONE <= '1';
+printf("Conveyor running region\n");
 }
 
 void ConveyorController_ConveyorEStop(struct ConveyorController *me) {
-DONE <= '1';
+printf("Conveyor Emergency Stopped\n");
 }
 
 

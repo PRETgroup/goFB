@@ -64,11 +64,21 @@ var (
 		"renameConnSignal":              renameConnSignal,
 		"connChildSourceOnly":           connChildSourceOnly,
 		"connChildNameMatches":          connChildNameMatches,
+		"div":   div,
+		"add":   add,
+		"mod":   mod,
+		"count": count,
 	}
+
 	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./templates/vhdl/*"))
 
 	cTemplateFuncMap = template.FuncMap{
 		"getCECCTransitionCondition": getCECCTransitionCondition,
+		"div":   div,
+		"add":   add,
+		"mod":   mod,
+		"count": count,
 	}
+
 	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob("./templates/c/*"))
 )

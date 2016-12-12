@@ -4,31 +4,37 @@
 // This file represents the interface of Function Block InjectorController
 #include "fbtypes.h"
 
-struct InjectorControllerInputEvents {
-	EVENT InjectorArmFinishedMovement;
-	EVENT EmergencyStopChanged;
-	EVENT CanisterPressureChanged;
-	EVENT FillContentsAvailableChanged;
-	EVENT ConveyorStoppedForInject;
-	EVENT VacuumTimerElapsed;
-}
+union InjectorControllerInputEvents {
+	struct {
+		UDINT InjectorArmFinishedMovement : 1;
+		UDINT EmergencyStopChanged : 1;
+		UDINT CanisterPressureChanged : 1;
+		UDINT FillContentsAvailableChanged : 1;
+		UDINT ConveyorStoppedForInject : 1;
+		UDINT VacuumTimerElapsed : 1;
+	} event;
+	UDINT events[1];
+};
 
-struct InjectorControllerOutputEvents {
-	EVENT InjectDone;
-	EVENT InjectorPositionChanged;
-	EVENT InjectorControlsChanged;
-	EVENT RejectCanister;
-	EVENT FillContentsChanged;
-	EVENT StartVacuumTimer;
-	EVENT InjectRunning;
-}
+union InjectorControllerOutputEvents {
+	struct {
+		UDINT InjectDone : 1;
+		UDINT InjectorPositionChanged : 1;
+		UDINT InjectorControlsChanged : 1;
+		UDINT RejectCanister : 1;
+		UDINT FillContentsChanged : 1;
+		UDINT StartVacuumTimer : 1;
+		UDINT InjectRunning : 1;
+	} event;
+	UDINT events[1];
+};
 
 struct InjectorController {
     //input events
-    struct InjectorControllerInputEvents inputEvents;
+    union InjectorControllerInputEvents inputEvents;
 
     //output events
-    struct InjectorControllerOutputEvents outputEvents;
+    union InjectorControllerOutputEvents outputEvents;
 
     //input vars
 	BOOL EmergencyStop;
@@ -43,9 +49,11 @@ struct InjectorController {
     BOOL FillContents;
     
     
-}
+};
 
 void InjectorController_init(struct InjectorController *me);
 
 void InjectorController_run(struct InjectorController *me);
+
+
 

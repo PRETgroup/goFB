@@ -4,27 +4,35 @@
 // This file represents the interface of Function Block FlexPRET
 #include "fbtypes.h"
 
-struct FlexPRETInputEvents {
-}
+union FlexPRETInputEvents {
+	struct {
+	} event;
+	UDINT events[1];
+};
 
-struct FlexPRETOutputEvents {
-}
+union FlexPRETOutputEvents {
+	struct {
+	} event;
+	UDINT events[1];
+};
 
 struct FlexPRET {
     //input events
-    struct FlexPRETInputEvents inputEvents;
+    union FlexPRETInputEvents inputEvents;
 
     //output events
-    struct FlexPRETOutputEvents outputEvents;
+    union FlexPRETOutputEvents outputEvents;
 
     //input vars
 	
     //output vars
 	
     
-}
+};
 
 void FlexPRET_init(struct FlexPRET *me);
 
 void FlexPRET_run(struct FlexPRET *me);
+
+
 

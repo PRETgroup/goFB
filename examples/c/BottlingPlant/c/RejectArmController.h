@@ -4,21 +4,27 @@
 // This file represents the interface of Function Block RejectArmController
 #include "fbtypes.h"
 
-struct RejectArmControllerInputEvents {
-	EVENT RejectCanister;
-	EVENT LasersChanged;
-}
+union RejectArmControllerInputEvents {
+	struct {
+		UDINT RejectCanister : 1;
+		UDINT LasersChanged : 1;
+	} event;
+	UDINT events[1];
+};
 
-struct RejectArmControllerOutputEvents {
-	EVENT GoRejectArm;
-}
+union RejectArmControllerOutputEvents {
+	struct {
+		UDINT GoRejectArm : 1;
+	} event;
+	UDINT events[1];
+};
 
 struct RejectArmController {
     //input events
-    struct RejectArmControllerInputEvents inputEvents;
+    union RejectArmControllerInputEvents inputEvents;
 
     //output events
-    struct RejectArmControllerOutputEvents outputEvents;
+    union RejectArmControllerOutputEvents outputEvents;
 
     //input vars
 	BOOL RejectSiteLaser;
@@ -27,9 +33,12 @@ struct RejectArmController {
 	
     //internal vars
 	
-}
+};
 
 void RejectArmController_init(struct RejectArmController *me);
 
 void RejectArmController_run(struct RejectArmController *me);
+
+
+
 

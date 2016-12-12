@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
 <FBType Name="ConveyorController" Comment="" >
 <Identification Standard="61499-2" />
@@ -48,15 +48,15 @@
   <ECTransition Source="Running" Destination="Pause" Condition="LasersChanged AND (InjectSiteLaser)" x="2143.75" y="2887.5" />
   <ECTransition Source="E_Stop" Destination="Running" Condition="EmergencyStopChanged AND (!EmergencyStop)" x="1881.25" y="2275" />
 </ECC><Algorithm Name="ConveyorStart" Comment="">
-  <Other Language="VHDL" Prototype="" Text="ConveyorSpeed &lt;= x&quot;01&quot;;&#xD;&#xA;DONE &lt;= '1';" />
+  <Other Language="C" Prototype="" Text="me-&gt;ConveyorSpeed = 1;&#xD;&#xA;printf(&quot;Conveyor: Start\n&quot;);" />
 </Algorithm>
 <Algorithm Name="ConveyorStop" Comment="">
-  <Other Language="VHDL" Prototype="" Text="ConveyorSpeed &lt;= x&quot;00&quot;;&#xD;&#xA;DONE &lt;= '1';" />
+  <Other Language="C" Prototype="" Text="me-&gt;ConveyorSpeed = 0;&#xD;&#xA;printf(&quot;Conveyor: Stop\n&quot;);" />
 </Algorithm>
 <Algorithm Name="ConveyorRunning" Comment="">
-  <Other Language="VHDL" Prototype="" Text="DONE &lt;= '1';" />
+  <Other Language="C" Prototype="" Text="printf(&quot;Conveyor running region\n&quot;);" />
 </Algorithm>
 <Algorithm Name="ConveyorEStop" Comment="">
-  <Other Language="VHDL" Prototype="" Text="DONE &lt;= '1';" />
+  <Other Language="C" Prototype="" Text="printf(&quot;Conveyor Emergency Stopped\n&quot;);" />
 </Algorithm></BasicFB>
 </FBType>
