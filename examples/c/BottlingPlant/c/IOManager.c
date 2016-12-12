@@ -52,6 +52,7 @@ void IOManager_run(struct IOManager *me) {
 			state = STATE_Start;
 			trigger = true;
 		};
+		break;
 	
 	}
 

@@ -40,6 +40,7 @@ void CanisterCounter_run(struct CanisterCounter *me) {
 			state = STATE_Start;
 			trigger = true;
 		};
+		break;
 	
 	}
 

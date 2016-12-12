@@ -39,6 +39,7 @@ void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 			state = STATE_{{$trans.Destination}};
 			trigger = true;
 		{{end}}};
+		break;
 	{{end}}
 	}
 

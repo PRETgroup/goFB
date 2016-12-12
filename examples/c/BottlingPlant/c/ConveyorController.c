@@ -40,11 +40,13 @@ void ConveyorController_run(struct ConveyorController *me) {
 			state = STATE_Running;
 			trigger = true;
 		};
+		break;
 	case STATE_Running :
 		if(me->inputEvents.event.LasersChanged AND (me->inputVars.InjectSiteLaser)) {
 			state = STATE_Pause;
 			trigger = true;
 		};
+		break;
 	case STATE_Pause :
 		if(me->inputEvents.event.InjectDone) {
 			state = STATE_Running;
@@ -53,6 +55,7 @@ void ConveyorController_run(struct ConveyorController *me) {
 			state = STATE_E_Stop;
 			trigger = true;
 		};
+		break;
 	
 	}
 

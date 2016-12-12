@@ -37,16 +37,19 @@ void RejectArmController_run(struct RejectArmController *me) {
 			state = STATE_AwaitCanister;
 			trigger = true;
 		};
+		break;
 	case STATE_AwaitCanister :
 		if(me->inputEvents.event.LasersChanged AND (me->inputVars.RejectSiteLaser)) {
 			state = STATE_GoReject;
 			trigger = true;
 		};
+		break;
 	case STATE_GoReject :
 		if(me->inputEvents.event.RejectCanister) {
 			state = STATE_AwaitCanister;
 			trigger = true;
 		};
+		break;
 	
 	}
 

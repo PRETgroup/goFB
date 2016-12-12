@@ -37,6 +37,7 @@ void DoorController_run(struct DoorController *me) {
 			state = STATE_Await;
 			trigger = true;
 		};
+		break;
 	case STATE_Run :
 		if(me->inputEvents.event.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
 			state = STATE_E_Stop;
@@ -45,11 +46,13 @@ void DoorController_run(struct DoorController *me) {
 			state = STATE_Run;
 			trigger = true;
 		};
+		break;
 	case STATE_Await :
 		if(me->inputEvents.event.ReleaseDoorOverride OR me->inputEvents.event.BottlingDone) {
 			state = STATE_Run;
 			trigger = true;
 		};
+		break;
 	
 	}
 

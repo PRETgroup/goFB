@@ -43,11 +43,13 @@ void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 			state = STATE_AwaitPump;
 			trigger = true;
 		};
+		break;
 	case STATE_AwaitPump :
 		if(me->inputEvents.event.StartPump) {
 			state = STATE_VacuumPump;
 			trigger = true;
 		};
+		break;
 	case STATE_VacuumPump :
 		if(me->inputEvents.event.VacuumTimerElapsed) {
 			state = STATE_RejectCanister;
@@ -56,26 +58,31 @@ void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 			state = STATE_StopVacuum;
 			trigger = true;
 		};
+		break;
 	case STATE_FinishPump :
 		if(true) {
 			state = STATE_AwaitPump;
 			trigger = true;
 		};
+		break;
 	case STATE_StartPump :
 		if(me->inputEvents.event.CanisterPressureChanged AND (CanisterPressure>=245)) {
 			state = STATE_FinishPump;
 			trigger = true;
 		};
+		break;
 	case STATE_OpenValve :
 		if(true) {
 			state = STATE_StartPump;
 			trigger = true;
 		};
+		break;
 	case STATE_StopVacuum :
 		if(true) {
 			state = STATE_OpenValve;
 			trigger = true;
 		};
+		break;
 	
 	}
 

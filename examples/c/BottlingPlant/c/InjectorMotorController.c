@@ -38,21 +38,25 @@ void InjectorMotorController_run(struct InjectorMotorController *me) {
 			state = STATE_Await_Bottle;
 			trigger = true;
 		};
+		break;
 	case STATE_Await_Bottle :
 		if(me->inputEvents.event.ConveyorStoppedForInject) {
 			state = STATE_MoveArmDown;
 			trigger = true;
 		};
+		break;
 	case STATE_MoveArmDown :
 		if(me->inputEvents.event.InjectorArmFinishedMovement) {
 			state = STATE_Await_Pumping;
 			trigger = true;
 		};
+		break;
 	case STATE_Await_Pumping :
 		if(me->inputEvents.event.PumpFinished) {
 			state = STATE_MoveArmUp;
 			trigger = true;
 		};
+		break;
 	
 	}
 
