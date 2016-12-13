@@ -4,6 +4,8 @@
 #ifndef FBTYPES_H_
 #define FBTYPES_H_
 
+#include <stdio.h>
+
 /*********************************************************************
  This file contains the mapping between IEC 61131 and C data types.
  Since C data types are non-portable, this file MUST be customized to

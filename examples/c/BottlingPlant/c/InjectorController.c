@@ -4,6 +4,14 @@
 // This file represents the implementation of the Composite Function Block for InjectorController
 #include "InjectorController.h"
 
+//When running a composite block, note that you would call the functions in this order
+//_init(); 
+//do {
+//_syncEvents();
+//_syncData();
+//_run();
+//} loop;
+
 /* InjectorController_init() is required to be called to 
  * initialise an instance of InjectorController. 
  * As this is a composite function block, it contains no values of its own,
@@ -15,35 +23,74 @@ void InjectorController_init(struct InjectorController *me) {
 	
 }
 
-/* InjectorController_sync() synchronises an
- * instance of InjectorController according to synchronise semantics.
- * Notice that it does NOT perform any computation - additional steps
- * will need to be done at the parent.
+/* InjectorController_syncEvents() synchronises the events of an
+ * instance of InjectorController as required by synchronous semantics.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
  */
-void InjectorController_sync(struct InjectorController *me) {
+void InjectorController_syncEvents(struct InjectorController *me) {
 	//for all composite function block children, call this same function
+	
 	//for all basic function block children, perform their synchronisations explicitly
+	//events are always copied
+	me->Arm.inputEvents.event.InjectorArmFinishedMovement = me->inputEvents.event.InjectorArmFinishedMovement;
+	me->Arm.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged;
+	me->Pumps.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged;
+	me->Pumps.inputEvents.event.CanisterPressureChanged = me->inputEvents.event.CanisterPressureChanged;
+	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->inputEvents.event.FillContentsAvailableChanged;
+	me->Arm.inputEvents.event.ConveyorStoppedForInject = me->inputEvents.event.ConveyorStoppedForInject;
+	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->inputEvents.event.VacuumTimerElapsed;
+	me->outputEvents.event.InjectDone = me->Arm.outputEvents.event.InjectDone;
+	me->outputEvents.event.InjectorPositionChanged = me->Arm.outputEvents.event.InjectorPositionChanged;
+	me->outputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged;
+	me->outputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister;
+	me->outputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged;
+	me->outputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer;
+	me->outputEvents.event.InjectRunning = me->Arm.outputEvents.event.InjectRunning;
+	me->Pumps.inputEvents.event.StartPump = me->Arm.outputEvents.event.StartPump;
+	me->Arm.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished;
+	
+}
+
+/* InjectorController_syncData() synchronises the data connections of an
+ * instance of InjectorController as required by synchronous semantics.
+ * It does the checking to ensure that only connections which have had their
+ * associated event fire are updated.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void InjectorController_syncData(struct InjectorController *me) {
+	//for all composite function block children, call this same function
+	
+	//for all basic function block children, perform their synchronisations explicitly
+	//Data is sometimes copied
 	
 	//sync for Arm (of type InjectorMotorController) which is a BFB
-	me->Arm.InputEvents.event.InjectorArmFinishedMovement = ?;
-	me->Arm.InputEvents.event.EmergencyStopChanged = ?;
-	me->Arm.InputEvents.event.ConveyorStoppedForInject = ?;
-	me->Arm.InputEvents.event.PumpFinished = ?;
+	
+	if(me->Arm.inputEvents.event.EmergencyStopChanged == 1) { 
+		me->Arm.EmergencyStop = me->EmergencyStop;
+	} 
 	
 	//sync for Pumps (of type InjectorPumpsController) which is a BFB
-	me->Pumps.InputEvents.event.StartPump = ?;
-	me->Pumps.InputEvents.event.EmergencyStopChanged = ?;
-	me->Pumps.InputEvents.event.CanisterPressureChanged = ?;
-	me->Pumps.InputEvents.event.FillContentsAvailableChanged = ?;
-	me->Pumps.InputEvents.event.VacuumTimerElapsed = ?;
 	
+	if(me->Pumps.inputEvents.event.EmergencyStopChanged == 1) { 
+		me->Pumps.EmergencyStop = me->EmergencyStop;
+	} 
+	if(me->Pumps.inputEvents.event.CanisterPressureChanged == 1) { 
+		me->Pumps.CanisterPressure = me->CanisterPressure;
+	} 
+	if(me->Pumps.inputEvents.event.FillContentsAvailableChanged == 1) { 
+		me->Pumps.FillContentsAvailable = me->FillContentsAvailable;
+	} 
+	
+
 }
 
 
 /* InjectorController_run() executes a single tick of an
  * instance of InjectorController according to synchronise semantics.
- * Notice that it does NOT perform any I/O - additional synchronisation
- * will need to be done at the parent.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * is done using the _syncX functions at this (and any higher) level.
  */
 void InjectorController_run(struct InjectorController *me) {
 	InjectorMotorController_run(&me->Arm);

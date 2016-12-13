@@ -37,7 +37,7 @@ void ConveyorController_init(struct ConveyorController *me) {
 void ConveyorController_run(struct ConveyorController *me) {
 	//current state storage
 	static enum ConveyorController_states state = STATE_E_Stop;
-	static BOOL trigger = false;
+	static BOOL trigger = true; //should be true the first time this is run
 
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -45,14 +45,14 @@ void ConveyorController_run(struct ConveyorController *me) {
 	//now, let's advance state
 	switch(state) {
 	case STATE_E_Stop:
-		if(me->inputEvents.event.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
+		if(me->inputEvents.event.EmergencyStopChanged && (!me->EmergencyStop)) {
 			state = STATE_Running;
 			trigger = true;
 		};
 		break;
 
 	case STATE_Running:
-		if(me->inputEvents.event.LasersChanged AND (me->inputVars.InjectSiteLaser)) {
+		if(me->inputEvents.event.LasersChanged && (me->InjectSiteLaser)) {
 			state = STATE_Pause;
 			trigger = true;
 		};
@@ -62,7 +62,7 @@ void ConveyorController_run(struct ConveyorController *me) {
 		if(me->inputEvents.event.InjectDone) {
 			state = STATE_Running;
 			trigger = true;
-		} else if(me->inputEvents.event.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
+		} else if(me->inputEvents.event.EmergencyStopChanged && (me->EmergencyStop)) {
 			state = STATE_E_Stop;
 			trigger = true;
 		};
@@ -91,6 +91,8 @@ void ConveyorController_run(struct ConveyorController *me) {
 		
 		}
 	}
+
+	trigger = false;
 }
 
 //algorithms

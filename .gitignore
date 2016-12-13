@@ -1,3 +1,5 @@
 go-iec61499-vhdl
 go-iec61499-vhdl.exe
 .vscode
+*.exe
+*.out

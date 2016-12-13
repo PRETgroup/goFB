@@ -40,7 +40,7 @@ void InjectorPumpsController_init(struct InjectorPumpsController *me) {
 void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 	//current state storage
 	static enum InjectorPumpsController_states state = STATE_RejectCanister;
-	static BOOL trigger = false;
+	static BOOL trigger = true; //should be true the first time this is run
 
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -65,7 +65,7 @@ void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 		if(me->inputEvents.event.VacuumTimerElapsed) {
 			state = STATE_RejectCanister;
 			trigger = true;
-		} else if(me->inputEvents.event.CanisterPressureChanged AND (CanisterPressure<=10)) {
+		} else if(me->inputEvents.event.CanisterPressureChanged && (me->CanisterPressure <= 10)) {
 			state = STATE_StopVacuum;
 			trigger = true;
 		};
@@ -79,7 +79,7 @@ void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 		break;
 
 	case STATE_StartPump:
-		if(me->inputEvents.event.CanisterPressureChanged AND (CanisterPressure>=245)) {
+		if(me->inputEvents.event.CanisterPressureChanged && (me->CanisterPressure >= 245)) {
 			state = STATE_FinishPump;
 			trigger = true;
 		};
@@ -144,6 +144,8 @@ void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 		
 		}
 	}
+
+	trigger = false;
 }
 
 //algorithms

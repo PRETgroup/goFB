@@ -36,7 +36,7 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 	//current state storage
 	static enum {{$block.Name}}_states state = STATE_{{(index $basicFB.States 0).Name}};
-	static BOOL trigger = false;
+	static BOOL trigger = true; //should be true the first time this is run
 
 	//if there are output events, reset them
 	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
@@ -64,6 +64,8 @@ void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 		{{end}}
 		}
 	}
+
+	trigger = false;
 }
 
 {{if $basicFB.Algorithms}}//algorithms

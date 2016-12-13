@@ -53,6 +53,7 @@ void FlexPRET_init(struct FlexPRET *me);
 //all FBs get a run function
 void FlexPRET_run(struct FlexPRET *me);
 
-//composite FBs get a sync function
-void FlexPRET_sync(struct FlexPRET *me);
+//composite FBs get sync functions
+void FlexPRET_syncEvents(struct FlexPRET *me);
+void FlexPRET_syncData(struct FlexPRET *me);
 
