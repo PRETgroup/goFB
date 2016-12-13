@@ -6,6 +6,10 @@
 
 enum CanisterCounter_states { STATE_Start };
 
+/* CanisterCounter_init() is required to be called to 
+ * initialise an instance of CanisterCounter. 
+ * It sets all I/O values to zero.
+ */
 void CanisterCounter_init(struct CanisterCounter *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
@@ -25,6 +29,11 @@ void CanisterCounter_init(struct CanisterCounter *me) {
 	
 }
 
+/* CanisterCounter_run() executes a single tick of an
+ * instance of CanisterCounter according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ */
 void CanisterCounter_run(struct CanisterCounter *me) {
 	//current state storage
 	static enum CanisterCounter_states state = STATE_Start;
@@ -35,24 +44,25 @@ void CanisterCounter_run(struct CanisterCounter *me) {
 	
 	//now, let's advance state
 	switch(state) {
-	case STATE_Start :
+	case STATE_Start:
 		if(me->inputEvents.event.LasersChanged) {
 			state = STATE_Start;
 			trigger = true;
 		};
 		break;
+
 	
 	}
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
 		switch(state) {
-			case STATE_Start :
-				CanisterCounter_ChangeCount(me);
-				me->outputEvents.event.CanisterCountChanged = 1;
-				break;
-				
-			
+		case STATE_Start:
+			CanisterCounter_ChangeCount(me);
+			me->outputEvents.event.CanisterCountChanged = 1;
+			break;
+
+		
 		}
 	}
 }

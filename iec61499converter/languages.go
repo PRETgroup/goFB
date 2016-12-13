@@ -74,6 +74,7 @@ var (
 
 	cTemplateFuncMap = template.FuncMap{
 		"getCECCTransitionCondition": getCECCTransitionCondition,
+		"findBlockDefinitionForType": findBlockDefinitionForType,
 		"div":   div,
 		"add":   add,
 		"mod":   mod,

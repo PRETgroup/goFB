@@ -6,6 +6,10 @@
 
 enum RejectArmController_states { STATE_Clear, STATE_AwaitCanister, STATE_GoReject };
 
+/* RejectArmController_init() is required to be called to 
+ * initialise an instance of RejectArmController. 
+ * It sets all I/O values to zero.
+ */
 void RejectArmController_init(struct RejectArmController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
@@ -22,6 +26,11 @@ void RejectArmController_init(struct RejectArmController *me) {
 	
 }
 
+/* RejectArmController_run() executes a single tick of an
+ * instance of RejectArmController according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ */
 void RejectArmController_run(struct RejectArmController *me) {
 	//current state storage
 	static enum RejectArmController_states state = STATE_Clear;
@@ -32,39 +41,44 @@ void RejectArmController_run(struct RejectArmController *me) {
 	
 	//now, let's advance state
 	switch(state) {
-	case STATE_Clear :
+	case STATE_Clear:
 		if(me->inputEvents.event.RejectCanister) {
 			state = STATE_AwaitCanister;
 			trigger = true;
 		};
 		break;
-	case STATE_AwaitCanister :
+
+	case STATE_AwaitCanister:
 		if(me->inputEvents.event.LasersChanged AND (me->inputVars.RejectSiteLaser)) {
 			state = STATE_GoReject;
 			trigger = true;
 		};
 		break;
-	case STATE_GoReject :
+
+	case STATE_GoReject:
 		if(me->inputEvents.event.RejectCanister) {
 			state = STATE_AwaitCanister;
 			trigger = true;
 		};
 		break;
+
 	
 	}
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
 		switch(state) {
-			case STATE_Clear :
-				
-			case STATE_AwaitCanister :
-				
-			case STATE_GoReject :
-				me->outputEvents.event.GoRejectArm = 1;
-				break;
-				
-			
+		case STATE_Clear:
+			break;
+
+		case STATE_AwaitCanister:
+			break;
+
+		case STATE_GoReject:
+			me->outputEvents.event.GoRejectArm = 1;
+			break;
+
+		
 		}
 	}
 }

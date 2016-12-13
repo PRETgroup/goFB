@@ -3,6 +3,9 @@
 {{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}
 // This file represents the interface of Function Block {{$block.Name}}
 #include "fbtypes.h"
+{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}#include "{{$child.Type}}.h"
+{{end}}{{end}}
+
 
 union {{$block.Name}}InputEvents {
 	struct {
@@ -33,15 +36,20 @@ struct {{$block.Name}} {
     {{end}}{{end}}
     {{if $block.BasicFB}}//internal vars
 	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Type}} {{$var.Name}};
-    {{end}}{{end}}{{end}}
+    {{end}}{{end}}{{end}}//child FBs 
+	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}struct {{$child.Type}} {{$child.Name}};
+	{{end}}{{end}}
 };
 
+//all FBs get an init function
 void {{$block.Name}}_init(struct {{$block.Name}} *me);
 
+//all FBs get a run function
 void {{$block.Name}}_run(struct {{$block.Name}} *me);
 
-{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
-{{if $basicFB.Algorithms}}//algorithms
+{{if $block.CompositeFB}}//composite FBs get a sync function
+void {{$block.Name}}_sync(struct {{$block.Name}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
+{{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
 {{range $algIndex, $alg := $basicFB.Algorithms}}
 void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} *me);
 {{end}}{{end}}{{end}}

@@ -4,6 +4,8 @@
 // This file represents the interface of Function Block RejectArmController
 #include "fbtypes.h"
 
+
+
 union RejectArmControllerInputEvents {
 	struct {
 		UDINT RejectCanister : 1;
@@ -32,11 +34,14 @@ struct RejectArmController {
     //output vars
 	
     //internal vars
+	//child FBs 
 	
 };
 
+//all FBs get an init function
 void RejectArmController_init(struct RejectArmController *me);
 
+//all FBs get a run function
 void RejectArmController_run(struct RejectArmController *me);
 
 

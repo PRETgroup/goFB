@@ -6,6 +6,10 @@
 
 enum {{$block.Name}}_states { {{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}STATE_{{$state.Name}}{{end}} };
 
+/* {{$block.Name}}_init() is required to be called to 
+ * initialise an instance of {{$block.Name}}. 
+ * It sets all I/O values to zero.
+ */
 void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	//if there are input events, reset them
 	{{if $block.EventInputs}}{{range $index, $count := count (add (div (len $block.EventInputs.Events) 32) 1)}}me->inputEvents.events[{{$count}}] = 0;
@@ -24,6 +28,11 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	{{end}}{{end}}
 }
 
+/* {{$block.Name}}_run() executes a single tick of an
+ * instance of {{$block.Name}} according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ */
 void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 	//current state storage
 	static enum {{$block.Name}}_states state = STATE_{{(index $basicFB.States 0).Name}};
@@ -34,24 +43,25 @@ void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 	{{end}}{{end}}
 	//now, let's advance state
 	switch(state) {
-	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}} :
+	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}}:
 		{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{getCECCTransitionCondition $block $trans.Condition}}) {
 			state = STATE_{{$trans.Destination}};
 			trigger = true;
 		{{end}}};
 		break;
+
 	{{end}}
 	}
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
 		switch(state) {
-			{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}} :
-				{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
-				{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
-				break;
-				{{end}}{{end}}
-			{{end}}
+		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}}:
+			{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
+			{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
+			{{end}}{{end}}break;
+
+		{{end}}
 		}
 	}
 }

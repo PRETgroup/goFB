@@ -4,6 +4,8 @@
 // This file represents the interface of Function Block IOManager
 #include "fbtypes.h"
 
+
+
 union IOManagerInputEvents {
 	struct {
 		UDINT DoorReleaseCanister : 1;
@@ -60,15 +62,18 @@ struct IOManager {
     
     //internal vars
 	BOOL EmergencyStopped;
-    
+    //child FBs 
+	
 };
 
+//all FBs get an init function
 void IOManager_init(struct IOManager *me);
 
+//all FBs get a run function
 void IOManager_run(struct IOManager *me);
 
 
-//algorithms
+//basic FBs have a number of algorithm functions
 
 void IOManager_IOAlgorithm(struct IOManager *me);
 

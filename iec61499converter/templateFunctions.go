@@ -119,3 +119,12 @@ func count(a int) []int {
 	}
 	return b
 }
+
+func findBlockDefinitionForType(bs []iec61499.FB, t string) *iec61499.FB {
+	for _, b := range bs {
+		if b.Name == t {
+			return &b
+		}
+	}
+	return nil
+}

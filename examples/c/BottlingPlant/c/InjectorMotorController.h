@@ -4,6 +4,8 @@
 // This file represents the interface of Function Block InjectorMotorController
 #include "fbtypes.h"
 
+
+
 union InjectorMotorControllerInputEvents {
 	struct {
 		UDINT InjectorArmFinishedMovement : 1;
@@ -38,15 +40,18 @@ struct InjectorMotorController {
 	BYTE InjectorPosition;
     
     //internal vars
+	//child FBs 
 	
 };
 
+//all FBs get an init function
 void InjectorMotorController_init(struct InjectorMotorController *me);
 
+//all FBs get a run function
 void InjectorMotorController_run(struct InjectorMotorController *me);
 
 
-//algorithms
+//basic FBs have a number of algorithm functions
 
 void InjectorMotorController_SetArmDownPosition(struct InjectorMotorController *me);
 

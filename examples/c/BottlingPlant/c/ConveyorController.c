@@ -6,6 +6,10 @@
 
 enum ConveyorController_states { STATE_E_Stop, STATE_Running, STATE_Pause };
 
+/* ConveyorController_init() is required to be called to 
+ * initialise an instance of ConveyorController. 
+ * It sets all I/O values to zero.
+ */
 void ConveyorController_init(struct ConveyorController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
@@ -25,6 +29,11 @@ void ConveyorController_init(struct ConveyorController *me) {
 	
 }
 
+/* ConveyorController_run() executes a single tick of an
+ * instance of ConveyorController according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ */
 void ConveyorController_run(struct ConveyorController *me) {
 	//current state storage
 	static enum ConveyorController_states state = STATE_E_Stop;
@@ -35,19 +44,21 @@ void ConveyorController_run(struct ConveyorController *me) {
 	
 	//now, let's advance state
 	switch(state) {
-	case STATE_E_Stop :
+	case STATE_E_Stop:
 		if(me->inputEvents.event.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
 			state = STATE_Running;
 			trigger = true;
 		};
 		break;
-	case STATE_Running :
+
+	case STATE_Running:
 		if(me->inputEvents.event.LasersChanged AND (me->inputVars.InjectSiteLaser)) {
 			state = STATE_Pause;
 			trigger = true;
 		};
 		break;
-	case STATE_Pause :
+
+	case STATE_Pause:
 		if(me->inputEvents.event.InjectDone) {
 			state = STATE_Running;
 			trigger = true;
@@ -56,27 +67,28 @@ void ConveyorController_run(struct ConveyorController *me) {
 			trigger = true;
 		};
 		break;
+
 	
 	}
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
 		switch(state) {
-			case STATE_E_Stop :
-				
-			case STATE_Running :
-				ConveyorController_ConveyorStart(me);
-				me->outputEvents.event.ConveyorChanged = 1;
-				break;
-				
-			case STATE_Pause :
-				ConveyorController_ConveyorStop(me);
-				me->outputEvents.event.ConveyorChanged = 1;
-				break;
-				me->outputEvents.event.ConveyorStoppedForInject = 1;
-				break;
-				
-			
+		case STATE_E_Stop:
+			break;
+
+		case STATE_Running:
+			ConveyorController_ConveyorStart(me);
+			me->outputEvents.event.ConveyorChanged = 1;
+			break;
+
+		case STATE_Pause:
+			ConveyorController_ConveyorStop(me);
+			me->outputEvents.event.ConveyorChanged = 1;
+			me->outputEvents.event.ConveyorStoppedForInject = 1;
+			break;
+
+		
 		}
 	}
 }

@@ -4,6 +4,8 @@
 // This file represents the interface of Function Block InjectorPumpsController
 #include "fbtypes.h"
 
+
+
 union InjectorPumpsControllerInputEvents {
 	struct {
 		UDINT StartPump : 1;
@@ -45,15 +47,18 @@ struct InjectorPumpsController {
     BOOL FillContents;
     
     //internal vars
+	//child FBs 
 	
 };
 
+//all FBs get an init function
 void InjectorPumpsController_init(struct InjectorPumpsController *me);
 
+//all FBs get a run function
 void InjectorPumpsController_run(struct InjectorPumpsController *me);
 
 
-//algorithms
+//basic FBs have a number of algorithm functions
 
 void InjectorPumpsController_StartVacuum(struct InjectorPumpsController *me);
 

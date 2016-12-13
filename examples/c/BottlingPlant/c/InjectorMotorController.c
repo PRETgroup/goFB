@@ -6,6 +6,10 @@
 
 enum InjectorMotorController_states { STATE_MoveArmUp, STATE_Await_Bottle, STATE_MoveArmDown, STATE_Await_Pumping };
 
+/* InjectorMotorController_init() is required to be called to 
+ * initialise an instance of InjectorMotorController. 
+ * It sets all I/O values to zero.
+ */
 void InjectorMotorController_init(struct InjectorMotorController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
@@ -23,6 +27,11 @@ void InjectorMotorController_init(struct InjectorMotorController *me) {
 	
 }
 
+/* InjectorMotorController_run() executes a single tick of an
+ * instance of InjectorMotorController according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ */
 void InjectorMotorController_run(struct InjectorMotorController *me) {
 	//current state storage
 	static enum InjectorMotorController_states state = STATE_MoveArmUp;
@@ -33,57 +42,60 @@ void InjectorMotorController_run(struct InjectorMotorController *me) {
 	
 	//now, let's advance state
 	switch(state) {
-	case STATE_MoveArmUp :
+	case STATE_MoveArmUp:
 		if(me->inputEvents.event.InjectorArmFinishedMovement) {
 			state = STATE_Await_Bottle;
 			trigger = true;
 		};
 		break;
-	case STATE_Await_Bottle :
+
+	case STATE_Await_Bottle:
 		if(me->inputEvents.event.ConveyorStoppedForInject) {
 			state = STATE_MoveArmDown;
 			trigger = true;
 		};
 		break;
-	case STATE_MoveArmDown :
+
+	case STATE_MoveArmDown:
 		if(me->inputEvents.event.InjectorArmFinishedMovement) {
 			state = STATE_Await_Pumping;
 			trigger = true;
 		};
 		break;
-	case STATE_Await_Pumping :
+
+	case STATE_Await_Pumping:
 		if(me->inputEvents.event.PumpFinished) {
 			state = STATE_MoveArmUp;
 			trigger = true;
 		};
 		break;
+
 	
 	}
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
 		switch(state) {
-			case STATE_MoveArmUp :
-				InjectorMotorController_SetArmUpPosition(me);
-				me->outputEvents.event.InjectorPositionChanged = 1;
-				break;
-				
-			case STATE_Await_Bottle :
-				me->outputEvents.event.InjectDone = 1;
-				break;
-				
-			case STATE_MoveArmDown :
-				InjectorMotorController_SetArmDownPosition(me);
-				me->outputEvents.event.InjectorPositionChanged = 1;
-				break;
-				me->outputEvents.event.InjectRunning = 1;
-				break;
-				
-			case STATE_Await_Pumping :
-				me->outputEvents.event.StartPump = 1;
-				break;
-				
-			
+		case STATE_MoveArmUp:
+			InjectorMotorController_SetArmUpPosition(me);
+			me->outputEvents.event.InjectorPositionChanged = 1;
+			break;
+
+		case STATE_Await_Bottle:
+			me->outputEvents.event.InjectDone = 1;
+			break;
+
+		case STATE_MoveArmDown:
+			InjectorMotorController_SetArmDownPosition(me);
+			me->outputEvents.event.InjectorPositionChanged = 1;
+			me->outputEvents.event.InjectRunning = 1;
+			break;
+
+		case STATE_Await_Pumping:
+			me->outputEvents.event.StartPump = 1;
+			break;
+
+		
 		}
 	}
 }

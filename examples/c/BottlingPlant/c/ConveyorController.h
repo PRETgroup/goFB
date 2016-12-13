@@ -4,6 +4,8 @@
 // This file represents the interface of Function Block ConveyorController
 #include "fbtypes.h"
 
+
+
 union ConveyorControllerInputEvents {
 	struct {
 		UDINT InjectDone : 1;
@@ -37,15 +39,18 @@ struct ConveyorController {
     
     //internal vars
 	BOOL Variable1;
-    
+    //child FBs 
+	
 };
 
+//all FBs get an init function
 void ConveyorController_init(struct ConveyorController *me);
 
+//all FBs get a run function
 void ConveyorController_run(struct ConveyorController *me);
 
 
-//algorithms
+//basic FBs have a number of algorithm functions
 
 void ConveyorController_ConveyorStart(struct ConveyorController *me);
 

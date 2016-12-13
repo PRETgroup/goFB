@@ -6,6 +6,10 @@
 
 enum DoorController_states { STATE_E_Stop, STATE_Run, STATE_Await };
 
+/* DoorController_init() is required to be called to 
+ * initialise an instance of DoorController. 
+ * It sets all I/O values to zero.
+ */
 void DoorController_init(struct DoorController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
@@ -22,6 +26,11 @@ void DoorController_init(struct DoorController *me) {
 	
 }
 
+/* DoorController_run() executes a single tick of an
+ * instance of DoorController according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ */
 void DoorController_run(struct DoorController *me) {
 	//current state storage
 	static enum DoorController_states state = STATE_E_Stop;
@@ -32,13 +41,14 @@ void DoorController_run(struct DoorController *me) {
 	
 	//now, let's advance state
 	switch(state) {
-	case STATE_E_Stop :
+	case STATE_E_Stop:
 		if(me->inputEvents.event.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
 			state = STATE_Await;
 			trigger = true;
 		};
 		break;
-	case STATE_Run :
+
+	case STATE_Run:
 		if(me->inputEvents.event.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
 			state = STATE_E_Stop;
 			trigger = true;
@@ -47,27 +57,31 @@ void DoorController_run(struct DoorController *me) {
 			trigger = true;
 		};
 		break;
-	case STATE_Await :
+
+	case STATE_Await:
 		if(me->inputEvents.event.ReleaseDoorOverride OR me->inputEvents.event.BottlingDone) {
 			state = STATE_Run;
 			trigger = true;
 		};
 		break;
+
 	
 	}
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
 		switch(state) {
-			case STATE_E_Stop :
-				
-			case STATE_Run :
-				me->outputEvents.event.DoorReleaseCanister = 1;
-				break;
-				
-			case STATE_Await :
-				
-			
+		case STATE_E_Stop:
+			break;
+
+		case STATE_Run:
+			me->outputEvents.event.DoorReleaseCanister = 1;
+			break;
+
+		case STATE_Await:
+			break;
+
+		
 		}
 	}
 }

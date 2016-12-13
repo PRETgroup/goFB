@@ -6,6 +6,10 @@
 
 enum IOManager_states { STATE_Start };
 
+/* IOManager_init() is required to be called to 
+ * initialise an instance of IOManager. 
+ * It sets all I/O values to zero.
+ */
 void IOManager_init(struct IOManager *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
@@ -37,6 +41,11 @@ void IOManager_init(struct IOManager *me) {
 	
 }
 
+/* IOManager_run() executes a single tick of an
+ * instance of IOManager according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ */
 void IOManager_run(struct IOManager *me) {
 	//current state storage
 	static enum IOManager_states state = STATE_Start;
@@ -47,24 +56,25 @@ void IOManager_run(struct IOManager *me) {
 	
 	//now, let's advance state
 	switch(state) {
-	case STATE_Start :
+	case STATE_Start:
 		if(true) {
 			state = STATE_Start;
 			trigger = true;
 		};
 		break;
+
 	
 	}
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
 		switch(state) {
-			case STATE_Start :
-				IOManager_IOAlgorithm(me);
-				me->outputEvents.event.EmergencyStopChanged = 1;
-				break;
-				
-			
+		case STATE_Start:
+			IOManager_IOAlgorithm(me);
+			me->outputEvents.event.EmergencyStopChanged = 1;
+			break;
+
+		
 		}
 	}
 }

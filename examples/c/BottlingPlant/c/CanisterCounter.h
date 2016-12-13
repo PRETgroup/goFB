@@ -4,6 +4,8 @@
 // This file represents the interface of Function Block CanisterCounter
 #include "fbtypes.h"
 
+
+
 union CanisterCounterInputEvents {
 	struct {
 		UDINT LasersChanged : 1;
@@ -34,15 +36,18 @@ struct CanisterCounter {
 	BYTE CanisterCount;
     
     //internal vars
+	//child FBs 
 	
 };
 
+//all FBs get an init function
 void CanisterCounter_init(struct CanisterCounter *me);
 
+//all FBs get a run function
 void CanisterCounter_run(struct CanisterCounter *me);
 
 
-//algorithms
+//basic FBs have a number of algorithm functions
 
 void CanisterCounter_ChangeCount(struct CanisterCounter *me);
 

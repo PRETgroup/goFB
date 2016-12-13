@@ -6,6 +6,10 @@
 
 enum InjectorPumpsController_states { STATE_RejectCanister, STATE_AwaitPump, STATE_VacuumPump, STATE_FinishPump, STATE_StartPump, STATE_OpenValve, STATE_StopVacuum };
 
+/* InjectorPumpsController_init() is required to be called to 
+ * initialise an instance of InjectorPumpsController. 
+ * It sets all I/O values to zero.
+ */
 void InjectorPumpsController_init(struct InjectorPumpsController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
@@ -28,6 +32,11 @@ void InjectorPumpsController_init(struct InjectorPumpsController *me) {
 	
 }
 
+/* InjectorPumpsController_run() executes a single tick of an
+ * instance of InjectorPumpsController according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ */
 void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 	//current state storage
 	static enum InjectorPumpsController_states state = STATE_RejectCanister;
@@ -38,19 +47,21 @@ void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 	
 	//now, let's advance state
 	switch(state) {
-	case STATE_RejectCanister :
+	case STATE_RejectCanister:
 		if(true) {
 			state = STATE_AwaitPump;
 			trigger = true;
 		};
 		break;
-	case STATE_AwaitPump :
+
+	case STATE_AwaitPump:
 		if(me->inputEvents.event.StartPump) {
 			state = STATE_VacuumPump;
 			trigger = true;
 		};
 		break;
-	case STATE_VacuumPump :
+
+	case STATE_VacuumPump:
 		if(me->inputEvents.event.VacuumTimerElapsed) {
 			state = STATE_RejectCanister;
 			trigger = true;
@@ -59,75 +70,78 @@ void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 			trigger = true;
 		};
 		break;
-	case STATE_FinishPump :
+
+	case STATE_FinishPump:
 		if(true) {
 			state = STATE_AwaitPump;
 			trigger = true;
 		};
 		break;
-	case STATE_StartPump :
+
+	case STATE_StartPump:
 		if(me->inputEvents.event.CanisterPressureChanged AND (CanisterPressure>=245)) {
 			state = STATE_FinishPump;
 			trigger = true;
 		};
 		break;
-	case STATE_OpenValve :
+
+	case STATE_OpenValve:
 		if(true) {
 			state = STATE_StartPump;
 			trigger = true;
 		};
 		break;
-	case STATE_StopVacuum :
+
+	case STATE_StopVacuum:
 		if(true) {
 			state = STATE_OpenValve;
 			trigger = true;
 		};
 		break;
+
 	
 	}
 
 	//now, let's run any algorithms and emit any events that need to occur due to the trigger
 	if(trigger == true) {
 		switch(state) {
-			case STATE_RejectCanister :
-				InjectorPumpsController_ClearControls(me);
-				me->outputEvents.event.RejectCanister = 1;
-				break;
-				me->outputEvents.event.InjectorControlsChanged = 1;
-				break;
-				
-			case STATE_AwaitPump :
-				me->outputEvents.event.PumpFinished = 1;
-				break;
-				
-			case STATE_VacuumPump :
-				InjectorPumpsController_StartVacuum(me);
-				me->outputEvents.event.InjectorControlsChanged = 1;
-				break;
-				me->outputEvents.event.StartVacuumTimer = 1;
-				break;
-				
-			case STATE_FinishPump :
-				InjectorPumpsController_ClearControls(me);
-				me->outputEvents.event.InjectorControlsChanged = 1;
-				break;
-				
-			case STATE_StartPump :
-				InjectorPumpsController_StartPump(me);
-				me->outputEvents.event.InjectorControlsChanged = 1;
-				break;
-				
-			case STATE_OpenValve :
-				InjectorPumpsController_OpenValve(me);
-				me->outputEvents.event.InjectorControlsChanged = 1;
-				break;
-				
-			case STATE_StopVacuum :
-				InjectorPumpsController_ClearControls(me);
-				me->outputEvents.event.InjectorControlsChanged = 1;
-				break;
-				
-			
+		case STATE_RejectCanister:
+			InjectorPumpsController_ClearControls(me);
+			me->outputEvents.event.RejectCanister = 1;
+			me->outputEvents.event.InjectorControlsChanged = 1;
+			break;
+
+		case STATE_AwaitPump:
+			me->outputEvents.event.PumpFinished = 1;
+			break;
+
+		case STATE_VacuumPump:
+			InjectorPumpsController_StartVacuum(me);
+			me->outputEvents.event.InjectorControlsChanged = 1;
+			me->outputEvents.event.StartVacuumTimer = 1;
+			break;
+
+		case STATE_FinishPump:
+			InjectorPumpsController_ClearControls(me);
+			me->outputEvents.event.InjectorControlsChanged = 1;
+			break;
+
+		case STATE_StartPump:
+			InjectorPumpsController_StartPump(me);
+			me->outputEvents.event.InjectorControlsChanged = 1;
+			break;
+
+		case STATE_OpenValve:
+			InjectorPumpsController_OpenValve(me);
+			me->outputEvents.event.InjectorControlsChanged = 1;
+			break;
+
+		case STATE_StopVacuum:
+			InjectorPumpsController_ClearControls(me);
+			me->outputEvents.event.InjectorControlsChanged = 1;
+			break;
+
+		
 		}
 	}
 }

@@ -3,6 +3,10 @@
 
 // This file represents the interface of Function Block InjectorController
 #include "fbtypes.h"
+#include "InjectorMotorController.h"
+#include "InjectorPumpsController.h"
+
+
 
 union InjectorControllerInputEvents {
 	struct {
@@ -48,12 +52,18 @@ struct InjectorController {
     BOOL InjectorPressurePumpRun;
     BOOL FillContents;
     
-    
+    //child FBs 
+	struct InjectorMotorController Arm;
+	struct InjectorPumpsController Pumps;
+	
 };
 
+//all FBs get an init function
 void InjectorController_init(struct InjectorController *me);
 
+//all FBs get a run function
 void InjectorController_run(struct InjectorController *me);
 
-
+//composite FBs get a sync function
+void InjectorController_sync(struct InjectorController *me);
 

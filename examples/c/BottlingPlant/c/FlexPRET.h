@@ -3,6 +3,15 @@
 
 // This file represents the interface of Function Block FlexPRET
 #include "fbtypes.h"
+#include "IOManager.h"
+#include "CanisterCounter.h"
+#include "DoorController.h"
+#include "ConveyorController.h"
+#include "RejectArmController.h"
+#include "InjectorPumpsController.h"
+#include "InjectorMotorController.h"
+
+
 
 union FlexPRETInputEvents {
 	struct {
@@ -27,12 +36,23 @@ struct FlexPRET {
 	
     //output vars
 	
-    
+    //child FBs 
+	struct IOManager IO;
+	struct CanisterCounter CCounter;
+	struct DoorController Door;
+	struct ConveyorController Conveyor;
+	struct RejectArmController RejectArm;
+	struct InjectorPumpsController Pumps;
+	struct InjectorMotorController Motor;
+	
 };
 
+//all FBs get an init function
 void FlexPRET_init(struct FlexPRET *me);
 
+//all FBs get a run function
 void FlexPRET_run(struct FlexPRET *me);
 
-
+//composite FBs get a sync function
+void FlexPRET_sync(struct FlexPRET *me);
 

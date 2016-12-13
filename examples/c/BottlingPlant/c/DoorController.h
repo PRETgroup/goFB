@@ -4,6 +4,8 @@
 // This file represents the interface of Function Block DoorController
 #include "fbtypes.h"
 
+
+
 union DoorControllerInputEvents {
 	struct {
 		UDINT ReleaseDoorOverride : 1;
@@ -33,11 +35,14 @@ struct DoorController {
     //output vars
 	
     //internal vars
+	//child FBs 
 	
 };
 
+//all FBs get an init function
 void DoorController_init(struct DoorController *me);
 
+//all FBs get a run function
 void DoorController_run(struct DoorController *me);
 
 
