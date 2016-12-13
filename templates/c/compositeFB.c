@@ -4,6 +4,14 @@
 // This file represents the implementation of the Composite Function Block for {{$block.Name}}
 #include "{{$block.Name}}.h"
 
+//When running a composite block, note that you would call the functions in this order
+//_init(); 
+//do {
+//_syncEvents();
+//_syncData();
+//_run();
+//} loop;
+
 /* {{$block.Name}}_init() is required to be called to 
  * initialise an instance of {{$block.Name}}. 
  * As this is a composite function block, it contains no values of its own,
@@ -14,27 +22,49 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	{{end}}
 }
 
-/* {{$block.Name}}_sync() synchronises an
- * instance of {{$block.Name}} according to synchronise semantics.
- * Notice that it does NOT perform any computation - additional steps
- * will need to be done at the parent.
+/* {{$block.Name}}_syncEvents() synchronises the events of an
+ * instance of {{$block.Name}} as required by synchronous semantics.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
  */
-void {{$block.Name}}_sync(struct {{$block.Name}} *me) {
+void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me) {
 	//for all composite function block children, call this same function
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
+	{{$childType}}_syncEvents(&me->{{$child.Name}});{{end}}{{end}}
 	//for all basic function block children, perform their synchronisations explicitly
-	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}
-	{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
-	{{$childType}}_sync(&me->{{$child.Name}});
-	{{else}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a BFB
-	{{if $childType.EventInputs}}{{range $index, $event := $childType.EventInputs.Events}}me->{{$child.Name}}.InputEvents.event.{{$event.Name}} = ?;
-	{{end}}{{end}}{{end}}{{end}}
+	//events are always copied
+	{{range $curConnIndex, $conn := $compositeFB.EventConnections}}me->{{renameCEventDestinationLocation $conn.Destination}} = me->{{renameCEventSourceLocation $conn.Source}};
+	{{end}}
+}
+
+/* {{$block.Name}}_syncData() synchronises the data connections of an
+ * instance of {{$block.Name}} as required by synchronous semantics.
+ * It does the checking to ensure that only connections which have had their
+ * associated event fire are updated.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void {{$block.Name}}_syncData(struct {{$block.Name}} *me) {
+	//for all composite function block children, call this same function
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
+	{{$childType}}_syncData(&me->{{$child.Name}});{{end}}{{end}}
+	//for all basic function block children, perform their synchronisations explicitly
+	//Data is sometimes copied
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.BasicFB}}
+	//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a BFB
+	{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs.Events}}{{if $event.With}}
+	if(me->{{$child.Name}}.inputEvents.event.{{$event.Name}} == 1) { {{range $withIndex, $with := $event.With}}
+		me->{{$child.Name}}.{{$with.Var}} = me->{{findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}};{{end}}
+	} {{end}}{{end}}{{end}}{{end}}
+	{{end}}
+
 }
 
 
 /* {{$block.Name}}_run() executes a single tick of an
  * instance of {{$block.Name}} according to synchronise semantics.
- * Notice that it does NOT perform any I/O - additional synchronisation
- * will need to be done at the parent.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * is done using the _syncX functions at this (and any higher) level.
  */
 void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 	{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$child.Type}}_run(&me->{{$child.Name}});

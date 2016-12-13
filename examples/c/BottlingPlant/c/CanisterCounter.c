@@ -37,7 +37,7 @@ void CanisterCounter_init(struct CanisterCounter *me) {
 void CanisterCounter_run(struct CanisterCounter *me) {
 	//current state storage
 	static enum CanisterCounter_states state = STATE_Start;
-	static BOOL trigger = false;
+	static BOOL trigger = true; //should be true the first time this is run
 
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -65,6 +65,8 @@ void CanisterCounter_run(struct CanisterCounter *me) {
 		
 		}
 	}
+
+	trigger = false;
 }
 
 //algorithms

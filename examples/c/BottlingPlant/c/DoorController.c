@@ -34,7 +34,7 @@ void DoorController_init(struct DoorController *me) {
 void DoorController_run(struct DoorController *me) {
 	//current state storage
 	static enum DoorController_states state = STATE_E_Stop;
-	static BOOL trigger = false;
+	static BOOL trigger = true; //should be true the first time this is run
 
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -42,24 +42,24 @@ void DoorController_run(struct DoorController *me) {
 	//now, let's advance state
 	switch(state) {
 	case STATE_E_Stop:
-		if(me->inputEvents.event.EmergencyStopChanged AND (!me->inputVars.EmergencyStop)) {
+		if(me->inputEvents.event.EmergencyStopChanged && (!me->EmergencyStop)) {
 			state = STATE_Await;
 			trigger = true;
 		};
 		break;
 
 	case STATE_Run:
-		if(me->inputEvents.event.EmergencyStopChanged AND (me->inputVars.EmergencyStop)) {
+		if(me->inputEvents.event.EmergencyStopChanged && (me->EmergencyStop)) {
 			state = STATE_E_Stop;
 			trigger = true;
-		} else if(me->inputEvents.event.ReleaseDoorOverride OR me->inputEvents.event.BottlingDone) {
+		} else if(me->inputEvents.event.ReleaseDoorOverride || me->inputEvents.event.BottlingDone) {
 			state = STATE_Run;
 			trigger = true;
 		};
 		break;
 
 	case STATE_Await:
-		if(me->inputEvents.event.ReleaseDoorOverride OR me->inputEvents.event.BottlingDone) {
+		if(me->inputEvents.event.ReleaseDoorOverride || me->inputEvents.event.BottlingDone) {
 			state = STATE_Run;
 			trigger = true;
 		};
@@ -84,6 +84,8 @@ void DoorController_run(struct DoorController *me) {
 		
 		}
 	}
+
+	trigger = false;
 }
 
 //no algorithms were present for this function block

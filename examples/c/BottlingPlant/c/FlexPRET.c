@@ -4,6 +4,14 @@
 // This file represents the implementation of the Composite Function Block for FlexPRET
 #include "FlexPRET.h"
 
+//When running a composite block, note that you would call the functions in this order
+//_init(); 
+//do {
+//_syncEvents();
+//_syncData();
+//_run();
+//} loop;
+
 /* FlexPRET_init() is required to be called to 
  * initialise an instance of FlexPRET. 
  * As this is a composite function block, it contains no values of its own,
@@ -20,63 +28,134 @@ void FlexPRET_init(struct FlexPRET *me) {
 	
 }
 
-/* FlexPRET_sync() synchronises an
- * instance of FlexPRET according to synchronise semantics.
- * Notice that it does NOT perform any computation - additional steps
- * will need to be done at the parent.
+/* FlexPRET_syncEvents() synchronises the events of an
+ * instance of FlexPRET as required by synchronous semantics.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
  */
-void FlexPRET_sync(struct FlexPRET *me) {
+void FlexPRET_syncEvents(struct FlexPRET *me) {
 	//for all composite function block children, call this same function
+	
 	//for all basic function block children, perform their synchronisations explicitly
+	//events are always copied
+	me->Motor.inputEvents.event.InjectorArmFinishedMovement = me->IO.outputEvents.event.InjectorArmFinishMovement;
+	me->Door.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged;
+	me->Conveyor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged;
+	me->Motor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged;
+	me->Pumps.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged;
+	me->Pumps.inputEvents.event.CanisterPressureChanged = me->IO.outputEvents.event.CanisterPressureChanged;
+	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->IO.outputEvents.event.FillContentsAvailableChanged;
+	me->CCounter.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged;
+	me->RejectArm.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged;
+	me->Conveyor.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged;
+	me->Door.inputEvents.event.ReleaseDoorOverride = me->IO.outputEvents.event.DoorOverride;
+	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->IO.outputEvents.event.VacuumTimerElapsed;
+	me->IO.inputEvents.event.CanisterCountChanged = me->CCounter.outputEvents.event.CanisterCountChanged;
+	me->IO.inputEvents.event.DoorReleaseCanister = me->Door.outputEvents.event.DoorReleaseCanister;
+	me->IO.inputEvents.event.ConveyorChanged = me->Conveyor.outputEvents.event.ConveyorChanged;
+	me->Motor.inputEvents.event.ConveyorStoppedForInject = me->Conveyor.outputEvents.event.ConveyorStoppedForInject;
+	me->IO.inputEvents.event.GoRejectArm = me->RejectArm.outputEvents.event.GoRejectArm;
+	me->Motor.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished;
+	me->RejectArm.inputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister;
+	me->IO.inputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged;
+	me->IO.inputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged;
+	me->IO.inputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer;
+	me->Pumps.inputEvents.event.StartPump = me->Motor.outputEvents.event.StartPump;
+	me->Door.inputEvents.event.BottlingDone = me->Motor.outputEvents.event.InjectDone;
+	me->Conveyor.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone;
+	me->IO.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone;
+	me->IO.inputEvents.event.InjectorPositionChanged = me->Motor.outputEvents.event.InjectorPositionChanged;
+	
+}
+
+/* FlexPRET_syncData() synchronises the data connections of an
+ * instance of FlexPRET as required by synchronous semantics.
+ * It does the checking to ensure that only connections which have had their
+ * associated event fire are updated.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void FlexPRET_syncData(struct FlexPRET *me) {
+	//for all composite function block children, call this same function
+	
+	//for all basic function block children, perform their synchronisations explicitly
+	//Data is sometimes copied
 	
 	//sync for IO (of type IOManager) which is a BFB
-	me->IO.InputEvents.event.DoorReleaseCanister = ?;
-	me->IO.InputEvents.event.ConveyorChanged = ?;
-	me->IO.InputEvents.event.InjectorPositionChanged = ?;
-	me->IO.InputEvents.event.InjectorControlsChanged = ?;
-	me->IO.InputEvents.event.FillContentsChanged = ?;
-	me->IO.InputEvents.event.StartVacuumTimer = ?;
-	me->IO.InputEvents.event.GoRejectArm = ?;
-	me->IO.InputEvents.event.CanisterCountChanged = ?;
-	me->IO.InputEvents.event.InjectDone = ?;
+	
+	if(me->IO.inputEvents.event.ConveyorChanged == 1) { 
+		me->IO.ConveyorSpeed = me->Conveyor.ConveyorSpeed;
+	} 
+	if(me->IO.inputEvents.event.InjectorPositionChanged == 1) { 
+		me->IO.InjectorPosition = me->Motor.InjectorPosition;
+	} 
+	if(me->IO.inputEvents.event.InjectorControlsChanged == 1) { 
+		me->IO.InjectorContentsValveOpen = me->Pumps.InjectorContentsValveOpen;
+		me->IO.InjectorVacuumRun = me->Pumps.InjectorVacuumRun;
+		me->IO.InjectorPressurePumpRun = me->Pumps.InjectorPressurePumpRun;
+	} 
+	if(me->IO.inputEvents.event.FillContentsChanged == 1) { 
+		me->IO.FillContents = me->Pumps.FillContents;
+	} 
+	if(me->IO.inputEvents.event.CanisterCountChanged == 1) { 
+		me->IO.CanisterCount = me->CCounter.CanisterCount;
+	} 
 	
 	//sync for CCounter (of type CanisterCounter) which is a BFB
-	me->CCounter.InputEvents.event.LasersChanged = ?;
+	
+	if(me->CCounter.inputEvents.event.LasersChanged == 1) { 
+		me->CCounter.DoorSiteLaser = me->IO.DoorSiteLaser;
+		me->CCounter.RejectBinLaser = me->IO.RejectBinLaser;
+		me->CCounter.AcceptBinLaser = me->IO.AcceptBinLaser;
+	} 
 	
 	//sync for Door (of type DoorController) which is a BFB
-	me->Door.InputEvents.event.ReleaseDoorOverride = ?;
-	me->Door.InputEvents.event.BottlingDone = ?;
-	me->Door.InputEvents.event.EmergencyStopChanged = ?;
+	
+	if(me->Door.inputEvents.event.EmergencyStopChanged == 1) { 
+		me->Door.EmergencyStop = me->IO.EmergencyStop;
+	} 
 	
 	//sync for Conveyor (of type ConveyorController) which is a BFB
-	me->Conveyor.InputEvents.event.InjectDone = ?;
-	me->Conveyor.InputEvents.event.EmergencyStopChanged = ?;
-	me->Conveyor.InputEvents.event.LasersChanged = ?;
+	
+	if(me->Conveyor.inputEvents.event.EmergencyStopChanged == 1) { 
+		me->Conveyor.EmergencyStop = me->IO.EmergencyStop;
+	} 
+	if(me->Conveyor.inputEvents.event.LasersChanged == 1) { 
+		me->Conveyor.InjectSiteLaser = me->IO.InjectSiteLaser;
+	} 
 	
 	//sync for RejectArm (of type RejectArmController) which is a BFB
-	me->RejectArm.InputEvents.event.RejectCanister = ?;
-	me->RejectArm.InputEvents.event.LasersChanged = ?;
+	
+	if(me->RejectArm.inputEvents.event.LasersChanged == 1) { 
+		me->RejectArm.RejectSiteLaser = me->IO.RejectSiteLaser;
+	} 
 	
 	//sync for Pumps (of type InjectorPumpsController) which is a BFB
-	me->Pumps.InputEvents.event.StartPump = ?;
-	me->Pumps.InputEvents.event.EmergencyStopChanged = ?;
-	me->Pumps.InputEvents.event.CanisterPressureChanged = ?;
-	me->Pumps.InputEvents.event.FillContentsAvailableChanged = ?;
-	me->Pumps.InputEvents.event.VacuumTimerElapsed = ?;
+	
+	if(me->Pumps.inputEvents.event.EmergencyStopChanged == 1) { 
+		me->Pumps.EmergencyStop = me->IO.EmergencyStop;
+	} 
+	if(me->Pumps.inputEvents.event.CanisterPressureChanged == 1) { 
+		me->Pumps.CanisterPressure = me->IO.CanisterPressure;
+	} 
+	if(me->Pumps.inputEvents.event.FillContentsAvailableChanged == 1) { 
+		me->Pumps.FillContentsAvailable = me->IO.FillContentsAvailable;
+	} 
 	
 	//sync for Motor (of type InjectorMotorController) which is a BFB
-	me->Motor.InputEvents.event.InjectorArmFinishedMovement = ?;
-	me->Motor.InputEvents.event.EmergencyStopChanged = ?;
-	me->Motor.InputEvents.event.ConveyorStoppedForInject = ?;
-	me->Motor.InputEvents.event.PumpFinished = ?;
 	
+	if(me->Motor.inputEvents.event.EmergencyStopChanged == 1) { 
+		me->Motor.EmergencyStop = me->IO.EmergencyStop;
+	} 
+	
+
 }
 
 
 /* FlexPRET_run() executes a single tick of an
  * instance of FlexPRET according to synchronise semantics.
- * Notice that it does NOT perform any I/O - additional synchronisation
- * will need to be done at the parent.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * is done using the _syncX functions at this (and any higher) level.
  */
 void FlexPRET_run(struct FlexPRET *me) {
 	IOManager_run(&me->IO);

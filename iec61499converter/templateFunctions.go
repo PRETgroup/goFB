@@ -71,6 +71,15 @@ func connChildSourceOnly(in string) string {
 	return splitName[len(splitName)-1]
 }
 
+//connChildNameOnly is used in templates for getting rid of suffix stuff on connections
+func connChildNameOnly(in string) string {
+	splitName := strings.Split(in, ".")
+	if len(splitName) != 2 {
+		return ""
+	}
+	return splitName[0]
+}
+
 //connChildNameMatches is used in templates for location matching
 func connChildNameMatches(in string, name string) bool {
 	return strings.HasPrefix(in, name+".")
@@ -80,8 +89,21 @@ func connChildNameMatches(in string, name string) bool {
 func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string {
 	re := regexp.MustCompile("([a-zA-Z_<>=]+)")
 	retVal := iec61499trans
+
+	//rename AND and OR
+	retVal = strings.Replace(retVal, "AND", "&&", -1)
+	retVal = strings.Replace(retVal, "OR", "||", -1)
+
+	//add whitespace around operators
+	retVal = strings.Replace(retVal, ">=", " >= ", -1)
+	retVal = strings.Replace(retVal, "<=", " <= ", -1)
+	retVal = strings.Replace(retVal, "!=", " != ", -1)
+	retVal = strings.Replace(retVal, "<>", " <> ", -1)
+	retVal = strings.Replace(retVal, "><", " >< ", -1)
+	retVal = strings.Replace(retVal, "==", " == ", -1)
+
 	retVal = re.ReplaceAllStringFunc(retVal, func(in string) string {
-		if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ContainsAny(in, "!<>=") || strings.ToLower(in) == "true" || strings.ToLower(in) == "false" {
+		if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ContainsAny(in, "!><=") || strings.ToLower(in) == "true" || strings.ToLower(in) == "false" {
 			//no need to make changes, these aren't variables or events
 			return in
 		}
@@ -94,10 +116,57 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string 
 			}
 		}
 		//else, return it assuming input data
-		return "me->inputVars." + in
+		return "me->" + in
 	})
 
+	//tidy the whitespace
+	retVal = strings.Replace(retVal, "  ", " ", -1)
+
 	return retVal
+}
+
+//locationType = 0 (Var)
+//locationType = 1 (Event destination)
+//locationType = 2 (Event source)
+//don't use this function, use one of the helper functions
+func renameCLocation(in string, locationType int) string {
+	if strings.Contains(in, ".") {
+		//it comes from a child FB
+		if locationType == 1 {
+			return strings.Replace(in, ".", ".inputEvents.event.", 1) //events are in a sub struct
+		} else if locationType == 2 {
+			return strings.Replace(in, ".", ".outputEvents.event.", 1) //events are in a sub struct
+		}
+
+		return in
+
+	}
+	//it comes from the parent FB, which means input/output is swapped
+	if locationType == 1 {
+		return "outputEvents.event." + in
+	}
+	if locationType == 2 {
+		return "inputEvents.event." + in
+	}
+	return in
+
+}
+
+func renameCEventDestinationLocation(in string) string {
+	return renameCLocation(in, 1)
+}
+
+func renameCEventSourceLocation(in string) string {
+	return renameCLocation(in, 2)
+}
+
+func findSourceDataName(conns []iec61499.Connection, destChildName string, destVarName string) string {
+	for _, conn := range conns {
+		if conn.Destination == destChildName+"."+destVarName {
+			return renameCLocation(conn.Source, 0)
+		}
+	}
+	return "0"
 }
 
 func div(a int, b int) int {
@@ -128,3 +197,26 @@ func findBlockDefinitionForType(bs []iec61499.FB, t string) *iec61499.FB {
 	}
 	return nil
 }
+
+// func findChildForName(rs []iec61499.FBReference, n string) *iec61499.FBReference {
+// 	for _, r := range rs {
+// 		if r.Name == n {
+// 			return &r
+// 		}
+// 	}
+// 	return nil
+// }
+
+// func findEventWhichUpdatesDestination(b iec61499.FB, d string) *iec61499.Event {
+// 	varName := connChildSourceOnly(d)
+// 	if b.EventInputs != nil {
+// 		for _, e := range b.EventInputs.Events {
+// 			for _, ew := range e.With {
+// 				if ew.Var == varName {
+// 					return &e
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return nil
+// }

@@ -35,7 +35,7 @@ void InjectorMotorController_init(struct InjectorMotorController *me) {
 void InjectorMotorController_run(struct InjectorMotorController *me) {
 	//current state storage
 	static enum InjectorMotorController_states state = STATE_MoveArmUp;
-	static BOOL trigger = false;
+	static BOOL trigger = true; //should be true the first time this is run
 
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -98,6 +98,8 @@ void InjectorMotorController_run(struct InjectorMotorController *me) {
 		
 		}
 	}
+
+	trigger = false;
 }
 
 //algorithms

@@ -73,8 +73,12 @@ var (
 	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./templates/vhdl/*"))
 
 	cTemplateFuncMap = template.FuncMap{
-		"getCECCTransitionCondition": getCECCTransitionCondition,
-		"findBlockDefinitionForType": findBlockDefinitionForType,
+		"getCECCTransitionCondition":      getCECCTransitionCondition,
+		"findBlockDefinitionForType":      findBlockDefinitionForType,
+		"renameCEventDestinationLocation": renameCEventDestinationLocation,
+		"renameCEventSourceLocation":      renameCEventSourceLocation,
+		"findSourceDataName":              findSourceDataName,
+		"connChildSourceOnly":             connChildSourceOnly,
 		"div":   div,
 		"add":   add,
 		"mod":   mod,

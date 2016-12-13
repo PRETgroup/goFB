@@ -47,8 +47,9 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me);
 //all FBs get a run function
 void {{$block.Name}}_run(struct {{$block.Name}} *me);
 
-{{if $block.CompositeFB}}//composite FBs get a sync function
-void {{$block.Name}}_sync(struct {{$block.Name}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
+{{if $block.CompositeFB}}//composite FBs get sync functions
+void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me);
+void {{$block.Name}}_syncData(struct {{$block.Name}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
 {{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
 {{range $algIndex, $alg := $basicFB.Algorithms}}
 void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} *me);

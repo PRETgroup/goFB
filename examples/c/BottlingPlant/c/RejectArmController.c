@@ -34,7 +34,7 @@ void RejectArmController_init(struct RejectArmController *me) {
 void RejectArmController_run(struct RejectArmController *me) {
 	//current state storage
 	static enum RejectArmController_states state = STATE_Clear;
-	static BOOL trigger = false;
+	static BOOL trigger = true; //should be true the first time this is run
 
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -49,7 +49,7 @@ void RejectArmController_run(struct RejectArmController *me) {
 		break;
 
 	case STATE_AwaitCanister:
-		if(me->inputEvents.event.LasersChanged AND (me->inputVars.RejectSiteLaser)) {
+		if(me->inputEvents.event.LasersChanged && (me->RejectSiteLaser)) {
 			state = STATE_GoReject;
 			trigger = true;
 		};
@@ -81,6 +81,8 @@ void RejectArmController_run(struct RejectArmController *me) {
 		
 		}
 	}
+
+	trigger = false;
 }
 
 //no algorithms were present for this function block

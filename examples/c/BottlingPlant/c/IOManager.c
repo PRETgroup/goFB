@@ -49,7 +49,7 @@ void IOManager_init(struct IOManager *me) {
 void IOManager_run(struct IOManager *me) {
 	//current state storage
 	static enum IOManager_states state = STATE_Start;
-	static BOOL trigger = false;
+	static BOOL trigger = true; //should be true the first time this is run
 
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -77,6 +77,8 @@ void IOManager_run(struct IOManager *me) {
 		
 		}
 	}
+
+	trigger = false;
 }
 
 //algorithms
@@ -122,28 +124,28 @@ if(conveyorSpeed) {
 			
 			if(bottlePositions[i] == 5) {
 				printf("IO: Canister %i at 5, triggering InjectSiteLaser\n", i);
-				me->_output.event.LasersChanged = 1;
+				me->outputEvents.event.LasersChanged = 1;
 				me->InjectSiteLaser = 1;
 			}
 
 			if(bottlePositions[i] == 10) {
 				printf("IO: Canister %i at 10, triggering RejectSiteLaser\n", i);
-				me->_output.event.LasersChanged = 1;
+				me->outputEvents.event.LasersChanged = 1;
 				me->RejectSiteLaser = 1;
 			}
 
 			if(bottlePositions[i] == 20) {
 				printf("IO: Canister %i at 20, falls off conveyor, triggering AcceptBinLaser\n", i);
-				me->_output.event.LasersChanged = 1;
+				me->outputEvents.event.LasersChanged = 1;
 				me->AcceptBinLaser = 1;
 				bottlesActive[i] = 0;
 				bottlePositions[i] = 0;
 			}
 
-			if(me->_input.event.GoRejectArm && (bottlePositions[i] == 10 || bottlePositions[i] == 11 || bottlePositions[i] == 12)) {
+			if(me->inputEvents.event.GoRejectArm && (bottlePositions[i] == 10 || bottlePositions[i] == 11 || bottlePositions[i] == 12)) {
 				printf("IO: Go Reject Arm. Canister %i knocked from conveyor.\n", i);
 				//progress = 0;
-				me->_output.event.LasersChanged = 1;
+				me->outputEvents.event.LasersChanged = 1;
 				me->RejectBinLaser = 1;
 				bottlesActive[i] = 0;
 				bottlePositions[i] = 0;
@@ -157,7 +159,7 @@ if(tickNum == 25) {
 	while(1);
 }
 
-if(me->_input.event.InjectDone) {
+if(me->inputEvents.event.InjectDone) {
 	printf("IO: Inject done\n");
 }
 
@@ -165,15 +167,15 @@ if(me->_input.event.InjectDone) {
 
 if(emergencyStopped == 1) {
 	printf("IO: Releasing emergency stop\n");
-	me->_output.event.EmergencyStopChanged = 1;
+	me->outputEvents.event.EmergencyStopChanged = 1;
 	me->EmergencyStop = 0;
 	emergencyStopped++;
 } else {
 	
-	if(me->_input.event.DoorReleaseCanister) {
+	if(me->inputEvents.event.DoorReleaseCanister) {
 		printf("IO: Door released. Adding canister %i\n", nextBottle);
 
-		me->_output.event.LasersChanged = 1;
+		me->outputEvents.event.LasersChanged = 1;
 		me->DoorSiteLaser = 1;
 			
 		bottlesActive[nextBottle] = 1;
@@ -182,49 +184,49 @@ if(emergencyStopped == 1) {
 		nextBottle = nextBottle % NUM_BOTTLES;
 		
 	}
-	if(me->_input.event.InjectorPositionChanged) {
+	if(me->inputEvents.event.InjectorPositionChanged) {
 		printf("IO: Injector position changed. Setting move finished.\n");
-		me->_output.event.InjectorArmFinishMovement = 1;
+		me->outputEvents.event.InjectorArmFinishMovement = 1;
 	}
 
-	if(me->_input.event.ConveyorChanged) {
+	if(me->inputEvents.event.ConveyorChanged) {
 		conveyorSpeed = me->ConveyorSpeed;
 		printf("IO: Setting conveyor movement to %i\n", conveyorSpeed);
 	}
 
 	
 
-	if(me->_input.event.InjectorControlsChanged) {
+	if(me->inputEvents.event.InjectorControlsChanged) {
 		printf("IO: Injector controls changed. Now they are Vac: %1i Val: %1i Pmp: %1i\n", me->InjectorVacuumRun, me->InjectorContentsValveOpen, me->InjectorPressurePumpRun);
 		if(me->InjectorVacuumRun) {
 			printf("IO: Due to vacuum, changing canister pressure to 5.\n");
 			me->CanisterPressure = 5;
-			me->_output.event.CanisterPressureChanged = 1;
+			me->outputEvents.event.CanisterPressureChanged = 1;
 		}
 		if(me->InjectorContentsValveOpen) {
 			printf("IO: Contents valve now open. Pressure changes slightly, sucking in contents.\n");
 			me->CanisterPressure = 20;
-			me->_output.event.CanisterPressureChanged = 1;
+			me->outputEvents.event.CanisterPressureChanged = 1;
 		}
 		if(me->InjectorPressurePumpRun) {
 			printf("IO: Due to pressure pump, changing canister pressure to 250.\n");
 			me->CanisterPressure = 250;
-			me->_output.event.CanisterPressureChanged = 1;
+			me->outputEvents.event.CanisterPressureChanged = 1;
 		}
 	}
 	
-	if(me->_input.event.FillContentsChanged) {
+	if(me->inputEvents.event.FillContentsChanged) {
 		printf("IO: Fill contents changed.\n");
 	}
 
-	if(me->_input.event.StartVacuumTimer) {
+	if(me->inputEvents.event.StartVacuumTimer) {
 		printf("IO: Start vacuum timer.\n");//Elapsing timer.\n");
-		//me->_output.event.VacuumTimerElapsed = 1;
+		//me->outputEvents.event.VacuumTimerElapsed = 1;
 	}
 
 	
 
-	if(me->_input.event.CanisterCountChanged) {
+	if(me->inputEvents.event.CanisterCountChanged) {
 		printf("IO: Canister count changed. New value: %i\n", me->CanisterCount);
 	}
 
