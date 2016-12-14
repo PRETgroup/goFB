@@ -6,25 +6,18 @@
 #include "CounterBFB.h"
 
 
+//this block had no input events
 
-union ResourceType1InputEvents {
-	struct {
-	} event;
-	UDINT events[1];
-};
 
-union ResourceType1OutputEvents {
-	struct {
-	} event;
-	UDINT events[1];
-};
+//this block had no output events
+
 
 struct ResourceType1 {
     //input events
-    union ResourceType1InputEvents inputEvents;
+	
 
     //output events
-    union ResourceType1OutputEvents outputEvents;
+	
 
     //input vars
 	
@@ -32,6 +25,9 @@ struct ResourceType1 {
 	
     //child FBs 
 	struct CounterBFB counter;
+	
+	//resource vars
+	BOOL Variable1;
 	
 };
 

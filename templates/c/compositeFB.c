@@ -14,12 +14,30 @@
 
 /* {{$block.Name}}_init() is required to be called to 
  * initialise an instance of {{$block.Name}}. 
- * As this is a composite function block, it contains no values of its own,
- * and so merely calls the initialisation routines of its children.
+ * Notice that this also calls the _init functions of any FB child instances.
  */
 void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$child.Type}}_init(&me->{{$child.Name}});
 	{{end}}
+
+	//if there are input events, reset them
+	{{if $block.EventInputs}}{{range $index, $count := count (add (div (len $block.EventInputs.Events) 32) 1)}}me->inputEvents.events[{{$count}}] = 0;
+	{{end}}{{end}}
+	//if there are output events, reset them
+	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
+	{{end}}{{end}}
+	//if there are input vars, reset them
+	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}me->{{$var.Name}} = 0;
+	{{end}}{{end}}
+	//if there are output vars, reset them
+	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->{{$var.Name}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}}0{{end}};
+	{{end}}{{end}}
+	//CFBs have no internal vars
+
+	//if there are any resource vars, reset them
+	{{if $block.ResourceVars}}
+	{{range $index, $var := $block.ResourceVars}}me->{{$var.Name}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}}0{{end}};
+	{{end}}{{end}}
 }
 
 /* {{$block.Name}}_syncEvents() synchronises the events of an

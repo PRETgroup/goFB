@@ -6,27 +6,30 @@
 {{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}#include "{{$child.Type}}.h"
 {{end}}{{end}}
 
-
-union {{$block.Name}}InputEvents {
+{{if $block.EventInputs}}union {{$block.Name}}InputEvents {
 	struct {
 	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	UDINT {{$event.Name}} : 1;
 	{{end}}{{end}}} event;
 	UDINT events[{{if $block.EventInputs}}{{add (div (len $block.EventInputs.Events) 32) 1}}{{else}}1{{end}}];
 };
+{{else}}//this block had no input events
+{{end}}
 
-union {{$block.Name}}OutputEvents {
+{{if $block.EventOutputs}}union {{$block.Name}}OutputEvents {
 	struct {
 	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	UDINT {{$event.Name}} : 1;
 	{{end}}{{end}}} event;
 	UDINT events[{{if $block.EventOutputs}}{{add (div (len $block.EventOutputs.Events) 32) 1}}{{else}}1{{end}}];
 };
+{{else}}//this block had no output events
+{{end}}
 
 struct {{$block.Name}} {
     //input events
-    union {{$block.Name}}InputEvents inputEvents;
+	{{if $block.EventInputs}}union {{$block.Name}}InputEvents inputEvents;{{end}}
 
     //output events
-    union {{$block.Name}}OutputEvents outputEvents;
+	{{if $block.EventOutputs}}union {{$block.Name}}OutputEvents outputEvents;{{end}}
 
     //input vars
 	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}{{$var.Type}} {{$var.Name}};
@@ -38,6 +41,9 @@ struct {{$block.Name}} {
 	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Type}} {{$var.Name}};
     {{end}}{{end}}{{end}}//child FBs 
 	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}struct {{$child.Type}} {{$child.Name}};
+	{{end}}{{end}}
+	{{if $block.ResourceVars}}//resource vars
+	{{range $index, $var := $block.ResourceVars}}{{$var.Type}} {{$var.Name}};
 	{{end}}{{end}}
 };
 

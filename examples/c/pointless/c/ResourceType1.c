@@ -14,11 +14,25 @@
 
 /* ResourceType1_init() is required to be called to 
  * initialise an instance of ResourceType1. 
- * As this is a composite function block, it contains no values of its own,
- * and so merely calls the initialisation routines of its children.
+ * Notice that this also calls the _init functions of any FB child instances.
  */
 void ResourceType1_init(struct ResourceType1 *me) {
 	CounterBFB_init(&me->counter);
+	
+
+	//if there are input events, reset them
+	
+	//if there are output events, reset them
+	
+	//if there are input vars, reset them
+	
+	//if there are output vars, reset them
+	
+	//CFBs have no internal vars
+
+	//if there is any resource vars, reset them
+	
+	me->Variable1 = 0;
 	
 }
 

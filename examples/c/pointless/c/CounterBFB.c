@@ -24,6 +24,8 @@ void CounterBFB_init(struct CounterBFB *me) {
 	
 	//if there are internal vars, reset them
 	
+	//if there is any resource vars, reset them
+	
 }
 
 /* CounterBFB_run() executes a single tick of an

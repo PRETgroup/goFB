@@ -5,13 +5,13 @@
 #include "fbtypes.h"
 
 
-
 union CounterBFBInputEvents {
 	struct {
 		UDINT in : 1;
 	} event;
 	UDINT events[1];
 };
+
 
 union CounterBFBOutputEvents {
 	struct {
@@ -20,12 +20,13 @@ union CounterBFBOutputEvents {
 	UDINT events[1];
 };
 
+
 struct CounterBFB {
     //input events
-    union CounterBFBInputEvents inputEvents;
+	union CounterBFBInputEvents inputEvents;
 
     //output events
-    union CounterBFBOutputEvents outputEvents;
+	union CounterBFBOutputEvents outputEvents;
 
     //input vars
 	
@@ -34,6 +35,7 @@ struct CounterBFB {
     
     //internal vars
 	//child FBs 
+	
 	
 };
 
