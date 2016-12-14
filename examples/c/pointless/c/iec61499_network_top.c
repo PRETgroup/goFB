@@ -12,9 +12,6 @@ struct ResourceType1 myResourceType1;
 void main() {
 	ResourceType1_init(&myResourceType1);
 	do {
-		//resource I/O code can be put here
-		me->Variable1 = 0;
-		
 		ResourceType1_syncEvents(&myResourceType1);
 		ResourceType1_syncData(&myResourceType1);
 		ResourceType1_run(&myResourceType1);

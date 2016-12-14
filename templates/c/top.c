@@ -12,9 +12,6 @@ struct {{$block.Name}} my{{$block.Name}};
 void main() {
 	{{$block.Name}}_init(&my{{$block.Name}});
 	do {
-		{{if $block.ResourceVars}}//resource I/O code can be put here
-		{{range $index, $var := $block.ResourceVars}}me->{{$var.Name}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}}0{{end}};
-		{{end}}{{end}}
 		{{$block.Name}}_syncEvents(&my{{$block.Name}});
 		{{$block.Name}}_syncData(&my{{$block.Name}});
 		{{$block.Name}}_run(&my{{$block.Name}});

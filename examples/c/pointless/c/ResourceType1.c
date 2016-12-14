@@ -30,7 +30,7 @@ void ResourceType1_init(struct ResourceType1 *me) {
 	
 	//CFBs have no internal vars
 
-	//if there is any resource vars, reset them
+	//if there are any resource vars, reset them
 	
 	me->Variable1 = 0;
 	
