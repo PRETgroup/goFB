@@ -21,7 +21,7 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}me->{{$var.Name}} = 0;
 	{{end}}{{end}}
 	//if there are output vars, reset them
-	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->{{$var.Name}} = 0;
+	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->{{$var.Name}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}}0{{end}};
 	{{end}}{{end}}
 	//if there are internal vars, reset them
 	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}me->{{$var.Name}} = 0;

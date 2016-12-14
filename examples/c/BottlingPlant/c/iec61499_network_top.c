@@ -9,7 +9,6 @@
 struct FlexPRET myFlexPRET;
 
 void main() {
-	printf("Size is %i\n", sizeof(myFlexPRET));
 	FlexPRET_init(&myFlexPRET);
 	do {
 		FlexPRET_syncEvents(&myFlexPRET);

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="CounterBFB" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="HAMMONDSDESKTOP" Version="0.1" Author="Hammond" Date="2016-00-15" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="in" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="updated_count" Comment="">
+    <With Var="count" />
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="count" Type="USINT" InitialValue="10" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="918.75" y="743.75">
+    <ECAction Algorithm="increaseCount" Output="updated_count" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Start" Condition="in" x="962.5" y="1137.5" />
+</ECC><Algorithm Name="increaseCount" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;count++;" />
+</Algorithm></BasicFB>
+</FBType>

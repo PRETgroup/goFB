@@ -121,10 +121,11 @@ type VarDeclare struct {
 
 //Variable is used as a variable in an algorithm of a BasicFB
 type Variable struct {
-	Name      string `xml:"Name,attr"`
-	Type      string `xml:"Type,attr"`
-	ArraySize string `xml:"ArraySize,attr,omitempty"`
-	Comment   string `xml:"Comment,attr"`
+	Name         string `xml:"Name,attr"`
+	Type         string `xml:"Type,attr"`
+	ArraySize    string `xml:"ArraySize,attr,omitempty"`
+	InitialValue string `xml:"InitialValue,attr,omitempty"`
+	Comment      string `xml:"Comment,attr"`
 }
 
 //EventDeclare is used to store event declarations of BasicFBs
