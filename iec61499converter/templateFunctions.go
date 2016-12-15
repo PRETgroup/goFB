@@ -198,25 +198,26 @@ func findBlockDefinitionForType(bs []iec61499.FB, t string) *iec61499.FB {
 	return nil
 }
 
-// func findChildForName(rs []iec61499.FBReference, n string) *iec61499.FBReference {
-// 	for _, r := range rs {
-// 		if r.Name == n {
-// 			return &r
-// 		}
-// 	}
-// 	return nil
-// }
+func strToUpper(s string) string {
+	return strings.ToUpper(s)
+}
 
-// func findEventWhichUpdatesDestination(b iec61499.FB, d string) *iec61499.Event {
-// 	varName := connChildSourceOnly(d)
-// 	if b.EventInputs != nil {
-// 		for _, e := range b.EventInputs.Events {
-// 			for _, ew := range e.With {
-// 				if ew.Var == varName {
-// 					return &e
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return nil
-// }
+func findVarDefinitionForName(b iec61499.FB, n string) *iec61499.Variable {
+	if b.InputVars != nil {
+		for _, varD := range b.InputVars.Variables {
+			if varD.Name == n {
+				return &varD
+			}
+		}
+	}
+
+	if b.OutputVars != nil {
+		for _, varD := range b.OutputVars.Variables {
+			if varD.Name == n {
+				return &varD
+			}
+		}
+	}
+
+	return nil
+}

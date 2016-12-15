@@ -2,9 +2,16 @@
 // Converter written by Hammond Pearce and available at github.com/kiwih/go-iec61499
 {{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}
 // This file represents the interface of Function Block {{$block.Name}}
+#ifndef {{strToUpper $block.Name}}_H_
+#define {{strToUpper $block.Name}}_H_
+
 #include "fbtypes.h"
-{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}#include "{{$child.Type}}.h"
-{{end}}{{end}}
+
+{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}//This is a CFB, so we need the #includes for the child blocks embedded here
+#include "{{$child.Type}}.h"
+{{end}}{{end}}{{if $block.BasicFB}}//This is a BFB, so we need an enum type for the state machine
+enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{{if $index}}, {{end}}STATE_{{$state.Name}}{{end}} };
+{{end}}
 
 {{if $block.EventInputs}}union {{$block.Name}}InputEvents {
 	struct {
@@ -32,19 +39,24 @@ struct {{$block.Name}} {
 	{{if $block.EventOutputs}}union {{$block.Name}}OutputEvents outputEvents;{{end}}
 
     //input vars
-	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}{{$var.Type}} {{$var.Name}};
+	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
     {{end}}{{end}}
     //output vars
-	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}{{$var.Type}} {{$var.Name}};
+	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
     {{end}}{{end}}
-    {{if $block.BasicFB}}//internal vars
-	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Type}} {{$var.Name}};
-    {{end}}{{end}}{{end}}//child FBs 
+	//any internal vars (BFBs only)
+    {{if $block.BasicFB}}{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
+    {{end}}{{end}}{{end}}
+	//any child FBs (CFBs only)
 	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}struct {{$child.Type}} {{$child.Name}};
 	{{end}}{{end}}
-	{{if $block.ResourceVars}}//resource vars
-	{{range $index, $var := $block.ResourceVars}}{{$var.Type}} {{$var.Name}};
+	//resource vars
+	{{if $block.ResourceVars}}{{range $index, $var := $block.ResourceVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
 	{{end}}{{end}}
+	//state and trigger (BFBs only)
+	{{if $block.BasicFB}}enum {{$block.Name}}_states _state; //stores current state
+	BOOL _trigger; //indicates if a state transition has occured this tick
+	{{end}}
 };
 
 //all FBs get an init function
@@ -61,4 +73,5 @@ void {{$block.Name}}_syncData(struct {{$block.Name}} *me);{{end}}{{if $block.Bas
 void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} *me);
 {{end}}{{end}}{{end}}
 
+#endif
 {{end}}

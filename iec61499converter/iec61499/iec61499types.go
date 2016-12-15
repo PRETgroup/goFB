@@ -3,6 +3,7 @@ package iec61499
 import (
 	"encoding/xml"
 	"errors"
+	"strconv"
 	"strings"
 )
 
@@ -128,6 +129,35 @@ type Variable struct {
 	ArraySize    string `xml:"ArraySize,attr,omitempty"`
 	InitialValue string `xml:"InitialValue,attr,omitempty"`
 	Comment      string `xml:"Comment,attr"`
+}
+
+//GetArraySize returns the array size as an integer if there is one that can be parsed, otherwise 0
+func (v Variable) GetArraySize() int {
+	size, err := strconv.Atoi(v.ArraySize)
+	if err != nil {
+		return 0
+	}
+	return size
+}
+
+//GetInitialArray returns a formatted initial array if there is one to do so
+func (v Variable) GetInitialArray() []string {
+	//if cannot parse an array size then give up
+	_, err := strconv.Atoi(v.ArraySize)
+	if err != nil {
+		return nil
+	}
+
+	//remove everything except commas and values
+	raw := v.InitialValue
+	raw = strings.TrimPrefix(raw, "[")
+	raw = strings.TrimSuffix(raw, "]")
+
+	raws := strings.Split(raw, ",")
+	for i := 0; i < len(raws); i++ {
+		raws[i] = strings.Trim(raws[i], " ")
+	}
+	return raws
 }
 
 //EventDeclare is used to store event declarations of BasicFBs

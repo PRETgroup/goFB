@@ -12,33 +12,7 @@
 //_run();
 //} loop;
 
-/* {{$block.Name}}_init() is required to be called to 
- * initialise an instance of {{$block.Name}}. 
- * Notice that this also calls the _init functions of any FB child instances.
- */
-void {{$block.Name}}_init(struct {{$block.Name}} *me) {
-	{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$child.Type}}_init(&me->{{$child.Name}});
-	{{end}}
-
-	//if there are input events, reset them
-	{{if $block.EventInputs}}{{range $index, $count := count (add (div (len $block.EventInputs.Events) 32) 1)}}me->inputEvents.events[{{$count}}] = 0;
-	{{end}}{{end}}
-	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
-	{{end}}{{end}}
-	//if there are input vars, reset them
-	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}me->{{$var.Name}} = 0;
-	{{end}}{{end}}
-	//if there are output vars, reset them
-	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->{{$var.Name}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}}0{{end}};
-	{{end}}{{end}}
-	//CFBs have no internal vars
-
-	//if there are any resource vars, reset them
-	{{if $block.ResourceVars}}
-	{{range $index, $var := $block.ResourceVars}}me->{{$var.Name}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}}0{{end}};
-	{{end}}{{end}}
-}
+{{template "_fbinit" .}}
 
 /* {{$block.Name}}_syncEvents() synchronises the events of an
  * instance of {{$block.Name}} as required by synchronous semantics.
@@ -71,8 +45,11 @@ void {{$block.Name}}_syncData(struct {{$block.Name}} *me) {
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.BasicFB}}
 	//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a BFB
 	{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs.Events}}{{if $event.With}}
-	if(me->{{$child.Name}}.inputEvents.event.{{$event.Name}} == 1) { {{range $withIndex, $with := $event.With}}
-		me->{{$child.Name}}.{{$with.Var}} = me->{{findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}};{{end}}
+	if(me->{{$child.Name}}.inputEvents.event.{{$event.Name}} == 1) { {{range $withIndex, $with := $event.With}}{{$varDef := findVarDefinitionForName $childType $with.Var}}{{if $varDef}}{{if $varDef.GetArraySize}}
+		{{range $index, $count := count $varDef.GetArraySize}}
+		me->{{$child.Name}}.{{$with.Var}}[{{$count}}] = me->{{findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}}[{{$count}}];{{end}}
+		{{else}}
+		me->{{$child.Name}}.{{$with.Var}} = me->{{findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}};{{end}}{{end}}{{end}}
 	} {{end}}{{end}}{{end}}{{end}}
 	{{end}}
 

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="ArrayCopier" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="HAMMONDSDESKTOP" Version="0.1" Author="Hammond" Date="2016-00-15" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="in" Comment="">
+    <With Var="in_var" />
+  </Event>
+  <Event Name="set_default_in" Comment="">
+    <With Var="default_var" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="out" Comment="">
+    <With Var="out_var" />
+  </Event>
+  <Event Name="set_default_out" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="in_var" Type="INT" ArraySize="4" Comment="" />
+  <VarDeclaration Name="default_var" Type="INT" ArraySize="4" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="out_var" Type="INT" ArraySize="4" Comment="" InitialValue="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="start" Comment="" x="175" y="175">
+    <ECAction Output="set_default_out" />
+  </ECState>
+  <ECState Name="set" Comment="" x="393.75" y="306.25">
+    <ECAction Algorithm="setArray" Output="out" />
+  </ECState>
+  <ECState Name="Loop" Comment="" x="831.25" y="437.5">
+    <ECAction Algorithm="moveArray" Output="out" />
+  </ECState>
+  <ECTransition Source="Loop" Destination="Loop" Condition="in" x="875" y="918.75" />
+  <ECTransition Source="set" Destination="Loop" Condition="true" x="683.072909712791" y="357.822920143604" />
+  <ECTransition Source="start" Destination="set" Condition="true" x="350" y="350" />
+</ECC><Algorithm Name="moveArray" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;out_var[0] = me-&gt;in_var[0];&#xD;&#xA;me-&gt;out_var[1] = me-&gt;in_var[1];&#xD;&#xA;me-&gt;out_var[2] = me-&gt;in_var[2];&#xD;&#xA;me-&gt;out_var[3] = me-&gt;in_var[3];&#xD;&#xA;&#xD;&#xA;printf(&quot;Set to %i %i %i %i\n&quot;, me-&gt;out_var[0], me-&gt;out_var[1], me-&gt;out_var[2], me-&gt;out_var[3]);" />
+</Algorithm>
+<Algorithm Name="setArray" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;out_var[0] = me-&gt;default_var[0];&#xD;&#xA;me-&gt;out_var[1] = me-&gt;default_var[1];&#xD;&#xA;me-&gt;out_var[2] = me-&gt;default_var[2];&#xD;&#xA;me-&gt;out_var[3] = me-&gt;default_var[3];&#xD;&#xA;" />
+</Algorithm></BasicFB>
+</FBType>

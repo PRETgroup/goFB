@@ -2,19 +2,19 @@
 // to add support for I/O 
 // Converter written by Hammond Pearce and available at github.com/kiwih/go-iec61499
 
-//This is the main file for the iec61499 network with ResourceType1 as the top level block
+//This is the main file for the iec61499 network with test2 as the top level block
 
-#include "ResourceType1.h"
+#include "test2.h"
 
 //put a copy of the top level block into global memory
-struct ResourceType1 myResourceType1;
+struct test2 mytest2;
 
 void main() {
-	ResourceType1_init(&myResourceType1);
+	test2_init(&mytest2);
 	do {
-		ResourceType1_syncEvents(&myResourceType1);
-		ResourceType1_syncData(&myResourceType1);
-		ResourceType1_run(&myResourceType1);
+		test2_syncEvents(&mytest2);
+		test2_syncData(&mytest2);
+		test2_run(&mytest2);
 	} while(true);
 }
 

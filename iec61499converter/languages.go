@@ -64,6 +64,7 @@ var (
 		"renameConnSignal":              renameConnSignal,
 		"connChildSourceOnly":           connChildSourceOnly,
 		"connChildNameMatches":          connChildNameMatches,
+
 		"div":   div,
 		"add":   add,
 		"mod":   mod,
@@ -79,6 +80,9 @@ var (
 		"renameCEventSourceLocation":      renameCEventSourceLocation,
 		"findSourceDataName":              findSourceDataName,
 		"connChildSourceOnly":             connChildSourceOnly,
+		"strToUpper":                      strToUpper,
+		"findVarDefinitionForName":        findVarDefinitionForName,
+
 		"div":   div,
 		"add":   add,
 		"mod":   mod,

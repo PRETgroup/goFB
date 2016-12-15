@@ -4,62 +4,37 @@
 // This file represents the implementation of the Basic Function Block for {{$block.Name}}
 #include "{{$block.Name}}.h"
 
-enum {{$block.Name}}_states { {{range $index, $state := $basicFB.States}}{{if $index}}, {{end}}STATE_{{$state.Name}}{{end}} };
 
-/* {{$block.Name}}_init() is required to be called to 
- * initialise an instance of {{$block.Name}}. 
- * It sets all I/O values to zero.
- */
-void {{$block.Name}}_init(struct {{$block.Name}} *me) {
-	//if there are input events, reset them
-	{{if $block.EventInputs}}{{range $index, $count := count (add (div (len $block.EventInputs.Events) 32) 1)}}me->inputEvents.events[{{$count}}] = 0;
-	{{end}}{{end}}
-	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
-	{{end}}{{end}}
-	//if there are input vars, reset them
-	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}me->{{$var.Name}} = 0;
-	{{end}}{{end}}
-	//if there are output vars, reset them
-	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}me->{{$var.Name}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}}0{{end}};
-	{{end}}{{end}}
-	//if there are internal vars, reset them
-	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}me->{{$var.Name}} = 0;
-	{{end}}{{end}}
-	//if there are any resource vars, reset them
-	{{if $block.ResourceVars}}
-	{{range $index, $var := $block.ResourceVars}}me->{{$var.Name}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}}0{{end}};
-	{{end}}{{end}}
-}
+
+{{template "_fbinit" .}}
 
 /* {{$block.Name}}_run() executes a single tick of an
  * instance of {{$block.Name}} according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
  * will need to be done in the parent.
+ * Also note that on the first run of this function, trigger will be set
+ * to true, meaning that on the very first run no next state logic will occur.
  */
 void {{$block.Name}}_run(struct {{$block.Name}} *me) {
-	//current state storage
-	static enum {{$block.Name}}_states state = STATE_{{(index $basicFB.States 0).Name}};
-	static BOOL trigger = true; //should be true the first time this is run
-
 	//if there are output events, reset them
 	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
 	{{end}}{{end}}
-	//now, let's advance state
-	switch(state) {
-	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}}:
-		{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{getCECCTransitionCondition $block $trans.Condition}}) {
-			state = STATE_{{$trans.Destination}};
-			trigger = true;
-		{{end}}};
-		break;
-
-	{{end}}
+	//next state logic
+	if(me->_trigger == false) {
+		switch(me->_state) {
+		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}}:
+			{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{getCECCTransitionCondition $block $trans.Condition}}) {
+				me->_state = STATE_{{$trans.Destination}};
+				me->_trigger = true;
+			{{end}}};
+			break;
+		{{end}}
+		}
 	}
 
-	//now, let's run any algorithms and emit any events that need to occur due to the trigger
-	if(trigger == true) {
-		switch(state) {
+	//state output logic
+	if(me->_trigger == true) {
+		switch(me->_state) {
 		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$curState.Name}}:
 			{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
 			{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
@@ -69,7 +44,7 @@ void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 		}
 	}
 
-	trigger = false;
+	me->_trigger = false;
 }
 
 {{if $basicFB.Algorithms}}//algorithms
