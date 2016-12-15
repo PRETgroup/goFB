@@ -21,7 +21,7 @@ Usage of goFB:
   -alc
         Enable checking algorithm language compatibility with output language.
   -i string
-        Specifies the name of the source file or directory of fbt-type files to be compiled. If blank, uses current directory
+        Specifies the name of the source file or directory of fbt-type files to be compiled. 
   -l string
         Specifies the output language for the program. (default "c")
   -o string

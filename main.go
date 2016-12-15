@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	inFileName             = flag.String("i", "", "Specifies the name of the source file or directory of fbt-type files to be compiled. If blank, uses current directory")
+	inFileName             = flag.String("i", "", "Specifies the name of the source file or directory of fbt-type files to be compiled.")
 	outLocation            = flag.String("o", "", "Specifies the name of the directory to put output files. If blank, uses current directory")
 	topName                = flag.String("t", "", "Specifies the name of the top level fbt-type file. If blank, no top file will be generated.")
 	outputLanguage         = flag.String("l", "c", "Specifies the output language for the program.")
@@ -29,7 +29,7 @@ func main() {
 	*outLocation = strings.TrimSuffix(*outLocation, "\\")
 
 	if *inFileName == "" {
-		fmt.Println("You need to specify a filename to transpile! Check out -help for options")
+		fmt.Println("You need to specify a file or directory name to transpile! Check out -help for options")
 		return
 	}
 
