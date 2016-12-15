@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/kiwih/go-iec61499-vhdl/iec61499converter/iec61499"
+	"github.com/kiwih/goFB/iec61499converter/iec61499"
 )
 
 //Converter is the struct we use to store all blocks for conversion (and what we operate from)

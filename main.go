@@ -8,13 +8,13 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kiwih/go-iec61499-vhdl/iec61499converter"
+	"github.com/kiwih/goFB/iec61499converter"
 )
 
 var (
-	inFileName             = flag.String("i", "", "Specifies the name of the source file or directory of files to be compiled. If blank, uses current directory")
+	inFileName             = flag.String("i", "", "Specifies the name of the source file or directory of fbt-type files to be compiled. If blank, uses current directory")
 	outLocation            = flag.String("o", "", "Specifies the name of the directory to put output files. If blank, uses current directory")
-	topName                = flag.String("t", "", "Specifies the name of the top level fbt file. If blank, no top file will be generated.")
+	topName                = flag.String("t", "", "Specifies the name of the top level fbt-type file. If blank, no top file will be generated.")
 	outputLanguage         = flag.String("l", "c", "Specifies the output language for the program.")
 	algorithmLanguageCheck = flag.Bool("alc", false, "Enable checking algorithm language compatibility with output language.")
 )
@@ -28,7 +28,10 @@ func main() {
 	*outLocation = strings.TrimSuffix(*outLocation, "/")
 	*outLocation = strings.TrimSuffix(*outLocation, "\\")
 
-	fmt.Println("i=", *inFileName)
+	if *inFileName == "" {
+		fmt.Println("You need to specify a filename to transpile! Check out -help for options")
+		return
+	}
 
 	fileInfo, err := os.Stat(*inFileName)
 	if err != nil {

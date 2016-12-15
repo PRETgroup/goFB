@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	TOPIO_IN  = "TOPIO_IN" //if either of the TOPIO_ strings are in an event, var, or internal variable comment, it means these should be passed up to the top level file and used as global IO
+	TOPIO_IN  = "TOPIO_IN" //if either of the TOPIO_ strings are in an event, var, or internal variable comment, it means these should be passed up to the top level file and used as global IO (used in VHDL only)
 	TOPIO_OUT = "TOPIO_OUT"
 )
 

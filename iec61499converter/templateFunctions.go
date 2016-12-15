@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kiwih/go-iec61499-vhdl/iec61499converter/iec61499"
+	"github.com/kiwih/goFB/iec61499converter/iec61499"
 )
 
 //getVhdlType returns the VHDL type to use with respect to an IEC61499 type
