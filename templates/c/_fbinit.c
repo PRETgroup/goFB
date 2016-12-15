@@ -31,7 +31,7 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	{{end}}{{end}}
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	{{if $block.BasicFB}}me->_trigger = true;
-	me->_state = STATE_{{(index $block.BasicFB.States 0).Name}};
+	me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};
 	{{end}}
 }
 
