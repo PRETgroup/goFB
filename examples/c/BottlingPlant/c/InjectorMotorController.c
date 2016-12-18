@@ -115,13 +115,13 @@ me->InjectorPosition = 255;
 }
 
 void InjectorMotorController_SetArmUpPosition(struct InjectorMotorController *me) {
-printf("Injector: Set injector arm to up position\n");
+//printf("Injector: Set injector arm to up position\n");
 me->InjectorPosition = 0;
 
 }
 
 void InjectorMotorController_Algorithm1(struct InjectorMotorController *me) {
-printf("lalalala\n");
+//printf("lalalala\n");
 }
 
 

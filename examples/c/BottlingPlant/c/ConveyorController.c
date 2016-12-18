@@ -103,20 +103,20 @@ void ConveyorController_run(struct ConveyorController *me) {
 
 void ConveyorController_ConveyorStart(struct ConveyorController *me) {
 me->ConveyorSpeed = 1;
-printf("Conveyor: Start\n");
+//printf("Conveyor: Start\n");
 }
 
 void ConveyorController_ConveyorStop(struct ConveyorController *me) {
 me->ConveyorSpeed = 0;
-printf("Conveyor: Stop\n");
+//printf("Conveyor: Stop\n");
 }
 
 void ConveyorController_ConveyorRunning(struct ConveyorController *me) {
-printf("Conveyor running region\n");
+//printf("Conveyor running region\n");
 }
 
 void ConveyorController_ConveyorEStop(struct ConveyorController *me) {
-printf("Conveyor Emergency Stopped\n");
+//printf("Conveyor Emergency Stopped\n");
 }
 
 
