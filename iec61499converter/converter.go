@@ -112,13 +112,19 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 	//convert all function blocks
 	for i := 0; i < len(c.Blocks); i++ {
 		output := &bytes.Buffer{}
-		templateName := "basicFB"
-		if c.Blocks[i].BasicFB == nil {
+		templateName := ""
+		if c.Blocks[i].CompositeFB != nil {
 			templateName = "compositeFB"
+		} else if c.Blocks[i].BasicFB != nil {
+			templateName = "basicFB"
+		} else if c.Blocks[i].Resources != nil {
+			templateName = "deviceFB"
+		} else {
+			return nil, errors.New("Can't determine type of FB of " + c.Blocks[i].Name)
 		}
 
 		if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks}); err != nil {
-			return nil, errors.New("Couldn't format template of" + c.Blocks[i].Name + ": " + err.Error())
+			return nil, errors.New("Couldn't format template (fb) of" + c.Blocks[i].Name + ": " + err.Error())
 		}
 
 		finishedConversions = append(finishedConversions, OutputFile{Name: c.Blocks[i].Name, Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
@@ -128,7 +134,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			templateName := "FBheader"
 
 			if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks}); err != nil {
-				return nil, errors.New("Couldn't format template of" + c.Blocks[i].Name + ": " + err.Error())
+				return nil, errors.New("Couldn't format template (fb header) of" + c.Blocks[i].Name + ": " + err.Error())
 			}
 
 			finishedConversions = append(finishedConversions, OutputFile{Name: c.Blocks[i].Name, Extension: c.outputLanguage.getHeaderExtension(), Contents: output.Bytes()})
@@ -140,7 +146,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 		output := &bytes.Buffer{}
 
 		if err := c.templates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks}); err != nil {
-			return nil, errors.New("Couldn't format template of" + c.Blocks[topIndex].Name + ": " + err.Error())
+			return nil, errors.New("Couldn't format template (top) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 
 		finishedConversions = append(finishedConversions, OutputFile{Name: "iec61499_network_top", Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
@@ -152,7 +158,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 		output := &bytes.Buffer{}
 
 		if err := c.templates.ExecuteTemplate(output, st.templateName, TemplateData{Blocks: c.Blocks}); err != nil {
-			return nil, errors.New("Couldn't format template of" + c.Blocks[topIndex].Name + ": " + err.Error())
+			return nil, errors.New("Couldn't format template (support) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 
 		finishedConversions = append(finishedConversions, OutputFile{Name: st.fileName, Extension: st.extension, Contents: output.Bytes()})

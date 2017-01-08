@@ -49,6 +49,8 @@ struct ArrayCopier {
 	
 	//resource vars
 	
+	//resources (Devices only)
+	
 	//state and trigger (BFBs only)
 	enum ArrayCopier_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick

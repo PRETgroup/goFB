@@ -9,7 +9,6 @@
 
 //This is a CFB, so we need the #includes for the child blocks embedded here
 #include "InjectorMotorController.h"
-//This is a CFB, so we need the #includes for the child blocks embedded here
 #include "InjectorPumpsController.h"
 
 
@@ -67,6 +66,8 @@ struct InjectorController {
 	
 	//resource vars
 	
+	//resources (Devices only)
+	
 	//state and trigger (BFBs only)
 	
 };
@@ -77,7 +78,7 @@ void InjectorController_init(struct InjectorController *me);
 //all FBs get a run function
 void InjectorController_run(struct InjectorController *me);
 
-//composite FBs get sync functions
+//composite/resource/device FBs get sync functions
 void InjectorController_syncEvents(struct InjectorController *me);
 void InjectorController_syncData(struct InjectorController *me);
 

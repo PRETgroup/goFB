@@ -9,17 +9,11 @@
 
 //This is a CFB, so we need the #includes for the child blocks embedded here
 #include "IOManager.h"
-//This is a CFB, so we need the #includes for the child blocks embedded here
 #include "CanisterCounter.h"
-//This is a CFB, so we need the #includes for the child blocks embedded here
 #include "DoorController.h"
-//This is a CFB, so we need the #includes for the child blocks embedded here
 #include "ConveyorController.h"
-//This is a CFB, so we need the #includes for the child blocks embedded here
 #include "RejectArmController.h"
-//This is a CFB, so we need the #includes for the child blocks embedded here
 #include "InjectorPumpsController.h"
-//This is a CFB, so we need the #includes for the child blocks embedded here
 #include "InjectorMotorController.h"
 
 
@@ -53,6 +47,8 @@ struct FlexPRET {
 	
 	//resource vars
 	
+	//resources (Devices only)
+	
 	//state and trigger (BFBs only)
 	
 };
@@ -63,7 +59,7 @@ void FlexPRET_init(struct FlexPRET *me);
 //all FBs get a run function
 void FlexPRET_run(struct FlexPRET *me);
 
-//composite FBs get sync functions
+//composite/resource/device FBs get sync functions
 void FlexPRET_syncEvents(struct FlexPRET *me);
 void FlexPRET_syncData(struct FlexPRET *me);
 

@@ -35,7 +35,8 @@ type FB struct {
 	InputVars    *VarDeclare   `xml:"InterfaceList>InputVars,omitempty"`
 	OutputVars   *VarDeclare   `xml:"InterfaceList>OutputVars,omitempty"`
 
-	ResourceVars []Variable `xml:"VarDeclaration"` //used in resource I/O
+	ResourceVars []Variable    `xml:"VarDeclaration"` //used in resource I/O
+	Resources    []FBReference `xml:"Resource"`       //used in devices
 
 	BasicFB     *BasicFB     `xml:",omitempty"`
 	CompositeFB *CompositeFB `xml:",omitempty"`

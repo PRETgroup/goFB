@@ -26,6 +26,8 @@ void RejectArmController_init(struct RejectArmController *me) {
 	
 	//if there are resource vars with default values, set them
 	
+	//if there are resources with set parameters, set them
+	
 	//if there are fb children (CFBs only), call this same function on them
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed

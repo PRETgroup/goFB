@@ -26,6 +26,8 @@ void ConveyorController_init(struct ConveyorController *me) {
 	
 	//if there are resource vars with default values, set them
 	
+	//if there are resources with set parameters, set them
+	
 	//if there are fb children (CFBs only), call this same function on them
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
@@ -103,20 +105,20 @@ void ConveyorController_run(struct ConveyorController *me) {
 
 void ConveyorController_ConveyorStart(struct ConveyorController *me) {
 me->ConveyorSpeed = 1;
-//printf("Conveyor: Start\n");
+printf("Conveyor: Start\n");
 }
 
 void ConveyorController_ConveyorStop(struct ConveyorController *me) {
 me->ConveyorSpeed = 0;
-//printf("Conveyor: Stop\n");
+printf("Conveyor: Stop\n");
 }
 
 void ConveyorController_ConveyorRunning(struct ConveyorController *me) {
-//printf("Conveyor running region\n");
+printf("Conveyor running region\n");
 }
 
 void ConveyorController_ConveyorEStop(struct ConveyorController *me) {
-//printf("Conveyor Emergency Stopped\n");
+printf("Conveyor Emergency Stopped\n");
 }
 
 

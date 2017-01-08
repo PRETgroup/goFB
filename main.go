@@ -52,10 +52,11 @@ func main() {
 			//only read the .fbt and .res files
 			name := file.Name()
 			nameComponents := strings.Split(name, ".")
-			if nameComponents[len(nameComponents)-1] == "fbt" || nameComponents[len(nameComponents)-1] == "res" {
+			extension := nameComponents[len(nameComponents)-1]
+			if extension == "fbt" || extension == "res" || extension == "dev" {
 				fileNames = append(fileNames, name)
 			} else {
-				fmt.Println("Didn't add, the extn was", nameComponents[len(nameComponents)-1])
+				fmt.Println("Didn't add, the extn was", extension)
 			}
 		}
 	} else {

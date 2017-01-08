@@ -26,7 +26,7 @@ void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 			{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{getCECCTransitionCondition $block $trans.Condition}}) {
 				me->_state = STATE_{{$block.Name}}_{{$trans.Destination}};
 				me->_trigger = true;
-			{{end}}};
+			{{end}}{{if $basicFB.GetTransitionsForState $curState.Name}}};{{end}}
 			break;
 		{{end}}
 		}

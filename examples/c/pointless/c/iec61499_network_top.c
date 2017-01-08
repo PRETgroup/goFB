@@ -8,12 +8,13 @@
 //put a copy of the top level block into global memory
 struct test2 mytest2;
 
-void main() {
+int main() {
 	test2_init(&mytest2);
 	do {
 		test2_syncEvents(&mytest2);
 		test2_syncData(&mytest2);
 		test2_run(&mytest2);
 	} while(true);
+	return 0;
 }
 

@@ -26,6 +26,9 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	{{if $block.ResourceVars}}{{range $index, $var := $block.ResourceVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
 	{{end}}{{else}}me->{{$var.Name}} = {{$var.InitialValue}};
 	{{end}}{{end}}{{end}}{{end}}
+	//if there are resources with set parameters, set them
+	{{if $block.Resources}}{{range $index, $res := $block.Resources}}{{if $res.Parameter}}{{range $paramIndex, $param := $res.Parameter}}me->{{$res.Name}}.{{$param.Name}} = {{$param.Value}};
+	{{end}}{{end}}{{end}}{{end}}
 	//if there are fb children (CFBs only), call this same function on them
 	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$child.Type}}_init(&me->{{$child.Name}});
 	{{end}}{{end}}

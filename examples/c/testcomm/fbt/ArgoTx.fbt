@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="ArgoTx" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-09" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="DataPresent" Comment="">
+    <With Var="Data" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="BusyChanged" Comment="">
+    <With Var="Busy" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Data" Type="INT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="Busy" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+</ECC></BasicFB>
+</FBType>

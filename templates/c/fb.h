@@ -7,8 +7,8 @@
 
 #include "fbtypes.h"
 
-{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}//This is a CFB, so we need the #includes for the child blocks embedded here
-#include "{{$child.Type}}.h"
+{{if $block.CompositeFB}}//This is a CFB, so we need the #includes for the child blocks embedded here
+{{range $currChildIndex, $child := $block.CompositeFB.FBs}}#include "{{$child.Type}}.h"
 {{end}}{{end}}{{if $block.BasicFB}}//This is a BFB, so we need an enum type for the state machine
 enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{{if $index}}, {{end}}STATE_{{$block.Name}}_{{$state.Name}}{{end}} };
 {{end}}
@@ -20,7 +20,9 @@ enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{
 	UDINT events[{{if $block.EventInputs}}{{add (div (len $block.EventInputs.Events) 32) 1}}{{else}}1{{end}}];
 };
 {{else}}//this block had no input events
-{{end}}
+{{end}}{{if $block.Resources}}//This block is a device and probably contains resources
+{{range $index, $res := $block.Resources}}#include "{{$res.Type}}.h"
+{{end}}{{end}}
 
 {{if $block.EventOutputs}}union {{$block.Name}}OutputEvents {
 	struct {
@@ -53,6 +55,9 @@ struct {{$block.Name}} {
 	//resource vars
 	{{if $block.ResourceVars}}{{range $index, $var := $block.ResourceVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
 	{{end}}{{end}}
+	//resources (Devices only)
+	{{if $block.Resources}}{{range $index, $res := $block.Resources}}struct {{$res.Type}} {{$res.Name}};
+	{{end}}{{end}}
 	//state and trigger (BFBs only)
 	{{if $block.BasicFB}}enum {{$block.Name}}_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
@@ -65,7 +70,7 @@ void {{$block.Name}}_init(struct {{$block.Name}} *me);
 //all FBs get a run function
 void {{$block.Name}}_run(struct {{$block.Name}} *me);
 
-{{if $block.CompositeFB}}//composite FBs get sync functions
+{{if not $block.BasicFB}}//composite/resource/device FBs get sync functions
 void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me);
 void {{$block.Name}}_syncData(struct {{$block.Name}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
 {{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions

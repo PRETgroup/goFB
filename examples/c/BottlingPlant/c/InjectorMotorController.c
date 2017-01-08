@@ -26,6 +26,8 @@ void InjectorMotorController_init(struct InjectorMotorController *me) {
 	
 	//if there are resource vars with default values, set them
 	
+	//if there are resources with set parameters, set them
+	
 	//if there are fb children (CFBs only), call this same function on them
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
@@ -115,13 +117,13 @@ me->InjectorPosition = 255;
 }
 
 void InjectorMotorController_SetArmUpPosition(struct InjectorMotorController *me) {
-//printf("Injector: Set injector arm to up position\n");
+printf("Injector: Set injector arm to up position\n");
 me->InjectorPosition = 0;
 
 }
 
 void InjectorMotorController_Algorithm1(struct InjectorMotorController *me) {
-//printf("lalalala\n");
+printf("lalalala\n");
 }
 
 

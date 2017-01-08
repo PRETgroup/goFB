@@ -8,13 +8,14 @@
 //put a copy of the top level block into global memory
 struct {{$block.Name}} my{{$block.Name}};
 
-void main() {
+int main() {
 	{{$block.Name}}_init(&my{{$block.Name}});
 	do {
 		{{$block.Name}}_syncEvents(&my{{$block.Name}});
 		{{$block.Name}}_syncData(&my{{$block.Name}});
 		{{$block.Name}}_run(&my{{$block.Name}});
 	} while(true);
+	return 0;
 }
 
 {{end}}

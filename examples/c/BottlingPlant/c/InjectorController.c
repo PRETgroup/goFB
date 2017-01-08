@@ -32,6 +32,8 @@ void InjectorController_init(struct InjectorController *me) {
 	
 	//if there are resource vars with default values, set them
 	
+	//if there are resources with set parameters, set them
+	
 	//if there are fb children (CFBs only), call this same function on them
 	InjectorMotorController_init(&me->Arm);
 	InjectorPumpsController_init(&me->Pumps);

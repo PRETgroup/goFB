@@ -30,6 +30,8 @@ void FlexPRET_init(struct FlexPRET *me) {
 	
 	//if there are resource vars with default values, set them
 	
+	//if there are resources with set parameters, set them
+	
 	//if there are fb children (CFBs only), call this same function on them
 	IOManager_init(&me->IO);
 	CanisterCounter_init(&me->CCounter);

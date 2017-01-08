@@ -38,6 +38,8 @@ void test2_init(struct test2 *me) {
 	me->ac2_default_var[2] = 1;
 	me->ac2_default_var[3] = 0;
 	
+	//if there are resources with set parameters, set them
+	
 	//if there are fb children (CFBs only), call this same function on them
 	ArrayCopier_init(&me->ac1);
 	ArrayCopier_init(&me->ac2);

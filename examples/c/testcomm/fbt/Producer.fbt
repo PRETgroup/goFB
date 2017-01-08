@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Producer" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-09" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="TxStatusChanged" Comment="">
+    <With Var="TxBusy" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="DataPresent" Comment="">
+    <With Var="Data" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="TxBusy" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="Data" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="Count" Type="INT" InitialValue="0" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="increment" Comment="" x="787.5" y="656.25">
+    <ECAction Algorithm="update_count" />
+  </ECState>
+  <ECState Name="Tx" Comment="" x="1691.66672229767" y="1093.75">
+    <ECAction Output="DataPresent" />
+  </ECState>
+  <ECTransition Source="Start" Destination="increment" Condition="!TxBusy" x="581.760430574417" y="459.78125" />
+  <ECTransition Source="increment" Destination="Tx" Condition="!TxBusy" x="1189.58336114883" y="895" />
+  <ECTransition Source="Tx" Destination="increment" Condition="true" x="1230.58336114883" y="917" />
+</ECC><Algorithm Name="update_count" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Count++;&#xD;&#xA;me-&gt;Data = me-&gt;Count;" />
+</Algorithm></BasicFB>
+</FBType>
