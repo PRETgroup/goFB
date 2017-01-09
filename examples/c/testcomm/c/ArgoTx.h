@@ -7,6 +7,8 @@
 
 #include "fbtypes.h"
 
+#include "libmp/mp.h"
+
 //This is a BFB, so we need an enum type for the state machine
 enum ArgoTx_states { STATE_ArgoTx_Start };
 
@@ -21,7 +23,7 @@ union ArgoTxInputEvents {
 
 union ArgoTxOutputEvents {
 	struct {
-		UDINT BusyChanged : 1;
+		UDINT SuccessChanged : 1;
 	} event;
 	UDINT events[1];
 };
@@ -38,7 +40,7 @@ struct ArgoTx {
 	INT Data;
     
     //output vars
-	BOOL Busy;
+	BOOL Success;
     
 	//any internal vars (BFBs only)
     
@@ -52,10 +54,12 @@ struct ArgoTx {
 	enum ArgoTx_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
+	//special things
+	mpd_t mySendChan;
 };
 
 //all FBs get an init function
-void ArgoTx_init(struct ArgoTx *me);
+int ArgoTx_init(struct ArgoTx *me);
 
 //all FBs get a run function
 void ArgoTx_run(struct ArgoTx *me);

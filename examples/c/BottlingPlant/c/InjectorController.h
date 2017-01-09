@@ -73,7 +73,7 @@ struct InjectorController {
 };
 
 //all FBs get an init function
-void InjectorController_init(struct InjectorController *me);
+int InjectorController_init(struct InjectorController *me);
 
 //all FBs get a run function
 void InjectorController_run(struct InjectorController *me);

@@ -7,6 +7,9 @@
 
 #include "fbtypes.h"
 
+#include "libmp/mp.h"
+
+
 //This is a BFB, so we need an enum type for the state machine
 enum ArgoRx_states { STATE_ArgoRx_Start };
 
@@ -46,10 +49,12 @@ struct ArgoRx {
 	enum ArgoRx_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
+	//added things
+	mpd_t myRecvChan;
 };
 
 //all FBs get an init function
-void ArgoRx_init(struct ArgoRx *me);
+int ArgoRx_init(struct ArgoRx *me);
 
 //all FBs get a run function
 void ArgoRx_run(struct ArgoRx *me);

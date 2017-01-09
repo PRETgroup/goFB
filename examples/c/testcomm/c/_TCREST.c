@@ -17,7 +17,7 @@
  * initialise an instance of _TCREST. 
  * It sets all I/O values to zero.
  */
-void _TCREST_init(struct _TCREST *me) {
+int _TCREST_init(struct _TCREST *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -38,6 +38,8 @@ void _TCREST_init(struct _TCREST *me) {
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	
+
+	return 0;
 }
 
 

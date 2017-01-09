@@ -9,12 +9,17 @@
 struct {{$block.Name}} my{{$block.Name}};
 
 int main() {
-	{{$block.Name}}_init(&my{{$block.Name}});
+	if({{$block.Name}}_init(&my{{$block.Name}}) != 0) {
+		printf("Failed to initialize.");
+		return 1;
+	}
+	
 	do {
 		{{$block.Name}}_syncEvents(&my{{$block.Name}});
 		{{$block.Name}}_syncData(&my{{$block.Name}});
 		{{$block.Name}}_run(&my{{$block.Name}});
 	} while(true);
+
 	return 0;
 }
 

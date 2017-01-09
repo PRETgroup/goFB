@@ -17,7 +17,7 @@
  * initialise an instance of FlexPRET. 
  * It sets all I/O values to zero.
  */
-void FlexPRET_init(struct FlexPRET *me) {
+int FlexPRET_init(struct FlexPRET *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -33,16 +33,32 @@ void FlexPRET_init(struct FlexPRET *me) {
 	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs only), call this same function on them
-	IOManager_init(&me->IO);
-	CanisterCounter_init(&me->CCounter);
-	DoorController_init(&me->Door);
-	ConveyorController_init(&me->Conveyor);
-	RejectArmController_init(&me->RejectArm);
-	InjectorPumpsController_init(&me->Pumps);
-	InjectorMotorController_init(&me->Motor);
+	if(IOManager_init(&me->IO) != 0) {
+		return 1;
+	}
+	if(CanisterCounter_init(&me->CCounter) != 0) {
+		return 1;
+	}
+	if(DoorController_init(&me->Door) != 0) {
+		return 1;
+	}
+	if(ConveyorController_init(&me->Conveyor) != 0) {
+		return 1;
+	}
+	if(RejectArmController_init(&me->RejectArm) != 0) {
+		return 1;
+	}
+	if(InjectorPumpsController_init(&me->Pumps) != 0) {
+		return 1;
+	}
+	if(InjectorMotorController_init(&me->Motor) != 0) {
+		return 1;
+	}
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	
+
+	return 0;
 }
 
 

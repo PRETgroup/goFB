@@ -11,7 +11,7 @@
  * initialise an instance of ConveyorController. 
  * It sets all I/O values to zero.
  */
-void ConveyorController_init(struct ConveyorController *me) {
+int ConveyorController_init(struct ConveyorController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -34,6 +34,8 @@ void ConveyorController_init(struct ConveyorController *me) {
 	me->_trigger = true;
 	me->_state = STATE_ConveyorController_E_Stop;
 	
+
+	return 0;
 }
 
 

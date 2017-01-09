@@ -11,7 +11,7 @@
  * initialise an instance of PrintInt. 
  * It sets all I/O values to zero.
  */
-void PrintInt_init(struct PrintInt *me) {
+int PrintInt_init(struct PrintInt *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -33,6 +33,8 @@ void PrintInt_init(struct PrintInt *me) {
 	me->_trigger = true;
 	me->_state = STATE_PrintInt_Start;
 	
+
+	return 0;
 }
 
 

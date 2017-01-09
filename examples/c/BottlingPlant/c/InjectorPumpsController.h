@@ -68,7 +68,7 @@ struct InjectorPumpsController {
 };
 
 //all FBs get an init function
-void InjectorPumpsController_init(struct InjectorPumpsController *me);
+int InjectorPumpsController_init(struct InjectorPumpsController *me);
 
 //all FBs get a run function
 void InjectorPumpsController_run(struct InjectorPumpsController *me);

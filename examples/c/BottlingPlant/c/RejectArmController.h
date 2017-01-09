@@ -55,7 +55,7 @@ struct RejectArmController {
 };
 
 //all FBs get an init function
-void RejectArmController_init(struct RejectArmController *me);
+int RejectArmController_init(struct RejectArmController *me);
 
 //all FBs get a run function
 void RejectArmController_run(struct RejectArmController *me);

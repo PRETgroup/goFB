@@ -11,7 +11,7 @@
  * initialise an instance of ArgoTx. 
  * It sets all I/O values to zero.
  */
-void ArgoTx_init(struct ArgoTx *me) {
+int ArgoTx_init(struct ArgoTx *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -21,6 +21,7 @@ void ArgoTx_init(struct ArgoTx *me) {
 	//if there are input vars with default values, set them
 	
 	//if there are output vars with default values, set them
+	me->Success = 1;
 	
 	//if there are internal vars with default values, set them (BFBs only)
 	
@@ -34,6 +35,14 @@ void ArgoTx_init(struct ArgoTx *me) {
 	me->_trigger = true;
 	me->_state = STATE_ArgoTx_Start;
 	
+	//special things
+	#define MP_CHAN_BUF_SIZE sizeof(INT)
+	#define MP_CHAN_NUM_BUF 1
+	if(!mp_chan_init(&me->mySendChan, 0, get_cpuid(), MP_CHAN_BUF_SIZE, MP_CHAN_NUM_BUF)) {
+		return 1;
+	};
+
+	return 0;
 }
 
 
@@ -49,27 +58,18 @@ void ArgoTx_run(struct ArgoTx *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
-	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_ArgoTx_Start:
-			
-			break;
+	if(me->inputEvents.event.DataPresent) {
+		*((volatile INT _SPM*)(me->mySendChan.write_buf)) = me->Data;
+		int success = mp_nbsend(&me->mySendChan);
 		
-		}
+		me->Success = (success == 1);
+		me->outputEvents.event.SuccessChanged = 1;
+	} else if(me->_trigger == true){
+		//we'll use trigger as an "initialiser" for the output to ensure all other fbs capture Success as 1 (so that they don't think that Tx is busy)
+		me->Success = 1;
+		me->outputEvents.event.SuccessChanged = 1;
+		me->_trigger = false;
 	}
-
-	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_ArgoTx_Start:
-			break;
-
-		
-		}
-	}
-
-	me->_trigger = false;
 }
 
 //no algorithms were present for this function block

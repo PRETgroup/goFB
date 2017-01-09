@@ -60,7 +60,7 @@ struct ConveyorController {
 };
 
 //all FBs get an init function
-void ConveyorController_init(struct ConveyorController *me);
+int ConveyorController_init(struct ConveyorController *me);
 
 //all FBs get a run function
 void ConveyorController_run(struct ConveyorController *me);

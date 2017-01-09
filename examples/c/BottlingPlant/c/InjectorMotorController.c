@@ -11,7 +11,7 @@
  * initialise an instance of InjectorMotorController. 
  * It sets all I/O values to zero.
  */
-void InjectorMotorController_init(struct InjectorMotorController *me) {
+int InjectorMotorController_init(struct InjectorMotorController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -34,6 +34,8 @@ void InjectorMotorController_init(struct InjectorMotorController *me) {
 	me->_trigger = true;
 	me->_state = STATE_InjectorMotorController_MoveArmUp;
 	
+
+	return 0;
 }
 
 

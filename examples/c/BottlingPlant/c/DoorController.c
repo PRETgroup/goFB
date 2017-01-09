@@ -11,7 +11,7 @@
  * initialise an instance of DoorController. 
  * It sets all I/O values to zero.
  */
-void DoorController_init(struct DoorController *me) {
+int DoorController_init(struct DoorController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -34,6 +34,8 @@ void DoorController_init(struct DoorController *me) {
 	me->_trigger = true;
 	me->_state = STATE_DoorController_E_Stop;
 	
+
+	return 0;
 }
 
 

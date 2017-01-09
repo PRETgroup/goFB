@@ -56,7 +56,7 @@ struct DoorController {
 };
 
 //all FBs get an init function
-void DoorController_init(struct DoorController *me);
+int DoorController_init(struct DoorController *me);
 
 //all FBs get a run function
 void DoorController_run(struct DoorController *me);

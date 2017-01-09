@@ -11,7 +11,7 @@
  * initialise an instance of ArgoRx. 
  * It sets all I/O values to zero.
  */
-void ArgoRx_init(struct ArgoRx *me) {
+int ArgoRx_init(struct ArgoRx *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -33,6 +33,13 @@ void ArgoRx_init(struct ArgoRx *me) {
 	me->_trigger = true;
 	me->_state = STATE_ArgoRx_Start;
 	
+	//special things
+	#define MP_CHAN_BUF_SIZE 1
+	#define MP_CHAN_NUM_BUF 10
+	if(!mp_chan_init(&me->myRecvChan, 0, get_cpuid(), MP_CHAN_BUF_SIZE, MP_CHAN_NUM_BUF)) {
+		return 1;
+	};
+	return 0;
 }
 
 
@@ -48,27 +55,12 @@ void ArgoRx_run(struct ArgoRx *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
-	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_ArgoRx_Start:
-			
-			break;
-		
-		}
+	int recv = mp_nbrecv(&me->myRecvChan);
+	if(recv) {
+		me->Data = *((INT _SPM*)(me->myRecvChan.read_buf));
+		me->outputEvents.event.DataPresent = 1;
+		mp_nback(&me->myRecvChan);
 	}
-
-	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_ArgoRx_Start:
-			break;
-
-		
-		}
-	}
-
-	me->_trigger = false;
 }
 
 //no algorithms were present for this function block

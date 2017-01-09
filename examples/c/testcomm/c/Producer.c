@@ -11,7 +11,7 @@
  * initialise an instance of Producer. 
  * It sets all I/O values to zero.
  */
-void Producer_init(struct Producer *me) {
+int Producer_init(struct Producer *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -35,6 +35,8 @@ void Producer_init(struct Producer *me) {
 	me->_trigger = true;
 	me->_state = STATE_Producer_Start;
 	
+
+	return 0;
 }
 
 
@@ -54,13 +56,13 @@ void Producer_run(struct Producer *me) {
 	if(me->_trigger == false) {
 		switch(me->_state) {
 		case STATE_Producer_Start:
-			if(!me->TxBusy) {
+			if(me->TxSuccess) {
 				me->_state = STATE_Producer_increment;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_Producer_increment:
-			if(!me->TxBusy) {
+			if(me->TxSuccess) {
 				me->_state = STATE_Producer_Tx;
 				me->_trigger = true;
 			};

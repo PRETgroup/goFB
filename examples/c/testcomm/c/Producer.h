@@ -35,7 +35,7 @@ struct Producer {
 	union ProducerOutputEvents outputEvents;
 
     //input vars
-	BOOL TxBusy;
+	BOOL TxSuccess;
     
     //output vars
 	INT Data;
@@ -56,7 +56,7 @@ struct Producer {
 };
 
 //all FBs get an init function
-void Producer_init(struct Producer *me);
+int Producer_init(struct Producer *me);
 
 //all FBs get a run function
 void Producer_run(struct Producer *me);

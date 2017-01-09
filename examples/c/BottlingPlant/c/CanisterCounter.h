@@ -57,7 +57,7 @@ struct CanisterCounter {
 };
 
 //all FBs get an init function
-void CanisterCounter_init(struct CanisterCounter *me);
+int CanisterCounter_init(struct CanisterCounter *me);
 
 //all FBs get a run function
 void CanisterCounter_run(struct CanisterCounter *me);

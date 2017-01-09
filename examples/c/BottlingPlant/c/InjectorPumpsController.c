@@ -11,7 +11,7 @@
  * initialise an instance of InjectorPumpsController. 
  * It sets all I/O values to zero.
  */
-void InjectorPumpsController_init(struct InjectorPumpsController *me) {
+int InjectorPumpsController_init(struct InjectorPumpsController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -34,6 +34,8 @@ void InjectorPumpsController_init(struct InjectorPumpsController *me) {
 	me->_trigger = true;
 	me->_state = STATE_InjectorPumpsController_RejectCanister;
 	
+
+	return 0;
 }
 
 

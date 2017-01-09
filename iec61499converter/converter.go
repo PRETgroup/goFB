@@ -111,6 +111,10 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 
 	//convert all function blocks
 	for i := 0; i < len(c.Blocks); i++ {
+		if c.Blocks[i].Comment == "goFB_ignore" {
+			//if they have this comment, for whatever reason, don't generate any files for these blocks (but they may still be referenced)
+			continue
+		}
 		output := &bytes.Buffer{}
 		templateName := ""
 		if c.Blocks[i].CompositeFB != nil {

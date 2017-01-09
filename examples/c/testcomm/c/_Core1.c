@@ -17,7 +17,7 @@
  * initialise an instance of _Core1. 
  * It sets all I/O values to zero.
  */
-void _Core1_init(struct _Core1 *me) {
+int _Core1_init(struct _Core1 *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -33,11 +33,17 @@ void _Core1_init(struct _Core1 *me) {
 	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs only), call this same function on them
-	ArgoTx_init(&me->tx);
-	Producer_init(&me->prod);
+	if(ArgoTx_init(&me->tx) != 0) {
+		return 1;
+	}
+	if(Producer_init(&me->prod) != 0) {
+		return 1;
+	}
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	
+
+	return 0;
 }
 
 
@@ -52,7 +58,7 @@ void _Core1_syncEvents(struct _Core1 *me) {
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	me->prod.inputEvents.event.TxStatusChanged = me->tx.outputEvents.event.BusyChanged;
+	me->prod.inputEvents.event.TxStatusChanged = me->tx.outputEvents.event.SuccessChanged;
 	me->tx.inputEvents.event.DataPresent = me->prod.outputEvents.event.DataPresent;
 	
 }
@@ -79,7 +85,7 @@ void _Core1_syncData(struct _Core1 *me) {
 	//sync for prod (of type Producer) which is a BFB
 	
 	if(me->prod.inputEvents.event.TxStatusChanged == 1) { 
-		me->prod.TxBusy = me->tx.Busy;
+		me->prod.TxSuccess = me->tx.Success;
 	} 
 	
 

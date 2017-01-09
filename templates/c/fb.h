@@ -65,7 +65,7 @@ struct {{$block.Name}} {
 };
 
 //all FBs get an init function
-void {{$block.Name}}_init(struct {{$block.Name}} *me);
+int {{$block.Name}}_init(struct {{$block.Name}} *me);
 
 //all FBs get a run function
 void {{$block.Name}}_run(struct {{$block.Name}} *me);

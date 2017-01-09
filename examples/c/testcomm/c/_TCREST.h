@@ -46,7 +46,7 @@ struct _TCREST {
 };
 
 //all FBs get an init function
-void _TCREST_init(struct _TCREST *me);
+int _TCREST_init(struct _TCREST *me);
 
 //all FBs get a run function
 void _TCREST_run(struct _TCREST *me);

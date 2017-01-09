@@ -61,7 +61,7 @@ struct InjectorMotorController {
 };
 
 //all FBs get an init function
-void InjectorMotorController_init(struct InjectorMotorController *me);
+int InjectorMotorController_init(struct InjectorMotorController *me);
 
 //all FBs get a run function
 void InjectorMotorController_run(struct InjectorMotorController *me);

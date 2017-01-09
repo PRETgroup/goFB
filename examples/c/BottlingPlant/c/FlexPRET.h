@@ -54,7 +54,7 @@ struct FlexPRET {
 };
 
 //all FBs get an init function
-void FlexPRET_init(struct FlexPRET *me);
+int FlexPRET_init(struct FlexPRET *me);
 
 //all FBs get a run function
 void FlexPRET_run(struct FlexPRET *me);

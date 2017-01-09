@@ -8,13 +8,20 @@
 //put a copy of the top level block into global memory
 struct _TCREST my_TCREST;
 
+const int NOC_MASTER = 0;
+
 int main() {
-	_TCREST_init(&my_TCREST);
+	if(_TCREST_init(&my_TCREST) != 0) {
+		printf("Failed to initialize.");
+		return 1;
+	}
+	
 	do {
 		_TCREST_syncEvents(&my_TCREST);
 		_TCREST_syncData(&my_TCREST);
 		_TCREST_run(&my_TCREST);
 	} while(true);
+
 	return 0;
 }
 

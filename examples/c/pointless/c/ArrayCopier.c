@@ -11,7 +11,7 @@
  * initialise an instance of ArrayCopier. 
  * It sets all I/O values to zero.
  */
-void ArrayCopier_init(struct ArrayCopier *me) {
+int ArrayCopier_init(struct ArrayCopier *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -34,6 +34,8 @@ void ArrayCopier_init(struct ArrayCopier *me) {
 	me->_trigger = true;
 	me->_state = STATE_ArrayCopier_start;
 	
+
+	return 0;
 }
 
 

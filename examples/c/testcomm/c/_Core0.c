@@ -17,7 +17,7 @@
  * initialise an instance of _Core0. 
  * It sets all I/O values to zero.
  */
-void _Core0_init(struct _Core0 *me) {
+int _Core0_init(struct _Core0 *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -33,11 +33,17 @@ void _Core0_init(struct _Core0 *me) {
 	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs only), call this same function on them
-	ArgoRx_init(&me->rx);
-	PrintInt_init(&me->print);
+	if(ArgoRx_init(&me->rx) != 0) {
+		return 1;
+	}
+	if(PrintInt_init(&me->print) != 0) {
+		return 1;
+	}
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	
+
+	return 0;
 }
 
 

@@ -45,7 +45,7 @@ struct _Core1 {
 };
 
 //all FBs get an init function
-void _Core1_init(struct _Core1 *me);
+int _Core1_init(struct _Core1 *me);
 
 //all FBs get a run function
 void _Core1_run(struct _Core1 *me);

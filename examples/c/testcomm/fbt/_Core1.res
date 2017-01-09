@@ -9,9 +9,9 @@
 <FBNetwork>
   <FB Name="tx" Type="ArgoTx" x="2012.5" y="962.5" />
   <FB Name="prod" Type="Producer" x="1006.25" y="962.5" />
-  <EventConnections><Connection Source="tx.BusyChanged" Destination="prod.TxStatusChanged" />
+  <EventConnections><Connection Source="tx.SuccessChanged" Destination="prod.TxStatusChanged" />
 <Connection Source="prod.DataPresent" Destination="tx.DataPresent" /></EventConnections>
-  <DataConnections><Connection Source="tx.Busy" Destination="prod.TxBusy" />
+  <DataConnections><Connection Source="tx.Success" Destination="prod.TxSuccess" />
 <Connection Source="prod.Data" Destination="tx.Data" /></DataConnections>
 </FBNetwork>
 </ResourceType>

@@ -9,12 +9,17 @@
 struct FlexPRET myFlexPRET;
 
 int main() {
-	FlexPRET_init(&myFlexPRET);
+	if(FlexPRET_init(&myFlexPRET) != 0) {
+		printf("Failed to initialize.");
+		return 1;
+	}
+	
 	do {
 		FlexPRET_syncEvents(&myFlexPRET);
 		FlexPRET_syncData(&myFlexPRET);
 		FlexPRET_run(&myFlexPRET);
 	} while(true);
+
 	return 0;
 }
 

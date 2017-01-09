@@ -49,7 +49,7 @@ struct PrintInt {
 };
 
 //all FBs get an init function
-void PrintInt_init(struct PrintInt *me);
+int PrintInt_init(struct PrintInt *me);
 
 //all FBs get a run function
 void PrintInt_run(struct PrintInt *me);

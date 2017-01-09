@@ -11,7 +11,7 @@
  * initialise an instance of RejectArmController. 
  * It sets all I/O values to zero.
  */
-void RejectArmController_init(struct RejectArmController *me) {
+int RejectArmController_init(struct RejectArmController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -34,6 +34,8 @@ void RejectArmController_init(struct RejectArmController *me) {
 	me->_trigger = true;
 	me->_state = STATE_RejectArmController_Clear;
 	
+
+	return 0;
 }
 
 

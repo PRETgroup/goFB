@@ -46,7 +46,7 @@ struct test2 {
 };
 
 //all FBs get an init function
-void test2_init(struct test2 *me);
+int test2_init(struct test2 *me);
 
 //all FBs get a run function
 void test2_run(struct test2 *me);

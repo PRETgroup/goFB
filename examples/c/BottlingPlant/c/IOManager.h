@@ -83,7 +83,7 @@ struct IOManager {
 };
 
 //all FBs get an init function
-void IOManager_init(struct IOManager *me);
+int IOManager_init(struct IOManager *me);
 
 //all FBs get a run function
 void IOManager_run(struct IOManager *me);

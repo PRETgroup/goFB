@@ -11,7 +11,7 @@
  * initialise an instance of CanisterCounter. 
  * It sets all I/O values to zero.
  */
-void CanisterCounter_init(struct CanisterCounter *me) {
+int CanisterCounter_init(struct CanisterCounter *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -34,6 +34,8 @@ void CanisterCounter_init(struct CanisterCounter *me) {
 	me->_trigger = true;
 	me->_state = STATE_CanisterCounter_Start;
 	
+
+	return 0;
 }
 
 

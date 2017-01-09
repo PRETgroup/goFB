@@ -58,7 +58,7 @@ struct ArrayCopier {
 };
 
 //all FBs get an init function
-void ArrayCopier_init(struct ArrayCopier *me);
+int ArrayCopier_init(struct ArrayCopier *me);
 
 //all FBs get a run function
 void ArrayCopier_run(struct ArrayCopier *me);

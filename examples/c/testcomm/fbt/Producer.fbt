@@ -8,7 +8,7 @@
 <InterfaceList>
 <EventInputs>
   <Event Name="TxStatusChanged" Comment="">
-    <With Var="TxBusy" />
+    <With Var="TxSuccess" />
   </Event>
 </EventInputs>
 <EventOutputs>
@@ -17,7 +17,7 @@
   </Event>
 </EventOutputs>
 <InputVars>
-  <VarDeclaration Name="TxBusy" Type="BOOL" Comment="" />
+  <VarDeclaration Name="TxSuccess" Type="BOOL" Comment="" />
 </InputVars>
 <OutputVars>
   <VarDeclaration Name="Data" Type="INT" Comment="" />
@@ -34,8 +34,8 @@
   <ECState Name="Tx" Comment="" x="1691.66672229767" y="1093.75">
     <ECAction Output="DataPresent" />
   </ECState>
-  <ECTransition Source="Start" Destination="increment" Condition="!TxBusy" x="581.760430574417" y="459.78125" />
-  <ECTransition Source="increment" Destination="Tx" Condition="!TxBusy" x="1189.58336114883" y="895" />
+  <ECTransition Source="Start" Destination="increment" Condition="TxSuccess" x="581.760430574417" y="459.78125" />
+  <ECTransition Source="increment" Destination="Tx" Condition="TxSuccess" x="1189.58336114883" y="895" />
   <ECTransition Source="Tx" Destination="increment" Condition="true" x="1230.58336114883" y="917" />
 </ECC><Algorithm Name="update_count" Comment="">
   <Other Language="C" Prototype="" Text="me-&gt;Count++;&#xD;&#xA;me-&gt;Data = me-&gt;Count;" />

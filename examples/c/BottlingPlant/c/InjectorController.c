@@ -17,7 +17,7 @@
  * initialise an instance of InjectorController. 
  * It sets all I/O values to zero.
  */
-void InjectorController_init(struct InjectorController *me) {
+int InjectorController_init(struct InjectorController *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -35,11 +35,17 @@ void InjectorController_init(struct InjectorController *me) {
 	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs only), call this same function on them
-	InjectorMotorController_init(&me->Arm);
-	InjectorPumpsController_init(&me->Pumps);
+	if(InjectorMotorController_init(&me->Arm) != 0) {
+		return 1;
+	}
+	if(InjectorPumpsController_init(&me->Pumps) != 0) {
+		return 1;
+	}
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	
+
+	return 0;
 }
 
 

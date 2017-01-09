@@ -17,7 +17,7 @@
  * initialise an instance of test2. 
  * It sets all I/O values to zero.
  */
-void test2_init(struct test2 *me) {
+int test2_init(struct test2 *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -41,11 +41,17 @@ void test2_init(struct test2 *me) {
 	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs only), call this same function on them
-	ArrayCopier_init(&me->ac1);
-	ArrayCopier_init(&me->ac2);
+	if(ArrayCopier_init(&me->ac1) != 0) {
+		return 1;
+	}
+	if(ArrayCopier_init(&me->ac2) != 0) {
+		return 1;
+	}
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	
+
+	return 0;
 }
 
 

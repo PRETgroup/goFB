@@ -9,12 +9,17 @@
 struct test2 mytest2;
 
 int main() {
-	test2_init(&mytest2);
+	if(test2_init(&mytest2) != 0) {
+		printf("Failed to initialize.");
+		return 1;
+	}
+	
 	do {
 		test2_syncEvents(&mytest2);
 		test2_syncData(&mytest2);
 		test2_run(&mytest2);
 	} while(true);
+
 	return 0;
 }
 
