@@ -1,6 +1,6 @@
 # goFB
-## An IEC61499 Function Block transpiler
-This program is a transpiler (i.e. source-to-source) for IEC61499 Function Blocks. 
+## An IEC61499 Function Block compiler
+This program is a compiler for IEC61499 Function Blocks. 
 Currently, there is support for IEC61499 to C, and experimental support for IEC61499 to VHDL.
 
 ## Build instructions
@@ -30,8 +30,5 @@ Usage of goFB:
         Specifies the name of the top level fbt-type file. If blank, no top file will be generated.
 ```
 
-Two example networks for use with the C transpiler are presented. You can try them by running 
-`c_example_bottling.bat` which presents an example bottling plant,
-or
-`c_example_pointless.bat` which presents two function blocks passing 4-element arrays between themselves.
+Two example networks for use with the C compiler are presented. 
 
