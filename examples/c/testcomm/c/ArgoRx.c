@@ -36,7 +36,7 @@ int ArgoRx_init(struct ArgoRx *me) {
 	me->_trigger = true;
 	me->_state = STATE_ArgoRx_Start;
 	
-	me->chan = mp_create_sport(1, SINK, sizeof(INT));
+	me->chan = mp_create_qport(1, SINK, sizeof(INT), 1);
 	me->read_data = mp_alloc(sizeof(INT));
 	if(me->chan == NULL || me->read_data == NULL) {
 		return 1;
@@ -58,12 +58,28 @@ int ArgoRx_init(struct ArgoRx *me) {
 void ArgoRx_run(struct ArgoRx *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
-	int success = mp_read(me->chan, me->read_data);
-	if(success == 0) {
-		return;
+
+	if(me->needToAck == true) {
+		int success = mp_nback(me->chan);
+		if(!success) {
+			return;
+		}	
 	}
-	me->Data = *(me->read_data);
-	me->outputEvents.event.DataPresent = 1;
+	me->needToAck = false;
+
+	int success = mp_nbrecv(me->chan);
+
+	if(success) {
+		me->needToAck = true;
+		me->Data = *((volatile INT _SPM*)me->chan->read_buf);
+		
+		success = mp_nback(me->chan);
+		if(success) {
+			me->needToAck = false;
+		}
+		
+		me->outputEvents.event.DataPresent = 1;
+	}
 	
 }
 

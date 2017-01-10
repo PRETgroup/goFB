@@ -48,8 +48,9 @@ struct ArgoRx {
 	enum ArgoRx_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-	spd_t* chan;
+	qpd_t* chan;
 	volatile INT _SPM* read_data;
+	BOOL needToAck;
 };
 
 //all FBs get an init function

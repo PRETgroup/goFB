@@ -37,7 +37,7 @@ int ArgoTx_init(struct ArgoTx *me) {
 	me->_trigger = true;
 	me->_state = STATE_ArgoTx_Start;
 	
-	me->chan = mp_create_sport(1, SOURCE, sizeof(INT));
+	me->chan = mp_create_qport(1, SOURCE, sizeof(INT), 1);
 	me->write_data = mp_alloc(sizeof(INT));
 	if(me->chan == NULL || me->write_data == NULL) {
 		return 1;
@@ -58,10 +58,10 @@ int ArgoTx_init(struct ArgoTx *me) {
 void ArgoTx_run(struct ArgoTx *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
-	
+
 	if(me->inputEvents.event.DataPresent) {
-		*(me->write_data) = me->Data;
-		me->Success = mp_write(me->chan, me->write_data);
+		*((volatile INT _SPM *)me->chan->write_buf) = me->Data;
+		me->Success = mp_nbsend(me->chan);
 		me->outputEvents.event.SuccessChanged = 1;
 	}
 }

@@ -43,7 +43,7 @@ int main() {
 	c0init = 1;
 
 	task0(NULL);
-
+	LED = 1;
 	int* res;
 	corethread_join(core1, (void**)&res);
 	
@@ -53,37 +53,26 @@ int main() {
 void task0(void* param) {
 	//task0 runs core0
 
-	int count = 0;
 	unsigned int tickCount = 0;
 	do {
-		if(count++ > 10000) {
-			LED = !(LED);
-			count = 0;
-		}
-
+		printf("tick\n");
 		_Core0_syncEvents(&my_TCREST.rx_core);
 		_Core0_syncData(&my_TCREST.rx_core);
 		_Core0_run(&my_TCREST.rx_core);
 
-	} while(tickCount++ < 100000);
+	} while(1);
 }
 
 void task1(void* param) {
 	//task1 runs core1
 
-	int count = 0;
 	unsigned int tickCount = 0;
 
 	do {
-		if(count++ > 10000) {
-			LED = !(LED);
-			count = 0;
-		}
-
 		_Core1_syncEvents(&my_TCREST.tx_core);
 		_Core1_syncData(&my_TCREST.tx_core);
 		_Core1_run(&my_TCREST.tx_core);
-	} while(tickCount++ < 100000);
+	} while(1);
 }
 
 void t1(void* param) {
@@ -97,6 +86,7 @@ void t1(void* param) {
 	task1(NULL);
 	
 	int ret = 0;
+	LED = 1;
   	corethread_exit(&ret);
 	return;
 }
