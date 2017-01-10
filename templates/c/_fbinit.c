@@ -29,8 +29,15 @@ int {{$block.Name}}_init(struct {{$block.Name}} *me) {
 	//if there are resources with set parameters, set them
 	{{if $block.Resources}}{{range $index, $res := $block.Resources}}{{if $res.Parameter}}{{range $paramIndex, $param := $res.Parameter}}me->{{$res.Name}}.{{$param.Name}} = {{$param.Value}};
 	{{end}}{{end}}{{end}}{{end}}
-	//if there are fb children (CFBs only), call this same function on them
+	//perform a data copy to all children (if any present) (moves config data around)
+	//TODO:
+
+	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}if({{$child.Type}}_init(&me->{{$child.Name}}) != 0) {
+		return 1;
+	}
+	{{end}}{{end}}
+	{{if $block.Resources}}{{range $index, $res := $block.Resources}}if({{$res.Type}}_init(&me->{{$res.Name}}) != 0) {
 		return 1;
 	}
 	{{end}}{{end}}

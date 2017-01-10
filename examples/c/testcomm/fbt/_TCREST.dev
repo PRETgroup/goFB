@@ -5,13 +5,12 @@
 <VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-09" />
 <CompilerInfo header="" classdef="">
 </CompilerInfo>
-<VarDeclaration Name="tcrestInput" Type="BOOL" Comment="" />
-<VarDeclaration Name="Core0Input" Type="INT" Comment="" />
-<Resource Name="Resource" Type="_Core0" x="2056.25" y="1181.25">
-  <Parameter Name="Core0Input" Value="0" />
+
+<Resource Name="rx_core" Type="_Core0" x="2056.25" y="1181.25">
+  <Parameter Name="RxChanId" Value="1" />
 </Resource>
-<Resource Name="Resource1" Type="_Core1" x="2668.75" y="1181.25">
-  <Parameter Name="Core1Input" Value="1" />
+<Resource Name="tx_core" Type="_Core1" x="2668.75" y="1181.25">
+  <Parameter Name="TxChanId" Value="1" />
 </Resource>
 
 </DeviceType>

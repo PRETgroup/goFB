@@ -18,6 +18,7 @@
 </EventOutputs>
 <InputVars>
   <VarDeclaration Name="Data" Type="INT" Comment="" />
+  <VarDeclaration Name="ChanId" Type="UDINT" Comment="" InitialValue="1"/>
 </InputVars>
 <OutputVars>
   <VarDeclaration Name="Success" Type="BOOL" Comment="" />

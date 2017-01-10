@@ -21,11 +21,17 @@ typedef char bool;
 
 #ifndef true
 #define true 1
+#endif
+
+#ifndef false
 #define false 0
 #endif
 
 #ifndef TRUE
 #define TRUE true
+#endif
+
+#ifndef FALSE
 #define FALSE false
 #endif
 

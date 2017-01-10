@@ -7,7 +7,7 @@
 </CompilerInfo>
 <InterfaceList>
 <EventInputs>
-  <Event Name="TxStatusChanged" Comment="">
+  <Event Name="TxSuccessChanged" Comment="">
     <With Var="TxSuccess" />
   </Event>
 </EventInputs>
@@ -34,9 +34,10 @@
   <ECState Name="Tx" Comment="" x="1691.66672229767" y="1093.75">
     <ECAction Output="DataPresent" />
   </ECState>
-  <ECTransition Source="Start" Destination="increment" Condition="TxSuccess" x="581.760430574417" y="459.78125" />
-  <ECTransition Source="increment" Destination="Tx" Condition="TxSuccess" x="1189.58336114883" y="895" />
-  <ECTransition Source="Tx" Destination="increment" Condition="true" x="1230.58336114883" y="917" />
+  <ECTransition Source="Start" Destination="increment" Condition="true" x="581.760430574417" y="459.78125" />
+  <ECTransition Source="increment" Destination="Tx" Condition="true" x="1093.75" y="962.5" />
+  <ECTransition Source="Tx" Destination="increment" Condition="TxSuccessChanged AND (TxSuccess)" x="1443.75" y="831.25" />
+  <ECTransition Source="Tx" Destination="Tx" Condition="TxSuccessChanged AND (!TxSuccess)" x="1668.66672229767" y="1089.75" />
 </ECC><Algorithm Name="update_count" Comment="">
   <Other Language="C" Prototype="" Text="me-&gt;Count++;&#xD;&#xA;me-&gt;Data = me-&gt;Count;" />
 </Algorithm></BasicFB>
