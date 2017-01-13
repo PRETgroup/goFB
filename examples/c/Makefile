@@ -14,6 +14,8 @@ LIBCORETHREAD=$(BUILDDIR)/libcorethread.a
 LIBETH=$(BUILDDIR)/libeth.a
 LIBELF=$(BUILDDIR)/libelf.a
 
+T_DELAY_CYCLES?=183
+
 $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.h
 	patmos-clang \
 	-target patmos-unknown-unknown-elf \
@@ -41,14 +43,21 @@ $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.
 	-mserialize=$(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).pml
 
 build: $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf
+	
+wcet-config: 
+	platin pml-config \
+	--target patmos-unknown-unknown-elf \
+	-o $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT)config.pml \
+	--tdelay $(T_DELAY_CYCLES)
 
-wcet: $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf	
+wcet: build wcet-config
 	platin wcet \
+	-i $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).pml \
 	--enable-wca \
 	--disable-ait \
 	--stats \
-	-i $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).pml \
 	--binary $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf \
 	-e $(FUNCTION) \
 	-o $(PROJECT).wca \
-	--report $(PROJECT)_wcet_report.txt
+	--report $(PROJECT)_wcet_report.txt #\
+	#-i $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT)config.pml
