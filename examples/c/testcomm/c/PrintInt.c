@@ -5,6 +5,7 @@
 #include "PrintInt.h"
 
 
+
 /* PrintInt_init() is required to be called to 
  * initialise an instance of PrintInt. 
  * It sets all I/O values to zero.
@@ -90,7 +91,7 @@ void PrintInt_run(struct PrintInt *me) {
 //algorithms
 
 void PrintInt_DoPrintInt(struct PrintInt *me) {
-printf("PrintInt: %d\n", me->Data);
+HEX = me->Data;
 }
 
 

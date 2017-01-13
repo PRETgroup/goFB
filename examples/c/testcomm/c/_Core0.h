@@ -45,13 +45,13 @@ struct _Core0 {
 };
 
 //all FBs get an init function
-int _Core0_init(struct _Core0 *me);
+int __attribute__ ((noinline)) _Core0_init(struct _Core0 *me);
 
 //all FBs get a run function
-void _Core0_run(struct _Core0 *me);
+void __attribute__ ((noinline)) _Core0_run(struct _Core0 *me);
 
 //composite/resource/device FBs get sync functions
-void _Core0_syncEvents(struct _Core0 *me);
-void _Core0_syncData(struct _Core0 *me);
+void __attribute__ ((noinline)) _Core0_syncEvents(struct _Core0 *me);
+void __attribute__ ((noinline)) _Core0_syncData(struct _Core0 *me);
 
 #endif

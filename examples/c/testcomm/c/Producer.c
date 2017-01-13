@@ -108,6 +108,8 @@ void Producer_run(struct Producer *me) {
 void Producer_update_count(struct Producer *me) {
 me->Count++;
 me->Data = me->Count;
+//#define HEX ( *( ( volatile _IODEV unsigned * )	0xF0070000 ) )
+HEX = me->Data;
 }
 
 

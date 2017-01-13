@@ -101,7 +101,7 @@ void _Core1_syncData(struct _Core1 *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core1_run(struct _Core1 *me) {
+void __attribute__ ((noinline)) _Core1_run(struct _Core1 *me) {
 	ArgoTx_run(&me->tx);
 	Producer_run(&me->prod);
 	

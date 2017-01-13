@@ -5,6 +5,7 @@ TCRESTNOCINIT?=$(TCRESTHOMEDIR)/patmos/c/cmp/nocinit.c
 FBINCLUDEDIR?=./include
 
 PROJECT?=bottlingplant
+FUNCTION?=main
 
 BUILDDIR?=../tmp
 LIBNOC=$(BUILDDIR)/libnoc.a
@@ -13,8 +14,8 @@ LIBCORETHREAD=$(BUILDDIR)/libcorethread.a
 LIBETH=$(BUILDDIR)/libeth.a
 LIBELF=$(BUILDDIR)/libelf.a
 
-all:
-%: ; patmos-clang \
+$(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.h
+	patmos-clang \
 	-target patmos-unknown-unknown-elf \
 	-O2 \
 	-I $(TCRESTINCLUDEDIR) \
@@ -28,7 +29,7 @@ all:
 	-Xgold --defsym -Xgold __heap_end=0x1f0000 \
 	-Xgold -T \
 	-Xgold $(TCRESTHOMEDIR)/patmos/hardware/spm_ram.t \
-	-o /home/hammond/t-crest/patmos/tmp/$(PROJECT).elf \
+	-o $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf \
 	./$(PROJECT)/c/*.c \
 	$(TCRESTNOCINIT) \
 	-L $(TCRESTLINKDIR) \
@@ -36,4 +37,18 @@ all:
 	-lnoc \
 	-lcorethread \
 	-leth \
-	-lelf
+	-lelf \
+	-mserialize=$(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).pml
+
+build: $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf
+
+wcet: $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf	
+	platin wcet \
+	--enable-wca \
+	--disable-ait \
+	--stats \
+	-i $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).pml \
+	--binary $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf \
+	-e $(FUNCTION) \
+	-o $(PROJECT).wca \
+	--report $(PROJECT)_wcet_report.txt

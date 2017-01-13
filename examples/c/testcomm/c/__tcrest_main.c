@@ -2,10 +2,6 @@
 
 #include "_TCREST.h"
 
-#include <machine/patmos.h>
-#include "libcorethread/corethread.h"
-#include "libmp/mp.h"
-
 //put a copy of the top level block into global memory
 struct _TCREST my_TCREST;
 
@@ -18,8 +14,6 @@ void t1(void* param);
 
 void task0(void* param);
 void task1(void* param);
-
-#define LED ( *( ( volatile _IODEV unsigned * )	0xF0090000 ) )
 
 int main() {
 	printf("testcomm startup.\n");
@@ -46,28 +40,40 @@ int main() {
 	LED = 1;
 	int* res;
 	corethread_join(core1, (void**)&res);
-	
+
 	return 0;
+}
+
+void __attribute__ ((noinline)) timed_task() {
+	_Core0_syncEvents(&my_TCREST.rx_core);
+	_Core0_syncData(&my_TCREST.rx_core);
+	_Core0_run(&my_TCREST.rx_core);
 }
 
 void task0(void* param) {
 	//task0 runs core0
-
 	unsigned int tickCount = 0;
-	do {
-		printf("tick\n");
-		_Core0_syncEvents(&my_TCREST.rx_core);
-		_Core0_syncData(&my_TCREST.rx_core);
-		_Core0_run(&my_TCREST.rx_core);
 
+	unsigned long long start_time;
+	unsigned long long end_time;
+
+	do {
+		start_time = get_cpu_cycles();
+
+		timed_task();
+
+		end_time = get_cpu_cycles();
+		printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
+
+		tickCount++;
 	} while(1);
 }
+
 
 void task1(void* param) {
 	//task1 runs core1
 
 	unsigned int tickCount = 0;
-
 	do {
 		_Core1_syncEvents(&my_TCREST.tx_core);
 		_Core1_syncData(&my_TCREST.tx_core);

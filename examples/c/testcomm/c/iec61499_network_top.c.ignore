@@ -7,7 +7,7 @@
 
 //put a copy of the top level block into global memory
 struct _TCREST my_TCREST;
-
+const int NOC_MASTER = 0;
 int main() {
 	if(_TCREST_init(&my_TCREST) != 0) {
 		printf("Failed to initialize.");
