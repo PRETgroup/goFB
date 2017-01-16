@@ -28,9 +28,9 @@ int main() {
 	corethread_t core1 = 1;
 	corethread_create(&core1, &t1, NULL);
 	corethread_t core2 = 2;
-	corethread_create(&core1, &t2, NULL);
+	corethread_create(&core2, &t2, NULL);
 	corethread_t core3 = 3;
-	corethread_create(&core1, &t3, NULL);
+	corethread_create(&core3, &t3, NULL);
 	printf("Started t1,t2,t3\n");
 	_Core0_preinit(&my_TCREST.c0);
 	_Core0_init(&my_TCREST.c0);
@@ -69,12 +69,13 @@ void task0(void* param) {
 	unsigned long long end_time;
 
 	do {
+		HEX = HEX + 1;
 		start_time = get_cpu_cycles();
 
 		timed_task();
 
 		end_time = get_cpu_cycles();
-		printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
+		//printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
 
 		tickCount++;
 	} while(1);
@@ -89,19 +90,20 @@ void task1(void* param) {
 		_Core1_syncEvents(&my_TCREST.c1);
 		_Core1_syncData(&my_TCREST.c1);
 		_Core1_run(&my_TCREST.c1);
+		HEX = HEX + 1;
 	} while(1);
 }
 
 void t1(void* param) {
-
+	HEX = 1;
 	_Core1_preinit(&my_TCREST.c1);
 	_Core1_init(&my_TCREST.c1);
 
 	mp_init_ports();
-
+	HEX = 2;
 	c1init = 1;
 	while(c0init == 0 || c1init == 0 || c2init == 0 || c3init == 0);
-
+	HEX = 3;
 	task1(NULL);
 	
 	int ret = 0;
@@ -115,21 +117,24 @@ void task2(void* param) {
 
 	unsigned int tickCount = 0;
 	do {
+
 		_Core2_syncEvents(&my_TCREST.c2);
 		_Core2_syncData(&my_TCREST.c2);
 		_Core2_run(&my_TCREST.c2);
+		HEX = HEX + 1;
 	} while(1);
 }
 
 void t2(void* param) {
+	HEX = 1;
 	_Core2_preinit(&my_TCREST.c2);
 	_Core2_init(&my_TCREST.c2);
 	
 	mp_init_ports();
-
+	HEX = 2;
 	c2init = 1;
 	while(c0init == 0 || c1init == 0 || c2init == 0 || c3init == 0);
-
+	HEX = 3;
 	task1(NULL);
 	
 	int ret = 0;
@@ -147,18 +152,21 @@ void task3(void* param) {
 		_Core3_syncEvents(&my_TCREST.c3);
 		_Core3_syncData(&my_TCREST.c3);
 		_Core3_run(&my_TCREST.c3);
+
+		HEX = HEX + 1;
 	} while(1);
 }
 
 void t3(void* param) {
+	HEX = 1;
 	_Core3_preinit(&my_TCREST.c3);
 	_Core3_init(&my_TCREST.c3);
 	
 	mp_init_ports();
-
+	HEX = 2;
 	c3init = 1;
 	while(c0init == 0 || c1init == 0 || c2init == 0 || c3init == 0);
-
+	HEX = 3;
 	task1(NULL);
 	
 	int ret = 0;
