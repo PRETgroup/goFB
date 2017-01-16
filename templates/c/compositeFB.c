@@ -22,7 +22,7 @@
 void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me) {
 	//for all composite function block children, call this same function
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
-	{{$childType}}_syncEvents(&me->{{$child.Name}});{{end}}{{end}}
+	{{$childType.Name}}_syncEvents(&me->{{$child.Name}});{{end}}{{end}}
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
 	{{range $curConnIndex, $conn := $compositeFB.EventConnections}}me->{{renameCEventDestinationLocation $conn.Destination}} = me->{{renameCEventSourceLocation $conn.Source}};
@@ -39,7 +39,7 @@ void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me) {
 void {{$block.Name}}_syncData(struct {{$block.Name}} *me) {
 	//for all composite function block children, call this same function
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
-	{{$childType}}_syncData(&me->{{$child.Name}});{{end}}{{end}}
+	{{$childType.Name}}_syncData(&me->{{$child.Name}});{{end}}{{end}}
 	//for all basic function block children, perform their synchronisations explicitly
 	//Data is sometimes copied
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.BasicFB}}

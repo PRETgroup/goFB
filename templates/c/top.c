@@ -9,6 +9,10 @@
 struct {{$block.Name}} my{{$block.Name}};
 
 int main() {
+	if({{$block.Name}}_preinit(&my{{$block.Name}}) != 0) {
+		printf("Failed to preinitialize.");
+		return 1;
+	}
 	if({{$block.Name}}_init(&my{{$block.Name}}) != 0) {
 		printf("Failed to initialize.");
 		return 1;

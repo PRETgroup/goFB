@@ -87,22 +87,22 @@ func connChildNameMatches(in string, name string) bool {
 
 //getCECCTransitionCondition returns the C "if" condition to use in state machine next state logic
 func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string {
-	re := regexp.MustCompile("([a-zA-Z_<>=]+)")
+	re1 := regexp.MustCompile("([<>=!]+)")
+	re2 := regexp.MustCompile("([a-zA-Z_<>=]+)")
+
 	retVal := iec61499trans
 
 	//rename AND and OR
 	retVal = strings.Replace(retVal, "AND", "&&", -1)
 	retVal = strings.Replace(retVal, "OR", "||", -1)
 
-	//add whitespace around operators
-	retVal = strings.Replace(retVal, ">=", " >= ", -1)
-	retVal = strings.Replace(retVal, "<=", " <= ", -1)
-	retVal = strings.Replace(retVal, "!=", " != ", -1)
-	retVal = strings.Replace(retVal, "<>", " <> ", -1)
-	retVal = strings.Replace(retVal, "><", " >< ", -1)
-	retVal = strings.Replace(retVal, "==", " == ", -1)
+	//re1: add whitespace around operators
+	retVal = re1.ReplaceAllStringFunc(retVal, func(in string) string {
+		return " " + in + " "
+	})
 
-	retVal = re.ReplaceAllStringFunc(retVal, func(in string) string {
+	//re2: add "me->" where appropriate
+	retVal = re2.ReplaceAllStringFunc(retVal, func(in string) string {
 		if strings.ToLower(in) == "and" || strings.ToLower(in) == "or" || strings.ContainsAny(in, "!><=") || strings.ToLower(in) == "true" || strings.ToLower(in) == "false" {
 			//no need to make changes, these aren't variables or events
 			return in

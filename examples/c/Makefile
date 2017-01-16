@@ -14,7 +14,10 @@ LIBCORETHREAD=$(BUILDDIR)/libcorethread.a
 LIBETH=$(BUILDDIR)/libeth.a
 LIBELF=$(BUILDDIR)/libelf.a
 
+#Delay to global memory per request in cycles
 T_DELAY_CYCLES?=183
+#Global memory transfer time per burst in cycles
+G_DELAY_CYCLES?=0
 
 $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.h
 	patmos-clang \
@@ -48,7 +51,8 @@ wcet-config:
 	platin pml-config \
 	--target patmos-unknown-unknown-elf \
 	-o $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT)config.pml \
-	--tdelay $(T_DELAY_CYCLES)
+	--tdelay $(T_DELAY_CYCLES) \
+	--gtime $(G_DELAY_CYCLES)
 
 wcet: build wcet-config
 	platin wcet \
@@ -59,5 +63,5 @@ wcet: build wcet-config
 	--binary $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf \
 	-e $(FUNCTION) \
 	-o $(PROJECT).wca \
-	--report $(PROJECT)_wcet_report.txt #\
-	#-i $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT)config.pml
+	--report $(PROJECT)_wcet_report.txt \
+	-i $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT)config.pml
