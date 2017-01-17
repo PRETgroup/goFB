@@ -79,9 +79,11 @@ var (
 		"renameCEventDestinationLocation": renameCEventDestinationLocation,
 		"renameCEventSourceLocation":      renameCEventSourceLocation,
 		"findSourceDataName":              findSourceDataName,
+		"findSourcesEventName":            findSourcesEventName,
 		"connChildSourceOnly":             connChildSourceOnly,
 		"strToUpper":                      strToUpper,
 		"findVarDefinitionForName":        findVarDefinitionForName,
+		"connIsOnParent":                  connIsOnParent,
 
 		"div":   div,
 		"add":   add,

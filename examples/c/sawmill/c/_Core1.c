@@ -92,13 +92,20 @@ int _Core1_init(struct _Core1 *me) {
  */
 void _Core1_syncEvents(struct _Core1 *me) {
 	//for all composite function block children, call this same function
-	//sync for sawmill (of type SawmillModule) which is a CFB
-	SawmillModule_syncEvents(&me->sawmill);
+	
+	SawmillModule_syncEvents(&me->sawmill);//sync for sawmill (of type SawmillModule) which is a CFB
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	me->messageHandler.inputEvents.event.MessageChanged = me->sawmill.outputEvents.event.MessageChange;
-	me->tx.inputEvents.event.DataPresent = me->messageHandler.outputEvents.event.TxDataPresent;
-	me->messageHandler.inputEvents.event.TxSuccessChanged = me->tx.outputEvents.event.SuccessChanged;
+	//inputs that go to children
+	
+	me->messageHandler.inputEvents.event.MessageChanged = me->sawmill.outputEvents.event.MessageChange; 
+	
+	me->messageHandler.inputEvents.event.TxSuccessChanged = me->tx.outputEvents.event.SuccessChanged; 
+	
+	me->tx.inputEvents.event.DataPresent = me->messageHandler.outputEvents.event.TxDataPresent; 
+	
+	//outputs of parent cfb
+	
 	
 }
 
@@ -131,6 +138,10 @@ void _Core1_syncData(struct _Core1 *me) {
 	if(me->tx.inputEvents.event.DataPresent == 1) { 
 		me->tx.Data = me->messageHandler.TxData;
 	} 
+	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	
 	
 
 }

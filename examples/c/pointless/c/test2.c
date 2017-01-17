@@ -97,10 +97,15 @@ void test2_syncEvents(struct test2 *me) {
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	me->ac2.inputEvents.event.in = me->ac1.outputEvents.event.out;
-	me->ac1.inputEvents.event.set_default_in = me->ac1.outputEvents.event.set_default_out;
-	me->ac1.inputEvents.event.in = me->ac2.outputEvents.event.out;
-	me->ac2.inputEvents.event.set_default_in = me->ac2.outputEvents.event.set_default_out;
+	
+	me->ac1.inputEvents.event.in = me->ac2.outputEvents.event.out; 
+	
+	me->ac1.inputEvents.event.set_default_in = me->ac1.outputEvents.event.set_default_out; 
+	
+	me->ac2.inputEvents.event.in = me->ac1.outputEvents.event.out; 
+	
+	me->ac2.inputEvents.event.set_default_in = me->ac2.outputEvents.event.set_default_out; 
+	
 	
 }
 
@@ -154,6 +159,10 @@ void test2_syncData(struct test2 *me) {
 		me->ac2.default_var[3] = me->ac2_default_var[3];
 		
 	} 
+	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	
 	
 
 }

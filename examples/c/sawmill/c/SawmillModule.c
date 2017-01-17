@@ -109,11 +109,20 @@ void SawmillModule_syncEvents(struct SawmillModule *me) {
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	me->outputEvents.event.MessageChange = me->control.outputEvents.event.MessageChange;
-	me->control.inputEvents.event.ControlChange = me->runswitch.outputEvents.event.ControlChange;
-	me->control.inputEvents.event.WeightChange = me->scale.outputEvents.event.WeightChange;
-	me->control.inputEvents.event.LaserChange = me->laser.outputEvents.event.LaserChanged;
-	me->saw.inputEvents.event.CommandChange = me->control.outputEvents.event.CommandChange;
+	//inputs that go to children
+	
+	me->saw.inputEvents.event.CommandChange = me->control.outputEvents.event.CommandChange; 
+	
+	me->control.inputEvents.event.ControlChange = me->runswitch.outputEvents.event.ControlChange; 
+	
+	me->control.inputEvents.event.WeightChange = me->scale.outputEvents.event.WeightChange; 
+	
+	me->control.inputEvents.event.LaserChange = me->laser.outputEvents.event.LaserChanged; 
+	
+	//outputs of parent cfb
+	
+	me->outputEvents.event.MessageChange = me->control.outputEvents.event.MessageChange; 
+	
 	
 }
 
@@ -156,6 +165,11 @@ void SawmillModule_syncData(struct SawmillModule *me) {
 	if(me->control.inputEvents.event.LaserChange == 1) { 
 		me->control.LaserBroken = me->laser.LaserBroken;
 	} 
+	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	me->Message = me->control.Message;
+	
 	
 
 }

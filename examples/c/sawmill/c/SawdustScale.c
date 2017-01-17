@@ -70,29 +70,12 @@ void SawdustScale_run(struct SawdustScale *me) {
 	me->outputEvents.events[0] = 0;
 	
 	me->outputEvents.event.WeightChange = 1;
-	me->Weight = 1500;
-
-	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_SawdustScale_Start:
-			
-			break;
-		
-		}
+	if((SWITCHES & 0x4) != 0) {
+		me->Weight = 1500;
+	} else {
+		me->Weight = 500;
 	}
-
-	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_SawdustScale_Start:
-			break;
-
-		
-		}
-	}
-
-	me->_trigger = false;
+	
 }
 
 //no algorithms were present for this function block

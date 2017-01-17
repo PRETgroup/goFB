@@ -69,25 +69,8 @@ void SawmillLaser_run(struct SawmillLaser *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
-	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_SawmillLaser_Start:
-			
-			break;
-		
-		}
-	}
-
-	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_SawmillLaser_Start:
-			break;
-
-		
-		}
-	}
+	me->outputEvents.event.LaserChanged = 1;
+	me->LaserBroken = (SWITCHES & 0x2) != 0;
 
 	me->_trigger = false;
 }

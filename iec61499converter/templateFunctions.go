@@ -126,8 +126,8 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string 
 }
 
 //locationType = 0 (Var)
-//locationType = 1 (Event destination)
-//locationType = 2 (Event source)
+//locationType = 1 (destination)
+//locationType = 2 (source)
 //don't use this function, use one of the helper functions
 func renameCLocation(in string, locationType int) string {
 	if strings.Contains(in, ".") {
@@ -160,13 +160,42 @@ func renameCEventSourceLocation(in string) string {
 	return renameCLocation(in, 2)
 }
 
+//This finds a data connection source based on a destination source (destinations can only ever have one source for data connections in iec61499)
 func findSourceDataName(conns []iec61499.Connection, destChildName string, destVarName string) string {
 	for _, conn := range conns {
-		if conn.Destination == destChildName+"."+destVarName {
-			return renameCLocation(conn.Source, 0)
+		if destChildName != "" {
+			if conn.Destination == destChildName+"."+destVarName {
+				return renameCLocation(conn.Source, 0)
+			}
+		} else {
+			if conn.Destination == destVarName {
+				return renameCLocation(conn.Source, 0)
+			}
 		}
 	}
 	return "0"
+}
+
+//Ths finds event connection source(s) based on a destination source (events can have multiple sources for event connections in iec61499)
+func findSourcesEventName(conns []iec61499.Connection, destChildName string, destEventName string) []string {
+	sources := make([]string, 0)
+	for _, conn := range conns {
+		if destChildName != "" {
+			if conn.Destination == destChildName+"."+destEventName {
+				sources = append(sources, renameCLocation(conn.Source, 2))
+			}
+		} else {
+			if conn.Destination == destEventName {
+				sources = append(sources, renameCLocation(conn.Source, 2))
+			}
+		}
+	}
+	return sources
+}
+
+//used to check if an iec61499.Connection's .Source or .Destination (send in appropriate string) are going to a parent's port
+func connIsOnParent(connName string) bool {
+	return !strings.Contains(connName, ".")
 }
 
 func div(a int, b int) int {

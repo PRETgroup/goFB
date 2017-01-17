@@ -70,27 +70,7 @@ void SawmillSwitch_run(struct SawmillSwitch *me) {
 	me->outputEvents.events[0] = 0;
 	
 	me->outputEvents.event.ControlChange = 1;
-	me->Run = 1;
-
-	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_SawmillSwitch_Start:
-			
-			break;
-		
-		}
-	}
-
-	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_SawmillSwitch_Start:
-			break;
-
-		
-		}
-	}
+	me->Run = (SWITCHES & 0x1);
 
 	me->_trigger = false;
 }

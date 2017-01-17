@@ -96,22 +96,25 @@ void InjectorController_syncEvents(struct InjectorController *me) {
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	me->Arm.inputEvents.event.InjectorArmFinishedMovement = me->inputEvents.event.InjectorArmFinishedMovement;
-	me->Arm.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged;
-	me->Pumps.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged;
-	me->Pumps.inputEvents.event.CanisterPressureChanged = me->inputEvents.event.CanisterPressureChanged;
-	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->inputEvents.event.FillContentsAvailableChanged;
-	me->Arm.inputEvents.event.ConveyorStoppedForInject = me->inputEvents.event.ConveyorStoppedForInject;
-	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->inputEvents.event.VacuumTimerElapsed;
-	me->outputEvents.event.InjectDone = me->Arm.outputEvents.event.InjectDone;
-	me->outputEvents.event.InjectorPositionChanged = me->Arm.outputEvents.event.InjectorPositionChanged;
-	me->outputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged;
-	me->outputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister;
-	me->outputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged;
-	me->outputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer;
-	me->outputEvents.event.InjectRunning = me->Arm.outputEvents.event.InjectRunning;
-	me->Pumps.inputEvents.event.StartPump = me->Arm.outputEvents.event.StartPump;
-	me->Arm.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished;
+	
+	me->Arm.inputEvents.event.InjectorArmFinishedMovement = me->inputEvents.event.InjectorArmFinishedMovement; 
+	
+	me->Arm.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged; 
+	
+	me->Arm.inputEvents.event.ConveyorStoppedForInject = me->inputEvents.event.ConveyorStoppedForInject; 
+	
+	me->Arm.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished; 
+	
+	me->Pumps.inputEvents.event.StartPump = me->Arm.outputEvents.event.StartPump; 
+	
+	me->Pumps.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged; 
+	
+	me->Pumps.inputEvents.event.CanisterPressureChanged = me->inputEvents.event.CanisterPressureChanged; 
+	
+	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->inputEvents.event.FillContentsAvailableChanged; 
+	
+	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->inputEvents.event.VacuumTimerElapsed; 
+	
 	
 }
 
@@ -145,6 +148,15 @@ void InjectorController_syncData(struct InjectorController *me) {
 	if(me->Pumps.inputEvents.event.FillContentsAvailableChanged == 1) { 
 		me->Pumps.FillContentsAvailable = me->FillContentsAvailable;
 	} 
+	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	me->InjectorPosition = me->Arm.InjectorPosition;
+	me->InjectorContentsValveOpen = me->Pumps.InjectorContentsValveOpen;
+	me->InjectorVacuumRun = me->Pumps.InjectorVacuumRun;
+	me->InjectorPressurePumpRun = me->Pumps.InjectorPressurePumpRun;
+	me->FillContents = me->Pumps.FillContents;
+	
 	
 
 }

@@ -21,12 +21,19 @@
  */
 void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me) {
 	//for all composite function block children, call this same function
-	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
-	{{$childType.Name}}_syncEvents(&me->{{$child.Name}});{{end}}{{end}}
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}
+	{{$childType.Name}}_syncEvents(&me->{{$child.Name}});//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB{{end}}{{end}}
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	{{range $curConnIndex, $conn := $compositeFB.EventConnections}}me->{{renameCEventDestinationLocation $conn.Destination}} = me->{{renameCEventSourceLocation $conn.Source}};
-	{{end}}
+	//inputs that go to children
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs.Events}}
+	me->{{$child.Name}}.inputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections $child.Name $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}me->{{$eventSource}}{{end}}{{else}}0{{end}}; 
+	{{end}}{{end}}{{end}}
+	//outputs of parent cfb
+	{{if $block.EventOutputs}}{{range $eventIndex, $event := $block.EventOutputs.Events}}
+	me->outputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections "" $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}me->{{$eventSource}}{{end}}{{else}}0{{end}}; 
+	{{end}}{{end}}
+	
 }
 
 /* {{$block.Name}}_syncData() synchronises the data connections of an
@@ -52,6 +59,11 @@ void {{$block.Name}}_syncData(struct {{$block.Name}} *me) {
 		me->{{$child.Name}}.{{$with.Var}} = me->{{findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}};{{end}}{{end}}{{end}}
 	} {{end}}{{end}}{{end}}{{end}}
 	{{end}}
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	{{range $currLinkIndex, $link := $block.CompositeFB.DataConnections}}{{if connIsOnParent $link.Destination}}me->{{$link.Destination}} = me->{{$link.Source}};
+	{{end}}{{end}}
+	
 
 }
 

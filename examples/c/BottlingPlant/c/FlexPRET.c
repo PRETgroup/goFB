@@ -133,33 +133,61 @@ void FlexPRET_syncEvents(struct FlexPRET *me) {
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	me->Motor.inputEvents.event.InjectorArmFinishedMovement = me->IO.outputEvents.event.InjectorArmFinishMovement;
-	me->Door.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged;
-	me->Conveyor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged;
-	me->Motor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged;
-	me->Pumps.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged;
-	me->Pumps.inputEvents.event.CanisterPressureChanged = me->IO.outputEvents.event.CanisterPressureChanged;
-	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->IO.outputEvents.event.FillContentsAvailableChanged;
-	me->CCounter.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged;
-	me->RejectArm.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged;
-	me->Conveyor.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged;
-	me->Door.inputEvents.event.ReleaseDoorOverride = me->IO.outputEvents.event.DoorOverride;
-	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->IO.outputEvents.event.VacuumTimerElapsed;
-	me->IO.inputEvents.event.CanisterCountChanged = me->CCounter.outputEvents.event.CanisterCountChanged;
-	me->IO.inputEvents.event.DoorReleaseCanister = me->Door.outputEvents.event.DoorReleaseCanister;
-	me->IO.inputEvents.event.ConveyorChanged = me->Conveyor.outputEvents.event.ConveyorChanged;
-	me->Motor.inputEvents.event.ConveyorStoppedForInject = me->Conveyor.outputEvents.event.ConveyorStoppedForInject;
-	me->IO.inputEvents.event.GoRejectArm = me->RejectArm.outputEvents.event.GoRejectArm;
-	me->Motor.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished;
-	me->RejectArm.inputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister;
-	me->IO.inputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged;
-	me->IO.inputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged;
-	me->IO.inputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer;
-	me->Pumps.inputEvents.event.StartPump = me->Motor.outputEvents.event.StartPump;
-	me->Door.inputEvents.event.BottlingDone = me->Motor.outputEvents.event.InjectDone;
-	me->Conveyor.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone;
-	me->IO.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone;
-	me->IO.inputEvents.event.InjectorPositionChanged = me->Motor.outputEvents.event.InjectorPositionChanged;
+	
+	me->IO.inputEvents.event.DoorReleaseCanister = me->Door.outputEvents.event.DoorReleaseCanister; 
+	
+	me->IO.inputEvents.event.ConveyorChanged = me->Conveyor.outputEvents.event.ConveyorChanged; 
+	
+	me->IO.inputEvents.event.InjectorPositionChanged = me->Motor.outputEvents.event.InjectorPositionChanged; 
+	
+	me->IO.inputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged; 
+	
+	me->IO.inputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged; 
+	
+	me->IO.inputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer; 
+	
+	me->IO.inputEvents.event.GoRejectArm = me->RejectArm.outputEvents.event.GoRejectArm; 
+	
+	me->IO.inputEvents.event.CanisterCountChanged = me->CCounter.outputEvents.event.CanisterCountChanged; 
+	
+	me->IO.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone; 
+	
+	me->CCounter.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
+	
+	me->Door.inputEvents.event.ReleaseDoorOverride = me->IO.outputEvents.event.DoorOverride; 
+	
+	me->Door.inputEvents.event.BottlingDone = me->Motor.outputEvents.event.InjectDone; 
+	
+	me->Door.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Conveyor.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone; 
+	
+	me->Conveyor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Conveyor.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
+	
+	me->RejectArm.inputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister; 
+	
+	me->RejectArm.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
+	
+	me->Pumps.inputEvents.event.StartPump = me->Motor.outputEvents.event.StartPump; 
+	
+	me->Pumps.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Pumps.inputEvents.event.CanisterPressureChanged = me->IO.outputEvents.event.CanisterPressureChanged; 
+	
+	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->IO.outputEvents.event.FillContentsAvailableChanged; 
+	
+	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->IO.outputEvents.event.VacuumTimerElapsed; 
+	
+	me->Motor.inputEvents.event.InjectorArmFinishedMovement = me->IO.outputEvents.event.InjectorArmFinishMovement; 
+	
+	me->Motor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Motor.inputEvents.event.ConveyorStoppedForInject = me->Conveyor.outputEvents.event.ConveyorStoppedForInject; 
+	
+	me->Motor.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished; 
+	
 	
 }
 
@@ -242,6 +270,10 @@ void FlexPRET_syncData(struct FlexPRET *me) {
 	if(me->Motor.inputEvents.event.EmergencyStopChanged == 1) { 
 		me->Motor.EmergencyStop = me->IO.EmergencyStop;
 	} 
+	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	
 	
 
 }

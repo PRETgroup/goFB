@@ -65,3 +65,6 @@ wcet: build wcet-config
 	-o $(PROJECT).wca \
 	--report $(PROJECT)_wcet_report.txt \
 	-i $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT)config.pml
+
+c:	
+	cd $(PROJECT); bash fbt_to_c.sh

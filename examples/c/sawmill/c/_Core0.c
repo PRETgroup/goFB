@@ -103,9 +103,12 @@ void _Core0_syncEvents(struct _Core0 *me) {
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	me->statusprint.inputEvents.event.StatusUpdate = me->saw1rx.outputEvents.event.DataPresent;
-	me->statusprint.inputEvents.event.StatusUpdate = me->saw2rx.outputEvents.event.DataPresent;
-	me->statusprint.inputEvents.event.StatusUpdate = me->saw3rx.outputEvents.event.DataPresent;
+	//inputs that go to children
+	
+	me->statusprint.inputEvents.event.StatusUpdate = me->saw1rx.outputEvents.event.DataPresent || me->saw2rx.outputEvents.event.DataPresent || me->saw3rx.outputEvents.event.DataPresent; 
+	
+	//outputs of parent cfb
+	
 	
 }
 
@@ -138,6 +141,10 @@ void _Core0_syncData(struct _Core0 *me) {
 		me->statusprint.Saw2Status = me->saw2rx.Data;
 		me->statusprint.Saw3Status = me->saw3rx.Data;
 	} 
+	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	
 	
 
 }
