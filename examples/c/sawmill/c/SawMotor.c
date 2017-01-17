@@ -97,12 +97,15 @@ void SawMotor_run(struct SawMotor *me) {
 	if(me->_trigger == true) {
 		switch(me->_state) {
 		case STATE_SawMotor_Start:
+		HEX =1;
 			break;
 
 		case STATE_SawMotor_Run:
+		HEX=2;
 			break;
 
 		case STATE_SawMotor_Stop:
+		HEX=3;
 			break;
 
 		

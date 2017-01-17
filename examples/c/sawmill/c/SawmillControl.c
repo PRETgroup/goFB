@@ -170,11 +170,15 @@ void SawmillControl_run(struct SawmillControl *me) {
 		case STATE_SawmillControl_await_weight:
 			SawmillControl_MessageHaltWeight(me);
 			me->outputEvents.event.MessageChange = 1;
+			SawmillControl_SawStop(me);
+			me->outputEvents.event.CommandChange = 1;
 			break;
 
 		case STATE_SawmillControl_await_laser:
 			SawmillControl_MessageHaltLaser(me);
 			me->outputEvents.event.MessageChange = 1;
+			SawmillControl_SawStop(me);
+			me->outputEvents.event.CommandChange = 1;
 			break;
 
 		case STATE_SawmillControl_await_command:
