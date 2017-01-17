@@ -13,6 +13,7 @@
 
 #define LED ( *( ( volatile _IODEV unsigned * )	0xF0090000 ) )
 #define HEX ( *( ( volatile _IODEV unsigned * )	0xF0070000 ) )
+#define SWITCHES ( *( ( volatile _IODEV unsigned * )	0xF0060000 ) )
 
 /*********************************************************************
  This file contains the mapping between IEC 61131 and C data types.
