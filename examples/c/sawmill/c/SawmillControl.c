@@ -66,7 +66,7 @@ int SawmillControl_init(struct SawmillControl *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SawmillControl_run(struct SawmillControl *me) {
+void SawmillControl_run(struct SawmillControl _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -197,27 +197,27 @@ void SawmillControl_run(struct SawmillControl *me) {
 
 //algorithms
 
-void SawmillControl_MessageHaltWeight(struct SawmillControl *me) {
+void SawmillControl_MessageHaltWeight(struct SawmillControl _SPM *me) {
 me->Message = -1;
 }
 
-void SawmillControl_MessageHaltLaser(struct SawmillControl *me) {
+void SawmillControl_MessageHaltLaser(struct SawmillControl _SPM *me) {
 me->Message = -2;
 }
 
-void SawmillControl_MessageRun(struct SawmillControl *me) {
+void SawmillControl_MessageRun(struct SawmillControl _SPM *me) {
 me->Message = 1;
 }
 
-void SawmillControl_MessageStop(struct SawmillControl *me) {
+void SawmillControl_MessageStop(struct SawmillControl _SPM *me) {
 me->Message = 0;
 }
 
-void SawmillControl_SawRun(struct SawmillControl *me) {
+void SawmillControl_SawRun(struct SawmillControl _SPM *me) {
 me->SawRun = 1;
 }
 
-void SawmillControl_SawStop(struct SawmillControl *me) {
+void SawmillControl_SawStop(struct SawmillControl _SPM *me) {
 me->SawRun = 0;
 }
 

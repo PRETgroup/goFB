@@ -51,15 +51,15 @@ struct PrintStatus {
 };
 
 //all FBs get a preinit function
-int PrintStatus_preinit(struct PrintStatus *me);
+int PrintStatus_preinit(struct PrintStatus _SPM *me);
 
 //all FBs get an init function
-int PrintStatus_init(struct PrintStatus *me);
+int PrintStatus_init(struct PrintStatus _SPM *me);
 
 //all FBs get a run function
-void PrintStatus_run(struct PrintStatus *me);
+void PrintStatus_run(struct PrintStatus _SPM *me);
 
-void PrintStatus_DoPrintStatus(struct PrintStatus *me);
+void PrintStatus_DoPrintStatus(struct PrintStatus _SPM *me);
 
 
 #endif

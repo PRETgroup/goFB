@@ -55,7 +55,7 @@ int SawmillLaser_preinit(struct SawmillLaser *me);
 int SawmillLaser_init(struct SawmillLaser *me);
 
 //all FBs get a run function
-void SawmillLaser_run(struct SawmillLaser *me);
+void SawmillLaser_run(struct SawmillLaser _SPM *me);
 
 
 

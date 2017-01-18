@@ -67,7 +67,7 @@ int SimpleProducer_init(struct SimpleProducer *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SimpleProducer_run(struct SimpleProducer *me) {
+void SimpleProducer_run(struct SimpleProducer _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -122,7 +122,7 @@ void SimpleProducer_run(struct SimpleProducer *me) {
 
 //algorithms
 
-void SimpleProducer_update_count(struct SimpleProducer *me) {
+void SimpleProducer_update_count(struct SimpleProducer _SPM *me) {
 me->Count++;
 me->Data = me->Count;
 }

@@ -92,7 +92,7 @@ int _TCREST_init(struct _TCREST *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _TCREST_syncEvents(struct _TCREST *me) {
+void _TCREST_syncEvents(struct _TCREST _SPM *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	//sync for c0 (of type _Core0) which is a Resource
@@ -110,7 +110,7 @@ void _TCREST_syncEvents(struct _TCREST *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _TCREST_syncData(struct _TCREST *me) {
+void _TCREST_syncData(struct _TCREST _SPM *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	//sync for c0 (of type _Core0) which is a Resource
@@ -127,7 +127,7 @@ void _TCREST_syncData(struct _TCREST *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _TCREST_run(struct _TCREST *me) {
+void _TCREST_run(struct _TCREST _SPM *me) {
 	_Core0_run(&me->c0);
 	_Core1_run(&me->c1);
 	_Core2_run(&me->c2);

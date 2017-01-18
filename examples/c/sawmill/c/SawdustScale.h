@@ -55,7 +55,7 @@ int SawdustScale_preinit(struct SawdustScale *me);
 int SawdustScale_init(struct SawdustScale *me);
 
 //all FBs get a run function
-void SawdustScale_run(struct SawdustScale *me);
+void SawdustScale_run(struct SawdustScale _SPM *me);
 
 
 

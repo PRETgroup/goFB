@@ -55,7 +55,7 @@ int SawmillSwitch_preinit(struct SawmillSwitch *me);
 int SawmillSwitch_init(struct SawmillSwitch *me);
 
 //all FBs get a run function
-void SawmillSwitch_run(struct SawmillSwitch *me);
+void SawmillSwitch_run(struct SawmillSwitch _SPM *me);
 
 
 

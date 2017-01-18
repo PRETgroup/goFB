@@ -17,6 +17,7 @@ var (
 	topName                = flag.String("t", "", "Specifies the name of the top level fbt-type file. If blank, no top file will be generated.")
 	outputLanguage         = flag.String("l", "c", "Specifies the output language for the program.")
 	algorithmLanguageCheck = flag.Bool("alc", false, "Enable checking algorithm language compatibility with output language.")
+	tcrestUsingSPM         = flag.Bool("tuspm", false, "When building for T-CREST processor, will put FBs into _SPM memory")
 )
 
 func main() {
@@ -72,6 +73,10 @@ func main() {
 
 	if *algorithmLanguageCheck == false {
 		conv.DisableAlgorithmLanguageChecks()
+	}
+
+	if *tcrestUsingSPM == true {
+		conv.SetTcrestUsingSPM()
 	}
 
 	for _, name := range fileNames {

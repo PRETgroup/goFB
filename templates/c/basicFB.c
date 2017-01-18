@@ -13,7 +13,7 @@
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void {{$block.Name}}_run(struct {{$block.Name}} *me) {
+void {{$block.Name}}_run(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//if there are output events, reset them
 	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
 	{{end}}{{end}}
@@ -44,10 +44,10 @@ void {{$block.Name}}_run(struct {{$block.Name}} *me) {
 
 	me->_trigger = false;
 }
-
+{{$tcrestUsingSPM := .TcrestUsingSPM}}
 {{if $basicFB.Algorithms}}//algorithms
 {{range $algIndex, $alg := $basicFB.Algorithms}}
-void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} *me) {
+void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} {{if $tcrestUsingSPM}}_SPM{{end}} *me) {
 {{$alg.Other.Text}}
 }
 {{end}}

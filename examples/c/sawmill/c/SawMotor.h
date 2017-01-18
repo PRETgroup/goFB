@@ -55,7 +55,7 @@ int SawMotor_preinit(struct SawMotor *me);
 int SawMotor_init(struct SawMotor *me);
 
 //all FBs get a run function
-void SawMotor_run(struct SawMotor *me);
+void SawMotor_run(struct SawMotor _SPM *me);
 
 
 

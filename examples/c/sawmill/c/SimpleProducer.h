@@ -62,12 +62,12 @@ int SimpleProducer_preinit(struct SimpleProducer *me);
 int SimpleProducer_init(struct SimpleProducer *me);
 
 //all FBs get a run function
-void SimpleProducer_run(struct SimpleProducer *me);
+void SimpleProducer_run(struct SimpleProducer _SPM *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void SimpleProducer_update_count(struct SimpleProducer *me);
+void SimpleProducer_update_count(struct SimpleProducer _SPM *me);
 
 
 #endif

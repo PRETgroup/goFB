@@ -55,7 +55,6 @@ struct ArgoTx {
 	BOOL _trigger; //indicates if a state transition has occured this tick
 
 	qpd_t* chan;
-	volatile INT _SPM* write_data;
 };
 
 //all FBs get a preinit function
@@ -65,7 +64,7 @@ int ArgoTx_preinit(struct ArgoTx *me);
 int ArgoTx_init(struct ArgoTx *me);
 
 //all FBs get a run function
-void ArgoTx_run(struct ArgoTx *me);
+void ArgoTx_run(struct ArgoTx _SPM *me);
 
 
 

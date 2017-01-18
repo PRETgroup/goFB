@@ -19,7 +19,7 @@
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me) {
+void {{$block.Name}}_syncEvents(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//for all composite function block children, call this same function
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}
 	{{$childType.Name}}_syncEvents(&me->{{$child.Name}});//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB{{end}}{{end}}
@@ -43,7 +43,7 @@ void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void {{$block.Name}}_syncData(struct {{$block.Name}} *me) {
+void {{$block.Name}}_syncData(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//for all composite function block children, call this same function
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
 	{{$childType.Name}}_syncData(&me->{{$child.Name}});{{end}}{{end}}
@@ -73,7 +73,7 @@ void {{$block.Name}}_syncData(struct {{$block.Name}} *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void {{$block.Name}}_run(struct {{$block.Name}} *me) {
+void {{$block.Name}}_run(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$child.Type}}_run(&me->{{$child.Name}});
 	{{end}}
 }

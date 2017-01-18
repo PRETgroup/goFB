@@ -90,7 +90,7 @@ int _Core3_init(struct _Core3 *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core3_syncEvents(struct _Core3 *me) {
+void _Core3_syncEvents(struct _Core3 _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	SawmillModule_syncEvents(&me->sawmill);//sync for sawmill (of type SawmillModule) which is a CFB
@@ -116,7 +116,7 @@ void _Core3_syncEvents(struct _Core3 *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core3_syncData(struct _Core3 *me) {
+void _Core3_syncData(struct _Core3 _SPM *me) {
 	//for all composite function block children, call this same function
 	//sync for sawmill (of type SawmillModule) which is a CFB
 	SawmillModule_syncData(&me->sawmill);
@@ -152,7 +152,7 @@ void _Core3_syncData(struct _Core3 *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core3_run(struct _Core3 *me) {
+void _Core3_run(struct _Core3 _SPM *me) {
 	ArgoTx_run(&me->tx);
 	SawmillMessageHandler_run(&me->messageHandler);
 	SawmillModule_run(&me->sawmill);

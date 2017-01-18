@@ -19,7 +19,7 @@
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me) {
+void {{$block.Name}}_syncEvents(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	{{range $currChildIndex, $child := $deviceFB.Resources}}//sync for {{$child.Name}} (of type {{$child.Type}}) which is a Resource
@@ -34,7 +34,7 @@ void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void {{$block.Name}}_syncData(struct {{$block.Name}} *me) {
+void {{$block.Name}}_syncData(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	{{range $currChildIndex, $child := $deviceFB.Resources}}//sync for {{$child.Name}} (of type {{$child.Type}}) which is a Resource
@@ -48,7 +48,7 @@ void {{$block.Name}}_syncData(struct {{$block.Name}} *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void {{$block.Name}}_run(struct {{$block.Name}} *me) {
+void {{$block.Name}}_run(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	{{range $currChildIndex, $child := $deviceFB.Resources}}{{$child.Type}}_run(&me->{{$child.Name}});
 	{{end}}
 }

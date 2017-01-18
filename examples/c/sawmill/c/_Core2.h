@@ -52,10 +52,10 @@ int _Core2_preinit(struct _Core2 *me);
 int _Core2_init(struct _Core2 *me);
 
 //all FBs get a run function
-void _Core2_run(struct _Core2 *me);
+void _Core2_run(struct _Core2 _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _Core2_syncEvents(struct _Core2 *me);
-void _Core2_syncData(struct _Core2 *me);
+void _Core2_syncEvents(struct _Core2 _SPM *me);
+void _Core2_syncData(struct _Core2 _SPM *me);
 
 #endif

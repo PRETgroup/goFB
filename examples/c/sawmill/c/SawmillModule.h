@@ -62,10 +62,10 @@ int SawmillModule_preinit(struct SawmillModule *me);
 int SawmillModule_init(struct SawmillModule *me);
 
 //all FBs get a run function
-void SawmillModule_run(struct SawmillModule *me);
+void SawmillModule_run(struct SawmillModule _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void SawmillModule_syncEvents(struct SawmillModule *me);
-void SawmillModule_syncData(struct SawmillModule *me);
+void SawmillModule_syncEvents(struct SawmillModule _SPM *me);
+void SawmillModule_syncData(struct SawmillModule _SPM *me);
 
 #endif

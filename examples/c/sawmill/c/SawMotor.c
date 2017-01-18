@@ -65,7 +65,7 @@ int SawMotor_init(struct SawMotor *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SawMotor_run(struct SawMotor *me) {
+void SawMotor_run(struct SawMotor _SPM *me) {
 	//if there are output events, reset them
 	
 	//next state logic

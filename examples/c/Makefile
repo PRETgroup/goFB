@@ -15,9 +15,12 @@ LIBETH=$(BUILDDIR)/libeth.a
 LIBELF=$(BUILDDIR)/libelf.a
 
 #Delay to global memory per request in cycles
-T_DELAY_CYCLES?=183
+T_DELAY_CYCLES?=83
 #Global memory transfer time per burst in cycles
 G_DELAY_CYCLES?=0
+#Transfer size (burst size) of the global memory in bytes
+B_SIZE?=16
+
 
 $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.h
 	patmos-clang \
@@ -52,7 +55,8 @@ wcet-config:
 	--target patmos-unknown-unknown-elf \
 	-o $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT)config.pml \
 	--tdelay $(T_DELAY_CYCLES) \
-	--gtime $(G_DELAY_CYCLES)
+	--gtime $(G_DELAY_CYCLES) \
+	--bsize $(B_SIZE)
 
 wcet: build wcet-config
 	platin wcet \

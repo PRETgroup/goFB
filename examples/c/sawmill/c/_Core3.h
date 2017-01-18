@@ -52,10 +52,10 @@ int _Core3_preinit(struct _Core3 *me);
 int _Core3_init(struct _Core3 *me);
 
 //all FBs get a run function
-void _Core3_run(struct _Core3 *me);
+void _Core3_run(struct _Core3 _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _Core3_syncEvents(struct _Core3 *me);
-void _Core3_syncData(struct _Core3 *me);
+void _Core3_syncEvents(struct _Core3 _SPM *me);
+void _Core3_syncData(struct _Core3 _SPM *me);
 
 #endif

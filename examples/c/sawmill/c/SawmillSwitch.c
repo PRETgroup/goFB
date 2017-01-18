@@ -65,7 +65,7 @@ int SawmillSwitch_init(struct SawmillSwitch *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SawmillSwitch_run(struct SawmillSwitch *me) {
+void SawmillSwitch_run(struct SawmillSwitch _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	

@@ -54,8 +54,7 @@ int ArgoTx_init(struct ArgoTx *me) {
 	
 	
 	me->chan = mp_create_qport(me->ChanId, SOURCE, sizeof(INT), 1);
-	me->write_data = mp_alloc(sizeof(INT));
-	if(me->chan == NULL || me->write_data == NULL) {
+	if(me->chan == NULL) {
 		return 1;
 	}
 
@@ -71,7 +70,7 @@ int ArgoTx_init(struct ArgoTx *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void ArgoTx_run(struct ArgoTx *me) {
+void ArgoTx_run(struct ArgoTx _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 

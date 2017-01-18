@@ -67,22 +67,22 @@ int SawmillControl_preinit(struct SawmillControl *me);
 int SawmillControl_init(struct SawmillControl *me);
 
 //all FBs get a run function
-void SawmillControl_run(struct SawmillControl *me);
+void SawmillControl_run(struct SawmillControl _SPM *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void SawmillControl_MessageHaltWeight(struct SawmillControl *me);
+void SawmillControl_MessageHaltWeight(struct SawmillControl _SPM *me);
 
-void SawmillControl_MessageHaltLaser(struct SawmillControl *me);
+void SawmillControl_MessageHaltLaser(struct SawmillControl _SPM *me);
 
-void SawmillControl_MessageRun(struct SawmillControl *me);
+void SawmillControl_MessageRun(struct SawmillControl _SPM *me);
 
-void SawmillControl_MessageStop(struct SawmillControl *me);
+void SawmillControl_MessageStop(struct SawmillControl _SPM *me);
 
-void SawmillControl_SawRun(struct SawmillControl *me);
+void SawmillControl_SawRun(struct SawmillControl _SPM *me);
 
-void SawmillControl_SawStop(struct SawmillControl *me);
+void SawmillControl_SawStop(struct SawmillControl _SPM *me);
 
 
 #endif

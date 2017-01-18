@@ -16,6 +16,7 @@ type Converter struct {
 	topName string
 
 	ignoreAlgorithmLanguages bool
+	tcrestUsingSPM           bool
 
 	outputLanguage language
 	templates      *template.Template
@@ -36,6 +37,10 @@ func New(language string) (*Converter, error) {
 //DisableAlgorithmLanguageChecks prevents checking for compatible languages and assumes VHDL
 func (c *Converter) DisableAlgorithmLanguageChecks() {
 	c.ignoreAlgorithmLanguages = true
+}
+
+func (c *Converter) SetTcrestUsingSPM() {
+	c.tcrestUsingSPM = true
 }
 
 //AddBlock should be called for each block in the network
@@ -62,8 +67,9 @@ type OutputFile struct {
 
 //TemplateData is the structure used to hold data being passed into the templating engine
 type TemplateData struct {
-	BlockIndex int
-	Blocks     []iec61499.FB
+	TcrestUsingSPM bool
+	BlockIndex     int
+	Blocks         []iec61499.FB
 }
 
 //SetTopName sets the IEC61499 top level entity to the name provided
@@ -127,7 +133,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			return nil, errors.New("Can't determine type of FB of " + c.Blocks[i].Name)
 		}
 
-		if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks}); err != nil {
+		if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks, TcrestUsingSPM: c.tcrestUsingSPM}); err != nil {
 			return nil, errors.New("Couldn't format template (fb) of" + c.Blocks[i].Name + ": " + err.Error())
 		}
 
@@ -137,7 +143,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			output := &bytes.Buffer{}
 			templateName := "FBheader"
 
-			if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks}); err != nil {
+			if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks, TcrestUsingSPM: c.tcrestUsingSPM}); err != nil {
 				return nil, errors.New("Couldn't format template (fb header) of" + c.Blocks[i].Name + ": " + err.Error())
 			}
 
@@ -149,7 +155,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 	if topIndex != -1 {
 		output := &bytes.Buffer{}
 
-		if err := c.templates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks}); err != nil {
+		if err := c.templates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks, TcrestUsingSPM: c.tcrestUsingSPM}); err != nil {
 			return nil, errors.New("Couldn't format template (top) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 
@@ -161,7 +167,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 	for _, st := range c.outputLanguage.supportFileTemplates() {
 		output := &bytes.Buffer{}
 
-		if err := c.templates.ExecuteTemplate(output, st.templateName, TemplateData{Blocks: c.Blocks}); err != nil {
+		if err := c.templates.ExecuteTemplate(output, st.templateName, TemplateData{Blocks: c.Blocks, TcrestUsingSPM: c.tcrestUsingSPM}); err != nil {
 			return nil, errors.New("Couldn't format template (support) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 

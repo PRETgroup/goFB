@@ -63,12 +63,12 @@ int SawmillMessageHandler_preinit(struct SawmillMessageHandler *me);
 int SawmillMessageHandler_init(struct SawmillMessageHandler *me);
 
 //all FBs get a run function
-void SawmillMessageHandler_run(struct SawmillMessageHandler *me);
+void SawmillMessageHandler_run(struct SawmillMessageHandler _SPM *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void SawmillMessageHandler_LoadData(struct SawmillMessageHandler *me);
+void SawmillMessageHandler_LoadData(struct SawmillMessageHandler _SPM *me);
 
 
 #endif

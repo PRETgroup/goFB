@@ -66,7 +66,7 @@ int SawmillMessageHandler_init(struct SawmillMessageHandler *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SawmillMessageHandler_run(struct SawmillMessageHandler *me) {
+void SawmillMessageHandler_run(struct SawmillMessageHandler _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -121,7 +121,7 @@ void SawmillMessageHandler_run(struct SawmillMessageHandler *me) {
 
 //algorithms
 
-void SawmillMessageHandler_LoadData(struct SawmillMessageHandler *me) {
+void SawmillMessageHandler_LoadData(struct SawmillMessageHandler _SPM *me) {
 me->TxData = me->Message;
 }
 

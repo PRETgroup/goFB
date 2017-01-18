@@ -71,14 +71,14 @@ int {{$block.Name}}_preinit(struct {{$block.Name}} *me);
 int {{$block.Name}}_init(struct {{$block.Name}} *me);
 
 //all FBs get a run function
-void {{$block.Name}}_run(struct {{$block.Name}} *me);
+void {{$block.Name}}_run(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 {{if not $block.BasicFB}}//composite/resource/device FBs get sync functions
-void {{$block.Name}}_syncEvents(struct {{$block.Name}} *me);
-void {{$block.Name}}_syncData(struct {{$block.Name}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
-{{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
+void {{$block.Name}}_syncEvents(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+void {{$block.Name}}_syncData(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
+{{$tcrestUsingSPM := .TcrestUsingSPM}}{{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
 {{range $algIndex, $alg := $basicFB.Algorithms}}
-void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} *me);
+void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} {{if $tcrestUsingSPM}}_SPM{{end}} *me);
 {{end}}{{end}}{{end}}
 
 #endif

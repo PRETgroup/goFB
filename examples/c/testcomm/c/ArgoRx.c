@@ -37,8 +37,8 @@ int ArgoRx_init(struct ArgoRx *me) {
 	me->_state = STATE_ArgoRx_Start;
 	
 	me->chan = mp_create_qport(1, SINK, sizeof(INT), 1);
-	me->read_data = mp_alloc(sizeof(INT));
-	if(me->chan == NULL || me->read_data == NULL) {
+	//me->read_data = mp_alloc(sizeof(INT));
+	if(me->chan == NULL) {
 		return 1;
 	}
 

@@ -48,18 +48,17 @@ struct ArgoRx {
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
 	qpd_t* chan;
-	volatile INT _SPM* read_data;
 	BOOL needToAck;
 };
 
 //all FBs get a preinit function
-int ArgoRx_preinit(struct ArgoRx *me);
+int ArgoRx_preinit(struct ArgoRx _SPM *me);
 
 //all FBs get an init function
-int ArgoRx_init(struct ArgoRx *me);
+int ArgoRx_init(struct ArgoRx _SPM *me);
 
 //all FBs get a run function
-void ArgoRx_run(struct ArgoRx *me);
+void ArgoRx_run(struct ArgoRx _SPM *me);
 
 
 

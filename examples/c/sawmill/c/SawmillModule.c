@@ -104,7 +104,7 @@ int SawmillModule_init(struct SawmillModule *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void SawmillModule_syncEvents(struct SawmillModule *me) {
+void SawmillModule_syncEvents(struct SawmillModule _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -133,7 +133,7 @@ void SawmillModule_syncEvents(struct SawmillModule *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void SawmillModule_syncData(struct SawmillModule *me) {
+void SawmillModule_syncData(struct SawmillModule _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -180,7 +180,7 @@ void SawmillModule_syncData(struct SawmillModule *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void SawmillModule_run(struct SawmillModule *me) {
+void SawmillModule_run(struct SawmillModule _SPM *me) {
 	SawmillSwitch_run(&me->runswitch);
 	SawMotor_run(&me->saw);
 	SawdustScale_run(&me->scale);

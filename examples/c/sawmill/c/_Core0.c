@@ -98,7 +98,7 @@ int _Core0_init(struct _Core0 *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core0_syncEvents(struct _Core0 *me) {
+void _Core0_syncEvents(struct _Core0 _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -119,7 +119,7 @@ void _Core0_syncEvents(struct _Core0 *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core0_syncData(struct _Core0 *me) {
+void _Core0_syncData(struct _Core0 _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -155,7 +155,7 @@ void _Core0_syncData(struct _Core0 *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core0_run(struct _Core0 *me) {
+void _Core0_run(struct _Core0 _SPM *me) {
 	ArgoRx_run(&me->saw1rx);
 	ArgoRx_run(&me->saw2rx);
 	ArgoRx_run(&me->saw3rx);
