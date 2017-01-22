@@ -30,7 +30,7 @@ union ConveyorControllerOutputEvents {
 };
 
 
-struct ConveyorController {
+typedef struct {
     //input events
 	union ConveyorControllerInputEvents inputEvents;
 
@@ -57,27 +57,27 @@ struct ConveyorController {
 	enum ConveyorController_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+}  ConveyorController_t;
 
 //all FBs get a preinit function
-int ConveyorController_preinit(struct ConveyorController *me);
+int ConveyorController_preinit(ConveyorController_t *me);
 
 //all FBs get an init function
-int ConveyorController_init(struct ConveyorController *me);
+int ConveyorController_init(ConveyorController_t *me);
 
 //all FBs get a run function
-void ConveyorController_run(struct ConveyorController *me);
+void ConveyorController_run(ConveyorController_t *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void ConveyorController_ConveyorStart(struct ConveyorController *me);
+void ConveyorController_ConveyorStart(ConveyorController_t *me);
 
-void ConveyorController_ConveyorStop(struct ConveyorController *me);
+void ConveyorController_ConveyorStop(ConveyorController_t *me);
 
-void ConveyorController_ConveyorRunning(struct ConveyorController *me);
+void ConveyorController_ConveyorRunning(ConveyorController_t *me);
 
-void ConveyorController_ConveyorEStop(struct ConveyorController *me);
+void ConveyorController_ConveyorEStop(ConveyorController_t *me);
 
 
 #endif

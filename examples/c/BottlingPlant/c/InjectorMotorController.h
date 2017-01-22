@@ -33,7 +33,7 @@ union InjectorMotorControllerOutputEvents {
 };
 
 
-struct InjectorMotorController {
+typedef struct {
     //input events
 	union InjectorMotorControllerInputEvents inputEvents;
 
@@ -58,25 +58,25 @@ struct InjectorMotorController {
 	enum InjectorMotorController_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+}  InjectorMotorController_t;
 
 //all FBs get a preinit function
-int InjectorMotorController_preinit(struct InjectorMotorController *me);
+int InjectorMotorController_preinit(InjectorMotorController_t *me);
 
 //all FBs get an init function
-int InjectorMotorController_init(struct InjectorMotorController *me);
+int InjectorMotorController_init(InjectorMotorController_t *me);
 
 //all FBs get a run function
-void InjectorMotorController_run(struct InjectorMotorController *me);
+void InjectorMotorController_run(InjectorMotorController_t *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void InjectorMotorController_SetArmDownPosition(struct InjectorMotorController *me);
+void InjectorMotorController_SetArmDownPosition(InjectorMotorController_t *me);
 
-void InjectorMotorController_SetArmUpPosition(struct InjectorMotorController *me);
+void InjectorMotorController_SetArmUpPosition(InjectorMotorController_t *me);
 
-void InjectorMotorController_Algorithm1(struct InjectorMotorController *me);
+void InjectorMotorController_Algorithm1(InjectorMotorController_t *me);
 
 
 #endif

@@ -23,7 +23,7 @@
 //this block had no output events
 
 
-struct FlexPRET {
+typedef struct {
     //input events
 	
 
@@ -37,13 +37,13 @@ struct FlexPRET {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	struct IOManager IO;
-	struct CanisterCounter CCounter;
-	struct DoorController Door;
-	struct ConveyorController Conveyor;
-	struct RejectArmController RejectArm;
-	struct InjectorPumpsController Pumps;
-	struct InjectorMotorController Motor;
+	IOManager_t IO;
+	CanisterCounter_t CCounter;
+	DoorController_t Door;
+	ConveyorController_t Conveyor;
+	RejectArmController_t RejectArm;
+	InjectorPumpsController_t Pumps;
+	InjectorMotorController_t Motor;
 	
 	//resource vars
 	
@@ -51,19 +51,19 @@ struct FlexPRET {
 	
 	//state and trigger (BFBs only)
 	
-};
+}  FlexPRET_t;
 
 //all FBs get a preinit function
-int FlexPRET_preinit(struct FlexPRET *me);
+int FlexPRET_preinit(FlexPRET_t *me);
 
 //all FBs get an init function
-int FlexPRET_init(struct FlexPRET *me);
+int FlexPRET_init(FlexPRET_t *me);
 
 //all FBs get a run function
-void FlexPRET_run(struct FlexPRET *me);
+void FlexPRET_run(FlexPRET_t *me);
 
 //composite/resource/device FBs get sync functions
-void FlexPRET_syncEvents(struct FlexPRET *me);
-void FlexPRET_syncData(struct FlexPRET *me);
+void FlexPRET_syncEvents(FlexPRET_t *me);
+void FlexPRET_syncData(FlexPRET_t *me);
 
 #endif

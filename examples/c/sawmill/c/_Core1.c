@@ -17,7 +17,7 @@
  * initialise an instance of _Core1. 
  * It sets all I/O values to zero.
  */
-int _Core1_preinit(struct _Core1 *me) {
+int _Core1_preinit(struct _Core1 _SPM *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -54,7 +54,7 @@ int _Core1_preinit(struct _Core1 *me) {
  * set up an instance of _Core1. 
  * It passes around configuration data.
  */
-int _Core1_init(struct _Core1 *me) {
+int _Core1_init(struct _Core1 _SPM *me) {
 	//pass in any parameters on this level
 	me->tx.ChanId = 1;
 	

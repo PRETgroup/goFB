@@ -48,10 +48,10 @@ struct _Core0 {
 };
 
 //all FBs get a preinit function
-int _Core0_preinit(struct _Core0 *me);
+int _Core0_preinit(struct _Core0 _SPM *me);
 
 //all FBs get an init function
-int _Core0_init(struct _Core0 *me);
+int _Core0_init(struct _Core0 _SPM *me);
 
 //all FBs get a run function
 void _Core0_run(struct _Core0 _SPM *me);

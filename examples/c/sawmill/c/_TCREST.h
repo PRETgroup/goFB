@@ -48,10 +48,10 @@ struct _TCREST {
 };
 
 //all FBs get a preinit function
-int _TCREST_preinit(struct _TCREST *me);
+int _TCREST_preinit(struct _TCREST _SPM *me);
 
 //all FBs get an init function
-int _TCREST_init(struct _TCREST *me);
+int _TCREST_init(struct _TCREST _SPM *me);
 
 //all FBs get a run function
 void _TCREST_run(struct _TCREST _SPM *me);

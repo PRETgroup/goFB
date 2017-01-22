@@ -6,7 +6,7 @@
 #include "test2.h"
 
 //put a copy of the top level block into global memory
-struct test2 mytest2;
+test2_t mytest2;
 
 int main() {
 	if(test2_preinit(&mytest2) != 0) {

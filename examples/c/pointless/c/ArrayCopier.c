@@ -9,7 +9,7 @@
  * initialise an instance of ArrayCopier. 
  * It sets all I/O values to zero.
  */
-int ArrayCopier_preinit(struct ArrayCopier *me) {
+int ArrayCopier_preinit(ArrayCopier_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -41,7 +41,7 @@ int ArrayCopier_preinit(struct ArrayCopier *me) {
  * set up an instance of ArrayCopier. 
  * It passes around configuration data.
  */
-int ArrayCopier_init(struct ArrayCopier *me) {
+int ArrayCopier_init(ArrayCopier_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +66,7 @@ int ArrayCopier_init(struct ArrayCopier *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void ArrayCopier_run(struct ArrayCopier *me) {
+void ArrayCopier_run(ArrayCopier_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -118,10 +118,9 @@ void ArrayCopier_run(struct ArrayCopier *me) {
 
 	me->_trigger = false;
 }
-
 //algorithms
 
-void ArrayCopier_moveArray(struct ArrayCopier *me) {
+void ArrayCopier_moveArray(ArrayCopier_t *me) {
 me->out_var[0] = me->in_var[0];
 me->out_var[1] = me->in_var[1];
 me->out_var[2] = me->in_var[2];
@@ -130,7 +129,7 @@ me->out_var[3] = me->in_var[3];
 printf("Set to %i %i %i %i\n", me->out_var[0], me->out_var[1], me->out_var[2], me->out_var[3]);
 }
 
-void ArrayCopier_setArray(struct ArrayCopier *me) {
+void ArrayCopier_setArray(ArrayCopier_t *me) {
 me->out_var[0] = me->default_var[0];
 me->out_var[1] = me->default_var[1];
 me->out_var[2] = me->default_var[2];

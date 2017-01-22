@@ -18,7 +18,7 @@
 //this block had no output events
 
 
-struct test2 {
+typedef struct {
     //input events
 	
 
@@ -32,8 +32,8 @@ struct test2 {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	struct ArrayCopier ac1;
-	struct ArrayCopier ac2;
+	ArrayCopier_t ac1;
+	ArrayCopier_t ac2;
 	
 	//resource vars
 	INT ac1_default_var[4];
@@ -43,19 +43,19 @@ struct test2 {
 	
 	//state and trigger (BFBs only)
 	
-};
+}  test2_t;
 
 //all FBs get a preinit function
-int test2_preinit(struct test2 *me);
+int test2_preinit(test2_t *me);
 
 //all FBs get an init function
-int test2_init(struct test2 *me);
+int test2_init(test2_t *me);
 
 //all FBs get a run function
-void test2_run(struct test2 *me);
+void test2_run(test2_t *me);
 
 //composite/resource/device FBs get sync functions
-void test2_syncEvents(struct test2 *me);
-void test2_syncData(struct test2 *me);
+void test2_syncEvents(test2_t *me);
+void test2_syncData(test2_t *me);
 
 #endif

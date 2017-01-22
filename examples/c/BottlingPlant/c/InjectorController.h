@@ -39,7 +39,7 @@ union InjectorControllerOutputEvents {
 };
 
 
-struct InjectorController {
+typedef struct {
     //input events
 	union InjectorControllerInputEvents inputEvents;
 
@@ -61,8 +61,8 @@ struct InjectorController {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	struct InjectorMotorController Arm;
-	struct InjectorPumpsController Pumps;
+	InjectorMotorController_t Arm;
+	InjectorPumpsController_t Pumps;
 	
 	//resource vars
 	
@@ -70,19 +70,19 @@ struct InjectorController {
 	
 	//state and trigger (BFBs only)
 	
-};
+}  InjectorController_t;
 
 //all FBs get a preinit function
-int InjectorController_preinit(struct InjectorController *me);
+int InjectorController_preinit(InjectorController_t *me);
 
 //all FBs get an init function
-int InjectorController_init(struct InjectorController *me);
+int InjectorController_init(InjectorController_t *me);
 
 //all FBs get a run function
-void InjectorController_run(struct InjectorController *me);
+void InjectorController_run(InjectorController_t *me);
 
 //composite/resource/device FBs get sync functions
-void InjectorController_syncEvents(struct InjectorController *me);
-void InjectorController_syncData(struct InjectorController *me);
+void InjectorController_syncEvents(InjectorController_t *me);
+void InjectorController_syncData(InjectorController_t *me);
 
 #endif

@@ -9,7 +9,7 @@
  * initialise an instance of RejectArmController. 
  * It sets all I/O values to zero.
  */
-int RejectArmController_preinit(struct RejectArmController *me) {
+int RejectArmController_preinit(RejectArmController_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -41,7 +41,7 @@ int RejectArmController_preinit(struct RejectArmController *me) {
  * set up an instance of RejectArmController. 
  * It passes around configuration data.
  */
-int RejectArmController_init(struct RejectArmController *me) {
+int RejectArmController_init(RejectArmController_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +66,7 @@ int RejectArmController_init(struct RejectArmController *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void RejectArmController_run(struct RejectArmController *me) {
+void RejectArmController_run(RejectArmController_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -114,7 +114,6 @@ void RejectArmController_run(struct RejectArmController *me) {
 
 	me->_trigger = false;
 }
-
 //no algorithms were present for this function block
 
 

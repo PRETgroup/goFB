@@ -3,7 +3,7 @@
  * initialise an instance of {{$block.Name}}. 
  * It sets all I/O values to zero.
  */
-int {{$block.Name}}_preinit(struct {{$block.Name}} *me) {
+int {{$block.Name}}_preinit(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//if there are input events, reset them
 	{{if $block.EventInputs}}{{range $index, $count := count (add (div (len $block.EventInputs.Events) 32) 1)}}me->inputEvents.events[{{$count}}] = 0;
 	{{end}}{{end}}
@@ -50,7 +50,7 @@ int {{$block.Name}}_preinit(struct {{$block.Name}} *me) {
  * set up an instance of {{$block.Name}}. 
  * It passes around configuration data.
  */
-int {{$block.Name}}_init(struct {{$block.Name}} *me) {
+int {{$block.Name}}_init(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//pass in any parameters on this level
 	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{range $currParamIndex, $param := $child.Parameter}}me->{{$child.Name}}.{{$param.Name}} = {{$param.Value}};
 	{{end}}{{end}}{{end}}

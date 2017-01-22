@@ -63,7 +63,7 @@ void task0(void* param) {
 		timed_task();
 
 		end_time = get_cpu_cycles();
-		printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
+		//printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
 
 		tickCount++;
 	} while(1);

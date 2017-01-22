@@ -17,7 +17,7 @@
  * initialise an instance of _Core3. 
  * It sets all I/O values to zero.
  */
-int _Core3_preinit(struct _Core3 *me) {
+int _Core3_preinit(struct _Core3 _SPM *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -54,7 +54,7 @@ int _Core3_preinit(struct _Core3 *me) {
  * set up an instance of _Core3. 
  * It passes around configuration data.
  */
-int _Core3_init(struct _Core3 *me) {
+int _Core3_init(struct _Core3 _SPM *me) {
 	//pass in any parameters on this level
 	me->tx.ChanId = 3;
 	

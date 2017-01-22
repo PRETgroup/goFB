@@ -28,7 +28,7 @@ union RejectArmControllerOutputEvents {
 };
 
 
-struct RejectArmController {
+typedef struct {
     //input events
 	union RejectArmControllerInputEvents inputEvents;
 
@@ -52,16 +52,16 @@ struct RejectArmController {
 	enum RejectArmController_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+}  RejectArmController_t;
 
 //all FBs get a preinit function
-int RejectArmController_preinit(struct RejectArmController *me);
+int RejectArmController_preinit(RejectArmController_t *me);
 
 //all FBs get an init function
-int RejectArmController_init(struct RejectArmController *me);
+int RejectArmController_init(RejectArmController_t *me);
 
 //all FBs get a run function
-void RejectArmController_run(struct RejectArmController *me);
+void RejectArmController_run(RejectArmController_t *me);
 
 
 

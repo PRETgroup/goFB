@@ -6,7 +6,7 @@
 #include "FlexPRET.h"
 
 //put a copy of the top level block into global memory
-struct FlexPRET myFlexPRET;
+FlexPRET_t myFlexPRET;
 
 int main() {
 	if(FlexPRET_preinit(&myFlexPRET) != 0) {

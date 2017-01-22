@@ -65,10 +65,10 @@ struct {{$block.Name}} {
 };
 
 //all FBs get a preinit function
-int {{$block.Name}}_preinit(struct {{$block.Name}} *me);
+int {{$block.Name}}_preinit(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 //all FBs get an init function
-int {{$block.Name}}_init(struct {{$block.Name}} *me);
+int {{$block.Name}}_init(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 //all FBs get a run function
 void {{$block.Name}}_run(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);

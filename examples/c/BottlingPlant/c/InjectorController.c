@@ -17,7 +17,7 @@
  * initialise an instance of InjectorController. 
  * It sets all I/O values to zero.
  */
-int InjectorController_preinit(struct InjectorController *me) {
+int InjectorController_preinit(InjectorController_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -53,7 +53,7 @@ int InjectorController_preinit(struct InjectorController *me) {
  * set up an instance of InjectorController. 
  * It passes around configuration data.
  */
-int InjectorController_init(struct InjectorController *me) {
+int InjectorController_init(InjectorController_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -91,11 +91,12 @@ int InjectorController_init(struct InjectorController *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void InjectorController_syncEvents(struct InjectorController *me) {
+void InjectorController_syncEvents(InjectorController_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
+	//inputs that go to children
 	
 	me->Arm.inputEvents.event.InjectorArmFinishedMovement = me->inputEvents.event.InjectorArmFinishedMovement; 
 	
@@ -115,6 +116,22 @@ void InjectorController_syncEvents(struct InjectorController *me) {
 	
 	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->inputEvents.event.VacuumTimerElapsed; 
 	
+	//outputs of parent cfb
+	
+	me->outputEvents.event.InjectDone = me->Arm.outputEvents.event.InjectDone; 
+	
+	me->outputEvents.event.InjectorPositionChanged = me->Arm.outputEvents.event.InjectorPositionChanged; 
+	
+	me->outputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged; 
+	
+	me->outputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister; 
+	
+	me->outputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged; 
+	
+	me->outputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer; 
+	
+	me->outputEvents.event.InjectRunning = me->Arm.outputEvents.event.InjectRunning; 
+	
 	
 }
 
@@ -125,7 +142,7 @@ void InjectorController_syncEvents(struct InjectorController *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void InjectorController_syncData(struct InjectorController *me) {
+void InjectorController_syncData(InjectorController_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -167,7 +184,7 @@ void InjectorController_syncData(struct InjectorController *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void InjectorController_run(struct InjectorController *me) {
+void InjectorController_run(InjectorController_t *me) {
 	InjectorMotorController_run(&me->Arm);
 	InjectorPumpsController_run(&me->Pumps);
 	

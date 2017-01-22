@@ -6,7 +6,7 @@
 #include "{{$block.Name}}.h"
 
 //put a copy of the top level block into global memory
-struct {{$block.Name}} my{{$block.Name}};
+{{$block.Name}}_t my{{$block.Name}};
 
 int main() {
 	if({{$block.Name}}_preinit(&my{{$block.Name}}) != 0) {

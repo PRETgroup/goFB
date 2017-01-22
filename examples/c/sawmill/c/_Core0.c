@@ -17,7 +17,7 @@
  * initialise an instance of _Core0. 
  * It sets all I/O values to zero.
  */
-int _Core0_preinit(struct _Core0 *me) {
+int _Core0_preinit(struct _Core0 _SPM *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -57,7 +57,7 @@ int _Core0_preinit(struct _Core0 *me) {
  * set up an instance of _Core0. 
  * It passes around configuration data.
  */
-int _Core0_init(struct _Core0 *me) {
+int _Core0_init(struct _Core0 _SPM *me) {
 	//pass in any parameters on this level
 	me->saw1rx.ChanId = 1;
 	me->saw2rx.ChanId = 2;

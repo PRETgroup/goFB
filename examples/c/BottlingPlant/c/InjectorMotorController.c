@@ -9,7 +9,7 @@
  * initialise an instance of InjectorMotorController. 
  * It sets all I/O values to zero.
  */
-int InjectorMotorController_preinit(struct InjectorMotorController *me) {
+int InjectorMotorController_preinit(InjectorMotorController_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -41,7 +41,7 @@ int InjectorMotorController_preinit(struct InjectorMotorController *me) {
  * set up an instance of InjectorMotorController. 
  * It passes around configuration data.
  */
-int InjectorMotorController_init(struct InjectorMotorController *me) {
+int InjectorMotorController_init(InjectorMotorController_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +66,7 @@ int InjectorMotorController_init(struct InjectorMotorController *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void InjectorMotorController_run(struct InjectorMotorController *me) {
+void InjectorMotorController_run(InjectorMotorController_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -129,21 +129,20 @@ void InjectorMotorController_run(struct InjectorMotorController *me) {
 
 	me->_trigger = false;
 }
-
 //algorithms
 
-void InjectorMotorController_SetArmDownPosition(struct InjectorMotorController *me) {
+void InjectorMotorController_SetArmDownPosition(InjectorMotorController_t *me) {
 me->InjectorPosition = 255;
 //printf("Injector: Set Injector Arm to Down position\n");
 }
 
-void InjectorMotorController_SetArmUpPosition(struct InjectorMotorController *me) {
+void InjectorMotorController_SetArmUpPosition(InjectorMotorController_t *me) {
 printf("Injector: Set injector arm to up position\n");
 me->InjectorPosition = 0;
 
 }
 
-void InjectorMotorController_Algorithm1(struct InjectorMotorController *me) {
+void InjectorMotorController_Algorithm1(InjectorMotorController_t *me) {
 printf("lalalala\n");
 }
 

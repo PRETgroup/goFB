@@ -56,10 +56,10 @@ struct SimpleProducer {
 };
 
 //all FBs get a preinit function
-int SimpleProducer_preinit(struct SimpleProducer *me);
+int SimpleProducer_preinit(struct SimpleProducer _SPM *me);
 
 //all FBs get an init function
-int SimpleProducer_init(struct SimpleProducer *me);
+int SimpleProducer_init(struct SimpleProducer _SPM *me);
 
 //all FBs get a run function
 void SimpleProducer_run(struct SimpleProducer _SPM *me);

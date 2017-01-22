@@ -17,7 +17,7 @@
  * initialise an instance of _TCREST. 
  * It sets all I/O values to zero.
  */
-int _TCREST_preinit(struct _TCREST *me) {
+int _TCREST_preinit(struct _TCREST _SPM *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -57,7 +57,7 @@ int _TCREST_preinit(struct _TCREST *me) {
  * set up an instance of _TCREST. 
  * It passes around configuration data.
  */
-int _TCREST_init(struct _TCREST *me) {
+int _TCREST_init(struct _TCREST _SPM *me) {
 	//pass in any parameters on this level
 	
 	

@@ -5,6 +5,16 @@
 #define FBTYPES_H_
 
 #include <stdio.h>
+{{if .TcrestUsingSPM}}
+#include <machine/spm.h>
+#include <machine/patmos.h>
+#include "libcorethread/corethread.h"
+#include "libmp/mp.h"
+
+#define LED 		( *( ( volatile _IODEV unsigned * )	0xF0090000 ) )
+#define HEX 		( *( ( volatile _IODEV unsigned * )	0xF0070000 ) )
+#define SWITCHES 	( *( ( volatile _IODEV unsigned * )	0xF0080000 ) )
+{{end}}
 
 /*********************************************************************
  This file contains the mapping between IEC 61131 and C data types.

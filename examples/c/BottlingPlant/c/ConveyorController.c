@@ -9,7 +9,7 @@
  * initialise an instance of ConveyorController. 
  * It sets all I/O values to zero.
  */
-int ConveyorController_preinit(struct ConveyorController *me) {
+int ConveyorController_preinit(ConveyorController_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -41,7 +41,7 @@ int ConveyorController_preinit(struct ConveyorController *me) {
  * set up an instance of ConveyorController. 
  * It passes around configuration data.
  */
-int ConveyorController_init(struct ConveyorController *me) {
+int ConveyorController_init(ConveyorController_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +66,7 @@ int ConveyorController_init(struct ConveyorController *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void ConveyorController_run(struct ConveyorController *me) {
+void ConveyorController_run(ConveyorController_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -121,24 +121,23 @@ void ConveyorController_run(struct ConveyorController *me) {
 
 	me->_trigger = false;
 }
-
 //algorithms
 
-void ConveyorController_ConveyorStart(struct ConveyorController *me) {
+void ConveyorController_ConveyorStart(ConveyorController_t *me) {
 me->ConveyorSpeed = 1;
 printf("Conveyor: Start\n");
 }
 
-void ConveyorController_ConveyorStop(struct ConveyorController *me) {
+void ConveyorController_ConveyorStop(ConveyorController_t *me) {
 me->ConveyorSpeed = 0;
 printf("Conveyor: Stop\n");
 }
 
-void ConveyorController_ConveyorRunning(struct ConveyorController *me) {
+void ConveyorController_ConveyorRunning(ConveyorController_t *me) {
 printf("Conveyor running region\n");
 }
 
-void ConveyorController_ConveyorEStop(struct ConveyorController *me) {
+void ConveyorController_ConveyorEStop(ConveyorController_t *me) {
 printf("Conveyor Emergency Stopped\n");
 }
 

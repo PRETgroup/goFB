@@ -9,7 +9,7 @@
  * initialise an instance of IOManager. 
  * It sets all I/O values to zero.
  */
-int IOManager_preinit(struct IOManager *me) {
+int IOManager_preinit(IOManager_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -41,7 +41,7 @@ int IOManager_preinit(struct IOManager *me) {
  * set up an instance of IOManager. 
  * It passes around configuration data.
  */
-int IOManager_init(struct IOManager *me) {
+int IOManager_init(IOManager_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +66,7 @@ int IOManager_init(struct IOManager *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void IOManager_run(struct IOManager *me) {
+void IOManager_run(IOManager_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -97,10 +97,9 @@ void IOManager_run(struct IOManager *me) {
 
 	me->_trigger = false;
 }
-
 //algorithms
 
-void IOManager_IOAlgorithm(struct IOManager *me) {
+void IOManager_IOAlgorithm(IOManager_t *me) {
 #define NUM_BOTTLES 4
 
 static int emergencyStopped = 1;

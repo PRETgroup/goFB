@@ -29,7 +29,7 @@ union ArrayCopierOutputEvents {
 };
 
 
-struct ArrayCopier {
+typedef struct {
     //input events
 	union ArrayCopierInputEvents inputEvents;
 
@@ -55,23 +55,23 @@ struct ArrayCopier {
 	enum ArrayCopier_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+}  ArrayCopier_t;
 
 //all FBs get a preinit function
-int ArrayCopier_preinit(struct ArrayCopier *me);
+int ArrayCopier_preinit(ArrayCopier_t *me);
 
 //all FBs get an init function
-int ArrayCopier_init(struct ArrayCopier *me);
+int ArrayCopier_init(ArrayCopier_t *me);
 
 //all FBs get a run function
-void ArrayCopier_run(struct ArrayCopier *me);
+void ArrayCopier_run(ArrayCopier_t *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void ArrayCopier_moveArray(struct ArrayCopier *me);
+void ArrayCopier_moveArray(ArrayCopier_t *me);
 
-void ArrayCopier_setArray(struct ArrayCopier *me);
+void ArrayCopier_setArray(ArrayCopier_t *me);
 
 
 #endif

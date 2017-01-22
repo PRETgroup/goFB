@@ -57,10 +57,10 @@ struct SawmillMessageHandler {
 };
 
 //all FBs get a preinit function
-int SawmillMessageHandler_preinit(struct SawmillMessageHandler *me);
+int SawmillMessageHandler_preinit(struct SawmillMessageHandler _SPM *me);
 
 //all FBs get an init function
-int SawmillMessageHandler_init(struct SawmillMessageHandler *me);
+int SawmillMessageHandler_init(struct SawmillMessageHandler _SPM *me);
 
 //all FBs get a run function
 void SawmillMessageHandler_run(struct SawmillMessageHandler _SPM *me);

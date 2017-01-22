@@ -9,7 +9,7 @@
  * initialise an instance of InjectorPumpsController. 
  * It sets all I/O values to zero.
  */
-int InjectorPumpsController_preinit(struct InjectorPumpsController *me) {
+int InjectorPumpsController_preinit(InjectorPumpsController_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -41,7 +41,7 @@ int InjectorPumpsController_preinit(struct InjectorPumpsController *me) {
  * set up an instance of InjectorPumpsController. 
  * It passes around configuration data.
  */
-int InjectorPumpsController_init(struct InjectorPumpsController *me) {
+int InjectorPumpsController_init(InjectorPumpsController_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +66,7 @@ int InjectorPumpsController_init(struct InjectorPumpsController *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void InjectorPumpsController_run(struct InjectorPumpsController *me) {
+void InjectorPumpsController_run(InjectorPumpsController_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -167,27 +167,26 @@ void InjectorPumpsController_run(struct InjectorPumpsController *me) {
 
 	me->_trigger = false;
 }
-
 //algorithms
 
-void InjectorPumpsController_StartVacuum(struct InjectorPumpsController *me) {
+void InjectorPumpsController_StartVacuum(InjectorPumpsController_t *me) {
 me->InjectorVacuumRun = 1;
 //printf("Injector: Start vacuum\n");
 }
 
-void InjectorPumpsController_ClearControls(struct InjectorPumpsController *me) {
+void InjectorPumpsController_ClearControls(InjectorPumpsController_t *me) {
 me->InjectorContentsValveOpen = 0;
 me->InjectorPressurePumpRun = 0;
 me->InjectorVacuumRun = 0;
 //printf("Injector: Clear controls\n");
 }
 
-void InjectorPumpsController_OpenValve(struct InjectorPumpsController *me) {
+void InjectorPumpsController_OpenValve(InjectorPumpsController_t *me) {
 me->InjectorContentsValveOpen = 1;
 //printf("Injector: Open valve\n");
 }
 
-void InjectorPumpsController_StartPump(struct InjectorPumpsController *me) {
+void InjectorPumpsController_StartPump(InjectorPumpsController_t *me) {
 me->InjectorPressurePumpRun = 1;
 //printf("Injector: Start pump\n");
 }

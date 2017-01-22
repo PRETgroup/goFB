@@ -9,7 +9,7 @@
  * initialise an instance of ArgoRx. 
  * It sets all I/O values to zero.
  */
-int ArgoRx_preinit(struct ArgoRx *me) {
+int ArgoRx_preinit(struct ArgoRx _SPM *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -40,7 +40,7 @@ int ArgoRx_preinit(struct ArgoRx *me) {
  * set up an instance of ArgoRx. 
  * It passes around configuration data.
  */
-int ArgoRx_init(struct ArgoRx *me) {
+int ArgoRx_init(struct ArgoRx _SPM *me) {
 	//pass in any parameters on this level
 	
 	

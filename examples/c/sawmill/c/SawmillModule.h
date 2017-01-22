@@ -56,10 +56,10 @@ struct SawmillModule {
 };
 
 //all FBs get a preinit function
-int SawmillModule_preinit(struct SawmillModule *me);
+int SawmillModule_preinit(struct SawmillModule _SPM *me);
 
 //all FBs get an init function
-int SawmillModule_init(struct SawmillModule *me);
+int SawmillModule_init(struct SawmillModule _SPM *me);
 
 //all FBs get a run function
 void SawmillModule_run(struct SawmillModule _SPM *me);

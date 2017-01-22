@@ -17,7 +17,7 @@
  * initialise an instance of FlexPRET. 
  * It sets all I/O values to zero.
  */
-int FlexPRET_preinit(struct FlexPRET *me) {
+int FlexPRET_preinit(FlexPRET_t *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -66,7 +66,7 @@ int FlexPRET_preinit(struct FlexPRET *me) {
  * set up an instance of FlexPRET. 
  * It passes around configuration data.
  */
-int FlexPRET_init(struct FlexPRET *me) {
+int FlexPRET_init(FlexPRET_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -128,11 +128,12 @@ int FlexPRET_init(struct FlexPRET *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void FlexPRET_syncEvents(struct FlexPRET *me) {
+void FlexPRET_syncEvents(FlexPRET_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
+	//inputs that go to children
 	
 	me->IO.inputEvents.event.DoorReleaseCanister = me->Door.outputEvents.event.DoorReleaseCanister; 
 	
@@ -188,6 +189,8 @@ void FlexPRET_syncEvents(struct FlexPRET *me) {
 	
 	me->Motor.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished; 
 	
+	//outputs of parent cfb
+	
 	
 }
 
@@ -198,7 +201,7 @@ void FlexPRET_syncEvents(struct FlexPRET *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void FlexPRET_syncData(struct FlexPRET *me) {
+void FlexPRET_syncData(FlexPRET_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -284,7 +287,7 @@ void FlexPRET_syncData(struct FlexPRET *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void FlexPRET_run(struct FlexPRET *me) {
+void FlexPRET_run(FlexPRET_t *me) {
 	IOManager_run(&me->IO);
 	CanisterCounter_run(&me->CCounter);
 	DoorController_run(&me->Door);
