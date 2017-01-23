@@ -6,7 +6,6 @@
 #define ARGORX_H_
 
 #include "fbtypes.h"
-#include "libmp/mp.h"
 
 //This is a BFB, so we need an enum type for the state machine
 enum ArgoRx_states { STATE_ArgoRx_Start };
@@ -23,7 +22,7 @@ union ArgoRxOutputEvents {
 };
 
 
-struct ArgoRx {
+typedef struct {
     //input events
 	
 
@@ -47,17 +46,20 @@ struct ArgoRx {
 	//state and trigger (BFBs only)
 	enum ArgoRx_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
-	
-	qpd_t* chan;
-	volatile INT _SPM* read_data;
+
+		qpd_t* chan;
 	BOOL needToAck;
-};
+	
+} _SPM ArgoRx_t;
+
+//all FBs get a preinit function
+int ArgoRx_preinit(ArgoRx_t *me);
 
 //all FBs get an init function
-int ArgoRx_init(struct ArgoRx *me);
+int ArgoRx_init(ArgoRx_t *me);
 
 //all FBs get a run function
-void ArgoRx_run(struct ArgoRx *me);
+void ArgoRx_run(ArgoRx_t *me);
 
 
 

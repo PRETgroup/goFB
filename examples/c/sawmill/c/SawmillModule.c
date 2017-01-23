@@ -17,7 +17,7 @@
  * initialise an instance of SawmillModule. 
  * It sets all I/O values to zero.
  */
-int SawmillModule_preinit(struct SawmillModule _SPM *me) {
+int SawmillModule_preinit(SawmillModule_t *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -61,7 +61,7 @@ int SawmillModule_preinit(struct SawmillModule _SPM *me) {
  * set up an instance of SawmillModule. 
  * It passes around configuration data.
  */
-int SawmillModule_init(struct SawmillModule _SPM *me) {
+int SawmillModule_init(SawmillModule_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -104,7 +104,7 @@ int SawmillModule_init(struct SawmillModule _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void SawmillModule_syncEvents(struct SawmillModule _SPM *me) {
+void SawmillModule_syncEvents(SawmillModule_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -133,7 +133,7 @@ void SawmillModule_syncEvents(struct SawmillModule _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void SawmillModule_syncData(struct SawmillModule _SPM *me) {
+void SawmillModule_syncData(SawmillModule_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -180,7 +180,7 @@ void SawmillModule_syncData(struct SawmillModule _SPM *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void SawmillModule_run(struct SawmillModule _SPM *me) {
+void SawmillModule_run(SawmillModule_t *me) {
 	SawmillSwitch_run(&me->runswitch);
 	SawMotor_run(&me->saw);
 	SawdustScale_run(&me->scale);

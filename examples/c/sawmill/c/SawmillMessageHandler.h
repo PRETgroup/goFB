@@ -28,7 +28,7 @@ union SawmillMessageHandlerOutputEvents {
 };
 
 
-struct SawmillMessageHandler {
+typedef struct {
     //input events
 	union SawmillMessageHandlerInputEvents inputEvents;
 
@@ -54,21 +54,21 @@ struct SawmillMessageHandler {
 	enum SawmillMessageHandler_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} _SPM SawmillMessageHandler_t;
 
 //all FBs get a preinit function
-int SawmillMessageHandler_preinit(struct SawmillMessageHandler _SPM *me);
+int SawmillMessageHandler_preinit(SawmillMessageHandler *me);
 
 //all FBs get an init function
-int SawmillMessageHandler_init(struct SawmillMessageHandler _SPM *me);
+int SawmillMessageHandler_init(SawmillMessageHandler *me);
 
 //all FBs get a run function
-void SawmillMessageHandler_run(struct SawmillMessageHandler _SPM *me);
+void SawmillMessageHandler_run(SawmillMessageHandler *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void SawmillMessageHandler_LoadData(struct SawmillMessageHandler _SPM *me);
+void SawmillMessageHandler_LoadData(SawmillMessageHandler *me);
 
 
 #endif

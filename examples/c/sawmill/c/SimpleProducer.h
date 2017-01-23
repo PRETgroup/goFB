@@ -27,7 +27,7 @@ union SimpleProducerOutputEvents {
 };
 
 
-struct SimpleProducer {
+typedef struct {
     //input events
 	union SimpleProducerInputEvents inputEvents;
 
@@ -53,21 +53,21 @@ struct SimpleProducer {
 	enum SimpleProducer_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} _SPM SimpleProducer_t;
 
 //all FBs get a preinit function
-int SimpleProducer_preinit(struct SimpleProducer _SPM *me);
+int SimpleProducer_preinit(SimpleProducer *me);
 
 //all FBs get an init function
-int SimpleProducer_init(struct SimpleProducer _SPM *me);
+int SimpleProducer_init(SimpleProducer *me);
 
 //all FBs get a run function
-void SimpleProducer_run(struct SimpleProducer _SPM *me);
+void SimpleProducer_run(SimpleProducer *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void SimpleProducer_update_count(struct SimpleProducer _SPM *me);
+void SimpleProducer_update_count(SimpleProducer *me);
 
 
 #endif

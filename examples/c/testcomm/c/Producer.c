@@ -5,11 +5,11 @@
 #include "Producer.h"
 
 
-/* Producer_init() is required to be called to 
+/* Producer_preinit() is required to be called to 
  * initialise an instance of Producer. 
  * It sets all I/O values to zero.
  */
-int Producer_init(struct Producer *me) {
+int Producer_preinit(Producer_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -27,15 +27,32 @@ int Producer_init(struct Producer *me) {
 	
 	//if there are resources with set parameters, set them
 	
-	//perform a data copy to all children (if any present) (moves config data around)
-	//TODO:
-
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	me->_trigger = true;
 	me->_state = STATE_Producer_Start;
+	
+
+	return 0;
+}
+
+/* Producer_init() is required to be called to 
+ * set up an instance of Producer. 
+ * It passes around configuration data.
+ */
+int Producer_init(Producer_t *me) {
+	//pass in any parameters on this level
+	
+	
+	
+
+	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
+	
+
+	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
+	
 	
 
 	return 0;
@@ -50,7 +67,7 @@ int Producer_init(struct Producer *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Producer_run(struct Producer *me) {
+void Producer_run(Producer_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -73,7 +90,7 @@ void Producer_run(struct Producer *me) {
 			if(me->inputEvents.event.TxSuccessChanged && (me->TxSuccess)) {
 				me->_state = STATE_Producer_increment;
 				me->_trigger = true;
-			} else if(me->inputEvents.event.TxSuccessChanged && (!me->TxSuccess)) {
+			} else if(me->inputEvents.event.TxSuccessChanged && ( ! me->TxSuccess)) {
 				me->_state = STATE_Producer_Tx;
 				me->_trigger = true;
 			};
@@ -102,14 +119,11 @@ void Producer_run(struct Producer *me) {
 
 	me->_trigger = false;
 }
-
 //algorithms
 
-void Producer_update_count(struct Producer *me) {
+void Producer_update_count(Producer_t *me) {
 me->Count++;
 me->Data = me->Count;
-//#define HEX ( *( ( volatile _IODEV unsigned * )	0xF0070000 ) )
-HEX = me->Data;
 }
 
 

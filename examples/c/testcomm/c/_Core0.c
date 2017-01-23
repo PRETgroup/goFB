@@ -13,11 +13,12 @@
 //} loop;
 
 
-/* _Core0_init() is required to be called to 
+/* _Core0_preinit() is required to be called to 
  * initialise an instance of _Core0. 
  * It sets all I/O values to zero.
  */
-int _Core0_init(struct _Core0 *me) {
+int _Core0_preinit(_Core0_t *me) {
+	printf("1\n");
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -32,8 +33,35 @@ int _Core0_init(struct _Core0 *me) {
 	
 	//if there are resources with set parameters, set them
 	
-	//perform a data copy to all children (if any present) (moves config data around)
-	//TODO:
+	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
+	if(ArgoRx_preinit(&me->rx) != 0) {
+		return 1;
+	}
+	if(PrintInt_preinit(&me->print) != 0) {
+		return 1;
+	}
+	
+	
+	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
+	
+
+	return 0;
+}
+
+/* _Core0_init() is required to be called to 
+ * set up an instance of _Core0. 
+ * It passes around configuration data.
+ */
+int _Core0_init(_Core0_t *me) {
+	//pass in any parameters on this level
+	
+	
+	
+
+	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
+	me->rx.ChanId = me->RxChanId;
+	me->print.Data = me->rx.Data;
+	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(ArgoRx_init(&me->rx) != 0) {
@@ -43,8 +71,6 @@ int _Core0_init(struct _Core0 *me) {
 		return 1;
 	}
 	
-	
-	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	
 
 	return 0;
@@ -57,12 +83,17 @@ int _Core0_init(struct _Core0 *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core0_syncEvents(struct _Core0 *me) {
+void _Core0_syncEvents(_Core0_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
-	me->print.inputEvents.event.DataPresent = me->rx.outputEvents.event.DataPresent;
+	//inputs that go to children
+	
+	me->print.inputEvents.event.DataPresent = me->rx.outputEvents.event.DataPresent; 
+	
+	//outputs of parent cfb
+	
 	
 }
 
@@ -73,7 +104,7 @@ void _Core0_syncEvents(struct _Core0 *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core0_syncData(struct _Core0 *me) {
+void _Core0_syncData(_Core0_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -88,6 +119,10 @@ void _Core0_syncData(struct _Core0 *me) {
 		me->print.Data = me->rx.Data;
 	} 
 	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	
+	
 
 }
 
@@ -97,7 +132,7 @@ void _Core0_syncData(struct _Core0 *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core0_run(struct _Core0 *me) {
+void _Core0_run(_Core0_t *me) {
 	ArgoRx_run(&me->rx);
 	PrintInt_run(&me->print);
 	

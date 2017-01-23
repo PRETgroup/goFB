@@ -5,11 +5,11 @@
 #include "ArgoTx.h"
 
 
-/* ArgoTx_init() is required to be called to 
+/* ArgoTx_preinit() is required to be called to 
  * initialise an instance of ArgoTx. 
  * It sets all I/O values to zero.
  */
-int ArgoTx_init(struct ArgoTx *me) {
+int ArgoTx_preinit(ArgoTx_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -27,9 +27,6 @@ int ArgoTx_init(struct ArgoTx *me) {
 	
 	//if there are resources with set parameters, set them
 	
-	//perform a data copy to all children (if any present) (moves config data around)
-	//TODO:
-
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
@@ -37,9 +34,27 @@ int ArgoTx_init(struct ArgoTx *me) {
 	me->_trigger = true;
 	me->_state = STATE_ArgoTx_Start;
 	
-	me->chan = mp_create_qport(1, SOURCE, sizeof(INT), 1);
-	me->write_data = mp_alloc(sizeof(INT));
-	if(me->chan == NULL || me->write_data == NULL) {
+
+	return 0;
+}
+
+/* ArgoTx_init() is required to be called to 
+ * set up an instance of ArgoTx. 
+ * It passes around configuration data.
+ */
+int ArgoTx_init(ArgoTx_t *me) {
+	//pass in any parameters on this level
+	
+	
+	
+
+	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
+	
+
+	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
+	
+	me->chan = mp_create_qport(me->ChanId, SOURCE, sizeof(INT), 1);
+	if(me->chan == NULL) {
 		return 1;
 	}
 
@@ -55,17 +70,18 @@ int ArgoTx_init(struct ArgoTx *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void ArgoTx_run(struct ArgoTx *me) {
+void ArgoTx_run(ArgoTx_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
-
+	
 	if(me->inputEvents.event.DataPresent) {
 		*((volatile INT _SPM *)me->chan->write_buf) = me->Data;
 		me->Success = mp_nbsend(me->chan);
 		me->outputEvents.event.SuccessChanged = 1;
 	}
-}
 
+	me->_trigger = false;
+}
 //no algorithms were present for this function block
 
 

@@ -18,7 +18,7 @@
 //this block had no output events
 
 
-struct _Core0 {
+typedef struct {
     //input events
 	
 
@@ -32,8 +32,8 @@ struct _Core0 {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	struct ArgoRx rx;
-	struct PrintInt print;
+	ArgoRx_t rx;
+	PrintInt_t print;
 	
 	//resource vars
 	UDINT RxChanId;
@@ -42,16 +42,19 @@ struct _Core0 {
 	
 	//state and trigger (BFBs only)
 	
-};
+} _SPM _Core0_t;
+
+//all FBs get a preinit function
+int _Core0_preinit(_Core0_t *me);
 
 //all FBs get an init function
-int __attribute__ ((noinline)) _Core0_init(struct _Core0 *me);
+int _Core0_init(_Core0_t *me);
 
 //all FBs get a run function
-void __attribute__ ((noinline)) _Core0_run(struct _Core0 *me);
+void _Core0_run(_Core0_t *me);
 
 //composite/resource/device FBs get sync functions
-void __attribute__ ((noinline)) _Core0_syncEvents(struct _Core0 *me);
-void __attribute__ ((noinline)) _Core0_syncData(struct _Core0 *me);
+void _Core0_syncEvents(_Core0_t *me);
+void _Core0_syncData(_Core0_t *me);
 
 #endif

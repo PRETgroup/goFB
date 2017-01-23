@@ -26,7 +26,7 @@ union SawmillModuleOutputEvents {
 };
 
 
-struct SawmillModule {
+typedef struct {
     //input events
 	
 
@@ -53,19 +53,19 @@ struct SawmillModule {
 	
 	//state and trigger (BFBs only)
 	
-};
+} _SPM SawmillModule_t;
 
 //all FBs get a preinit function
-int SawmillModule_preinit(struct SawmillModule _SPM *me);
+int SawmillModule_preinit(SawmillModule *me);
 
 //all FBs get an init function
-int SawmillModule_init(struct SawmillModule _SPM *me);
+int SawmillModule_init(SawmillModule *me);
 
 //all FBs get a run function
-void SawmillModule_run(struct SawmillModule _SPM *me);
+void SawmillModule_run(SawmillModule *me);
 
 //composite/resource/device FBs get sync functions
-void SawmillModule_syncEvents(struct SawmillModule _SPM *me);
-void SawmillModule_syncData(struct SawmillModule _SPM *me);
+void SawmillModule_syncEvents(SawmillModule *me);
+void SawmillModule_syncData(SawmillModule *me);
 
 #endif

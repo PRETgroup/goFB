@@ -4,14 +4,30 @@
 
 #include "main.h"
 
+struct T {
+	int x;
+};
+
+struct U {
+	struct T t;
+};
+
 int main() {
+	struct U u_place;
 
-	unsigned int _SPM * x;
-	x = SPM_BASE;
-	*x = 10;
+	struct U *u;
+	u = &u_place;
 
-	printf("x = %d\n", *x);
-	printf("x = %d\n", *x);
-	printf("x = %d\n", *x);
+	struct U _SPM *u_spm;
+	u_spm = SPM_BASE;
+	
+	printf("Setting *u...");
+	u->t.x = 1;
+	printf("Done\n");
 
+	printf("Setting *u_spm...");
+	u_spm->t.x = 1;
+	printf("Done\n");
+
+	return 0;
 }

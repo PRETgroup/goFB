@@ -33,7 +33,7 @@ enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{
 {{else}}//this block had no output events
 {{end}}
 
-struct {{$block.Name}} {
+typedef struct {
     //input events
 	{{if $block.EventInputs}}union {{$block.Name}}InputEvents inputEvents;{{end}}
 
@@ -50,35 +50,35 @@ struct {{$block.Name}} {
     {{if $block.BasicFB}}{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
     {{end}}{{end}}{{end}}
 	//any child FBs (CFBs only)
-	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}struct {{$child.Type}} {{$child.Name}};
+	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$child.Type}}_t {{$child.Name}};
 	{{end}}{{end}}
 	//resource vars
 	{{if $block.ResourceVars}}{{range $index, $var := $block.ResourceVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
 	{{end}}{{end}}
 	//resources (Devices only)
-	{{if $block.Resources}}{{range $index, $res := $block.Resources}}struct {{$res.Type}} {{$res.Name}};
+	{{if $block.Resources}}{{range $index, $res := $block.Resources}}{{$res.Type}}_t {{$res.Name}};
 	{{end}}{{end}}
 	//state and trigger (BFBs only)
 	{{if $block.BasicFB}}enum {{$block.Name}}_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	{{end}}
-};
+} {{if .TcrestUsingSPM}}_SPM{{end}} {{$block.Name}}_t;
 
 //all FBs get a preinit function
-int {{$block.Name}}_preinit(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+int {{$block.Name}}_preinit({{$block.Name}}_t *me);
 
 //all FBs get an init function
-int {{$block.Name}}_init(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+int {{$block.Name}}_init({{$block.Name}}_t *me);
 
 //all FBs get a run function
-void {{$block.Name}}_run(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+void {{$block.Name}}_run({{$block.Name}}_t *me);
 
 {{if not $block.BasicFB}}//composite/resource/device FBs get sync functions
-void {{$block.Name}}_syncEvents(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);
-void {{$block.Name}}_syncData(struct {{$block.Name}} {{if .TcrestUsingSPM}}_SPM{{end}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
-{{$tcrestUsingSPM := .TcrestUsingSPM}}{{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
+void {{$block.Name}}_syncEvents({{$block.Name}}_t *me);
+void {{$block.Name}}_syncData({{$block.Name}}_t *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
+{{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
 {{range $algIndex, $alg := $basicFB.Algorithms}}
-void {{$block.Name}}_{{$alg.Name}}(struct {{$block.Name}} {{if $tcrestUsingSPM}}_SPM{{end}} *me);
+void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t *me);
 {{end}}{{end}}{{end}}
 
 #endif

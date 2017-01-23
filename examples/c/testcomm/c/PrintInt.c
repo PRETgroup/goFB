@@ -5,12 +5,11 @@
 #include "PrintInt.h"
 
 
-
-/* PrintInt_init() is required to be called to 
+/* PrintInt_preinit() is required to be called to 
  * initialise an instance of PrintInt. 
  * It sets all I/O values to zero.
  */
-int PrintInt_init(struct PrintInt *me) {
+int PrintInt_preinit(PrintInt_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -26,15 +25,32 @@ int PrintInt_init(struct PrintInt *me) {
 	
 	//if there are resources with set parameters, set them
 	
-	//perform a data copy to all children (if any present) (moves config data around)
-	//TODO:
-
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
 	me->_trigger = true;
 	me->_state = STATE_PrintInt_Start;
+	
+
+	return 0;
+}
+
+/* PrintInt_init() is required to be called to 
+ * set up an instance of PrintInt. 
+ * It passes around configuration data.
+ */
+int PrintInt_init(PrintInt_t *me) {
+	//pass in any parameters on this level
+	
+	
+	
+
+	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
+	
+
+	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
+	
 	
 
 	return 0;
@@ -49,7 +65,7 @@ int PrintInt_init(struct PrintInt *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void PrintInt_run(struct PrintInt *me) {
+void PrintInt_run(PrintInt_t *me) {
 	//if there are output events, reset them
 	
 	//next state logic
@@ -87,11 +103,10 @@ void PrintInt_run(struct PrintInt *me) {
 
 	me->_trigger = false;
 }
-
 //algorithms
 
-void PrintInt_DoPrintInt(struct PrintInt *me) {
-HEX = me->Data;
+void PrintInt_DoPrintInt(PrintInt_t *me) {
+printf("PrintInt: %d\n", me->Data);
 }
 
 

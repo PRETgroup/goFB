@@ -20,7 +20,7 @@
 //this block had no output events
 
 
-struct _TCREST {
+typedef struct {
     //input events
 	
 
@@ -45,19 +45,19 @@ struct _TCREST {
 	
 	//state and trigger (BFBs only)
 	
-};
+} _SPM _TCREST_t;
 
 //all FBs get a preinit function
-int _TCREST_preinit(struct _TCREST _SPM *me);
+int _TCREST_preinit(_TCREST *me);
 
 //all FBs get an init function
-int _TCREST_init(struct _TCREST _SPM *me);
+int _TCREST_init(_TCREST *me);
 
 //all FBs get a run function
-void _TCREST_run(struct _TCREST _SPM *me);
+void _TCREST_run(_TCREST *me);
 
 //composite/resource/device FBs get sync functions
-void _TCREST_syncEvents(struct _TCREST _SPM *me);
-void _TCREST_syncData(struct _TCREST _SPM *me);
+void _TCREST_syncEvents(_TCREST *me);
+void _TCREST_syncData(_TCREST *me);
 
 #endif

@@ -20,7 +20,7 @@
 //this block had no output events
 
 
-struct _Core0 {
+typedef struct {
     //input events
 	
 
@@ -45,19 +45,19 @@ struct _Core0 {
 	
 	//state and trigger (BFBs only)
 	
-};
+} _SPM _Core0_t;
 
 //all FBs get a preinit function
-int _Core0_preinit(struct _Core0 _SPM *me);
+int _Core0_preinit(_Core0 *me);
 
 //all FBs get an init function
-int _Core0_init(struct _Core0 _SPM *me);
+int _Core0_init(_Core0 *me);
 
 //all FBs get a run function
-void _Core0_run(struct _Core0 _SPM *me);
+void _Core0_run(_Core0 *me);
 
 //composite/resource/device FBs get sync functions
-void _Core0_syncEvents(struct _Core0 _SPM *me);
-void _Core0_syncData(struct _Core0 _SPM *me);
+void _Core0_syncEvents(_Core0 *me);
+void _Core0_syncData(_Core0 *me);
 
 #endif

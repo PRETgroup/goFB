@@ -27,7 +27,7 @@ union ProducerOutputEvents {
 };
 
 
-struct Producer {
+typedef struct {
     //input events
 	union ProducerInputEvents inputEvents;
 
@@ -53,18 +53,21 @@ struct Producer {
 	enum Producer_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} _SPM Producer_t;
+
+//all FBs get a preinit function
+int Producer_preinit(Producer_t *me);
 
 //all FBs get an init function
-int Producer_init(struct Producer *me);
+int Producer_init(Producer_t *me);
 
 //all FBs get a run function
-void Producer_run(struct Producer *me);
+void Producer_run(Producer_t *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void Producer_update_count(struct Producer *me);
+void Producer_update_count(Producer_t *me);
 
 
 #endif
