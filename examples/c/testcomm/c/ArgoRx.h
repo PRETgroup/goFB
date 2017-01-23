@@ -53,13 +53,13 @@ typedef struct {
 } _SPM ArgoRx_t;
 
 //all FBs get a preinit function
-int ArgoRx_preinit(ArgoRx_t *me);
+int ArgoRx_preinit(ArgoRx_t _SPM *me);
 
 //all FBs get an init function
-int ArgoRx_init(ArgoRx_t *me);
+int ArgoRx_init(ArgoRx_t _SPM *me);
 
 //all FBs get a run function
-void ArgoRx_run(ArgoRx_t *me);
+void ArgoRx_run(ArgoRx_t _SPM *me);
 
 
 

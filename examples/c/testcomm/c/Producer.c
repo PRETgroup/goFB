@@ -9,7 +9,7 @@
  * initialise an instance of Producer. 
  * It sets all I/O values to zero.
  */
-int Producer_preinit(Producer_t *me) {
+int Producer_preinit(Producer_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -42,7 +42,7 @@ int Producer_preinit(Producer_t *me) {
  * set up an instance of Producer. 
  * It passes around configuration data.
  */
-int Producer_init(Producer_t *me) {
+int Producer_init(Producer_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -67,10 +67,10 @@ int Producer_init(Producer_t *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Producer_run(Producer_t *me) {
+void Producer_run(Producer_t _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
-	
+			HEX = me->_state;
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -87,7 +87,7 @@ void Producer_run(Producer_t *me) {
 			};
 			break;
 		case STATE_Producer_Tx:
-			if(me->inputEvents.event.TxSuccessChanged && (me->TxSuccess)) {
+			if(me->inputEvents.event.TxSuccessChanged && (me->TxSuccess) && SWITCHES != 0) {
 				me->_state = STATE_Producer_increment;
 				me->_trigger = true;
 			} else if(me->inputEvents.event.TxSuccessChanged && ( ! me->TxSuccess)) {
@@ -101,6 +101,7 @@ void Producer_run(Producer_t *me) {
 
 	//state output logic
 	if(me->_trigger == true) {
+
 		switch(me->_state) {
 		case STATE_Producer_Start:
 			break;
@@ -121,9 +122,11 @@ void Producer_run(Producer_t *me) {
 }
 //algorithms
 
-void Producer_update_count(Producer_t *me) {
-me->Count++;
-me->Data = me->Count;
+void Producer_update_count(Producer_t _SPM *me) {
+
+		me->Count++;
+		me->Data = me->Count;
+	
 }
 
 

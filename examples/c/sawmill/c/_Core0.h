@@ -34,10 +34,10 @@ typedef struct {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	struct ArgoRx saw1rx;
-	struct ArgoRx saw2rx;
-	struct ArgoRx saw3rx;
-	struct PrintStatus statusprint;
+	ArgoRx_t saw1rx;
+	ArgoRx_t saw2rx;
+	ArgoRx_t saw3rx;
+	PrintStatus_t statusprint;
 	
 	//resource vars
 	
@@ -45,19 +45,19 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
-} _SPM _Core0_t;
+} _Core0_t;
 
 //all FBs get a preinit function
-int _Core0_preinit(_Core0 *me);
+int _Core0_preinit(_Core0_t _SPM *me);
 
 //all FBs get an init function
-int _Core0_init(_Core0 *me);
+int _Core0_init(_Core0_t _SPM *me);
 
 //all FBs get a run function
-void _Core0_run(_Core0 *me);
+void _Core0_run(_Core0_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _Core0_syncEvents(_Core0 *me);
-void _Core0_syncData(_Core0 *me);
+void _Core0_syncEvents(_Core0_t _SPM *me);
+void _Core0_syncData(_Core0_t _SPM *me);
 
 #endif

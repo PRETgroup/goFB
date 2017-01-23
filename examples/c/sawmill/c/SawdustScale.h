@@ -22,7 +22,7 @@ union SawdustScaleOutputEvents {
 };
 
 
-struct SawdustScale {
+typedef struct {
     //input events
 	
 
@@ -46,16 +46,16 @@ struct SawdustScale {
 	enum SawdustScale_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} SawdustScale_t;
 
 //all FBs get a preinit function
-int SawdustScale_preinit(struct SawdustScale *me);
+int SawdustScale_preinit(SawdustScale_t _SPM *me);
 
 //all FBs get an init function
-int SawdustScale_init(struct SawdustScale *me);
+int SawdustScale_init(SawdustScale_t _SPM *me);
 
 //all FBs get a run function
-void SawdustScale_run(struct SawdustScale _SPM *me);
+void SawdustScale_run(SawdustScale_t _SPM *me);
 
 
 

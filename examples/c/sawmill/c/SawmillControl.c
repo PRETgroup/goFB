@@ -9,7 +9,7 @@
  * initialise an instance of SawmillControl. 
  * It sets all I/O values to zero.
  */
-int SawmillControl_preinit(struct SawmillControl *me) {
+int SawmillControl_preinit(SawmillControl_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -41,7 +41,7 @@ int SawmillControl_preinit(struct SawmillControl *me) {
  * set up an instance of SawmillControl. 
  * It passes around configuration data.
  */
-int SawmillControl_init(struct SawmillControl *me) {
+int SawmillControl_init(SawmillControl_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +66,7 @@ int SawmillControl_init(struct SawmillControl *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SawmillControl_run(struct SawmillControl _SPM *me) {
+void SawmillControl_run(SawmillControl_t _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -145,6 +145,8 @@ void SawmillControl_run(struct SawmillControl _SPM *me) {
 
 	//state output logic
 	if(me->_trigger == true) {
+		HEX = me->_state;
+		//printf("Entered state %i\n", me->_state);
 		switch(me->_state) {
 		case STATE_SawmillControl_Start:
 			break;
@@ -197,27 +199,27 @@ void SawmillControl_run(struct SawmillControl _SPM *me) {
 
 //algorithms
 
-void SawmillControl_MessageHaltWeight(struct SawmillControl _SPM *me) {
+void SawmillControl_MessageHaltWeight(SawmillControl_t _SPM *me) {
 me->Message = -1;
 }
 
-void SawmillControl_MessageHaltLaser(struct SawmillControl _SPM *me) {
+void SawmillControl_MessageHaltLaser(SawmillControl_t _SPM *me) {
 me->Message = -2;
 }
 
-void SawmillControl_MessageRun(struct SawmillControl _SPM *me) {
+void SawmillControl_MessageRun(SawmillControl_t _SPM *me) {
 me->Message = 1;
 }
 
-void SawmillControl_MessageStop(struct SawmillControl _SPM *me) {
+void SawmillControl_MessageStop(SawmillControl_t _SPM *me) {
 me->Message = 0;
 }
 
-void SawmillControl_SawRun(struct SawmillControl _SPM *me) {
+void SawmillControl_SawRun(SawmillControl_t _SPM *me) {
 me->SawRun = 1;
 }
 
-void SawmillControl_SawStop(struct SawmillControl _SPM *me) {
+void SawmillControl_SawStop(SawmillControl_t _SPM *me) {
 me->SawRun = 0;
 }
 

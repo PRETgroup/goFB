@@ -4,30 +4,27 @@
 
 #include "main.h"
 
-struct T {
+typedef struct {
 	int x;
-};
+} T_t;
 
-struct U {
-	struct T t;
-};
+typedef struct {
+	T_t t;
+} U_t;
 
 int main() {
-	struct U u_place;
-
-	struct U *u;
-	u = &u_place;
-
-	struct U _SPM *u_spm;
+	U_t _SPM *u_spm;
 	u_spm = SPM_BASE;
 	
-	printf("Setting *u...");
-	u->t.x = 1;
-	printf("Done\n");
+	// printf("Setting *u...");
+	// u->t.x = 1;
+	// printf("Done\n");
 
 	printf("Setting *u_spm...");
 	u_spm->t.x = 1;
 	printf("Done\n");
+
+	printf("u_spm->t.x = %i\n", u_spm->t.x);
 
 	return 0;
 }

@@ -9,7 +9,7 @@
  * initialise an instance of PrintInt. 
  * It sets all I/O values to zero.
  */
-int PrintInt_preinit(PrintInt_t *me) {
+int PrintInt_preinit(PrintInt_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -40,7 +40,7 @@ int PrintInt_preinit(PrintInt_t *me) {
  * set up an instance of PrintInt. 
  * It passes around configuration data.
  */
-int PrintInt_init(PrintInt_t *me) {
+int PrintInt_init(PrintInt_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -65,7 +65,7 @@ int PrintInt_init(PrintInt_t *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void PrintInt_run(PrintInt_t *me) {
+void PrintInt_run(PrintInt_t _SPM *me) {
 	//if there are output events, reset them
 	
 	//next state logic
@@ -105,7 +105,7 @@ void PrintInt_run(PrintInt_t *me) {
 }
 //algorithms
 
-void PrintInt_DoPrintInt(PrintInt_t *me) {
+void PrintInt_DoPrintInt(PrintInt_t _SPM *me) {
 printf("PrintInt: %d\n", me->Data);
 }
 

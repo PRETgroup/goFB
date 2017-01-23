@@ -9,7 +9,7 @@
  * initialise an instance of ArgoTx. 
  * It sets all I/O values to zero.
  */
-int ArgoTx_preinit(struct ArgoTx *me) {
+int ArgoTx_preinit(ArgoTx_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -17,6 +17,7 @@ int ArgoTx_preinit(struct ArgoTx *me) {
 	me->outputEvents.events[0] = 0;
 	
 	//if there are input vars with default values, set them
+	me->ChanId = 1;
 	
 	//if there are output vars with default values, set them
 	
@@ -41,7 +42,7 @@ int ArgoTx_preinit(struct ArgoTx *me) {
  * set up an instance of ArgoTx. 
  * It passes around configuration data.
  */
-int ArgoTx_init(struct ArgoTx *me) {
+int ArgoTx_init(ArgoTx_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -51,7 +52,6 @@ int ArgoTx_init(struct ArgoTx *me) {
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	
 	
 	me->chan = mp_create_qport(me->ChanId, SOURCE, sizeof(INT), 1);
 	if(me->chan == NULL) {
@@ -70,17 +70,19 @@ int ArgoTx_init(struct ArgoTx *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void ArgoTx_run(struct ArgoTx _SPM *me) {
+void ArgoTx_run(ArgoTx_t _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
-
+	LED = 0;
 	if(me->inputEvents.event.DataPresent) {
+		LED = 1;
 		*((volatile INT _SPM *)me->chan->write_buf) = me->Data;
 		me->Success = mp_nbsend(me->chan);
 		me->outputEvents.event.SuccessChanged = 1;
 	}
-}
 
+	me->_trigger = false;
+}
 //no algorithms were present for this function block
 
 

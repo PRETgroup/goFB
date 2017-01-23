@@ -53,21 +53,21 @@ typedef struct {
 	enum Producer_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-} _SPM Producer_t;
+} Producer_t;
 
 //all FBs get a preinit function
-int Producer_preinit(Producer_t *me);
+int Producer_preinit(Producer_t _SPM *me);
 
 //all FBs get an init function
-int Producer_init(Producer_t *me);
+int Producer_init(Producer_t _SPM *me);
 
 //all FBs get a run function
-void Producer_run(Producer_t *me);
+void Producer_run(Producer_t _SPM *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void Producer_update_count(Producer_t *me);
+void Producer_update_count(Producer_t _SPM *me);
 
 
 #endif

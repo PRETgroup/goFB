@@ -54,21 +54,21 @@ typedef struct {
 	enum SawmillMessageHandler_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-} _SPM SawmillMessageHandler_t;
+} SawmillMessageHandler_t;
 
 //all FBs get a preinit function
-int SawmillMessageHandler_preinit(SawmillMessageHandler *me);
+int SawmillMessageHandler_preinit(SawmillMessageHandler_t _SPM *me);
 
 //all FBs get an init function
-int SawmillMessageHandler_init(SawmillMessageHandler *me);
+int SawmillMessageHandler_init(SawmillMessageHandler_t _SPM *me);
 
 //all FBs get a run function
-void SawmillMessageHandler_run(SawmillMessageHandler *me);
+void SawmillMessageHandler_run(SawmillMessageHandler_t _SPM *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void SawmillMessageHandler_LoadData(SawmillMessageHandler *me);
+void SawmillMessageHandler_LoadData(SawmillMessageHandler_t _SPM *me);
 
 
 #endif

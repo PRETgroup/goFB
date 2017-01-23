@@ -9,13 +9,13 @@
  * initialise an instance of ArgoRx. 
  * It sets all I/O values to zero.
  */
-int ArgoRx_preinit(struct ArgoRx _SPM *me) {
+int ArgoRx_preinit(ArgoRx_t _SPM *me) {
 	//if there are input events, reset them
-	
+
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
-	
 	//if there are input vars with default values, set them
+	me->ChanId = 1;
 	
 	//if there are output vars with default values, set them
 	
@@ -32,7 +32,6 @@ int ArgoRx_preinit(struct ArgoRx _SPM *me) {
 	me->_trigger = true;
 	me->_state = STATE_ArgoRx_Start;
 	
-
 	return 0;
 }
 
@@ -40,7 +39,7 @@ int ArgoRx_preinit(struct ArgoRx _SPM *me) {
  * set up an instance of ArgoRx. 
  * It passes around configuration data.
  */
-int ArgoRx_init(struct ArgoRx _SPM *me) {
+int ArgoRx_init(ArgoRx_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -50,7 +49,6 @@ int ArgoRx_init(struct ArgoRx _SPM *me) {
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	
 	
 	me->chan = mp_create_qport(me->ChanId, SINK, sizeof(INT), 1);
 	if(me->chan == NULL) {
@@ -68,35 +66,30 @@ int ArgoRx_init(struct ArgoRx _SPM *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void ArgoRx_run(struct ArgoRx _SPM *me) {
+void ArgoRx_run(ArgoRx_t _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
-
+	
 	if(me->needToAck == true) {
-		int success = mp_nback(me->chan);
-		if(!success) {
+		if(!mp_nback(me->chan)) {
 			return;
 		}	
 	}
 	me->needToAck = false;
-	
 
-	int success = mp_nbrecv(me->chan);
-
-	if(success) {
+	if(mp_nbrecv(me->chan)) {
 		me->needToAck = true;
 		me->Data = *((volatile INT _SPM*)me->chan->read_buf);
 		
-		success = mp_nback(me->chan);
-		if(success) {
+		printf("chan %i recieved %i\n", me->ChanId, me->Data);
+
+		if(mp_nback(me->chan)) {
 			me->needToAck = false;
 		}
 		
 		me->outputEvents.event.DataPresent = 1;
 	}
-	
 }
-
 //no algorithms were present for this function block
 
 

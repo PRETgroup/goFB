@@ -22,7 +22,7 @@ union SawMotorInputEvents {
 //this block had no output events
 
 
-struct SawMotor {
+typedef struct {
     //input events
 	union SawMotorInputEvents inputEvents;
 
@@ -46,16 +46,16 @@ struct SawMotor {
 	enum SawMotor_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} SawMotor_t;
 
 //all FBs get a preinit function
-int SawMotor_preinit(struct SawMotor *me);
+int SawMotor_preinit(SawMotor_t _SPM *me);
 
 //all FBs get an init function
-int SawMotor_init(struct SawMotor *me);
+int SawMotor_init(SawMotor_t _SPM *me);
 
 //all FBs get a run function
-void SawMotor_run(struct SawMotor _SPM *me);
+void SawMotor_run(SawMotor_t _SPM *me);
 
 
 

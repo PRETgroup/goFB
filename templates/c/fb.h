@@ -62,23 +62,23 @@ typedef struct {
 	{{if $block.BasicFB}}enum {{$block.Name}}_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	{{end}}
-} {{if .TcrestUsingSPM}}_SPM{{end}} {{$block.Name}}_t;
+} {{$block.Name}}_t;
 
 //all FBs get a preinit function
-int {{$block.Name}}_preinit({{$block.Name}}_t *me);
+int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 //all FBs get an init function
-int {{$block.Name}}_init({{$block.Name}}_t *me);
+int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 //all FBs get a run function
-void {{$block.Name}}_run({{$block.Name}}_t *me);
+void {{$block.Name}}_run({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 {{if not $block.BasicFB}}//composite/resource/device FBs get sync functions
-void {{$block.Name}}_syncEvents({{$block.Name}}_t *me);
-void {{$block.Name}}_syncData({{$block.Name}}_t *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
+void {{$block.Name}}_syncEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+void {{$block.Name}}_syncData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
 {{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
-{{range $algIndex, $alg := $basicFB.Algorithms}}
-void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t *me);
+{{$tcrestUsingSPM := .TcrestUsingSPM}}{{range $algIndex, $alg := $basicFB.Algorithms}}
+void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t {{if $tcrestUsingSPM}}_SPM{{end}} *me);
 {{end}}{{end}}{{end}}
 
 #endif

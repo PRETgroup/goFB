@@ -41,11 +41,11 @@ typedef struct {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	struct SawmillSwitch runswitch;
-	struct SawMotor saw;
-	struct SawdustScale scale;
-	struct SawmillLaser laser;
-	struct SawmillControl control;
+	SawmillSwitch_t runswitch;
+	SawMotor_t saw;
+	SawdustScale_t scale;
+	SawmillLaser_t laser;
+	SawmillControl_t control;
 	
 	//resource vars
 	
@@ -53,19 +53,19 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
-} _SPM SawmillModule_t;
+} SawmillModule_t;
 
 //all FBs get a preinit function
-int SawmillModule_preinit(SawmillModule *me);
+int SawmillModule_preinit(SawmillModule_t _SPM *me);
 
 //all FBs get an init function
-int SawmillModule_init(SawmillModule *me);
+int SawmillModule_init(SawmillModule_t _SPM *me);
 
 //all FBs get a run function
-void SawmillModule_run(SawmillModule *me);
+void SawmillModule_run(SawmillModule_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void SawmillModule_syncEvents(SawmillModule *me);
-void SawmillModule_syncData(SawmillModule *me);
+void SawmillModule_syncEvents(SawmillModule_t _SPM *me);
+void SawmillModule_syncData(SawmillModule_t _SPM *me);
 
 #endif

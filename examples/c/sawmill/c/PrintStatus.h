@@ -22,7 +22,7 @@ union PrintStatusInputEvents {
 //this block had no output events
 
 
-struct PrintStatus {
+typedef struct {
     //input events
 	union PrintStatusInputEvents inputEvents;
 
@@ -48,18 +48,18 @@ struct PrintStatus {
 	enum PrintStatus_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} PrintStatus_t;
 
 //all FBs get a preinit function
-int PrintStatus_preinit(struct PrintStatus _SPM *me);
+int PrintStatus_preinit(PrintStatus_t _SPM *me);
 
 //all FBs get an init function
-int PrintStatus_init(struct PrintStatus _SPM *me);
+int PrintStatus_init(PrintStatus_t _SPM *me);
 
 //all FBs get a run function
-void PrintStatus_run(struct PrintStatus _SPM *me);
+void PrintStatus_run(PrintStatus_t _SPM *me);
 
-void PrintStatus_DoPrintStatus(struct PrintStatus _SPM *me);
+void PrintStatus_DoPrintStatus(PrintStatus_t _SPM *me);
 
 
 #endif

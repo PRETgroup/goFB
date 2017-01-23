@@ -22,7 +22,7 @@ union SawmillLaserOutputEvents {
 };
 
 
-struct SawmillLaser {
+typedef struct {
     //input events
 	
 
@@ -46,16 +46,16 @@ struct SawmillLaser {
 	enum SawmillLaser_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} SawmillLaser_t;
 
 //all FBs get a preinit function
-int SawmillLaser_preinit(struct SawmillLaser *me);
+int SawmillLaser_preinit(SawmillLaser_t _SPM *me);
 
 //all FBs get an init function
-int SawmillLaser_init(struct SawmillLaser *me);
+int SawmillLaser_init(SawmillLaser_t _SPM *me);
 
 //all FBs get a run function
-void SawmillLaser_run(struct SawmillLaser _SPM *me);
+void SawmillLaser_run(SawmillLaser_t _SPM *me);
 
 
 

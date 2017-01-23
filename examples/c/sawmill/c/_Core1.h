@@ -33,9 +33,9 @@ typedef struct {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	struct SawmillModule sawmill;
-	struct SawmillMessageHandler messageHandler;
-	struct ArgoTx tx;
+	SawmillModule_t sawmill;
+	SawmillMessageHandler_t messageHandler;
+	ArgoTx_t tx;
 	
 	//resource vars
 	
@@ -43,19 +43,19 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
-} _SPM _Core1_t;
+} _Core1_t;
 
 //all FBs get a preinit function
-int _Core1_preinit(_Core1 *me);
+int _Core1_preinit(_Core1_t _SPM *me);
 
 //all FBs get an init function
-int _Core1_init(_Core1 *me);
+int _Core1_init(_Core1_t _SPM *me);
 
 //all FBs get a run function
-void _Core1_run(_Core1 *me);
+void _Core1_run(_Core1_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _Core1_syncEvents(_Core1 *me);
-void _Core1_syncData(_Core1 *me);
+void _Core1_syncEvents(_Core1_t _SPM *me);
+void _Core1_syncData(_Core1_t _SPM *me);
 
 #endif

@@ -30,7 +30,7 @@ union SawmillControlOutputEvents {
 };
 
 
-struct SawmillControl {
+typedef struct {
     //input events
 	union SawmillControlInputEvents inputEvents;
 
@@ -58,31 +58,31 @@ struct SawmillControl {
 	enum SawmillControl_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} SawmillControl_t;
 
 //all FBs get a preinit function
-int SawmillControl_preinit(struct SawmillControl *me);
+int SawmillControl_preinit(SawmillControl_t _SPM *me);
 
 //all FBs get an init function
-int SawmillControl_init(struct SawmillControl *me);
+int SawmillControl_init(SawmillControl_t _SPM *me);
 
 //all FBs get a run function
-void SawmillControl_run(struct SawmillControl _SPM *me);
+void SawmillControl_run(SawmillControl_t _SPM *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void SawmillControl_MessageHaltWeight(struct SawmillControl _SPM *me);
+void SawmillControl_MessageHaltWeight(SawmillControl_t _SPM *me);
 
-void SawmillControl_MessageHaltLaser(struct SawmillControl _SPM *me);
+void SawmillControl_MessageHaltLaser(SawmillControl_t _SPM *me);
 
-void SawmillControl_MessageRun(struct SawmillControl _SPM *me);
+void SawmillControl_MessageRun(SawmillControl_t _SPM *me);
 
-void SawmillControl_MessageStop(struct SawmillControl _SPM *me);
+void SawmillControl_MessageStop(SawmillControl_t _SPM *me);
 
-void SawmillControl_SawRun(struct SawmillControl _SPM *me);
+void SawmillControl_SawRun(SawmillControl_t _SPM *me);
 
-void SawmillControl_SawStop(struct SawmillControl _SPM *me);
+void SawmillControl_SawStop(SawmillControl_t _SPM *me);
 
 
 #endif

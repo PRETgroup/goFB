@@ -9,7 +9,7 @@
  * initialise an instance of SimpleProducer. 
  * It sets all I/O values to zero.
  */
-int SimpleProducer_preinit(SimpleProducer_t *me) {
+int SimpleProducer_preinit(SimpleProducer_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -42,7 +42,7 @@ int SimpleProducer_preinit(SimpleProducer_t *me) {
  * set up an instance of SimpleProducer. 
  * It passes around configuration data.
  */
-int SimpleProducer_init(SimpleProducer_t *me) {
+int SimpleProducer_init(SimpleProducer_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -67,7 +67,7 @@ int SimpleProducer_init(SimpleProducer_t *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SimpleProducer_run(SimpleProducer_t *me) {
+void SimpleProducer_run(SimpleProducer_t _SPM *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -121,7 +121,7 @@ void SimpleProducer_run(SimpleProducer_t *me) {
 }
 //algorithms
 
-void SimpleProducer_update_count(SimpleProducer_t *me) {
+void SimpleProducer_update_count(SimpleProducer_t _SPM *me) {
 me->Count++;
 me->Data = me->Count;
 }

@@ -22,7 +22,7 @@ union SawmillSwitchOutputEvents {
 };
 
 
-struct SawmillSwitch {
+typedef struct {
     //input events
 	
 
@@ -46,16 +46,16 @@ struct SawmillSwitch {
 	enum SawmillSwitch_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-};
+} SawmillSwitch_t;
 
 //all FBs get a preinit function
-int SawmillSwitch_preinit(struct SawmillSwitch *me);
+int SawmillSwitch_preinit(SawmillSwitch_t _SPM *me);
 
 //all FBs get an init function
-int SawmillSwitch_init(struct SawmillSwitch *me);
+int SawmillSwitch_init(SawmillSwitch_t _SPM *me);
 
 //all FBs get a run function
-void SawmillSwitch_run(struct SawmillSwitch _SPM *me);
+void SawmillSwitch_run(SawmillSwitch_t _SPM *me);
 
 
 

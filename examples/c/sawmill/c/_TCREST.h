@@ -38,26 +38,26 @@ typedef struct {
 	//resource vars
 	
 	//resources (Devices only)
-	struct _Core0 c0;
-	struct _Core1 c1;
-	struct _Core2 c2;
-	struct _Core3 c3;
+	_Core0_t c0;
+	_Core1_t c1;
+	_Core2_t c2;
+	_Core3_t c3;
 	
 	//state and trigger (BFBs only)
 	
-} _SPM _TCREST_t;
+} _TCREST_t;
 
 //all FBs get a preinit function
-int _TCREST_preinit(_TCREST *me);
+int _TCREST_preinit(_TCREST_t _SPM *me);
 
 //all FBs get an init function
-int _TCREST_init(_TCREST *me);
+int _TCREST_init(_TCREST_t _SPM *me);
 
 //all FBs get a run function
-void _TCREST_run(_TCREST *me);
+void _TCREST_run(_TCREST_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _TCREST_syncEvents(_TCREST *me);
-void _TCREST_syncData(_TCREST *me);
+void _TCREST_syncEvents(_TCREST_t _SPM *me);
+void _TCREST_syncData(_TCREST_t _SPM *me);
 
 #endif

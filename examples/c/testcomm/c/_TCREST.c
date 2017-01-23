@@ -31,19 +31,15 @@ int _TCREST_preinit(_TCREST_t _SPM *me) {
 	//if there are resource vars with default values, set them
 	
 	//if there are resources with set parameters, set them
+	me->rx_core.RxChanId = 1;
+	me->tx_core.TxChanId = 1;
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
-	if(_Core0_preinit(&me->c0) != 0) {
+	if(_Core0_preinit(&me->rx_core) != 0) {
 		return 1;
 	}
-	if(_Core1_preinit(&me->c1) != 0) {
-		return 1;
-	}
-	if(_Core2_preinit(&me->c2) != 0) {
-		return 1;
-	}
-	if(_Core3_preinit(&me->c3) != 0) {
+	if(_Core1_preinit(&me->tx_core) != 0) {
 		return 1;
 	}
 	
@@ -60,6 +56,8 @@ int _TCREST_preinit(_TCREST_t _SPM *me) {
 int _TCREST_init(_TCREST_t _SPM *me) {
 	//pass in any parameters on this level
 	
+	me->rx_core.RxChanId = 1;
+	me->tx_core.TxChanId = 1;
 	
 	
 
@@ -68,16 +66,10 @@ int _TCREST_init(_TCREST_t _SPM *me) {
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
-	if(_Core0_init(&me->c0) != 0) {
+	if(_Core0_init(&me->rx_core) != 0) {
 		return 1;
 	}
-	if(_Core1_init(&me->c1) != 0) {
-		return 1;
-	}
-	if(_Core2_init(&me->c2) != 0) {
-		return 1;
-	}
-	if(_Core3_init(&me->c3) != 0) {
+	if(_Core1_init(&me->tx_core) != 0) {
 		return 1;
 	}
 	
@@ -95,11 +87,9 @@ int _TCREST_init(_TCREST_t _SPM *me) {
 void _TCREST_syncEvents(_TCREST_t _SPM *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
-	//sync for c0 (of type _Core0) which is a Resource
-	_Core0_syncEvents(&me->c0);//sync for c1 (of type _Core1) which is a Resource
-	_Core1_syncEvents(&me->c1);//sync for c2 (of type _Core2) which is a Resource
-	_Core2_syncEvents(&me->c2);//sync for c3 (of type _Core3) which is a Resource
-	_Core3_syncEvents(&me->c3);
+	//sync for rx_core (of type _Core0) which is a Resource
+	_Core0_syncEvents(&me->rx_core);//sync for tx_core (of type _Core1) which is a Resource
+	_Core1_syncEvents(&me->tx_core);
 	
 }
 
@@ -113,11 +103,9 @@ void _TCREST_syncEvents(_TCREST_t _SPM *me) {
 void _TCREST_syncData(_TCREST_t _SPM *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
-	//sync for c0 (of type _Core0) which is a Resource
-	_Core0_syncData(&me->c0);//sync for c1 (of type _Core1) which is a Resource
-	_Core1_syncData(&me->c1);//sync for c2 (of type _Core2) which is a Resource
-	_Core2_syncData(&me->c2);//sync for c3 (of type _Core3) which is a Resource
-	_Core3_syncData(&me->c3);
+	//sync for rx_core (of type _Core0) which is a Resource
+	_Core0_syncData(&me->rx_core);//sync for tx_core (of type _Core1) which is a Resource
+	_Core1_syncData(&me->tx_core);
 
 }
 
@@ -128,10 +116,8 @@ void _TCREST_syncData(_TCREST_t _SPM *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void _TCREST_run(_TCREST_t _SPM *me) {
-	_Core0_run(&me->c0);
-	_Core1_run(&me->c1);
-	_Core2_run(&me->c2);
-	_Core3_run(&me->c3);
+	_Core0_run(&me->rx_core);
+	_Core1_run(&me->tx_core);
 	
 }
 

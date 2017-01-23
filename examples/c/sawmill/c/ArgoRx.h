@@ -22,7 +22,7 @@ union ArgoRxOutputEvents {
 };
 
 
-struct ArgoRx {
+typedef struct {
     //input events
 	
 
@@ -46,19 +46,20 @@ struct ArgoRx {
 	//state and trigger (BFBs only)
 	enum ArgoRx_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
-	
-	qpd_t* chan;
+
+		qpd_t* chan;
 	BOOL needToAck;
-};
+	
+} _SPM ArgoRx_t;
 
 //all FBs get a preinit function
-int ArgoRx_preinit(struct ArgoRx _SPM *me);
+int ArgoRx_preinit(ArgoRx_t _SPM *me);
 
 //all FBs get an init function
-int ArgoRx_init(struct ArgoRx _SPM *me);
+int ArgoRx_init(ArgoRx_t _SPM *me);
 
 //all FBs get a run function
-void ArgoRx_run(struct ArgoRx _SPM *me);
+void ArgoRx_run(ArgoRx_t _SPM *me);
 
 
 

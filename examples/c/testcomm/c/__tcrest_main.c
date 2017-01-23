@@ -13,11 +13,12 @@ volatile _UNCACHED int c1init = 0;
 
 void t1(void* param);
 
-void task1(_Core1_t * c1);
+void task1(_Core1_t _SPM * c1);
 
-void __attribute__ ((noinline)) timed_task(_Core0_t * c0);
+void __attribute__ ((noinline)) timed_task(_Core0_t _SPM * c0);
 
 int main() {
+	mp_init();
 	printf("testcomm startup.\n");
 
 	printf("Starting t1 and initialising my_TCREST...\n");
@@ -25,7 +26,7 @@ int main() {
 	corethread_create(&core1, &t1, NULL);
 	printf("Started t1\n");
 
-	_Core0_t * c0;
+	_Core0_t _SPM * c0;
 	c0 = SPM_BASE;
 	
 	c0->rx.outputEvents.events[0] = 0;
@@ -79,13 +80,13 @@ int main() {
 	return 0;
 }
 
-void __attribute__ ((noinline)) timed_task(_Core0_t * c0) {
+void __attribute__ ((noinline)) timed_task(_Core0_t _SPM * c0) {
 	_Core0_syncEvents(c0);
 	_Core0_syncData(c0);
 	_Core0_run(c0);
 }
 
-void task1(_Core1_t * c1) {
+void task1(_Core1_t _SPM * c1) {
 	//task1 runs core1
 
 	unsigned int tickCount = 0;
@@ -97,7 +98,13 @@ void task1(_Core1_t * c1) {
 }
 
 void t1(void* param) {
-	_Core1_t * c1;
+				HEX = HEX + 1;
+							HEX = HEX + 1;
+										HEX = HEX + 1;
+													HEX = HEX + 1;
+	mp_init();
+	_Core1_t _SPM * c1;
+	c1 = SPM_BASE;
 	_Core1_preinit(c1);
 	_Core1_init(c1);
 	mp_init_ports();

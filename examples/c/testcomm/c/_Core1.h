@@ -42,19 +42,19 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
-} _SPM _Core1_t;
+} _Core1_t;
 
 //all FBs get a preinit function
-int _Core1_preinit(_Core1_t *me);
+int _Core1_preinit(_Core1_t _SPM *me);
 
 //all FBs get an init function
-int _Core1_init(_Core1_t *me);
+int _Core1_init(_Core1_t _SPM *me);
 
 //all FBs get a run function
-void _Core1_run(_Core1_t *me);
+void _Core1_run(_Core1_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _Core1_syncEvents(_Core1_t *me);
-void _Core1_syncData(_Core1_t *me);
+void _Core1_syncEvents(_Core1_t _SPM *me);
+void _Core1_syncData(_Core1_t _SPM *me);
 
 #endif
