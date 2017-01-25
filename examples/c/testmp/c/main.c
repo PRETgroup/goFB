@@ -7,19 +7,60 @@
 
 extern volatile _UNCACHED chan_info_t chan_info[MAX_CHANNELS];
 
-struct consumer {
+typedef struct {
 	qpd_t * chan;
-};
+} chan_cont_t;
+
+typedef struct {
+	chan_cont_t c;
+} consumer_t;
+
+typedef struct {
+	chan_cont_t c;
+} producer_t;
 
 const int NOC_MASTER = 0;
 
 #define HEX 		( *( ( volatile _IODEV unsigned * )	0xF0070000 ) )
+#define SWITCHES 	( *( ( volatile _IODEV unsigned * )	0xF0060000 ) )
+
+void rx_tick(chan_cont_t _SPM *c) {
+	int data;
+	int success;
+
+	success = mp_nbrecv(c->chan);
+		
+	if(success) {
+		data = *((volatile unsigned int _SPM*)c->chan->read_buf);
+
+		printf("Received %d...", data);
+
+		do {
+			success = mp_nback(c->chan);
+		} while(success == 0);
+
+		printf("acknowledged\n");
+	}
+}
+
+void consumer_tick(consumer_t _SPM *ct) {
+	
+
+	do {
+		rx_tick(&ct->c);
+	} while(1);
+}
 
 void consumer() {
-	struct consumer _SPM * cps;
-	cps = SPM_BASE;
 
-	cps->chan = mp_create_qport(1, SINK, sizeof(unsigned int), 1);
+	consumer_t _SPM *ct;
+	ct = SPM_BASE;
+
+	ct->c.chan = mp_create_qport(1, SINK, sizeof(unsigned int), 1);
+	if(ct->c.chan == NULL) {
+		printf("mp_create_qport failed\n");
+		return;
+	}
 
 	printf("trying to init ports\n");
 
@@ -27,32 +68,19 @@ void consumer() {
 		printf("mp_init_ports failed\n");
 		return;
 	}
-
-	int data;
-	int success;
-
-	do {
-		success = mp_nbrecv(cps->chan);
-		
-		if(success) {
-			data = *((volatile unsigned int _SPM*)cps->chan->read_buf);
-
-			printf("Received %d...", data);
-
-			do {
-				success = mp_nback(cps->chan);
-			} while(success == 0);
-
-			printf("acknowledged\n");
-		}
-	} while(1);
+	printf("awaiting data reception\n");
+	consumer_tick(ct);
 
 }
 
 void producer(void* param) {
-	qpd_t * chan = mp_create_qport(1, SOURCE, sizeof(unsigned int), 1);
+
+	producer_t _SPM *pt;
+	pt = SPM_BASE;
+
+	pt->c.chan = mp_create_qport(1, SOURCE, sizeof(unsigned int), 1);
 	HEX = 1;
-	if(chan == NULL) {
+	if(pt->c.chan == NULL) {
 		 HEX = 2;
 		 return;
 	} 
@@ -67,9 +95,11 @@ void producer(void* param) {
 	unsigned int count = 0;
 
 	do {
-		*((volatile unsigned int _SPM *)chan->write_buf) = count;
-		if(mp_nbsend(chan)) {
-			HEX = ++count;
+		*((volatile unsigned int _SPM *)pt->c.chan->write_buf) = count;
+		if(SWITCHES) {
+			if(mp_nbsend(pt->c.chan)) {
+				HEX = ++count;
+			}
 		}
 	} while(1);
 }

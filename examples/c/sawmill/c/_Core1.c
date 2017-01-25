@@ -17,7 +17,7 @@
  * initialise an instance of _Core1. 
  * It sets all I/O values to zero.
  */
-int _Core1_preinit(_Core1_t _SPM *me) {
+int _Core1_preinit(_Core1_t *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -54,7 +54,7 @@ int _Core1_preinit(_Core1_t _SPM *me) {
  * set up an instance of _Core1. 
  * It passes around configuration data.
  */
-int _Core1_init(_Core1_t _SPM *me) {
+int _Core1_init(_Core1_t *me) {
 	//pass in any parameters on this level
 	me->tx.ChanId = 1;
 	
@@ -90,7 +90,7 @@ int _Core1_init(_Core1_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core1_syncEvents(_Core1_t _SPM *me) {
+void _Core1_syncEvents(_Core1_t *me) {
 	//for all composite function block children, call this same function
 	
 	SawmillModule_syncEvents(&me->sawmill);//sync for sawmill (of type SawmillModule) which is a CFB
@@ -116,7 +116,7 @@ void _Core1_syncEvents(_Core1_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core1_syncData(_Core1_t _SPM *me) {
+void _Core1_syncData(_Core1_t *me) {
 	//for all composite function block children, call this same function
 	//sync for sawmill (of type SawmillModule) which is a CFB
 	SawmillModule_syncData(&me->sawmill);
@@ -152,7 +152,7 @@ void _Core1_syncData(_Core1_t _SPM *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core1_run(_Core1_t _SPM *me) {
+void _Core1_run(_Core1_t *me) {
 	SawmillModule_run(&me->sawmill);
 	SawmillMessageHandler_run(&me->messageHandler);
 	ArgoTx_run(&me->tx);

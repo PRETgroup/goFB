@@ -61,28 +61,28 @@ typedef struct {
 } SawmillControl_t;
 
 //all FBs get a preinit function
-int SawmillControl_preinit(SawmillControl_t _SPM *me);
+int SawmillControl_preinit(SawmillControl_t *me);
 
 //all FBs get an init function
-int SawmillControl_init(SawmillControl_t _SPM *me);
+int SawmillControl_init(SawmillControl_t *me);
 
 //all FBs get a run function
-void SawmillControl_run(SawmillControl_t _SPM *me);
+void SawmillControl_run(SawmillControl_t *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void SawmillControl_MessageHaltWeight(SawmillControl_t _SPM *me);
+void SawmillControl_MessageHaltWeight(SawmillControl_t *me);
 
-void SawmillControl_MessageHaltLaser(SawmillControl_t _SPM *me);
+void SawmillControl_MessageHaltLaser(SawmillControl_t *me);
 
-void SawmillControl_MessageRun(SawmillControl_t _SPM *me);
+void SawmillControl_MessageRun(SawmillControl_t *me);
 
-void SawmillControl_MessageStop(SawmillControl_t _SPM *me);
+void SawmillControl_MessageStop(SawmillControl_t *me);
 
-void SawmillControl_SawRun(SawmillControl_t _SPM *me);
+void SawmillControl_SawRun(SawmillControl_t *me);
 
-void SawmillControl_SawStop(SawmillControl_t _SPM *me);
+void SawmillControl_SawStop(SawmillControl_t *me);
 
 
 #endif

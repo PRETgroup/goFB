@@ -17,7 +17,7 @@
  * initialise an instance of _TCREST. 
  * It sets all I/O values to zero.
  */
-int _TCREST_preinit(_TCREST_t _SPM *me) {
+int _TCREST_preinit(_TCREST_t *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -53,7 +53,7 @@ int _TCREST_preinit(_TCREST_t _SPM *me) {
  * set up an instance of _TCREST. 
  * It passes around configuration data.
  */
-int _TCREST_init(_TCREST_t _SPM *me) {
+int _TCREST_init(_TCREST_t *me) {
 	//pass in any parameters on this level
 	
 	me->rx_core.RxChanId = 1;
@@ -84,7 +84,7 @@ int _TCREST_init(_TCREST_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _TCREST_syncEvents(_TCREST_t _SPM *me) {
+void _TCREST_syncEvents(_TCREST_t *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	//sync for rx_core (of type _Core0) which is a Resource
@@ -100,7 +100,7 @@ void _TCREST_syncEvents(_TCREST_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _TCREST_syncData(_TCREST_t _SPM *me) {
+void _TCREST_syncData(_TCREST_t *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	//sync for rx_core (of type _Core0) which is a Resource
@@ -115,7 +115,7 @@ void _TCREST_syncData(_TCREST_t _SPM *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _TCREST_run(_TCREST_t _SPM *me) {
+void _TCREST_run(_TCREST_t *me) {
 	_Core0_run(&me->rx_core);
 	_Core1_run(&me->tx_core);
 	

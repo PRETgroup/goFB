@@ -56,16 +56,16 @@ typedef struct {
 } SawmillModule_t;
 
 //all FBs get a preinit function
-int SawmillModule_preinit(SawmillModule_t _SPM *me);
+int SawmillModule_preinit(SawmillModule_t *me);
 
 //all FBs get an init function
-int SawmillModule_init(SawmillModule_t _SPM *me);
+int SawmillModule_init(SawmillModule_t *me);
 
 //all FBs get a run function
-void SawmillModule_run(SawmillModule_t _SPM *me);
+void SawmillModule_run(SawmillModule_t *me);
 
 //composite/resource/device FBs get sync functions
-void SawmillModule_syncEvents(SawmillModule_t _SPM *me);
-void SawmillModule_syncData(SawmillModule_t _SPM *me);
+void SawmillModule_syncEvents(SawmillModule_t *me);
+void SawmillModule_syncData(SawmillModule_t *me);
 
 #endif

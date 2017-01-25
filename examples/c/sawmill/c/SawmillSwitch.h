@@ -49,13 +49,13 @@ typedef struct {
 } SawmillSwitch_t;
 
 //all FBs get a preinit function
-int SawmillSwitch_preinit(SawmillSwitch_t _SPM *me);
+int SawmillSwitch_preinit(SawmillSwitch_t *me);
 
 //all FBs get an init function
-int SawmillSwitch_init(SawmillSwitch_t _SPM *me);
+int SawmillSwitch_init(SawmillSwitch_t *me);
 
 //all FBs get a run function
-void SawmillSwitch_run(SawmillSwitch_t _SPM *me);
+void SawmillSwitch_run(SawmillSwitch_t *me);
 
 
 

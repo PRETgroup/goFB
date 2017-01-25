@@ -9,7 +9,7 @@
  * initialise an instance of Producer. 
  * It sets all I/O values to zero.
  */
-int Producer_preinit(Producer_t _SPM *me) {
+int Producer_preinit(Producer_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -42,7 +42,7 @@ int Producer_preinit(Producer_t _SPM *me) {
  * set up an instance of Producer. 
  * It passes around configuration data.
  */
-int Producer_init(Producer_t _SPM *me) {
+int Producer_init(Producer_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -67,7 +67,7 @@ int Producer_init(Producer_t _SPM *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Producer_run(Producer_t _SPM *me) {
+void Producer_run(Producer_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 			HEX = me->_state;
@@ -82,12 +82,17 @@ void Producer_run(Producer_t _SPM *me) {
 			break;
 		case STATE_Producer_increment:
 			if(true) {
-				me->_state = STATE_Producer_Tx;
+				me->_state = STATE_Switches;
 				me->_trigger = true;
 			};
 			break;
+		case STATE_Switches:
+			if(SWITCHES) {
+				me->_state = STATE_Producer_Tx;
+				me->_trigger = true;
+			}
 		case STATE_Producer_Tx:
-			if(me->inputEvents.event.TxSuccessChanged && (me->TxSuccess) && SWITCHES != 0) {
+			if(me->inputEvents.event.TxSuccessChanged && (me->TxSuccess)) {
 				me->_state = STATE_Producer_increment;
 				me->_trigger = true;
 			} else if(me->inputEvents.event.TxSuccessChanged && ( ! me->TxSuccess)) {
@@ -106,6 +111,9 @@ void Producer_run(Producer_t _SPM *me) {
 		case STATE_Producer_Start:
 			break;
 
+		case STATE_Switches:
+			break;
+
 		case STATE_Producer_increment:
 			Producer_update_count(me);
 			break;
@@ -122,9 +130,9 @@ void Producer_run(Producer_t _SPM *me) {
 }
 //algorithms
 
-void Producer_update_count(Producer_t _SPM *me) {
-
+void Producer_update_count(Producer_t *me) {
 		me->Count++;
+		HEX = me->Count;
 		me->Data = me->Count;
 	
 }

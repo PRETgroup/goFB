@@ -9,7 +9,7 @@
  * initialise an instance of PrintStatus. 
  * It sets all I/O values to zero.
  */
-int PrintStatus_preinit(PrintStatus_t _SPM *me) {
+int PrintStatus_preinit(PrintStatus_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -40,7 +40,7 @@ int PrintStatus_preinit(PrintStatus_t _SPM *me) {
  * set up an instance of PrintStatus. 
  * It passes around configuration data.
  */
-int PrintStatus_init(PrintStatus_t _SPM *me) {
+int PrintStatus_init(PrintStatus_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -65,7 +65,7 @@ int PrintStatus_init(PrintStatus_t _SPM *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void PrintStatus_run(PrintStatus_t _SPM *me) {
+void PrintStatus_run(PrintStatus_t *me) {
 	//if there are output events, reset them
 	
 	//next state logic
@@ -106,7 +106,7 @@ void PrintStatus_run(PrintStatus_t _SPM *me) {
 
 //algorithms
 
-void PrintStatus_DoPrintStatus(PrintStatus_t _SPM *me) {
+void PrintStatus_DoPrintStatus(PrintStatus_t *me) {
 	printf("1:%d 2:%d 3:%d\n", me->Saw1Status, me->Saw2Status, me->Saw3Status);
 	//HEX = me->Data;
 }

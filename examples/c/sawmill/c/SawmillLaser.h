@@ -49,13 +49,13 @@ typedef struct {
 } SawmillLaser_t;
 
 //all FBs get a preinit function
-int SawmillLaser_preinit(SawmillLaser_t _SPM *me);
+int SawmillLaser_preinit(SawmillLaser_t *me);
 
 //all FBs get an init function
-int SawmillLaser_init(SawmillLaser_t _SPM *me);
+int SawmillLaser_init(SawmillLaser_t *me);
 
 //all FBs get a run function
-void SawmillLaser_run(SawmillLaser_t _SPM *me);
+void SawmillLaser_run(SawmillLaser_t *me);
 
 
 

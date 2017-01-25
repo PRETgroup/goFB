@@ -9,7 +9,7 @@
  * initialise an instance of SawdustScale. 
  * It sets all I/O values to zero.
  */
-int SawdustScale_preinit(SawdustScale_t _SPM *me) {
+int SawdustScale_preinit(SawdustScale_t *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -40,7 +40,7 @@ int SawdustScale_preinit(SawdustScale_t _SPM *me) {
  * set up an instance of SawdustScale. 
  * It passes around configuration data.
  */
-int SawdustScale_init(SawdustScale_t _SPM *me) {
+int SawdustScale_init(SawdustScale_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -65,7 +65,7 @@ int SawdustScale_init(SawdustScale_t _SPM *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SawdustScale_run(SawdustScale_t _SPM *me) {
+void SawdustScale_run(SawdustScale_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	

@@ -9,7 +9,7 @@
  * initialise an instance of SawMotor. 
  * It sets all I/O values to zero.
  */
-int SawMotor_preinit(SawMotor_t _SPM *me) {
+int SawMotor_preinit(SawMotor_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -40,7 +40,7 @@ int SawMotor_preinit(SawMotor_t _SPM *me) {
  * set up an instance of SawMotor. 
  * It passes around configuration data.
  */
-int SawMotor_init(SawMotor_t _SPM *me) {
+int SawMotor_init(SawMotor_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -65,7 +65,7 @@ int SawMotor_init(SawMotor_t _SPM *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SawMotor_run(SawMotor_t _SPM *me) {
+void SawMotor_run(SawMotor_t *me) {
 	//if there are output events, reset them
 	
 	//next state logic

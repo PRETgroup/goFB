@@ -17,7 +17,7 @@
  * initialise an instance of _Core0. 
  * It sets all I/O values to zero.
  */
-int _Core0_preinit(_Core0_t _SPM *me) {
+int _Core0_preinit(_Core0_t *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -57,7 +57,7 @@ int _Core0_preinit(_Core0_t _SPM *me) {
  * set up an instance of _Core0. 
  * It passes around configuration data.
  */
-int _Core0_init(_Core0_t _SPM *me) {
+int _Core0_init(_Core0_t *me) {
 	//pass in any parameters on this level
 	me->saw1rx.ChanId = 1;
 	me->saw2rx.ChanId = 2;
@@ -98,7 +98,7 @@ int _Core0_init(_Core0_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core0_syncEvents(_Core0_t _SPM *me) {
+void _Core0_syncEvents(_Core0_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -122,7 +122,7 @@ void _Core0_syncEvents(_Core0_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core0_syncData(_Core0_t _SPM *me) {
+void _Core0_syncData(_Core0_t *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -158,7 +158,7 @@ void _Core0_syncData(_Core0_t _SPM *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core0_run(_Core0_t _SPM *me) {
+void _Core0_run(_Core0_t *me) {
 	ArgoRx_run(&me->saw1rx);
 	ArgoRx_run(&me->saw2rx);
 	ArgoRx_run(&me->saw3rx);

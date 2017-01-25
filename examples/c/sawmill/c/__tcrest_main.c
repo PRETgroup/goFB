@@ -17,10 +17,10 @@ void t1(void* param);
 void t2(void* param);
 void t3(void* param);
 
-void task0(_Core0_t _SPM * c0);
-void task1(_Core1_t _SPM * c1);
-void task2(_Core2_t _SPM * c2);
-void task3(_Core3_t _SPM * c3);
+void task0(_Core0_t * c0);
+void task1(_Core1_t * c1);
+void task2(_Core2_t * c2);
+void task3(_Core3_t * c3);
 
 
 int main() {
@@ -43,13 +43,13 @@ int main() {
 	return 0;
 }
 
-void __attribute__ ((noinline)) timed_task(_Core0_t _SPM * c0) {
+void __attribute__ ((noinline)) timed_task(_Core0_t * c0) {
 	_Core0_syncEvents(c0);
 	_Core0_syncData(c0);
 	_Core0_run(c0);
 }
 
-void task0(_Core0_t _SPM * c0) {
+void task0(_Core0_t * c0) {
 	//task0 runs core0
 	unsigned int tickCount = 0;
 
@@ -70,7 +70,7 @@ void task0(_Core0_t _SPM * c0) {
 
 void t0(void* param) {
 	HEX = 7;
-	_Core0_t _SPM * c0;
+	_Core0_t * c0;
 	c0 = SPM_BASE;
 
 	if(_Core0_preinit(c0) != 0 || _Core0_init(c0) != 0) {
@@ -94,13 +94,13 @@ void t0(void* param) {
 	task0(c0);
 }
 
-void __attribute__ ((noinline)) timed_task1(_Core1_t _SPM * c1) {
+void __attribute__ ((noinline)) timed_task1(_Core1_t * c1) {
 	_Core1_syncEvents(c1);
 	_Core1_syncData(c1);
 	_Core1_run(c1);
 }
 
-void task1(_Core1_t _SPM * c1) {
+void task1(_Core1_t * c1) {
 	do {
 		timed_task1(c1);
 	} while(1);
@@ -108,7 +108,7 @@ void task1(_Core1_t _SPM * c1) {
 
 void t1(void* param) {
 	HEX = 7;
-	_Core1_t _SPM * c1;
+	_Core1_t * c1;
 	c1 = SPM_BASE;
 
 	if(_Core1_preinit(c1) != 0 || _Core1_init(c1) != 0) {
@@ -132,7 +132,7 @@ void t1(void* param) {
 	task1(c1);
 }
 
-void task2(_Core2_t _SPM * c2) {
+void task2(_Core2_t * c2) {
 	//taskn runs coren
 	do {
 		_Core2_syncEvents(c2);
@@ -143,7 +143,7 @@ void task2(_Core2_t _SPM * c2) {
 
 void t2(void* param) {
 	HEX = 7;
-	_Core2_t _SPM * c2;
+	_Core2_t * c2;
 	c2 = SPM_BASE;
 
 	if(_Core2_preinit(c2) != 0 || _Core2_init(c2) != 0) {
@@ -168,7 +168,7 @@ void t2(void* param) {
 }
 
 
-void task3(_Core3_t _SPM * c3) {
+void task3(_Core3_t * c3) {
 	//taskn runs coren
 	do {
 		_Core3_syncEvents(c3);
@@ -179,7 +179,7 @@ void task3(_Core3_t _SPM * c3) {
 
 void t3(void* param) {
 	HEX = 7;
-	_Core3_t _SPM * c3;
+	_Core3_t * c3;
 	c3 = SPM_BASE;
 
 	if(_Core3_preinit(c3) != 0 || _Core3_init(c3) != 0) {

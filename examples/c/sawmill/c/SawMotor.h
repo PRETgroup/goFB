@@ -49,13 +49,13 @@ typedef struct {
 } SawMotor_t;
 
 //all FBs get a preinit function
-int SawMotor_preinit(SawMotor_t _SPM *me);
+int SawMotor_preinit(SawMotor_t *me);
 
 //all FBs get an init function
-int SawMotor_init(SawMotor_t _SPM *me);
+int SawMotor_init(SawMotor_t *me);
 
 //all FBs get a run function
-void SawMotor_run(SawMotor_t _SPM *me);
+void SawMotor_run(SawMotor_t *me);
 
 
 

@@ -17,7 +17,7 @@
  * initialise an instance of _Core2. 
  * It sets all I/O values to zero.
  */
-int _Core2_preinit(_Core2_t _SPM *me) {
+int _Core2_preinit(_Core2_t *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -54,7 +54,7 @@ int _Core2_preinit(_Core2_t _SPM *me) {
  * set up an instance of _Core2. 
  * It passes around configuration data.
  */
-int _Core2_init(_Core2_t _SPM *me) {
+int _Core2_init(_Core2_t *me) {
 	//pass in any parameters on this level
 	me->tx.ChanId = 2;
 	
@@ -90,7 +90,7 @@ int _Core2_init(_Core2_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core2_syncEvents(_Core2_t _SPM *me) {
+void _Core2_syncEvents(_Core2_t *me) {
 	//for all composite function block children, call this same function
 	
 	SawmillModule_syncEvents(&me->sawmill);//sync for sawmill (of type SawmillModule) which is a CFB
@@ -116,7 +116,7 @@ void _Core2_syncEvents(_Core2_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core2_syncData(_Core2_t _SPM *me) {
+void _Core2_syncData(_Core2_t *me) {
 	//for all composite function block children, call this same function
 	//sync for sawmill (of type SawmillModule) which is a CFB
 	SawmillModule_syncData(&me->sawmill);
@@ -152,7 +152,7 @@ void _Core2_syncData(_Core2_t _SPM *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core2_run(_Core2_t _SPM *me) {
+void _Core2_run(_Core2_t *me) {
 	ArgoTx_run(&me->tx);
 	SawmillMessageHandler_run(&me->messageHandler);
 	SawmillModule_run(&me->sawmill);

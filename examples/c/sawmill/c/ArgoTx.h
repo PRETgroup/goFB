@@ -55,16 +55,16 @@ typedef struct {
 
 		qpd_t* chan;
 	
-} _SPM ArgoTx_t;
+} ArgoTx_t;
 
 //all FBs get a preinit function
-int ArgoTx_preinit(ArgoTx_t _SPM *me);
+int ArgoTx_preinit(ArgoTx_t *me);
 
 //all FBs get an init function
-int ArgoTx_init(ArgoTx_t _SPM *me);
+int ArgoTx_init(ArgoTx_t *me);
 
 //all FBs get a run function
-void ArgoTx_run(ArgoTx_t _SPM *me);
+void ArgoTx_run(ArgoTx_t *me);
 
 
 

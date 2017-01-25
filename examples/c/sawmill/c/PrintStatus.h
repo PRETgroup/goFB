@@ -51,15 +51,15 @@ typedef struct {
 } PrintStatus_t;
 
 //all FBs get a preinit function
-int PrintStatus_preinit(PrintStatus_t _SPM *me);
+int PrintStatus_preinit(PrintStatus_t *me);
 
 //all FBs get an init function
-int PrintStatus_init(PrintStatus_t _SPM *me);
+int PrintStatus_init(PrintStatus_t *me);
 
 //all FBs get a run function
-void PrintStatus_run(PrintStatus_t _SPM *me);
+void PrintStatus_run(PrintStatus_t *me);
 
-void PrintStatus_DoPrintStatus(PrintStatus_t _SPM *me);
+void PrintStatus_DoPrintStatus(PrintStatus_t *me);
 
 
 #endif

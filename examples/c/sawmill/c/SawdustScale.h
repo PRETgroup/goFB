@@ -49,13 +49,13 @@ typedef struct {
 } SawdustScale_t;
 
 //all FBs get a preinit function
-int SawdustScale_preinit(SawdustScale_t _SPM *me);
+int SawdustScale_preinit(SawdustScale_t *me);
 
 //all FBs get an init function
-int SawdustScale_init(SawdustScale_t _SPM *me);
+int SawdustScale_init(SawdustScale_t *me);
 
 //all FBs get a run function
-void SawdustScale_run(SawdustScale_t _SPM *me);
+void SawdustScale_run(SawdustScale_t *me);
 
 
 
