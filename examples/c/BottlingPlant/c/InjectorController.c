@@ -17,7 +17,7 @@
  * initialise an instance of InjectorController. 
  * It sets all I/O values to zero.
  */
-int InjectorController_preinit(InjectorController_t *me) {
+int InjectorController_preinit(InjectorController_t  *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -53,7 +53,7 @@ int InjectorController_preinit(InjectorController_t *me) {
  * set up an instance of InjectorController. 
  * It passes around configuration data.
  */
-int InjectorController_init(InjectorController_t *me) {
+int InjectorController_init(InjectorController_t  *me) {
 	//pass in any parameters on this level
 	
 	
@@ -91,9 +91,49 @@ int InjectorController_init(InjectorController_t *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void InjectorController_syncEvents(InjectorController_t *me) {
-	//for all composite function block children, call this same function
+void InjectorController_syncEvents(InjectorController_t  *me) {
+	//we need to clear our output events before we do synching as we'll be OR-EQUALing them
+	me->outputEvents.events[0] = 0;
 	
+
+	//clear all input events of fb children as we'll be OR-EQUALing them
+	
+	me->Arm->inputEvents.events[0] = 0;
+	
+	me->Pumps->inputEvents.events[0] = 0;
+	
+	
+	//first, for all "bfb outputs" and "this-level inputs" connections inside this cfb, run their copy
+	
+	me->Pumps.inputEvents.event.StartPump |= me->Arm.outputEvents.event.StartPump;
+	
+	me->outputEvents.event.InjectDone |= me->Arm.outputEvents.event.InjectDone;
+	
+	me->outputEvents.event.InjectorPositionChanged |= me->Arm.outputEvents.event.InjectorPositionChanged;
+	
+	me->outputEvents.event.InjectRunning |= me->Arm.outputEvents.event.InjectRunning;
+	
+	me->Arm.inputEvents.event.PumpFinished |= me->Pumps.outputEvents.event.PumpFinished;
+	
+	me->outputEvents.event.RejectCanister |= me->Pumps.outputEvents.event.RejectCanister;
+	
+	me->outputEvents.event.InjectorControlsChanged |= me->Pumps.outputEvents.event.InjectorControlsChanged;
+	
+	me->outputEvents.event.FillContentsChanged |= me->Pumps.outputEvents.event.FillContentsChanged;
+	
+	me->outputEvents.event.StartVacuumTimer |= me->Pumps.outputEvents.event.StartVacuumTimer;
+	
+
+	//second, run this same function on all cfb children
+	
+
+	//third, copy all outputs from all cfbs 
+
+
+
+
+	//old code past here
+
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
 	//inputs that go to children
@@ -142,7 +182,7 @@ void InjectorController_syncEvents(InjectorController_t *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void InjectorController_syncData(InjectorController_t *me) {
+void InjectorController_syncData(InjectorController_t  *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -184,7 +224,7 @@ void InjectorController_syncData(InjectorController_t *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void InjectorController_run(InjectorController_t *me) {
+void InjectorController_run(InjectorController_t  *me) {
 	InjectorMotorController_run(&me->Arm);
 	InjectorPumpsController_run(&me->Pumps);
 	

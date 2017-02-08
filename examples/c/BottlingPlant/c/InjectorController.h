@@ -70,19 +70,19 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
-}  InjectorController_t;
+} InjectorController_t;
 
 //all FBs get a preinit function
-int InjectorController_preinit(InjectorController_t *me);
+int InjectorController_preinit(InjectorController_t  *me);
 
 //all FBs get an init function
-int InjectorController_init(InjectorController_t *me);
+int InjectorController_init(InjectorController_t  *me);
 
 //all FBs get a run function
-void InjectorController_run(InjectorController_t *me);
+void InjectorController_run(InjectorController_t  *me);
 
 //composite/resource/device FBs get sync functions
-void InjectorController_syncEvents(InjectorController_t *me);
-void InjectorController_syncData(InjectorController_t *me);
+void InjectorController_syncEvents(InjectorController_t  *me);
+void InjectorController_syncData(InjectorController_t  *me);
 
 #endif

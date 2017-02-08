@@ -51,19 +51,19 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
-}  FlexPRET_t;
+} FlexPRET_t;
 
 //all FBs get a preinit function
-int FlexPRET_preinit(FlexPRET_t *me);
+int FlexPRET_preinit(FlexPRET_t  *me);
 
 //all FBs get an init function
-int FlexPRET_init(FlexPRET_t *me);
+int FlexPRET_init(FlexPRET_t  *me);
 
 //all FBs get a run function
-void FlexPRET_run(FlexPRET_t *me);
+void FlexPRET_run(FlexPRET_t  *me);
 
 //composite/resource/device FBs get sync functions
-void FlexPRET_syncEvents(FlexPRET_t *me);
-void FlexPRET_syncData(FlexPRET_t *me);
+void FlexPRET_syncEvents(FlexPRET_t  *me);
+void FlexPRET_syncData(FlexPRET_t  *me);
 
 #endif

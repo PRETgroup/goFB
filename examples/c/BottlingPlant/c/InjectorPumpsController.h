@@ -65,27 +65,27 @@ typedef struct {
 	enum InjectorPumpsController_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-}  InjectorPumpsController_t;
+} InjectorPumpsController_t;
 
 //all FBs get a preinit function
-int InjectorPumpsController_preinit(InjectorPumpsController_t *me);
+int InjectorPumpsController_preinit(InjectorPumpsController_t  *me);
 
 //all FBs get an init function
-int InjectorPumpsController_init(InjectorPumpsController_t *me);
+int InjectorPumpsController_init(InjectorPumpsController_t  *me);
 
 //all FBs get a run function
-void InjectorPumpsController_run(InjectorPumpsController_t *me);
+void InjectorPumpsController_run(InjectorPumpsController_t  *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void InjectorPumpsController_StartVacuum(InjectorPumpsController_t *me);
+void InjectorPumpsController_StartVacuum(InjectorPumpsController_t  *me);
 
-void InjectorPumpsController_ClearControls(InjectorPumpsController_t *me);
+void InjectorPumpsController_ClearControls(InjectorPumpsController_t  *me);
 
-void InjectorPumpsController_OpenValve(InjectorPumpsController_t *me);
+void InjectorPumpsController_OpenValve(InjectorPumpsController_t  *me);
 
-void InjectorPumpsController_StartPump(InjectorPumpsController_t *me);
+void InjectorPumpsController_StartPump(InjectorPumpsController_t  *me);
 
 
 #endif

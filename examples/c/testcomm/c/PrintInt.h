@@ -49,18 +49,18 @@ typedef struct {
 } PrintInt_t;
 
 //all FBs get a preinit function
-int PrintInt_preinit(PrintInt_t *me);
+int PrintInt_preinit(PrintInt_t _SPM *me);
 
 //all FBs get an init function
-int PrintInt_init(PrintInt_t *me);
+int PrintInt_init(PrintInt_t _SPM *me);
 
 //all FBs get a run function
-void PrintInt_run(PrintInt_t *me);
+void PrintInt_run(PrintInt_t _SPM *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void PrintInt_DoPrintInt(PrintInt_t *me);
+void PrintInt_DoPrintInt(PrintInt_t _SPM *me);
 
 
 #endif

@@ -9,7 +9,7 @@
  * initialise an instance of CanisterCounter. 
  * It sets all I/O values to zero.
  */
-int CanisterCounter_preinit(CanisterCounter_t *me) {
+int CanisterCounter_preinit(CanisterCounter_t  *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -41,7 +41,7 @@ int CanisterCounter_preinit(CanisterCounter_t *me) {
  * set up an instance of CanisterCounter. 
  * It passes around configuration data.
  */
-int CanisterCounter_init(CanisterCounter_t *me) {
+int CanisterCounter_init(CanisterCounter_t  *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +66,7 @@ int CanisterCounter_init(CanisterCounter_t *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void CanisterCounter_run(CanisterCounter_t *me) {
+void CanisterCounter_run(CanisterCounter_t  *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -99,7 +99,7 @@ void CanisterCounter_run(CanisterCounter_t *me) {
 }
 //algorithms
 
-void CanisterCounter_ChangeCount(CanisterCounter_t *me) {
+void CanisterCounter_ChangeCount(CanisterCounter_t  *me) {
 if(me->DoorSiteLaser) {
 	me->CanisterCount++;
 }

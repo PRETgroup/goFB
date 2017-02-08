@@ -6,6 +6,6 @@ cd ../../..
 ./goFB -i=$WD/fbt -o=$WD/c -l=c -t=FlexPRET
 cd $WD
 #compile
-clang c/*.c -o BottlingPlant.out
+#clang c/*.c -o BottlingPlant.out
 #run
-./BottlingPlant.out
+#./BottlingPlant.out

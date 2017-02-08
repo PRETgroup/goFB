@@ -54,21 +54,21 @@ typedef struct {
 	enum CanisterCounter_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-}  CanisterCounter_t;
+} CanisterCounter_t;
 
 //all FBs get a preinit function
-int CanisterCounter_preinit(CanisterCounter_t *me);
+int CanisterCounter_preinit(CanisterCounter_t  *me);
 
 //all FBs get an init function
-int CanisterCounter_init(CanisterCounter_t *me);
+int CanisterCounter_init(CanisterCounter_t  *me);
 
 //all FBs get a run function
-void CanisterCounter_run(CanisterCounter_t *me);
+void CanisterCounter_run(CanisterCounter_t  *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void CanisterCounter_ChangeCount(CanisterCounter_t *me);
+void CanisterCounter_ChangeCount(CanisterCounter_t  *me);
 
 
 #endif

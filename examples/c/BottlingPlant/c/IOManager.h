@@ -80,21 +80,21 @@ typedef struct {
 	enum IOManager_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-}  IOManager_t;
+} IOManager_t;
 
 //all FBs get a preinit function
-int IOManager_preinit(IOManager_t *me);
+int IOManager_preinit(IOManager_t  *me);
 
 //all FBs get an init function
-int IOManager_init(IOManager_t *me);
+int IOManager_init(IOManager_t  *me);
 
 //all FBs get a run function
-void IOManager_run(IOManager_t *me);
+void IOManager_run(IOManager_t  *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void IOManager_IOAlgorithm(IOManager_t *me);
+void IOManager_IOAlgorithm(IOManager_t  *me);
 
 
 #endif

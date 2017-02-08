@@ -17,7 +17,7 @@
  * initialise an instance of _Core1. 
  * It sets all I/O values to zero.
  */
-int _Core1_preinit(_Core1_t *me) {
+int _Core1_preinit(_Core1_t _SPM *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -51,14 +51,14 @@ int _Core1_preinit(_Core1_t *me) {
  * set up an instance of _Core1. 
  * It passes around configuration data.
  */
-int _Core1_init(_Core1_t *me) {
+int _Core1_init(_Core1_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
 	
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
-	//me->tx.ChanId = me->TxChanId;
+	me->tx.ChanId = me->TxChanId;
 	me->prod.TxSuccess = me->tx.Success;
 	me->tx.Data = me->prod.Data;
 	
@@ -70,7 +70,7 @@ int _Core1_init(_Core1_t *me) {
 	if(Producer_init(&me->prod) != 0) {
 		return 1;
 	}
-	
+	//printf("(1) Address is 0x%08x\n", (unsigned int)&me->tx.outputEvents.event);
 	
 
 	return 0;
@@ -83,7 +83,7 @@ int _Core1_init(_Core1_t *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core1_syncEvents(_Core1_t *me) {
+void _Core1_syncEvents(_Core1_t _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -93,6 +93,9 @@ void _Core1_syncEvents(_Core1_t *me) {
 	me->tx.inputEvents.event.DataPresent = me->prod.outputEvents.event.DataPresent; 
 	
 	me->prod.inputEvents.event.TxSuccessChanged = me->tx.outputEvents.event.SuccessChanged; 
+	if(me->tx.outputEvents.event.SuccessChanged) {
+		printf("success changed\n");
+	}
 	
 	//outputs of parent cfb
 	
@@ -106,7 +109,7 @@ void _Core1_syncEvents(_Core1_t *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core1_syncData(_Core1_t *me) {
+void _Core1_syncData(_Core1_t _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -137,9 +140,8 @@ void _Core1_syncData(_Core1_t *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core1_run(_Core1_t *me) {
+void _Core1_run(_Core1_t _SPM *me) {
 	ArgoTx_run(&me->tx);
 	Producer_run(&me->prod);
-	
 }
 

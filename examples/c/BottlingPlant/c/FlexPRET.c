@@ -17,7 +17,7 @@
  * initialise an instance of FlexPRET. 
  * It sets all I/O values to zero.
  */
-int FlexPRET_preinit(FlexPRET_t *me) {
+int FlexPRET_preinit(FlexPRET_t  *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -66,7 +66,7 @@ int FlexPRET_preinit(FlexPRET_t *me) {
  * set up an instance of FlexPRET. 
  * It passes around configuration data.
  */
-int FlexPRET_init(FlexPRET_t *me) {
+int FlexPRET_init(FlexPRET_t  *me) {
 	//pass in any parameters on this level
 	
 	
@@ -128,9 +128,82 @@ int FlexPRET_init(FlexPRET_t *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void FlexPRET_syncEvents(FlexPRET_t *me) {
-	//for all composite function block children, call this same function
+void FlexPRET_syncEvents(FlexPRET_t  *me) {
+	//we need to clear our output events before we do synching as we'll be OR-EQUALing them
 	
+
+	//clear all input events of fb children as we'll be OR-EQUALing them
+	
+	me->IO->inputEvents.events[0] = 0;
+	
+	me->CCounter->inputEvents.events[0] = 0;
+	
+	me->Door->inputEvents.events[0] = 0;
+	
+	me->Conveyor->inputEvents.events[0] = 0;
+	
+	me->RejectArm->inputEvents.events[0] = 0;
+	
+	me->Pumps->inputEvents.events[0] = 0;
+	
+	me->Motor->inputEvents.events[0] = 0;
+	
+	
+	//first, for all "bfb outputs" and "this-level inputs" connections inside this cfb, run their copy
+	
+	me->Motor.inputEvents.event.InjectorArmFinishedMovement |= me->IO.outputEvents.event.InjectorArmFinishMovement;
+	
+	me->Door.inputEvents.event.EmergencyStopChanged |= me->IO.outputEvents.event.EmergencyStopChanged;
+	
+	me->Pumps.inputEvents.event.CanisterPressureChanged |= me->IO.outputEvents.event.CanisterPressureChanged;
+	
+	me->Pumps.inputEvents.event.FillContentsAvailableChanged |= me->IO.outputEvents.event.FillContentsAvailableChanged;
+	
+	me->CCounter.inputEvents.event.LasersChanged |= me->IO.outputEvents.event.LasersChanged;
+	
+	me->Door.inputEvents.event.ReleaseDoorOverride |= me->IO.outputEvents.event.DoorOverride;
+	
+	me->Pumps.inputEvents.event.VacuumTimerElapsed |= me->IO.outputEvents.event.VacuumTimerElapsed;
+	
+	me->IO.inputEvents.event.CanisterCountChanged |= me->CCounter.outputEvents.event.CanisterCountChanged;
+	
+	me->IO.inputEvents.event.DoorReleaseCanister |= me->Door.outputEvents.event.DoorReleaseCanister;
+	
+	me->IO.inputEvents.event.ConveyorChanged |= me->Conveyor.outputEvents.event.ConveyorChanged;
+	
+	me->Motor.inputEvents.event.ConveyorStoppedForInject |= me->Conveyor.outputEvents.event.ConveyorStoppedForInject;
+	
+	me->IO.inputEvents.event.GoRejectArm |= me->RejectArm.outputEvents.event.GoRejectArm;
+	
+	me->Motor.inputEvents.event.PumpFinished |= me->Pumps.outputEvents.event.PumpFinished;
+	
+	me->RejectArm.inputEvents.event.RejectCanister |= me->Pumps.outputEvents.event.RejectCanister;
+	
+	me->IO.inputEvents.event.InjectorControlsChanged |= me->Pumps.outputEvents.event.InjectorControlsChanged;
+	
+	me->IO.inputEvents.event.FillContentsChanged |= me->Pumps.outputEvents.event.FillContentsChanged;
+	
+	me->IO.inputEvents.event.StartVacuumTimer |= me->Pumps.outputEvents.event.StartVacuumTimer;
+	
+	me->Pumps.inputEvents.event.StartPump |= me->Motor.outputEvents.event.StartPump;
+	
+	me->Door.inputEvents.event.BottlingDone |= me->Motor.outputEvents.event.InjectDone;
+	
+	me->IO.inputEvents.event.InjectorPositionChanged |= me->Motor.outputEvents.event.InjectorPositionChanged;
+	
+	me->0 |= me->Motor.outputEvents.event.InjectRunning;
+	
+
+	//second, run this same function on all cfb children
+	
+
+	//third, copy all outputs from all cfbs 
+
+
+
+
+	//old code past here
+
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
 	//inputs that go to children
@@ -201,7 +274,7 @@ void FlexPRET_syncEvents(FlexPRET_t *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void FlexPRET_syncData(FlexPRET_t *me) {
+void FlexPRET_syncData(FlexPRET_t  *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -287,7 +360,7 @@ void FlexPRET_syncData(FlexPRET_t *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void FlexPRET_run(FlexPRET_t *me) {
+void FlexPRET_run(FlexPRET_t  *me) {
 	IOManager_run(&me->IO);
 	CanisterCounter_run(&me->CCounter);
 	DoorController_run(&me->Door);

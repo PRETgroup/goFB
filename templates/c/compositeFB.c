@@ -20,9 +20,32 @@
  * _run function.
  */
 void {{$block.Name}}_syncEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
-	//for all composite function block children, call this same function
+	//we need to clear our output events before we do synching as we'll be OR-EQUALing them
+	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
+	{{end}}{{end}}
+
+	//clear all input events of fb children as we'll be OR-EQUALing them
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.EventInputs}}
+	{{range $index, $count := count (add (div (len $childType.EventInputs.Events) 32) 1)}}me->{{$child.Name}}->inputEvents.events[{{$count}}] = 0;
+	{{end}}{{end}}{{end}}
+	
+	//first, for all "bfb outputs" and "this-level inputs" connections inside this cfb, run their copy
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if and $childType.EventOutputs $childType.BasicFB}}{{range $currEventIndex, $event := $childType.EventOutputs.Events}}
+	{{$eventDest := findDestEventName $compositeFB.EventConnections $child.Name $event.Name}}me->{{$eventDest}} |= me->{{$child.Name}}.outputEvents.event.{{$event.Name}};
+	{{end}}{{end}}{{end}}
+
+	//second, run this same function on all cfb children
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}
-	{{$childType.Name}}_syncEvents(&me->{{$child.Name}});//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB{{end}}{{end}}
+	{{$childType.Name}}_syncEvents(&me->{{$child.Name}});//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
+	{{end}}{{end}}
+
+	//third, copy all outputs from all cfbs 
+
+
+
+
+	//old code past here
+
 	//for all basic function block children, perform their synchronisations explicitly
 	//events are always copied
 	//inputs that go to children

@@ -53,16 +53,16 @@ typedef struct {
 	enum DoorController_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-}  DoorController_t;
+} DoorController_t;
 
 //all FBs get a preinit function
-int DoorController_preinit(DoorController_t *me);
+int DoorController_preinit(DoorController_t  *me);
 
 //all FBs get an init function
-int DoorController_init(DoorController_t *me);
+int DoorController_init(DoorController_t  *me);
 
 //all FBs get a run function
-void DoorController_run(DoorController_t *me);
+void DoorController_run(DoorController_t  *me);
 
 
 
