@@ -17,7 +17,7 @@
  * initialise an instance of test2. 
  * It sets all I/O values to zero.
  */
-int test2_preinit(test2_t *me) {
+int test2_preinit(test2_t  *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -59,7 +59,7 @@ int test2_preinit(test2_t *me) {
  * set up an instance of test2. 
  * It passes around configuration data.
  */
-int test2_init(test2_t *me) {
+int test2_init(test2_t  *me) {
 	//pass in any parameters on this level
 	
 	
@@ -92,22 +92,36 @@ int test2_init(test2_t *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void test2_syncEvents(test2_t *me) {
-	//for all composite function block children, call this same function
+void test2_syncEvents(test2_t  *me) {
+	//we need to clear our output events before we do synching as we'll be OR-EQUALing them
 	
-	//for all basic function block children, perform their synchronisations explicitly
-	//events are always copied
-	//inputs that go to children
+
+	//clear all input events of fb children as we'll be OR-EQUALing them
 	
-	me->ac1.inputEvents.event.in = me->ac2.outputEvents.event.out; 
+	me->ac1.inputEvents.events[0] = 0;
 	
-	me->ac1.inputEvents.event.set_default_in = me->ac1.outputEvents.event.set_default_out; 
+	me->ac2.inputEvents.events[0] = 0;
 	
-	me->ac2.inputEvents.event.in = me->ac1.outputEvents.event.out; 
 	
-	me->ac2.inputEvents.event.set_default_in = me->ac2.outputEvents.event.set_default_out; 
+	//first, for all "bfb outputs" and "this-level inputs" connections inside this cfb, run their copy
 	
-	//outputs of parent cfb
+	me->ac2.inputEvents.event.in |= me->ac1.outputEvents.event.out;
+	
+	me->ac1.inputEvents.event.set_default_in |= me->ac1.outputEvents.event.set_default_out;
+	
+	me->ac1.inputEvents.event.in |= me->ac2.outputEvents.event.out;
+	
+	me->ac2.inputEvents.event.set_default_in |= me->ac2.outputEvents.event.set_default_out;
+	
+
+	
+
+	//second, run this same function on all cfb children
+	
+
+	//third, copy all outputs from all cfbs 
+	
+
 	
 	
 }
@@ -119,7 +133,7 @@ void test2_syncEvents(test2_t *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void test2_syncData(test2_t *me) {
+void test2_syncData(test2_t  *me) {
 	//for all composite function block children, call this same function
 	
 	//for all basic function block children, perform their synchronisations explicitly
@@ -176,7 +190,7 @@ void test2_syncData(test2_t *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void test2_run(test2_t *me) {
+void test2_run(test2_t  *me) {
 	ArrayCopier_run(&me->ac1);
 	ArrayCopier_run(&me->ac2);
 	

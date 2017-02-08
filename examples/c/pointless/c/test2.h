@@ -43,19 +43,19 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
-}  test2_t;
+} test2_t;
 
 //all FBs get a preinit function
-int test2_preinit(test2_t *me);
+int test2_preinit(test2_t  *me);
 
 //all FBs get an init function
-int test2_init(test2_t *me);
+int test2_init(test2_t  *me);
 
 //all FBs get a run function
-void test2_run(test2_t *me);
+void test2_run(test2_t  *me);
 
 //composite/resource/device FBs get sync functions
-void test2_syncEvents(test2_t *me);
-void test2_syncData(test2_t *me);
+void test2_syncEvents(test2_t  *me);
+void test2_syncData(test2_t  *me);
 
 #endif

@@ -98,9 +98,9 @@ void InjectorController_syncEvents(InjectorController_t  *me) {
 
 	//clear all input events of fb children as we'll be OR-EQUALing them
 	
-	me->Arm->inputEvents.events[0] = 0;
+	me->Arm.inputEvents.events[0] = 0;
 	
-	me->Pumps->inputEvents.events[0] = 0;
+	me->Pumps.inputEvents.events[0] = 0;
 	
 	
 	//first, for all "bfb outputs" and "this-level inputs" connections inside this cfb, run their copy
@@ -124,53 +124,27 @@ void InjectorController_syncEvents(InjectorController_t  *me) {
 	me->outputEvents.event.StartVacuumTimer |= me->Pumps.outputEvents.event.StartVacuumTimer;
 	
 
+	
+	me->Arm.inputEvents.event.InjectorArmFinishedMovement |= me->inputEvents.event.InjectorArmFinishedMovement;
+	
+	me->Arm.inputEvents.event.EmergencyStopChanged |= me->inputEvents.event.EmergencyStopChanged;
+	me->Pumps.inputEvents.event.EmergencyStopChanged |= me->inputEvents.event.EmergencyStopChanged;
+	
+	me->Pumps.inputEvents.event.CanisterPressureChanged |= me->inputEvents.event.CanisterPressureChanged;
+	
+	me->Pumps.inputEvents.event.FillContentsAvailableChanged |= me->inputEvents.event.FillContentsAvailableChanged;
+	
+	me->Arm.inputEvents.event.ConveyorStoppedForInject |= me->inputEvents.event.ConveyorStoppedForInject;
+	
+	me->Pumps.inputEvents.event.VacuumTimerElapsed |= me->inputEvents.event.VacuumTimerElapsed;
+	
+
 	//second, run this same function on all cfb children
 	
 
 	//third, copy all outputs from all cfbs 
+	
 
-
-
-
-	//old code past here
-
-	//for all basic function block children, perform their synchronisations explicitly
-	//events are always copied
-	//inputs that go to children
-	
-	me->Arm.inputEvents.event.InjectorArmFinishedMovement = me->inputEvents.event.InjectorArmFinishedMovement; 
-	
-	me->Arm.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged; 
-	
-	me->Arm.inputEvents.event.ConveyorStoppedForInject = me->inputEvents.event.ConveyorStoppedForInject; 
-	
-	me->Arm.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished; 
-	
-	me->Pumps.inputEvents.event.StartPump = me->Arm.outputEvents.event.StartPump; 
-	
-	me->Pumps.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged; 
-	
-	me->Pumps.inputEvents.event.CanisterPressureChanged = me->inputEvents.event.CanisterPressureChanged; 
-	
-	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->inputEvents.event.FillContentsAvailableChanged; 
-	
-	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->inputEvents.event.VacuumTimerElapsed; 
-	
-	//outputs of parent cfb
-	
-	me->outputEvents.event.InjectDone = me->Arm.outputEvents.event.InjectDone; 
-	
-	me->outputEvents.event.InjectorPositionChanged = me->Arm.outputEvents.event.InjectorPositionChanged; 
-	
-	me->outputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged; 
-	
-	me->outputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister; 
-	
-	me->outputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged; 
-	
-	me->outputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer; 
-	
-	me->outputEvents.event.InjectRunning = me->Arm.outputEvents.event.InjectRunning; 
 	
 	
 }

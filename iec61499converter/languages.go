@@ -80,7 +80,7 @@ var (
 		"renameCEventSourceLocation":      renameCEventSourceLocation,
 		"findSourceDataName":              findSourceDataName,
 		"findSourcesEventName":            findSourcesEventName,
-		"findDestEventName":               findDestEventName,
+		"findDestsEventName":              findDestsEventName,
 		"connChildSourceOnly":             connChildSourceOnly,
 		"strToUpper":                      strToUpper,
 		"findVarDefinitionForName":        findVarDefinitionForName,

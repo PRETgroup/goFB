@@ -178,7 +178,7 @@ func findSourceDataName(conns []iec61499.Connection, destChildName string, destV
 
 //Ths finds event connection source(s) based on a destination source (events can have multiple sources for event connections in iec61499)
 func findSourcesEventName(conns []iec61499.Connection, destChildName string, destEventName string) []string {
-	sources := make([]string, 0)
+	var sources []string
 	for _, conn := range conns {
 		if destChildName != "" {
 			if conn.Destination == destChildName+"."+destEventName {
@@ -193,19 +193,21 @@ func findSourcesEventName(conns []iec61499.Connection, destChildName string, des
 	return sources
 }
 
-func findDestEventName(conns []iec61499.Connection, sourceChildName string, sourceEventName string) string {
+//findDestsEventName will find the destination(s) of connections given a connection source (one source can go to many destinations)
+func findDestsEventName(conns []iec61499.Connection, sourceChildName string, sourceEventName string) []string {
+	var dests []string
 	for _, conn := range conns {
 		if sourceChildName != "" {
 			if conn.Source == sourceChildName+"."+sourceEventName {
-				return renameCLocation(conn.Destination, 1)
+				dests = append(dests, renameCLocation(conn.Destination, 1))
 			}
 		} else {
 			if conn.Source == sourceEventName {
-				return renameCLocation(conn.Destination, 1)
+				dests = append(dests, renameCLocation(conn.Destination, 1))
 			}
 		}
 	}
-	return "0"
+	return dests
 }
 
 //used to check if an iec61499.Connection's .Source or .Destination (send in appropriate string) are going to a parent's port

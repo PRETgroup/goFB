@@ -55,23 +55,23 @@ typedef struct {
 	enum ArrayCopier_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-}  ArrayCopier_t;
+} ArrayCopier_t;
 
 //all FBs get a preinit function
-int ArrayCopier_preinit(ArrayCopier_t *me);
+int ArrayCopier_preinit(ArrayCopier_t  *me);
 
 //all FBs get an init function
-int ArrayCopier_init(ArrayCopier_t *me);
+int ArrayCopier_init(ArrayCopier_t  *me);
 
 //all FBs get a run function
-void ArrayCopier_run(ArrayCopier_t *me);
+void ArrayCopier_run(ArrayCopier_t  *me);
 
 
 //basic FBs have a number of algorithm functions
 
-void ArrayCopier_moveArray(ArrayCopier_t *me);
+void ArrayCopier_moveArray(ArrayCopier_t  *me);
 
-void ArrayCopier_setArray(ArrayCopier_t *me);
+void ArrayCopier_setArray(ArrayCopier_t  *me);
 
 
 #endif
