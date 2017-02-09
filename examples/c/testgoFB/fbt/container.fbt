@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="container" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="HAMMONDSDESKTOP" Version="0.1" Author="Hammond" Date="2017-00-09" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="DataInChanged" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="DataOutChanged" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DataIn" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="DataOut" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="inside" Type="passforward" x="2202.08333333333" y="1115.625" />
+  <EventConnections><Connection Source="DataInChanged" Destination="inside.DataInChanged" />
+<Connection Source="inside.DataOutChanged" Destination="DataOutChanged" /></EventConnections>
+  <DataConnections><Connection Source="DataIn" Destination="inside.DataIn" />
+<Connection Source="inside.DataOut" Destination="DataOut" /></DataConnections>
+</FBNetwork>
+</FBType>

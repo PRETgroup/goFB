@@ -63,7 +63,7 @@ void {{$block.Name}}_syncOutputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
 	{{$childType.Name}}_syncOutputData(&me->{{$child.Name}});{{end}}{{end}}
 	
-	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
 	{{range $currLinkIndex, $link := $block.CompositeFB.DataConnections}}{{if connIsOnParent $link.Destination}}me->{{$link.Destination}} = me->{{$link.Source}};
 	{{end}}{{end}}
 	
@@ -86,8 +86,15 @@ void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{
 		me->{{$child.Name}}.{{$with.Var}}[{{$count}}] = me->{{findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}}[{{$count}}];{{end}}
 		{{else}}
 		me->{{$child.Name}}.{{$with.Var}} = me->{{findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}};{{end}}{{end}}{{end}}
-	} {{end}}{{end}}{{end}}{{end}}
-	{{end}}
+	} {{end}}{{end}}{{end}}
+	{{else}}{{/*it's a composite function block*/}}//sync for {{$child.Name}} (of Type {{$childType.Name}}) which is a CFB
+	{{if $childType.InputVars}}{{range $inputVarIndex, $inputVar := $childType.InputVars.Variables}}{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $inputVar.Name}}
+	{{if $source}}{{if $inputVar.GetArraySize}}
+		{{range $index, $count := count $inputVar.GetArraySize}}
+		me->{{$child.Name}}.{{$inputVar.Name}}[{{$count}}] = me->{{$source}}[{{$count}}];{{end}}
+		{{else}}
+		me->{{$child.Name}}.{{$inputVar.Name}} = me->{{$source}};
+	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
 	
 	//for all composite function block children, call this same function
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB

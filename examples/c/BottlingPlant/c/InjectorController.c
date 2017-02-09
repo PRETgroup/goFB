@@ -4,12 +4,15 @@
 // This file represents the implementation of the Composite Function Block for InjectorController
 #include "InjectorController.h"
 
-//When running a composite block, note that you would call the functions in this order
-//_init(); 
+//When running a composite block, note that you would call the functions in this order (and this is very important)
+//_preinit(); 
+//_init();
 //do {
-//_syncEvents();
-//_syncData();
-//_run();
+//	_syncOutputEvents();
+//	_syncInputEvents();
+//	_syncOutputData();
+//	_syncInputData();
+//	_run();
 //} loop;
 
 
@@ -92,8 +95,6 @@ int InjectorController_init(InjectorController_t  *me) {
  * _run function.
  */
 void InjectorController_syncOutputEvents(InjectorController_t  *me) {
-	
-
 	//first, for all cfb children, call this same function
 	
 	

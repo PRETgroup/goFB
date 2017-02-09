@@ -4,12 +4,15 @@
 // This file represents the implementation of the Composite Function Block for FlexPRET
 #include "FlexPRET.h"
 
-//When running a composite block, note that you would call the functions in this order
-//_init(); 
+//When running a composite block, note that you would call the functions in this order (and this is very important)
+//_preinit(); 
+//_init();
 //do {
-//_syncEvents();
-//_syncData();
-//_run();
+//	_syncOutputEvents();
+//	_syncInputEvents();
+//	_syncOutputData();
+//	_syncInputData();
+//	_run();
 //} loop;
 
 
@@ -42,16 +45,13 @@ int FlexPRET_preinit(FlexPRET_t  *me) {
 	if(DoorController_preinit(&me->Door) != 0) {
 		return 1;
 	}
+	if(InjectorController_preinit(&me->Injector) != 0) {
+		return 1;
+	}
 	if(ConveyorController_preinit(&me->Conveyor) != 0) {
 		return 1;
 	}
 	if(RejectArmController_preinit(&me->RejectArm) != 0) {
-		return 1;
-	}
-	if(InjectorPumpsController_preinit(&me->Pumps) != 0) {
-		return 1;
-	}
-	if(InjectorMotorController_preinit(&me->Motor) != 0) {
 		return 1;
 	}
 	
@@ -74,23 +74,22 @@ int FlexPRET_init(FlexPRET_t  *me) {
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	me->Door.EmergencyStop = me->IO.EmergencyStop;
+	me->Injector.EmergencyStop = me->IO.EmergencyStop;
 	me->Conveyor.EmergencyStop = me->IO.EmergencyStop;
-	me->Motor.EmergencyStop = me->IO.EmergencyStop;
-	me->Pumps.EmergencyStop = me->IO.EmergencyStop;
-	me->Pumps.CanisterPressure = me->IO.CanisterPressure;
-	me->Pumps.FillContentsAvailable = me->IO.FillContentsAvailable;
+	me->Injector.CanisterPressure = me->IO.CanisterPressure;
+	me->Injector.FillContentsAvailable = me->IO.FillContentsAvailable;
 	me->CCounter.DoorSiteLaser = me->IO.DoorSiteLaser;
 	me->Conveyor.InjectSiteLaser = me->IO.InjectSiteLaser;
 	me->RejectArm.RejectSiteLaser = me->IO.RejectSiteLaser;
 	me->CCounter.RejectBinLaser = me->IO.RejectBinLaser;
 	me->CCounter.AcceptBinLaser = me->IO.AcceptBinLaser;
 	me->IO.CanisterCount = me->CCounter.CanisterCount;
+	me->IO.InjectorPosition = me->Injector.InjectorPosition;
+	me->IO.InjectorContentsValveOpen = me->Injector.InjectorContentsValveOpen;
+	me->IO.InjectorVacuumRun = me->Injector.InjectorVacuumRun;
+	me->IO.InjectorPressurePumpRun = me->Injector.InjectorPressurePumpRun;
+	me->IO.FillContents = me->Injector.FillContents;
 	me->IO.ConveyorSpeed = me->Conveyor.ConveyorSpeed;
-	me->IO.InjectorContentsValveOpen = me->Pumps.InjectorContentsValveOpen;
-	me->IO.InjectorVacuumRun = me->Pumps.InjectorVacuumRun;
-	me->IO.InjectorPressurePumpRun = me->Pumps.InjectorPressurePumpRun;
-	me->IO.FillContents = me->Pumps.FillContents;
-	me->IO.InjectorPosition = me->Motor.InjectorPosition;
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
@@ -103,16 +102,13 @@ int FlexPRET_init(FlexPRET_t  *me) {
 	if(DoorController_init(&me->Door) != 0) {
 		return 1;
 	}
+	if(InjectorController_init(&me->Injector) != 0) {
+		return 1;
+	}
 	if(ConveyorController_init(&me->Conveyor) != 0) {
 		return 1;
 	}
 	if(RejectArmController_init(&me->RejectArm) != 0) {
-		return 1;
-	}
-	if(InjectorPumpsController_init(&me->Pumps) != 0) {
-		return 1;
-	}
-	if(InjectorMotorController_init(&me->Motor) != 0) {
 		return 1;
 	}
 	
@@ -129,9 +125,9 @@ int FlexPRET_init(FlexPRET_t  *me) {
  * _run function.
  */
 void FlexPRET_syncOutputEvents(FlexPRET_t  *me) {
-	
-
 	//first, for all cfb children, call this same function
+	
+	InjectorController_syncOutputEvents(&me->Injector);//sync for Injector (of type InjectorController) which is a CFB
 	
 	
 	//then, for all connections that are connected to an output on the parent, run their run their copy
@@ -150,58 +146,54 @@ void FlexPRET_syncInputEvents(FlexPRET_t  *me) {
 	
 	me->IO.inputEvents.event.ConveyorChanged = me->Conveyor.outputEvents.event.ConveyorChanged; 
 	
-	me->IO.inputEvents.event.InjectorPositionChanged = me->Motor.outputEvents.event.InjectorPositionChanged; 
+	me->IO.inputEvents.event.InjectorPositionChanged = me->Injector.outputEvents.event.InjectorPositionChanged; 
 	
-	me->IO.inputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged; 
+	me->IO.inputEvents.event.InjectorControlsChanged = me->Injector.outputEvents.event.InjectorControlsChanged; 
 	
-	me->IO.inputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged; 
+	me->IO.inputEvents.event.FillContentsChanged = me->Injector.outputEvents.event.FillContentsChanged; 
 	
-	me->IO.inputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer; 
+	me->IO.inputEvents.event.StartVacuumTimer = me->Injector.outputEvents.event.StartVacuumTimer; 
 	
 	me->IO.inputEvents.event.GoRejectArm = me->RejectArm.outputEvents.event.GoRejectArm; 
 	
 	me->IO.inputEvents.event.CanisterCountChanged = me->CCounter.outputEvents.event.CanisterCountChanged; 
 	
-	me->IO.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone; 
+	me->IO.inputEvents.event.InjectDone = 0; 
 	
 	me->CCounter.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
 	
 	me->Door.inputEvents.event.ReleaseDoorOverride = me->IO.outputEvents.event.DoorOverride; 
 	
-	me->Door.inputEvents.event.BottlingDone = me->Motor.outputEvents.event.InjectDone; 
+	me->Door.inputEvents.event.BottlingDone = me->Injector.outputEvents.event.InjectDone; 
 	
 	me->Door.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
 	
-	me->Conveyor.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone; 
+	me->Injector.inputEvents.event.InjectorArmFinishedMovement = me->IO.outputEvents.event.InjectorArmFinishMovement; 
+	
+	me->Injector.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Injector.inputEvents.event.CanisterPressureChanged = me->IO.outputEvents.event.CanisterPressureChanged; 
+	
+	me->Injector.inputEvents.event.FillContentsAvailableChanged = me->IO.outputEvents.event.FillContentsAvailableChanged; 
+	
+	me->Injector.inputEvents.event.ConveyorStoppedForInject = me->Conveyor.outputEvents.event.ConveyorStoppedForInject; 
+	
+	me->Injector.inputEvents.event.VacuumTimerElapsed = me->IO.outputEvents.event.VacuumTimerElapsed; 
+	
+	me->Conveyor.inputEvents.event.InjectDone = me->Injector.outputEvents.event.InjectDone; 
 	
 	me->Conveyor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
 	
 	me->Conveyor.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
 	
-	me->RejectArm.inputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister; 
+	me->RejectArm.inputEvents.event.RejectCanister = me->Injector.outputEvents.event.RejectCanister; 
 	
 	me->RejectArm.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
 	
-	me->Pumps.inputEvents.event.StartPump = me->Motor.outputEvents.event.StartPump; 
-	
-	me->Pumps.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
-	
-	me->Pumps.inputEvents.event.CanisterPressureChanged = me->IO.outputEvents.event.CanisterPressureChanged; 
-	
-	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->IO.outputEvents.event.FillContentsAvailableChanged; 
-	
-	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->IO.outputEvents.event.VacuumTimerElapsed; 
-	
-	me->Motor.inputEvents.event.InjectorArmFinishedMovement = me->IO.outputEvents.event.InjectorArmFinishMovement; 
-	
-	me->Motor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
-	
-	me->Motor.inputEvents.event.ConveyorStoppedForInject = me->Conveyor.outputEvents.event.ConveyorStoppedForInject; 
-	
-	me->Motor.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished; 
-	
 
 	//then, call this same function on all cfb children
+	
+	InjectorController_syncInputEvents(&me->Injector);//sync for Injector (of type InjectorController) which is a CFB
 	
 }
 
@@ -214,7 +206,8 @@ void FlexPRET_syncInputEvents(FlexPRET_t  *me) {
  */
 void FlexPRET_syncOutputData(FlexPRET_t  *me) {
 	//for all composite function block children, call this same function
-	
+	//sync for Injector (of type InjectorController) which is a CFB
+	InjectorController_syncOutputData(&me->Injector);
 	
 	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
 	
@@ -237,15 +230,15 @@ void FlexPRET_syncInputData(FlexPRET_t  *me) {
 		me->IO.ConveyorSpeed = me->Conveyor.ConveyorSpeed;
 	} 
 	if(me->IO.inputEvents.event.InjectorPositionChanged == 1) { 
-		me->IO.InjectorPosition = me->Motor.InjectorPosition;
+		me->IO.InjectorPosition = me->Injector.InjectorPosition;
 	} 
 	if(me->IO.inputEvents.event.InjectorControlsChanged == 1) { 
-		me->IO.InjectorContentsValveOpen = me->Pumps.InjectorContentsValveOpen;
-		me->IO.InjectorVacuumRun = me->Pumps.InjectorVacuumRun;
-		me->IO.InjectorPressurePumpRun = me->Pumps.InjectorPressurePumpRun;
+		me->IO.InjectorContentsValveOpen = me->Injector.InjectorContentsValveOpen;
+		me->IO.InjectorVacuumRun = me->Injector.InjectorVacuumRun;
+		me->IO.InjectorPressurePumpRun = me->Injector.InjectorPressurePumpRun;
 	} 
 	if(me->IO.inputEvents.event.FillContentsChanged == 1) { 
-		me->IO.FillContents = me->Pumps.FillContents;
+		me->IO.FillContents = me->Injector.FillContents;
 	} 
 	if(me->IO.inputEvents.event.CanisterCountChanged == 1) { 
 		me->IO.CanisterCount = me->CCounter.CanisterCount;
@@ -265,6 +258,7 @@ void FlexPRET_syncInputData(FlexPRET_t  *me) {
 		me->Door.EmergencyStop = me->IO.EmergencyStop;
 	} 
 	
+	
 	//sync for Conveyor (of type ConveyorController) which is a BFB
 	
 	if(me->Conveyor.inputEvents.event.EmergencyStopChanged == 1) { 
@@ -280,27 +274,10 @@ void FlexPRET_syncInputData(FlexPRET_t  *me) {
 		me->RejectArm.RejectSiteLaser = me->IO.RejectSiteLaser;
 	} 
 	
-	//sync for Pumps (of type InjectorPumpsController) which is a BFB
-	
-	if(me->Pumps.inputEvents.event.EmergencyStopChanged == 1) { 
-		me->Pumps.EmergencyStop = me->IO.EmergencyStop;
-	} 
-	if(me->Pumps.inputEvents.event.CanisterPressureChanged == 1) { 
-		me->Pumps.CanisterPressure = me->IO.CanisterPressure;
-	} 
-	if(me->Pumps.inputEvents.event.FillContentsAvailableChanged == 1) { 
-		me->Pumps.FillContentsAvailable = me->IO.FillContentsAvailable;
-	} 
-	
-	//sync for Motor (of type InjectorMotorController) which is a BFB
-	
-	if(me->Motor.inputEvents.event.EmergencyStopChanged == 1) { 
-		me->Motor.EmergencyStop = me->IO.EmergencyStop;
-	} 
-	
 	
 	//for all composite function block children, call this same function
-	
+	//sync for Injector (of type InjectorController) which is a CFB
+	InjectorController_syncInputData(&me->Injector);
 	
 }
 
@@ -314,10 +291,9 @@ void FlexPRET_run(FlexPRET_t  *me) {
 	IOManager_run(&me->IO);
 	CanisterCounter_run(&me->CCounter);
 	DoorController_run(&me->Door);
+	InjectorController_run(&me->Injector);
 	ConveyorController_run(&me->Conveyor);
 	RejectArmController_run(&me->RejectArm);
-	InjectorPumpsController_run(&me->Pumps);
-	InjectorMotorController_run(&me->Motor);
 	
 }
 

@@ -11,10 +11,9 @@
 #include "IOManager.h"
 #include "CanisterCounter.h"
 #include "DoorController.h"
+#include "InjectorController.h"
 #include "ConveyorController.h"
 #include "RejectArmController.h"
-#include "InjectorPumpsController.h"
-#include "InjectorMotorController.h"
 
 
 //this block had no input events
@@ -40,10 +39,9 @@ typedef struct {
 	IOManager_t IO;
 	CanisterCounter_t CCounter;
 	DoorController_t Door;
+	InjectorController_t Injector;
 	ConveyorController_t Conveyor;
 	RejectArmController_t RejectArm;
-	InjectorPumpsController_t Pumps;
-	InjectorMotorController_t Motor;
 	
 	//resource vars
 	

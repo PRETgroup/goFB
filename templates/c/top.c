@@ -17,8 +17,9 @@ int main() {
 		printf("Failed to initialize.");
 		return 1;
 	}
-
+	int tickNum = 0;
 	do {
+		printf("=====TICK %i=====\n",tickNum);
 		{{$block.Name}}_syncOutputEvents(&my{{$block.Name}});
 		{{$block.Name}}_syncInputEvents(&my{{$block.Name}});
 
@@ -26,7 +27,7 @@ int main() {
 		{{$block.Name}}_syncInputData(&my{{$block.Name}});
 		
 		{{$block.Name}}_run(&my{{$block.Name}});
-	} while(true);
+	} while(tickNum++ < 100);
 
 	return 0;
 }
