@@ -68,7 +68,6 @@ int ConveyorController_init(ConveyorController_t  *me);
 //all FBs get a run function
 void ConveyorController_run(ConveyorController_t  *me);
 
-
 //basic FBs have a number of algorithm functions
 
 void ConveyorController_ConveyorStart(ConveyorController_t  *me);

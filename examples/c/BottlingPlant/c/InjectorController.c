@@ -86,81 +86,96 @@ int InjectorController_init(InjectorController_t  *me) {
 
 
 
-/* InjectorController_syncEvents() synchronises the events of an
+/* InjectorController_syncOutputEvents() synchronises the output events of an
  * instance of InjectorController as required by synchronous semantics.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void InjectorController_syncEvents(InjectorController_t  *me) {
-	//we need to clear our output events before we do synching as we'll be OR-EQUALing them
-	me->outputEvents.events[0] = 0;
+void InjectorController_syncOutputEvents(InjectorController_t  *me) {
 	
 
-	//clear all input events of fb children as we'll be OR-EQUALing them
-	
-	me->Arm.inputEvents.events[0] = 0;
-	
-	me->Pumps.inputEvents.events[0] = 0;
+	//first, for all cfb children, call this same function
 	
 	
-	//first, for all "bfb outputs" and "this-level inputs" connections inside this cfb, run their copy
+	//then, for all connections that are connected to an output on the parent, run their run their copy
 	
-	me->Pumps.inputEvents.event.StartPump |= me->Arm.outputEvents.event.StartPump;
+	me->outputEvents.event.InjectDone = me->Arm.outputEvents.event.InjectDone; 
 	
-	me->outputEvents.event.InjectDone |= me->Arm.outputEvents.event.InjectDone;
+	me->outputEvents.event.InjectorPositionChanged = me->Arm.outputEvents.event.InjectorPositionChanged; 
 	
-	me->outputEvents.event.InjectorPositionChanged |= me->Arm.outputEvents.event.InjectorPositionChanged;
+	me->outputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged; 
 	
-	me->outputEvents.event.InjectRunning |= me->Arm.outputEvents.event.InjectRunning;
+	me->outputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister; 
 	
-	me->Arm.inputEvents.event.PumpFinished |= me->Pumps.outputEvents.event.PumpFinished;
+	me->outputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged; 
 	
-	me->outputEvents.event.RejectCanister |= me->Pumps.outputEvents.event.RejectCanister;
+	me->outputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer; 
 	
-	me->outputEvents.event.InjectorControlsChanged |= me->Pumps.outputEvents.event.InjectorControlsChanged;
-	
-	me->outputEvents.event.FillContentsChanged |= me->Pumps.outputEvents.event.FillContentsChanged;
-	
-	me->outputEvents.event.StartVacuumTimer |= me->Pumps.outputEvents.event.StartVacuumTimer;
-	
-
-	
-	me->Arm.inputEvents.event.InjectorArmFinishedMovement |= me->inputEvents.event.InjectorArmFinishedMovement;
-	
-	me->Arm.inputEvents.event.EmergencyStopChanged |= me->inputEvents.event.EmergencyStopChanged;
-	me->Pumps.inputEvents.event.EmergencyStopChanged |= me->inputEvents.event.EmergencyStopChanged;
-	
-	me->Pumps.inputEvents.event.CanisterPressureChanged |= me->inputEvents.event.CanisterPressureChanged;
-	
-	me->Pumps.inputEvents.event.FillContentsAvailableChanged |= me->inputEvents.event.FillContentsAvailableChanged;
-	
-	me->Arm.inputEvents.event.ConveyorStoppedForInject |= me->inputEvents.event.ConveyorStoppedForInject;
-	
-	me->Pumps.inputEvents.event.VacuumTimerElapsed |= me->inputEvents.event.VacuumTimerElapsed;
-	
-
-	//second, run this same function on all cfb children
-	
-
-	//third, copy all outputs from all cfbs 
-	
-
-	
+	me->outputEvents.event.InjectRunning = me->Arm.outputEvents.event.InjectRunning; 
 	
 }
 
-/* InjectorController_syncData() synchronises the data connections of an
+/* InjectorController_syncInputEvents() synchronises the input events of an
+ * instance of InjectorController as required by synchronous semantics.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void InjectorController_syncInputEvents(InjectorController_t  *me) {
+	//first, we explicitly synchronise the children
+	
+	me->Arm.inputEvents.event.InjectorArmFinishedMovement = me->inputEvents.event.InjectorArmFinishedMovement; 
+	
+	me->Arm.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged; 
+	
+	me->Arm.inputEvents.event.ConveyorStoppedForInject = me->inputEvents.event.ConveyorStoppedForInject; 
+	
+	me->Arm.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished; 
+	
+	me->Pumps.inputEvents.event.StartPump = me->Arm.outputEvents.event.StartPump; 
+	
+	me->Pumps.inputEvents.event.EmergencyStopChanged = me->inputEvents.event.EmergencyStopChanged; 
+	
+	me->Pumps.inputEvents.event.CanisterPressureChanged = me->inputEvents.event.CanisterPressureChanged; 
+	
+	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->inputEvents.event.FillContentsAvailableChanged; 
+	
+	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->inputEvents.event.VacuumTimerElapsed; 
+	
+
+	//then, call this same function on all cfb children
+	
+}
+
+/* InjectorController_syncOutputData() synchronises the output data connections of an
  * instance of InjectorController as required by synchronous semantics.
  * It does the checking to ensure that only connections which have had their
  * associated event fire are updated.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void InjectorController_syncData(InjectorController_t  *me) {
+void InjectorController_syncOutputData(InjectorController_t  *me) {
 	//for all composite function block children, call this same function
 	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	me->InjectorPosition = me->Arm.InjectorPosition;
+	me->InjectorContentsValveOpen = me->Pumps.InjectorContentsValveOpen;
+	me->InjectorVacuumRun = me->Pumps.InjectorVacuumRun;
+	me->InjectorPressurePumpRun = me->Pumps.InjectorPressurePumpRun;
+	me->FillContents = me->Pumps.FillContents;
+	
+	
+}
+
+/* InjectorController_syncInputData() synchronises the input data connections of an
+ * instance of InjectorController as required by synchronous semantics.
+ * It does the checking to ensure that only connections which have had their
+ * associated event fire are updated.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void InjectorController_syncInputData(InjectorController_t  *me) {
 	//for all basic function block children, perform their synchronisations explicitly
-	//Data is sometimes copied
 	
 	//sync for Arm (of type InjectorMotorController) which is a BFB
 	
@@ -181,15 +196,9 @@ void InjectorController_syncData(InjectorController_t  *me) {
 	} 
 	
 	
-	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
-	me->InjectorPosition = me->Arm.InjectorPosition;
-	me->InjectorContentsValveOpen = me->Pumps.InjectorContentsValveOpen;
-	me->InjectorVacuumRun = me->Pumps.InjectorVacuumRun;
-	me->InjectorPressurePumpRun = me->Pumps.InjectorPressurePumpRun;
-	me->FillContents = me->Pumps.FillContents;
+	//for all composite function block children, call this same function
 	
 	
-
 }
 
 

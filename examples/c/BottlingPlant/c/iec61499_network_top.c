@@ -19,8 +19,12 @@ int main() {
 	}
 
 	do {
-		FlexPRET_syncEvents(&myFlexPRET);
-		FlexPRET_syncData(&myFlexPRET);
+		FlexPRET_syncOutputEvents(&myFlexPRET);
+		FlexPRET_syncInputEvents(&myFlexPRET);
+
+		FlexPRET_syncOutputData(&myFlexPRET);
+		FlexPRET_syncInputData(&myFlexPRET);
+		
 		FlexPRET_run(&myFlexPRET);
 	} while(true);
 

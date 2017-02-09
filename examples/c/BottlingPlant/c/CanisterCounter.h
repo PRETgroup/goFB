@@ -65,7 +65,6 @@ int CanisterCounter_init(CanisterCounter_t  *me);
 //all FBs get a run function
 void CanisterCounter_run(CanisterCounter_t  *me);
 
-
 //basic FBs have a number of algorithm functions
 
 void CanisterCounter_ChangeCount(CanisterCounter_t  *me);

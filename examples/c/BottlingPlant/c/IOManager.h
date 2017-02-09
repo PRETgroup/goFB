@@ -91,7 +91,6 @@ int IOManager_init(IOManager_t  *me);
 //all FBs get a run function
 void IOManager_run(IOManager_t  *me);
 
-
 //basic FBs have a number of algorithm functions
 
 void IOManager_IOAlgorithm(IOManager_t  *me);

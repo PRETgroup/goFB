@@ -123,107 +123,113 @@ int FlexPRET_init(FlexPRET_t  *me) {
 
 
 
-/* FlexPRET_syncEvents() synchronises the events of an
+/* FlexPRET_syncOutputEvents() synchronises the output events of an
  * instance of FlexPRET as required by synchronous semantics.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void FlexPRET_syncEvents(FlexPRET_t  *me) {
-	//we need to clear our output events before we do synching as we'll be OR-EQUALing them
+void FlexPRET_syncOutputEvents(FlexPRET_t  *me) {
 	
 
-	//clear all input events of fb children as we'll be OR-EQUALing them
-	
-	me->IO.inputEvents.events[0] = 0;
-	
-	me->CCounter.inputEvents.events[0] = 0;
-	
-	me->Door.inputEvents.events[0] = 0;
-	
-	me->Conveyor.inputEvents.events[0] = 0;
-	
-	me->RejectArm.inputEvents.events[0] = 0;
-	
-	me->Pumps.inputEvents.events[0] = 0;
-	
-	me->Motor.inputEvents.events[0] = 0;
+	//first, for all cfb children, call this same function
 	
 	
-	//first, for all "bfb outputs" and "this-level inputs" connections inside this cfb, run their copy
-	
-	me->Motor.inputEvents.event.InjectorArmFinishedMovement |= me->IO.outputEvents.event.InjectorArmFinishMovement;
-	
-	me->Door.inputEvents.event.EmergencyStopChanged |= me->IO.outputEvents.event.EmergencyStopChanged;
-	me->Conveyor.inputEvents.event.EmergencyStopChanged |= me->IO.outputEvents.event.EmergencyStopChanged;
-	me->Motor.inputEvents.event.EmergencyStopChanged |= me->IO.outputEvents.event.EmergencyStopChanged;
-	me->Pumps.inputEvents.event.EmergencyStopChanged |= me->IO.outputEvents.event.EmergencyStopChanged;
-	
-	me->Pumps.inputEvents.event.CanisterPressureChanged |= me->IO.outputEvents.event.CanisterPressureChanged;
-	
-	me->Pumps.inputEvents.event.FillContentsAvailableChanged |= me->IO.outputEvents.event.FillContentsAvailableChanged;
-	
-	me->CCounter.inputEvents.event.LasersChanged |= me->IO.outputEvents.event.LasersChanged;
-	me->RejectArm.inputEvents.event.LasersChanged |= me->IO.outputEvents.event.LasersChanged;
-	me->Conveyor.inputEvents.event.LasersChanged |= me->IO.outputEvents.event.LasersChanged;
-	
-	me->Door.inputEvents.event.ReleaseDoorOverride |= me->IO.outputEvents.event.DoorOverride;
-	
-	me->Pumps.inputEvents.event.VacuumTimerElapsed |= me->IO.outputEvents.event.VacuumTimerElapsed;
-	
-	me->IO.inputEvents.event.CanisterCountChanged |= me->CCounter.outputEvents.event.CanisterCountChanged;
-	
-	me->IO.inputEvents.event.DoorReleaseCanister |= me->Door.outputEvents.event.DoorReleaseCanister;
-	
-	me->IO.inputEvents.event.ConveyorChanged |= me->Conveyor.outputEvents.event.ConveyorChanged;
-	
-	me->Motor.inputEvents.event.ConveyorStoppedForInject |= me->Conveyor.outputEvents.event.ConveyorStoppedForInject;
-	
-	me->IO.inputEvents.event.GoRejectArm |= me->RejectArm.outputEvents.event.GoRejectArm;
-	
-	me->Motor.inputEvents.event.PumpFinished |= me->Pumps.outputEvents.event.PumpFinished;
-	
-	me->RejectArm.inputEvents.event.RejectCanister |= me->Pumps.outputEvents.event.RejectCanister;
-	
-	me->IO.inputEvents.event.InjectorControlsChanged |= me->Pumps.outputEvents.event.InjectorControlsChanged;
-	
-	me->IO.inputEvents.event.FillContentsChanged |= me->Pumps.outputEvents.event.FillContentsChanged;
-	
-	me->IO.inputEvents.event.StartVacuumTimer |= me->Pumps.outputEvents.event.StartVacuumTimer;
-	
-	me->Pumps.inputEvents.event.StartPump |= me->Motor.outputEvents.event.StartPump;
-	
-	me->Door.inputEvents.event.BottlingDone |= me->Motor.outputEvents.event.InjectDone;
-	me->Conveyor.inputEvents.event.InjectDone |= me->Motor.outputEvents.event.InjectDone;
-	me->IO.inputEvents.event.InjectDone |= me->Motor.outputEvents.event.InjectDone;
-	
-	me->IO.inputEvents.event.InjectorPositionChanged |= me->Motor.outputEvents.event.InjectorPositionChanged;
-	
-	
-
-	
-
-	//second, run this same function on all cfb children
-	
-
-	//third, copy all outputs from all cfbs 
-	
-
-	
+	//then, for all connections that are connected to an output on the parent, run their run their copy
 	
 }
 
-/* FlexPRET_syncData() synchronises the data connections of an
+/* FlexPRET_syncInputEvents() synchronises the input events of an
+ * instance of FlexPRET as required by synchronous semantics.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void FlexPRET_syncInputEvents(FlexPRET_t  *me) {
+	//first, we explicitly synchronise the children
+	
+	me->IO.inputEvents.event.DoorReleaseCanister = me->Door.outputEvents.event.DoorReleaseCanister; 
+	
+	me->IO.inputEvents.event.ConveyorChanged = me->Conveyor.outputEvents.event.ConveyorChanged; 
+	
+	me->IO.inputEvents.event.InjectorPositionChanged = me->Motor.outputEvents.event.InjectorPositionChanged; 
+	
+	me->IO.inputEvents.event.InjectorControlsChanged = me->Pumps.outputEvents.event.InjectorControlsChanged; 
+	
+	me->IO.inputEvents.event.FillContentsChanged = me->Pumps.outputEvents.event.FillContentsChanged; 
+	
+	me->IO.inputEvents.event.StartVacuumTimer = me->Pumps.outputEvents.event.StartVacuumTimer; 
+	
+	me->IO.inputEvents.event.GoRejectArm = me->RejectArm.outputEvents.event.GoRejectArm; 
+	
+	me->IO.inputEvents.event.CanisterCountChanged = me->CCounter.outputEvents.event.CanisterCountChanged; 
+	
+	me->IO.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone; 
+	
+	me->CCounter.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
+	
+	me->Door.inputEvents.event.ReleaseDoorOverride = me->IO.outputEvents.event.DoorOverride; 
+	
+	me->Door.inputEvents.event.BottlingDone = me->Motor.outputEvents.event.InjectDone; 
+	
+	me->Door.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Conveyor.inputEvents.event.InjectDone = me->Motor.outputEvents.event.InjectDone; 
+	
+	me->Conveyor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Conveyor.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
+	
+	me->RejectArm.inputEvents.event.RejectCanister = me->Pumps.outputEvents.event.RejectCanister; 
+	
+	me->RejectArm.inputEvents.event.LasersChanged = me->IO.outputEvents.event.LasersChanged; 
+	
+	me->Pumps.inputEvents.event.StartPump = me->Motor.outputEvents.event.StartPump; 
+	
+	me->Pumps.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Pumps.inputEvents.event.CanisterPressureChanged = me->IO.outputEvents.event.CanisterPressureChanged; 
+	
+	me->Pumps.inputEvents.event.FillContentsAvailableChanged = me->IO.outputEvents.event.FillContentsAvailableChanged; 
+	
+	me->Pumps.inputEvents.event.VacuumTimerElapsed = me->IO.outputEvents.event.VacuumTimerElapsed; 
+	
+	me->Motor.inputEvents.event.InjectorArmFinishedMovement = me->IO.outputEvents.event.InjectorArmFinishMovement; 
+	
+	me->Motor.inputEvents.event.EmergencyStopChanged = me->IO.outputEvents.event.EmergencyStopChanged; 
+	
+	me->Motor.inputEvents.event.ConveyorStoppedForInject = me->Conveyor.outputEvents.event.ConveyorStoppedForInject; 
+	
+	me->Motor.inputEvents.event.PumpFinished = me->Pumps.outputEvents.event.PumpFinished; 
+	
+
+	//then, call this same function on all cfb children
+	
+}
+
+/* FlexPRET_syncOutputData() synchronises the output data connections of an
  * instance of FlexPRET as required by synchronous semantics.
  * It does the checking to ensure that only connections which have had their
  * associated event fire are updated.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void FlexPRET_syncData(FlexPRET_t  *me) {
+void FlexPRET_syncOutputData(FlexPRET_t  *me) {
 	//for all composite function block children, call this same function
 	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	
+	
+}
+
+/* FlexPRET_syncInputData() synchronises the input data connections of an
+ * instance of FlexPRET as required by synchronous semantics.
+ * It does the checking to ensure that only connections which have had their
+ * associated event fire are updated.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void FlexPRET_syncInputData(FlexPRET_t  *me) {
 	//for all basic function block children, perform their synchronisations explicitly
-	//Data is sometimes copied
 	
 	//sync for IO (of type IOManager) which is a BFB
 	
@@ -293,10 +299,9 @@ void FlexPRET_syncData(FlexPRET_t  *me) {
 	} 
 	
 	
-	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	//for all composite function block children, call this same function
 	
 	
-
 }
 
 

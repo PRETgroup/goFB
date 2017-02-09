@@ -69,7 +69,6 @@ int InjectorMotorController_init(InjectorMotorController_t  *me);
 //all FBs get a run function
 void InjectorMotorController_run(InjectorMotorController_t  *me);
 
-
 //basic FBs have a number of algorithm functions
 
 void InjectorMotorController_SetArmDownPosition(InjectorMotorController_t  *me);

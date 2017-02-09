@@ -19,8 +19,12 @@ int main() {
 	}
 
 	do {
-		{{$block.Name}}_syncEvents(&my{{$block.Name}});
-		{{$block.Name}}_syncData(&my{{$block.Name}});
+		{{$block.Name}}_syncOutputEvents(&my{{$block.Name}});
+		{{$block.Name}}_syncInputEvents(&my{{$block.Name}});
+
+		{{$block.Name}}_syncOutputData(&my{{$block.Name}});
+		{{$block.Name}}_syncInputData(&my{{$block.Name}});
+		
 		{{$block.Name}}_run(&my{{$block.Name}});
 	} while(true);
 

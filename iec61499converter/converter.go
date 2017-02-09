@@ -95,6 +95,14 @@ func (c *Converter) SetTopName(name string) error {
 	return nil
 }
 
+//Flatten flattens all CFBs from a network (excluding the parent)
+func (c *Converter) Flatten() error {
+	if c.topName == "" {
+		return errors.New("Top Block needs to be set before Flatten() can be called")
+	}
+	return errors.New("Not yet implemented!")
+}
+
 //ConvertAll converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
 //Returns nil error on success
 func (c *Converter) ConvertAll() ([]OutputFile, error) {

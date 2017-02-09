@@ -76,7 +76,6 @@ int InjectorPumpsController_init(InjectorPumpsController_t  *me);
 //all FBs get a run function
 void InjectorPumpsController_run(InjectorPumpsController_t  *me);
 
-
 //basic FBs have a number of algorithm functions
 
 void InjectorPumpsController_StartVacuum(InjectorPumpsController_t  *me);

@@ -82,7 +82,12 @@ int InjectorController_init(InjectorController_t  *me);
 void InjectorController_run(InjectorController_t  *me);
 
 //composite/resource/device FBs get sync functions
-void InjectorController_syncEvents(InjectorController_t  *me);
-void InjectorController_syncData(InjectorController_t  *me);
+void InjectorController_syncOutputEvents(InjectorController_t  *me);
+void InjectorController_syncInputEvents(InjectorController_t  *me);
+
+void InjectorController_syncOutputData(InjectorController_t  *me);
+void InjectorController_syncInputData(InjectorController_t  *me);
+
+
 
 #endif

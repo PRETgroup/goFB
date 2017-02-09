@@ -74,9 +74,13 @@ int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 void {{$block.Name}}_run({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 {{if not $block.BasicFB}}//composite/resource/device FBs get sync functions
-void {{$block.Name}}_syncEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
-void {{$block.Name}}_syncData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}
-{{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
+void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+void {{$block.Name}}_syncInputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+
+void {{$block.Name}}_syncOutputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+
+{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}{{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
 {{$tcrestUsingSPM := .TcrestUsingSPM}}{{range $algIndex, $alg := $basicFB.Algorithms}}
 void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t {{if $tcrestUsingSPM}}_SPM{{end}} *me);
 {{end}}{{end}}{{end}}

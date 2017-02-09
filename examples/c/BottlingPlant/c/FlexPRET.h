@@ -63,7 +63,12 @@ int FlexPRET_init(FlexPRET_t  *me);
 void FlexPRET_run(FlexPRET_t  *me);
 
 //composite/resource/device FBs get sync functions
-void FlexPRET_syncEvents(FlexPRET_t  *me);
-void FlexPRET_syncData(FlexPRET_t  *me);
+void FlexPRET_syncOutputEvents(FlexPRET_t  *me);
+void FlexPRET_syncInputEvents(FlexPRET_t  *me);
+
+void FlexPRET_syncOutputData(FlexPRET_t  *me);
+void FlexPRET_syncInputData(FlexPRET_t  *me);
+
+
 
 #endif
