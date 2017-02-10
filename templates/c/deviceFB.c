@@ -4,41 +4,59 @@
 // This file represents the implementation of the Device Function Block for {{$block.Name}}
 #include "{{$block.Name}}.h"
 
-//When running a device block, note that you would call the functions in this order
-//_init(); 
+//When running a composite block, note that you would call the functions in this order (and this is very important)
+//_preinit(); 
+//_init();
 //do {
-//_syncEvents();
-//_syncData();
-//_run();
+//	_syncOutputEvents();
+//	_syncInputEvents();
+//	_syncOutputData();
+//	_syncInputData();
+//	_run();
 //} loop;
+
 
 {{template "_fbinit" .}}
 
-/* {{$block.Name}}_syncEvents() synchronises the events of an
+/* {{$block.Name}}_sync[Output/Input]Events() synchronises the events of an
  * instance of {{$block.Name}} as required by synchronous semantics.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void {{$block.Name}}_syncEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
+void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	{{range $currChildIndex, $child := $deviceFB.Resources}}//sync for {{$child.Name}} (of type {{$child.Type}}) which is a Resource
-	{{$child.Type}}_syncEvents(&me->{{$child.Name}});{{end}}
+	{{$child.Type}}_syncOutputEvents(&me->{{$child.Name}});{{end}}
+	
+}
+void {{$block.Name}}_syncInputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
+	//for all device function block resource function blocks, call this same function
+	//resources are the only things that can be embedded in devices
+	{{range $currChildIndex, $child := $deviceFB.Resources}}//sync for {{$child.Name}} (of type {{$child.Type}}) which is a Resource
+	{{$child.Type}}_syncInputEvents(&me->{{$child.Name}});{{end}}
 	
 }
 
-/* {{$block.Name}}_syncData() synchronises the data connections of an
+/* {{$block.Name}}_sync[Output/Input]Data() synchronises the data connections of an
  * instance of {{$block.Name}} as required by synchronous semantics.
  * It does the checking to ensure that only connections which have had their
  * associated event fire are updated.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void {{$block.Name}}_syncData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
+void {{$block.Name}}_syncOutputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	{{range $currChildIndex, $child := $deviceFB.Resources}}//sync for {{$child.Name}} (of type {{$child.Type}}) which is a Resource
-	{{$child.Type}}_syncData(&me->{{$child.Name}});{{end}}
+	{{$child.Type}}_syncOutputData(&me->{{$child.Name}});{{end}}
+
+}
+void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
+	//for all device function block resource function blocks, call this same function
+	//resources are the only things that can be embedded in devices
+	{{range $currChildIndex, $child := $deviceFB.Resources}}//sync for {{$child.Name}} (of type {{$child.Type}}) which is a Resource
+	{{$child.Type}}_syncInputData(&me->{{$child.Name}});{{end}}
 
 }
 

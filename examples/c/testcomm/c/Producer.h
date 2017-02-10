@@ -8,7 +8,7 @@
 #include "fbtypes.h"
 
 //This is a BFB, so we need an enum type for the state machine
-enum Producer_states { STATE_Producer_Start, STATE_Producer_increment, STATE_Switches, STATE_Producer_Tx };
+enum Producer_states { STATE_Producer_Start, STATE_Producer_increment, STATE_Producer_Tx };
 
 
 union ProducerInputEvents {
@@ -63,7 +63,6 @@ int Producer_init(Producer_t _SPM *me);
 
 //all FBs get a run function
 void Producer_run(Producer_t _SPM *me);
-
 
 //basic FBs have a number of algorithm functions
 

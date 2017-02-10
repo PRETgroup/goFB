@@ -69,10 +69,8 @@ int Producer_init(Producer_t _SPM *me) {
  */
 void Producer_run(Producer_t _SPM *me) {
 	//if there are output events, reset them
-	//me->outputEvents.events[0] = 0;
-	me->outputEvents.event.DataPresent = 0;
-
-			HEX = me->_state;
+	me->outputEvents.events[0] = 0;
+	
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -84,15 +82,10 @@ void Producer_run(Producer_t _SPM *me) {
 			break;
 		case STATE_Producer_increment:
 			if(true) {
-				me->_state = STATE_Switches;
+				me->_state = STATE_Producer_Tx;
 				me->_trigger = true;
 			};
 			break;
-		case STATE_Switches:
-			if(SWITCHES) {
-				me->_state = STATE_Producer_Tx;
-				me->_trigger = true;
-			}
 		case STATE_Producer_Tx:
 			if(me->inputEvents.event.TxSuccessChanged && (me->TxSuccess)) {
 				me->_state = STATE_Producer_increment;
@@ -108,11 +101,8 @@ void Producer_run(Producer_t _SPM *me) {
 
 	//state output logic
 	if(me->_trigger == true) {
-
 		switch(me->_state) {
 		case STATE_Producer_Start:
-			break;
-		case STATE_Switches:
 			break;
 
 		case STATE_Producer_increment:
@@ -120,7 +110,6 @@ void Producer_run(Producer_t _SPM *me) {
 			break;
 
 		case STATE_Producer_Tx:
-			printf("Request transmit\n");
 			me->outputEvents.event.DataPresent = 1;
 			break;
 
@@ -133,10 +122,8 @@ void Producer_run(Producer_t _SPM *me) {
 //algorithms
 
 void Producer_update_count(Producer_t _SPM *me) {
-
-		me->Count++;
-		me->Data = me->Count;
-	
+me->Count++;
+me->Data = me->Count;
 }
 
 

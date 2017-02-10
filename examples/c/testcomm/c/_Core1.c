@@ -4,12 +4,15 @@
 // This file represents the implementation of the Composite Function Block for _Core1
 #include "_Core1.h"
 
-//When running a composite block, note that you would call the functions in this order
-//_init(); 
+//When running a composite block, note that you would call the functions in this order (and this is very important)
+//_preinit(); 
+//_init();
 //do {
-//_syncEvents();
-//_syncData();
-//_run();
+//	_syncOutputEvents();
+//	_syncInputEvents();
+//	_syncOutputData();
+//	_syncInputData();
+//	_run();
 //} loop;
 
 
@@ -70,7 +73,7 @@ int _Core1_init(_Core1_t _SPM *me) {
 	if(Producer_init(&me->prod) != 0) {
 		return 1;
 	}
-	//printf("(1) Address is 0x%08x\n", (unsigned int)&me->tx.outputEvents.event);
+	
 	
 
 	return 0;
@@ -78,42 +81,61 @@ int _Core1_init(_Core1_t _SPM *me) {
 
 
 
-/* _Core1_syncEvents() synchronises the events of an
+/* _Core1_syncOutputEvents() synchronises the output events of an
  * instance of _Core1 as required by synchronous semantics.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core1_syncEvents(_Core1_t _SPM *me) {
-	//for all composite function block children, call this same function
+void _Core1_syncOutputEvents(_Core1_t _SPM *me) {
+	//first, for all cfb children, call this same function
 	
-	//for all basic function block children, perform their synchronisations explicitly
-	//events are always copied
-	//inputs that go to children
+	
+	//then, for all connections that are connected to an output on the parent, run their run their copy
+	
+}
+
+/* _Core1_syncInputEvents() synchronises the input events of an
+ * instance of _Core1 as required by synchronous semantics.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void _Core1_syncInputEvents(_Core1_t _SPM *me) {
+	//first, we explicitly synchronise the children
 	
 	me->tx.inputEvents.event.DataPresent = me->prod.outputEvents.event.DataPresent; 
 	
 	me->prod.inputEvents.event.TxSuccessChanged = me->tx.outputEvents.event.SuccessChanged; 
-	if(me->tx.outputEvents.event.SuccessChanged) {
-		printf("success changed\n");
-	}
 	
-	//outputs of parent cfb
-	
+
+	//then, call this same function on all cfb children
 	
 }
 
-/* _Core1_syncData() synchronises the data connections of an
+/* _Core1_syncOutputData() synchronises the output data connections of an
  * instance of _Core1 as required by synchronous semantics.
  * It does the checking to ensure that only connections which have had their
  * associated event fire are updated.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core1_syncData(_Core1_t _SPM *me) {
+void _Core1_syncOutputData(_Core1_t _SPM *me) {
 	//for all composite function block children, call this same function
 	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
+	
+	
+}
+
+/* _Core1_syncInputData() synchronises the input data connections of an
+ * instance of _Core1 as required by synchronous semantics.
+ * It does the checking to ensure that only connections which have had their
+ * associated event fire are updated.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void _Core1_syncInputData(_Core1_t _SPM *me) {
 	//for all basic function block children, perform their synchronisations explicitly
-	//Data is sometimes copied
 	
 	//sync for tx (of type ArgoTx) which is a BFB
 	
@@ -128,10 +150,9 @@ void _Core1_syncData(_Core1_t _SPM *me) {
 	} 
 	
 	
-	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	//for all composite function block children, call this same function
 	
 	
-
 }
 
 
@@ -143,5 +164,6 @@ void _Core1_syncData(_Core1_t _SPM *me) {
 void _Core1_run(_Core1_t _SPM *me) {
 	ArgoTx_run(&me->tx);
 	Producer_run(&me->prod);
+	
 }
 

@@ -54,7 +54,12 @@ int _Core0_init(_Core0_t _SPM *me);
 void _Core0_run(_Core0_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _Core0_syncEvents(_Core0_t _SPM *me);
-void _Core0_syncData(_Core0_t _SPM *me);
+void _Core0_syncOutputEvents(_Core0_t _SPM *me);
+void _Core0_syncInputEvents(_Core0_t _SPM *me);
+
+void _Core0_syncOutputData(_Core0_t _SPM *me);
+void _Core0_syncInputData(_Core0_t _SPM *me);
+
+
 
 #endif
