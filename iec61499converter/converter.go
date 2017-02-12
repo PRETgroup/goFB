@@ -100,7 +100,35 @@ func (c *Converter) Flatten() error {
 	if c.topName == "" {
 		return errors.New("Top Block needs to be set before Flatten() can be called")
 	}
-	return errors.New("Not yet implemented!")
+
+	//find the parent
+	var topFB *iec61499.FB
+	for i := 0; i < len(c.Blocks); i++ {
+		if c.Blocks[i].Name == c.topName {
+			topFB = &c.Blocks[i]
+		}
+	}
+	if topFB == nil {
+		return errors.New("Can't find top block when flattening")
+	}
+
+	return c.flattenFrom(topFB)
+}
+
+func (c *Converter) flattenFrom(parentCFB *iec61499.FB) error {
+	//for each child element, check to see if it is a compositeFB. If so, then we need to put its children in the parent and join up the connections
+
+	var innerFBRefs []FBReference
+
+	if len(topFB.Resources) > 0 {
+		for i := 0; i < len(topFB.Resources); i++ {
+			// if err := c.flattenResource(&topFB.Resources[i]); err != nil {
+			// 	return err
+			// }
+		}
+	}
+
+	return errors.New("NOt yet implemented")
 }
 
 //ConvertAll converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
