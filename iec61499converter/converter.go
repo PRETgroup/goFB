@@ -121,7 +121,7 @@ func (c *Converter) flattenFromCFB(parentCFB *iec61499.FB) error {
 	//for each child element, check to see if it is a compositeFB. If so, then we need to put its children in the parent and join up the connections
 
 	if parentCFB.CompositeFB == nil {
-		return errors.New("Needs to be a CFB")
+		return errors.New("Needs to be an RFB or a CFB")
 	}
 
 	innerFBRefs := parentCFB.CompositeFB.FBs
@@ -131,16 +131,16 @@ func (c *Converter) flattenFromCFB(parentCFB *iec61499.FB) error {
 		childFB := findBlockDefinitionForType(c.Blocks, t)
 		if childFB.CompositeFB != nil {
 			c.extractChildrenFromCFBChild(parentCFB, childFB, innerFBRefs[i])
-			fmt.Printf("fin: \n%+v\n", parentCFB.CompositeFB)
+			i--
+			//fmt.Printf("fin: \n%+v\n", parentCFB.CompositeFB)
 		}
 	}
-
-	return errors.New("Not yet implemented")
+	return nil
 }
 
 //extractChildrenFromCFBChild does several things
 //1. it appends all children of childCFB to parentCFB (while ensuring their names remain unique)
-//2. it corrects all connections that go from blocks in parentCFB to those children in childCFB and vice versa
+//2. it corrects all connections that go from blocks in parentCFB to those children in childCFB and vice versa, and parameters
 //3. it appends all connections that go from grandchild to grandchild to the new blocks
 //4. it removes the reference to childCFB from parentCFB
 func (c *Converter) extractChildrenFromCFBChild(parentCFB *iec61499.FB, childCFB *iec61499.FB, childRef iec61499.FBReference) {
@@ -209,7 +209,28 @@ func (c *Converter) extractChildrenFromCFBChild(parentCFB *iec61499.FB, childCFB
 	addParentToChildConns(childCFB.CompositeFB.EventConnections, &parentCFB.CompositeFB.EventConnections)
 	addParentToChildConns(childCFB.CompositeFB.DataConnections, &parentCFB.CompositeFB.DataConnections)
 
-	//2c). Remove connections that 2a) and 2b) replace
+	//2c). Move relevant parameters from child to former grandchildren
+	//TODO: this needs careful testing
+	for i := 0; i < len(childRef.Parameter); i++ {
+		param := childRef.Parameter[i]
+
+		for j := 0; j < len(childCFB.CompositeFB.DataConnections); j++ {
+			sourceParts := strings.Split(childCFB.CompositeFB.DataConnections[j].Source, ".")
+			if len(sourceParts) == 1 && sourceParts[0] == param.Name {
+				destParts := strings.Split(childCFB.CompositeFB.DataConnections[j].Destination, ".")
+				if len(destParts) == 2 {
+					destFBRefName := destParts[0]
+					for k := 0; k < len(parentCFB.CompositeFB.FBs); k++ {
+						if parentCFB.CompositeFB.FBs[k].Name == "Flattened_"+childRef.Name+"_"+destFBRefName {
+							parentCFB.CompositeFB.FBs[k].Parameter = append(parentCFB.CompositeFB.FBs[k].Parameter, param)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//2d). Remove connections that 2a) and 2b) replace
 
 	removeChildConnsFromParent := func(parentConns *[]iec61499.Connection) {
 		for i := 0; i < len(*parentConns); i++ {
@@ -230,6 +251,34 @@ func (c *Converter) extractChildrenFromCFBChild(parentCFB *iec61499.FB, childCFB
 
 	removeChildConnsFromParent(&parentCFB.CompositeFB.EventConnections)
 	removeChildConnsFromParent(&parentCFB.CompositeFB.DataConnections)
+
+	//3. append all connections that go from grandchild to grandchild to the new blocks in parent cfb
+	//TODO: this needs careful testing
+	addChildToChildConns := func(childConns []iec61499.Connection, parentConns *[]iec61499.Connection) {
+		for i := 0; i < len(childConns); i++ {
+			sourceParts := strings.Split(childConns[i].Source, ".")
+			destParts := strings.Split(childConns[i].Destination, ".")
+
+			if len(sourceParts) == 2 && len(destParts) == 2 { //these links don't go to the parent
+				newConn := childConns[i]
+				newConn.Source = "Flattened_" + childRef.Name + "_" + newConn.Source
+				newConn.Destination = "Flattened_" + childRef.Name + "_" + newConn.Destination
+				//fmt.Printf("Appending %+v\n", newConn)
+				*parentConns = append(*parentConns, newConn)
+			}
+		}
+	}
+
+	addChildToChildConns(childCFB.CompositeFB.EventConnections, &parentCFB.CompositeFB.EventConnections)
+	addChildToChildConns(childCFB.CompositeFB.DataConnections, &parentCFB.CompositeFB.DataConnections)
+
+	//4. remove the reference to childCFB from parentCFB
+
+	for i := 0; i < len(parentCFB.CompositeFB.FBs); i++ {
+		if parentCFB.CompositeFB.FBs[i].Name == childRef.Name {
+			parentCFB.CompositeFB.FBs = append(parentCFB.CompositeFB.FBs[:i], parentCFB.CompositeFB.FBs[i+1:]...)
+		}
+	}
 
 }
 

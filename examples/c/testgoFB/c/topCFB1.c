@@ -36,10 +36,10 @@ int topCFB1_preinit(topCFB1_t  *me) {
 	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	if(container_preinit(&me->cf1) != 0) {
+	if(passforward_preinit(&me->Flattened_cf1_inside) != 0) {
 		return 1;
 	}
-	if(container_preinit(&me->cf2) != 0) {
+	if(passforward_preinit(&me->Flattened_cf2_inside) != 0) {
 		return 1;
 	}
 	
@@ -61,15 +61,15 @@ int topCFB1_init(topCFB1_t  *me) {
 	
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
-	me->cf2.DataIn = me->cf1.DataOut;
-	me->cf1.DataIn = me->cf2.DataOut;
+	me->Flattened_cf1_inside.DataIn = me->Flattened_cf2_inside.DataOut;
+	me->Flattened_cf2_inside.DataIn = me->Flattened_cf1_inside.DataOut;
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	if(container_init(&me->cf1) != 0) {
+	if(passforward_init(&me->Flattened_cf1_inside) != 0) {
 		return 1;
 	}
-	if(container_init(&me->cf2) != 0) {
+	if(passforward_init(&me->Flattened_cf2_inside) != 0) {
 		return 1;
 	}
 	
@@ -88,10 +88,6 @@ int topCFB1_init(topCFB1_t  *me) {
 void topCFB1_syncOutputEvents(topCFB1_t  *me) {
 	//first, for all cfb children, call this same function
 	
-	container_syncOutputEvents(&me->cf1);//sync for cf1 (of type container) which is a CFB
-	
-	container_syncOutputEvents(&me->cf2);//sync for cf2 (of type container) which is a CFB
-	
 	
 	//then, for all connections that are connected to an output on the parent, run their run their copy
 	
@@ -105,16 +101,12 @@ void topCFB1_syncOutputEvents(topCFB1_t  *me) {
 void topCFB1_syncInputEvents(topCFB1_t  *me) {
 	//first, we explicitly synchronise the children
 	
-	me->cf1.inputEvents.event.DataInChanged = me->cf2.outputEvents.event.DataOutChanged; 
+	me->Flattened_cf1_inside.inputEvents.event.DataInChanged = me->Flattened_cf2_inside.outputEvents.event.DataOutChanged; 
 	
-	me->cf2.inputEvents.event.DataInChanged = me->cf1.outputEvents.event.DataOutChanged; 
+	me->Flattened_cf2_inside.inputEvents.event.DataInChanged = me->Flattened_cf1_inside.outputEvents.event.DataOutChanged; 
 	
 
 	//then, call this same function on all cfb children
-	
-	container_syncInputEvents(&me->cf1);//sync for cf1 (of type container) which is a CFB
-	
-	container_syncInputEvents(&me->cf2);//sync for cf2 (of type container) which is a CFB
 	
 }
 
@@ -127,9 +119,7 @@ void topCFB1_syncInputEvents(topCFB1_t  *me) {
  */
 void topCFB1_syncOutputData(topCFB1_t  *me) {
 	//for all composite function block children, call this same function
-	//sync for cf1 (of type container) which is a CFB
-	container_syncOutputData(&me->cf1);//sync for cf2 (of type container) which is a CFB
-	container_syncOutputData(&me->cf2);
+	
 	
 	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
 	
@@ -145,20 +135,22 @@ void topCFB1_syncOutputData(topCFB1_t  *me) {
  */
 void topCFB1_syncInputData(topCFB1_t  *me) {
 	//for all basic function block children, perform their synchronisations explicitly
-	//sync for cf1 (of Type container) which is a CFB
 	
+	//sync for Flattened_cf1_inside (of type passforward) which is a BFB
 	
-		me->cf1.DataIn = me->cf2.DataOut;
-	//sync for cf2 (of Type container) which is a CFB
+	if(me->Flattened_cf1_inside.inputEvents.event.DataInChanged == 1) { 
+		me->Flattened_cf1_inside.DataIn = me->Flattened_cf2_inside.DataOut;
+	} 
 	
+	//sync for Flattened_cf2_inside (of type passforward) which is a BFB
 	
-		me->cf2.DataIn = me->cf1.DataOut;
+	if(me->Flattened_cf2_inside.inputEvents.event.DataInChanged == 1) { 
+		me->Flattened_cf2_inside.DataIn = me->Flattened_cf1_inside.DataOut;
+	} 
 	
 	
 	//for all composite function block children, call this same function
-	//sync for cf1 (of type container) which is a CFB
-	container_syncInputData(&me->cf1);//sync for cf2 (of type container) which is a CFB
-	container_syncInputData(&me->cf2);
+	
 	
 }
 
@@ -169,8 +161,8 @@ void topCFB1_syncInputData(topCFB1_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void topCFB1_run(topCFB1_t  *me) {
-	container_run(&me->cf1);
-	container_run(&me->cf2);
+	passforward_run(&me->Flattened_cf1_inside);
+	passforward_run(&me->Flattened_cf2_inside);
 	
 }
 
