@@ -84,12 +84,20 @@ int _TCREST_init(_TCREST_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _TCREST_syncEvents(_TCREST_t _SPM *me) {
+void _TCREST_syncOutputEvents(_TCREST_t _SPM *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	//sync for rx_core (of type _Core0) which is a Resource
-	_Core0_syncEvents(&me->rx_core);//sync for tx_core (of type _Core1) which is a Resource
-	_Core1_syncEvents(&me->tx_core);
+	_Core0_syncOutputEvents(&me->rx_core);//sync for tx_core (of type _Core1) which is a Resource
+	_Core1_syncOutputEvents(&me->tx_core);
+	
+}
+void _TCREST_syncInputEvents(_TCREST_t _SPM *me) {
+	//for all device function block resource function blocks, call this same function
+	//resources are the only things that can be embedded in devices
+	//sync for rx_core (of type _Core0) which is a Resource
+	_Core0_syncInputEvents(&me->rx_core);//sync for tx_core (of type _Core1) which is a Resource
+	_Core1_syncInputEvents(&me->tx_core);
 	
 }
 
@@ -100,12 +108,20 @@ void _TCREST_syncEvents(_TCREST_t _SPM *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _TCREST_syncData(_TCREST_t _SPM *me) {
+void _TCREST_syncOutputData(_TCREST_t _SPM *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	//sync for rx_core (of type _Core0) which is a Resource
-	_Core0_syncData(&me->rx_core);//sync for tx_core (of type _Core1) which is a Resource
-	_Core1_syncData(&me->tx_core);
+	_Core0_syncOutputData(&me->rx_core);//sync for tx_core (of type _Core1) which is a Resource
+	_Core1_syncOutputData(&me->tx_core);
+
+}
+void _TCREST_syncInputData(_TCREST_t _SPM *me) {
+	//for all device function block resource function blocks, call this same function
+	//resources are the only things that can be embedded in devices
+	//sync for rx_core (of type _Core0) which is a Resource
+	_Core0_syncInputData(&me->rx_core);//sync for tx_core (of type _Core1) which is a Resource
+	_Core1_syncInputData(&me->tx_core);
 
 }
 

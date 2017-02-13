@@ -21,14 +21,18 @@ int main() {
 
 	printf("Starting t1 and initialising my_TCREST...\n");
 	corethread_t core1 = 1;
-	corethread_create(&core1, &t0, NULL);
+	corethread_create(&core1, &t1, NULL);
 	printf("Started t1\n");
-	t1(NULL);
+	t0(NULL);
 }
 
 void __attribute__ ((noinline)) timed_task(_Core0_t _SPM * c0) {
-	_Core0_syncEvents(c0);
-	_Core0_syncData(c0);
+	_Core0_syncOutputEvents(c0);
+	_Core0_syncInputEvents(c0);
+
+	_Core0_syncOutputData(c0);
+	_Core0_syncInputData(c0);
+
 	_Core0_run(c0);
 }
 
@@ -57,11 +61,16 @@ void task1(_Core1_t _SPM * c1) {
 
 	unsigned int tickCount = 0;
 	do {
-		_Core1_syncEvents(c1);
-		_Core1_syncData(c1);
+		_Core1_syncOutputEvents(c1);
+		_Core1_syncInputEvents(c1);
+		
+		_Core1_syncOutputData(c1);
+		_Core1_syncInputData(c1);
+
 		_Core1_run(c1);
 	} while(1);
 }
+
 
 void t1(void* param) {
 	_Core1_t _SPM *c1;

@@ -76,11 +76,11 @@ void ArgoTx_run(ArgoTx_t _SPM *me) {
 	me->outputEvents.event.SuccessChanged = 0;
 
 	if(me->inputEvents.event.DataPresent) {
-		printf("Transmitting %i\n", me->Data);
+		//printf("Transmitting %i\n", me->Data);
 		*((volatile INT _SPM *)me->chan->write_buf) = me->Data;
 		me->Success = mp_nbsend(me->chan);
 		me->outputEvents.event.SuccessChanged = 1;
-		printf("hi\n");
+		//printf("hi\n");
 	}
 }
 //no algorithms were present for this function block
