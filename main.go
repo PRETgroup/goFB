@@ -18,6 +18,7 @@ var (
 	outputLanguage         = flag.String("l", "c", "Specifies the output language for the program.")
 	algorithmLanguageCheck = flag.Bool("alc", false, "Enable checking algorithm language compatibility with output language.")
 	tcrestUsingSPM         = flag.Bool("tuspm", false, "When building for T-CREST processor, will put FBs into _SPM memory")
+	autoFlatten            = flag.Bool("f", false, "Automatically flatten out CFBs to save memory")
 )
 
 func main() {
@@ -98,6 +99,14 @@ func main() {
 	if err := conv.SetTopName(*topName); err != nil {
 		fmt.Printf("Error with provided top name:%s\n", err.Error())
 		return
+	}
+
+	if *autoFlatten {
+		fmt.Printf("Flattening FBs...\n")
+		if err := conv.Flatten(); err != nil {
+			fmt.Printf("Error: %s\n", err.Error())
+			return
+		}
 	}
 
 	outputs, err := conv.ConvertAll()
