@@ -131,7 +131,7 @@ func (c *Converter) flattenFromCFB(parentCFB *iec61499.FB) error {
 		childFB := findBlockDefinitionForType(c.Blocks, t)
 		if childFB.CompositeFB != nil {
 			c.extractChildrenFromCFBChild(parentCFB, childFB, innerFBRefs[i])
-			//fmt.Printf("fin: \n%+v\n", parentCFB.CompositeFB)
+			fmt.Printf("fin: \n%+v\n", parentCFB.CompositeFB)
 		}
 	}
 
@@ -154,43 +154,83 @@ func (c *Converter) extractChildrenFromCFBChild(parentCFB *iec61499.FB, childCFB
 	parentCFB.CompositeFB.FBs = append(parentCFB.CompositeFB.FBs, grandchildrenFBs...) //append them to parent
 
 	//2a). Fix connections that went from grandchild to Parent
-	for i := 0; i < len(childCFB.CompositeFB.EventConnections); i++ {
-		destParts := strings.Split(childCFB.CompositeFB.EventConnections[i].Destination, ".")
-		//sourceParts := strings.Split(parentCFB.CompositeFB.EventConnections[i].Source, ".")
 
-		if len(destParts) == 1 { //this connection terminated on a source node for the child (i.e. it terminates on something external)
-			fmt.Printf("conn %+v goes to parent\n", childCFB.CompositeFB.EventConnections[i])
-			childSourceName := destParts[0]
-			for j := 0; j < len(parentCFB.CompositeFB.EventConnections); j++ {
-				//sourceParts := strings.Split(, ".")
-				if parentCFB.CompositeFB.EventConnections[j].Source == childRef.Name+"."+childSourceName { //len(sourceParts) == 2 && sourceParts[1] == childSourceName {
-					fmt.Printf("Matched to parent link %+v\n", parentCFB.CompositeFB.EventConnections[j])
-					//bingo, we have a match between a grandchild and another child block
-					newConn := childCFB.CompositeFB.EventConnections[i]
-					newConn.Source = "Flattened_" + childRef.Name + "_" + newConn.Source
-					newConn.Destination = parentCFB.CompositeFB.EventConnections[j].Destination
+	addChildToParentConns := func(childConns []iec61499.Connection, parentConns *[]iec61499.Connection) {
+		for i := 0; i < len(childConns); i++ {
+			destParts := strings.Split(childConns[i].Destination, ".")
 
-					fmt.Printf("Appending %+v\n", newConn)
+			if len(destParts) == 1 { //this connection terminated on a source node for the child (i.e. it terminates on something external)
+				//fmt.Printf("conn %+v goes to parent\n", childConns[i])
+				childSourceName := destParts[0]
+				for j := 0; j < len(*parentConns); j++ {
 
-					parentCFB.CompositeFB.EventConnections = append(parentCFB.CompositeFB.EventConnections, newConn)
+					if (*parentConns)[j].Source == childRef.Name+"."+childSourceName {
+						//fmt.Printf("Matched to parent link %+v\n", parentConns[j])
+						//bingo, we have a match between a grandchild and another child block
+						newConn := childConns[i]
+						newConn.Source = "Flattened_" + childRef.Name + "_" + newConn.Source
+						newConn.Destination = (*parentConns)[j].Destination
+						//fmt.Printf("Appending %+v\n", newConn)
+						*parentConns = append(*parentConns, newConn)
+					}
 				}
 			}
 		}
-
-		// if len(destParts) == 2 && destParts[0] == childRef.Name {
-		// 	//this goes to the original child, need to amend the name (i.e. find the inner destinations that this goes to)
-		// 	var innerDests []iec61499.Connection
-		// 	for j := 0; j < len(childCFB.CompositeFB.EventConnections); j++ {
-
-		// 	}
-		// }
-
-		// if len(sourceParts) == 2 && sourceParts[0] == childRef.Name {
-		// 	//this comes from the original child, need to amend the name (i.e. find the other child that this connection goes to)
-		// 	for j := 0; j < len(childC)
-		// }
 	}
+
+	addChildToParentConns(childCFB.CompositeFB.EventConnections, &parentCFB.CompositeFB.EventConnections)
+	addChildToParentConns(childCFB.CompositeFB.DataConnections, &parentCFB.CompositeFB.DataConnections)
+
 	//2b). Fix connections that went from Parent to grandchild
+
+	addParentToChildConns := func(childConns []iec61499.Connection, parentConns *[]iec61499.Connection) {
+		for i := 0; i < len(*parentConns); i++ {
+			destParts := strings.Split((*parentConns)[i].Destination, ".")
+
+			if len(destParts) == 2 && destParts[0] == childRef.Name { //this connection terminated on a source node for the child (i.e. it terminates on something external)
+				//fmt.Printf("conn %+v goes to child\n", childConns[i])
+				childSourceName := destParts[1]
+				for j := 0; j < len(childConns); j++ {
+
+					if childConns[j].Source == childSourceName {
+						//fmt.Printf("Matched to parent link %+v\n", parentConns[j])
+						//bingo, we have a match between a child block and a grandchild
+						newConn := childConns[j]
+						newConn.Destination = "Flattened_" + childRef.Name + "_" + newConn.Destination
+						newConn.Source = (*parentConns)[i].Source
+						//fmt.Printf("Appending %+v\n", newConn)
+						*parentConns = append(*parentConns, newConn)
+					}
+				}
+			}
+		}
+	}
+
+	addParentToChildConns(childCFB.CompositeFB.EventConnections, &parentCFB.CompositeFB.EventConnections)
+	addParentToChildConns(childCFB.CompositeFB.DataConnections, &parentCFB.CompositeFB.DataConnections)
+
+	//2c). Remove connections that 2a) and 2b) replace
+
+	removeChildConnsFromParent := func(parentConns *[]iec61499.Connection) {
+		for i := 0; i < len(*parentConns); i++ {
+			sourceParts := strings.Split((*parentConns)[i].Source, ".")
+			destParts := strings.Split((*parentConns)[i].Destination, ".")
+			//fmt.Printf("Removing %+v ? ", (*parentConns)[i])
+			if (len(sourceParts) == 2 && sourceParts[0] == childRef.Name) ||
+				(len(destParts) == 2 && destParts[0] == childRef.Name) {
+
+				//fmt.Printf("Yes\n")
+				*parentConns = append((*parentConns)[:i], (*parentConns)[i+1:]...)
+				i--
+			} else {
+				//fmt.Printf("No\n")
+			}
+		}
+	}
+
+	removeChildConnsFromParent(&parentCFB.CompositeFB.EventConnections)
+	removeChildConnsFromParent(&parentCFB.CompositeFB.DataConnections)
+
 }
 
 //ConvertAll converts iec61499 xml (stored as []FB) into vhdl []byte for each block (becomes []VHDLOutput struct)
