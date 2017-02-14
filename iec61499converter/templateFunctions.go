@@ -173,7 +173,7 @@ func findSourceDataName(conns []iec61499.Connection, destChildName string, destV
 			}
 		}
 	}
-	return "0"
+	return ""
 }
 
 //Ths finds event connection source(s) based on a destination source (events can have multiple sources for event connections in iec61499)

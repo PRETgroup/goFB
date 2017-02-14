@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="container_two_basic" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="HAMMONDSDESKTOP" Version="0.1" Author="Hammond" Date="2017-00-14" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="DataInChanged" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="DataOutChanged" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DataIn" Type="INT" Comment="" />
+  <VarDeclaration Name="printf_id1" Type="INT" Comment="" />
+  <VarDeclaration Name="printf_id2" Type="INT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="DataOut" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="pf1" Type="passforward" x="1575" y="1159.375" />
+  <FB Name="pf2" Type="passforward" x="3018.75" y="1181.25" />
+  <EventConnections><Connection Source="DataInChanged" Destination="pf1.DataInChanged" />
+<Connection Source="pf2.DataOutChanged" Destination="DataOutChanged" />
+<Connection Source="pf1.DataOutChanged" Destination="pf2.DataInChanged" /></EventConnections>
+  <DataConnections><Connection Source="DataIn" Destination="pf1.DataIn" />
+<Connection Source="printf_id1" Destination="pf1.printf_id" />
+<Connection Source="printf_id2" Destination="pf2.printf_id" />
+<Connection Source="pf2.DataOut" Destination="DataOut" />
+<Connection Source="pf1.DataOut" Destination="pf2.DataIn" /></DataConnections>
+</FBNetwork>
+</FBType>

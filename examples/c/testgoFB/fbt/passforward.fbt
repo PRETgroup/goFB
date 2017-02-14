@@ -17,10 +17,11 @@
   </Event>
 </EventOutputs>
 <InputVars>
-  <VarDeclaration Name="DataIn" Type="BOOL" Comment="" />
+  <VarDeclaration Name="DataIn" Type="INT" Comment="" />
+  <VarDeclaration Name="printf_id" Type="INT" Comment="" />
 </InputVars>
 <OutputVars>
-  <VarDeclaration Name="DataOut" Type="BOOL" Comment="" />
+  <VarDeclaration Name="DataOut" Type="INT" Comment="" />
 </OutputVars>
 </InterfaceList>
 <BasicFB><ECC>
@@ -33,9 +34,9 @@
     <ECAction Algorithm="upcount" />
   </ECState>
   <ECTransition Source="Start" Destination="emit_data" Condition="true" x="687.354180574417" y="549.333319425583" />
-  <ECTransition Source="emit_data" Destination="count" Condition="DataInChanged" x="1292.85418057442" y="695.833319425583" />
-  <ECTransition Source="count" Destination="emit_data" Condition="true" x="1324.85418057442" y="671.833319425583" />
+  <ECTransition Source="emit_data" Destination="count" Condition="DataInChanged" x="1531.25" y="787.5" />
+  <ECTransition Source="count" Destination="emit_data" Condition="true" x="1181.25" y="525" />
 </ECC><Algorithm Name="upcount" Comment="">
-  <Other Language="C" Prototype="" Text="printf(&quot;Received %i\n&quot;, me-&gt;DataIn);&#xD;&#xA;me-&gt;DataOut = me-&gt;DataIn + 1;" />
+  <Other Language="C" Prototype="" Text="printf(&quot;PF[%2i]: Received %i\n&quot;, me-&gt;printf_id, me-&gt;DataIn);&#xD;&#xA;me-&gt;DataOut = me-&gt;DataIn + 1;" />
 </Algorithm></BasicFB>
 </FBType>

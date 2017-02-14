@@ -124,13 +124,11 @@ func (c *Converter) flattenFromCFB(parentCFB *iec61499.FB) error {
 		return errors.New("Needs to be an RFB or a CFB")
 	}
 
-	innerFBRefs := parentCFB.CompositeFB.FBs
-
-	for i := 0; i < len(innerFBRefs); i++ {
-		t := innerFBRefs[i].Type
+	for i := 0; i < len(parentCFB.CompositeFB.FBs); i++ {
+		t := parentCFB.CompositeFB.FBs[i].Type
 		childFB := findBlockDefinitionForType(c.Blocks, t)
 		if childFB.CompositeFB != nil {
-			c.extractChildrenFromCFBChild(parentCFB, childFB, innerFBRefs[i])
+			c.extractChildrenFromCFBChild(parentCFB, childFB, parentCFB.CompositeFB.FBs[i])
 			i--
 			//fmt.Printf("fin: \n%+v\n", parentCFB.CompositeFB)
 		}
@@ -210,7 +208,6 @@ func (c *Converter) extractChildrenFromCFBChild(parentCFB *iec61499.FB, childCFB
 	addParentToChildConns(childCFB.CompositeFB.DataConnections, &parentCFB.CompositeFB.DataConnections)
 
 	//2c). Move relevant parameters from child to former grandchildren
-	//TODO: this needs careful testing
 	for i := 0; i < len(childRef.Parameter); i++ {
 		param := childRef.Parameter[i]
 
@@ -222,6 +219,7 @@ func (c *Converter) extractChildrenFromCFBChild(parentCFB *iec61499.FB, childCFB
 					destFBRefName := destParts[0]
 					for k := 0; k < len(parentCFB.CompositeFB.FBs); k++ {
 						if parentCFB.CompositeFB.FBs[k].Name == "Flattened_"+childRef.Name+"_"+destFBRefName {
+							param.Name = destParts[1]
 							parentCFB.CompositeFB.FBs[k].Parameter = append(parentCFB.CompositeFB.FBs[k].Parameter, param)
 						}
 					}
@@ -253,7 +251,6 @@ func (c *Converter) extractChildrenFromCFBChild(parentCFB *iec61499.FB, childCFB
 	removeChildConnsFromParent(&parentCFB.CompositeFB.DataConnections)
 
 	//3. append all connections that go from grandchild to grandchild to the new blocks in parent cfb
-	//TODO: this needs careful testing
 	addChildToChildConns := func(childConns []iec61499.Connection, parentConns *[]iec61499.Connection) {
 		for i := 0; i < len(childConns); i++ {
 			sourceParts := strings.Split(childConns[i].Source, ".")

@@ -35,10 +35,11 @@ typedef struct {
 	union passforwardOutputEvents outputEvents;
 
     //input vars
-	BOOL DataIn;
+	INT DataIn;
+    INT printf_id;
     
     //output vars
-	BOOL DataOut;
+	INT DataOut;
     
 	//any internal vars (BFBs only)
     

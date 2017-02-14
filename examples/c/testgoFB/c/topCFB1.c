@@ -36,10 +36,16 @@ int topCFB1_preinit(topCFB1_t  *me) {
 	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	if(passforward_preinit(&me->Flattened_cf1_inside) != 0) {
+	if(container_one_preinit(&me->cf1) != 0) {
 		return 1;
 	}
-	if(passforward_preinit(&me->Flattened_cf2_inside) != 0) {
+	if(container_one_preinit(&me->cf2) != 0) {
+		return 1;
+	}
+	if(container_one_preinit(&me->cf3) != 0) {
+		return 1;
+	}
+	if(container_one_preinit(&me->cf4) != 0) {
 		return 1;
 	}
 	
@@ -56,20 +62,32 @@ int topCFB1_preinit(topCFB1_t  *me) {
  */
 int topCFB1_init(topCFB1_t  *me) {
 	//pass in any parameters on this level
+	me->cf1.printf_id = 1;
+	me->cf2.printf_id = 2;
+	me->cf3.printf_id = 3;
+	me->cf4.printf_id = 4;
 	
 	
 	
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
-	me->Flattened_cf1_inside.DataIn = me->Flattened_cf2_inside.DataOut;
-	me->Flattened_cf2_inside.DataIn = me->Flattened_cf1_inside.DataOut;
+	me->cf2.DataIn = me->cf1.DataOut;
+	me->cf3.DataIn = me->cf2.DataOut;
+	me->cf4.DataIn = me->cf3.DataOut;
+	me->cf1.DataIn = me->cf4.DataOut;
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	if(passforward_init(&me->Flattened_cf1_inside) != 0) {
+	if(container_one_init(&me->cf1) != 0) {
 		return 1;
 	}
-	if(passforward_init(&me->Flattened_cf2_inside) != 0) {
+	if(container_one_init(&me->cf2) != 0) {
+		return 1;
+	}
+	if(container_one_init(&me->cf3) != 0) {
+		return 1;
+	}
+	if(container_one_init(&me->cf4) != 0) {
 		return 1;
 	}
 	
@@ -88,6 +106,14 @@ int topCFB1_init(topCFB1_t  *me) {
 void topCFB1_syncOutputEvents(topCFB1_t  *me) {
 	//first, for all cfb children, call this same function
 	
+	container_one_syncOutputEvents(&me->cf1);//sync for cf1 (of type container_one) which is a CFB
+	
+	container_one_syncOutputEvents(&me->cf2);//sync for cf2 (of type container_one) which is a CFB
+	
+	container_one_syncOutputEvents(&me->cf3);//sync for cf3 (of type container_one) which is a CFB
+	
+	container_one_syncOutputEvents(&me->cf4);//sync for cf4 (of type container_one) which is a CFB
+	
 	
 	//then, for all connections that are connected to an output on the parent, run their run their copy
 	
@@ -101,12 +127,24 @@ void topCFB1_syncOutputEvents(topCFB1_t  *me) {
 void topCFB1_syncInputEvents(topCFB1_t  *me) {
 	//first, we explicitly synchronise the children
 	
-	me->Flattened_cf1_inside.inputEvents.event.DataInChanged = me->Flattened_cf2_inside.outputEvents.event.DataOutChanged; 
+	me->cf1.inputEvents.event.DataInChanged = me->cf4.outputEvents.event.DataOutChanged; 
 	
-	me->Flattened_cf2_inside.inputEvents.event.DataInChanged = me->Flattened_cf1_inside.outputEvents.event.DataOutChanged; 
+	me->cf2.inputEvents.event.DataInChanged = me->cf1.outputEvents.event.DataOutChanged; 
+	
+	me->cf3.inputEvents.event.DataInChanged = me->cf2.outputEvents.event.DataOutChanged; 
+	
+	me->cf4.inputEvents.event.DataInChanged = me->cf3.outputEvents.event.DataOutChanged; 
 	
 
 	//then, call this same function on all cfb children
+	
+	container_one_syncInputEvents(&me->cf1);//sync for cf1 (of type container_one) which is a CFB
+	
+	container_one_syncInputEvents(&me->cf2);//sync for cf2 (of type container_one) which is a CFB
+	
+	container_one_syncInputEvents(&me->cf3);//sync for cf3 (of type container_one) which is a CFB
+	
+	container_one_syncInputEvents(&me->cf4);//sync for cf4 (of type container_one) which is a CFB
 	
 }
 
@@ -119,7 +157,11 @@ void topCFB1_syncInputEvents(topCFB1_t  *me) {
  */
 void topCFB1_syncOutputData(topCFB1_t  *me) {
 	//for all composite function block children, call this same function
-	
+	//sync for cf1 (of type container_one) which is a CFB
+	container_one_syncOutputData(&me->cf1);//sync for cf2 (of type container_one) which is a CFB
+	container_one_syncOutputData(&me->cf2);//sync for cf3 (of type container_one) which is a CFB
+	container_one_syncOutputData(&me->cf3);//sync for cf4 (of type container_one) which is a CFB
+	container_one_syncOutputData(&me->cf4);
 	
 	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
 	
@@ -135,22 +177,34 @@ void topCFB1_syncOutputData(topCFB1_t  *me) {
  */
 void topCFB1_syncInputData(topCFB1_t  *me) {
 	//for all basic function block children, perform their synchronisations explicitly
+	//sync for cf1 (of Type container_one) which is a CFB
 	
-	//sync for Flattened_cf1_inside (of type passforward) which is a BFB
 	
-	if(me->Flattened_cf1_inside.inputEvents.event.DataInChanged == 1) { 
-		me->Flattened_cf1_inside.DataIn = me->Flattened_cf2_inside.DataOut;
-	} 
+		me->cf1.DataIn = me->cf4.DataOut;
 	
-	//sync for Flattened_cf2_inside (of type passforward) which is a BFB
+	//sync for cf2 (of Type container_one) which is a CFB
 	
-	if(me->Flattened_cf2_inside.inputEvents.event.DataInChanged == 1) { 
-		me->Flattened_cf2_inside.DataIn = me->Flattened_cf1_inside.DataOut;
-	} 
+	
+		me->cf2.DataIn = me->cf1.DataOut;
+	
+	//sync for cf3 (of Type container_one) which is a CFB
+	
+	
+		me->cf3.DataIn = me->cf2.DataOut;
+	
+	//sync for cf4 (of Type container_one) which is a CFB
+	
+	
+		me->cf4.DataIn = me->cf3.DataOut;
+	
 	
 	
 	//for all composite function block children, call this same function
-	
+	//sync for cf1 (of type container_one) which is a CFB
+	container_one_syncInputData(&me->cf1);//sync for cf2 (of type container_one) which is a CFB
+	container_one_syncInputData(&me->cf2);//sync for cf3 (of type container_one) which is a CFB
+	container_one_syncInputData(&me->cf3);//sync for cf4 (of type container_one) which is a CFB
+	container_one_syncInputData(&me->cf4);
 	
 }
 
@@ -161,8 +215,10 @@ void topCFB1_syncInputData(topCFB1_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void topCFB1_run(topCFB1_t  *me) {
-	passforward_run(&me->Flattened_cf1_inside);
-	passforward_run(&me->Flattened_cf2_inside);
+	container_one_run(&me->cf1);
+	container_one_run(&me->cf2);
+	container_one_run(&me->cf3);
+	container_one_run(&me->cf4);
 	
 }
 

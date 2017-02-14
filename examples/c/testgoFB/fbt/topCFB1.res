@@ -7,11 +7,25 @@
 </CompilerInfo>
 
 <FBNetwork>
-  <FB Name="cf1" Type="container" x="1494.79166666667" y="1261.45833333333" />
-  <FB Name="cf2" Type="container" x="3150" y="1268.75" />
+  <FB Name="cf1" Type="container_one" x="350" y="875">
+    <Parameter Name="printf_id" Value="1" />
+  </FB>
+  <FB Name="cf2" Type="container_one" x="1400" y="875">
+    <Parameter Name="printf_id" Value="2" />
+  </FB>
+  <FB Name="cf3" Type="container_one" x="2450" y="875">
+    <Parameter Name="printf_id" Value="3" />
+  </FB>
+  <FB Name="cf4" Type="container_one" x="3500" y="875">
+    <Parameter Name="printf_id" Value="4" />
+  </FB>
   <EventConnections><Connection Source="cf1.DataOutChanged" Destination="cf2.DataInChanged" />
-<Connection Source="cf2.DataOutChanged" Destination="cf1.DataInChanged" /></EventConnections>
+<Connection Source="cf2.DataOutChanged" Destination="cf3.DataInChanged" />
+<Connection Source="cf3.DataOutChanged" Destination="cf4.DataInChanged" />
+<Connection Source="cf4.DataOutChanged" Destination="cf1.DataInChanged" /></EventConnections>
   <DataConnections><Connection Source="cf1.DataOut" Destination="cf2.DataIn" />
-<Connection Source="cf2.DataOut" Destination="cf1.DataIn" /></DataConnections>
+<Connection Source="cf2.DataOut" Destination="cf3.DataIn" />
+<Connection Source="cf3.DataOut" Destination="cf4.DataIn" />
+<Connection Source="cf4.DataOut" Destination="cf1.DataIn" /></DataConnections>
 </FBNetwork>
 </ResourceType>

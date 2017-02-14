@@ -118,7 +118,7 @@ void passforward_run(passforward_t  *me) {
 //algorithms
 
 void passforward_upcount(passforward_t  *me) {
-printf("Received %i\n", me->DataIn);
+printf("PF[%2i]: Received %i\n", me->printf_id, me->DataIn);
 me->DataOut = me->DataIn + 1;
 }
 

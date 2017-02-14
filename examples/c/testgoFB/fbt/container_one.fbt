@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
-<FBType Name="container" Comment="" >
+<FBType Name="container_one" Comment="" >
 <Identification Standard="61499-2" />
 <VersionInfo Organization="HAMMONDSDESKTOP" Version="0.1" Author="Hammond" Date="2017-00-09" />
 <CompilerInfo header="" classdef="">
@@ -15,10 +15,11 @@
   </Event>
 </EventOutputs>
 <InputVars>
-  <VarDeclaration Name="DataIn" Type="BOOL" Comment="" />
+  <VarDeclaration Name="DataIn" Type="INT" Comment="" />
+  <VarDeclaration Name="printf_id" Type="INT" Comment="" />
 </InputVars>
 <OutputVars>
-  <VarDeclaration Name="DataOut" Type="BOOL" Comment="" />
+  <VarDeclaration Name="DataOut" Type="INT" Comment="" />
 </OutputVars>
 </InterfaceList>
 <FBNetwork>
@@ -26,6 +27,7 @@
   <EventConnections><Connection Source="DataInChanged" Destination="inside.DataInChanged" />
 <Connection Source="inside.DataOutChanged" Destination="DataOutChanged" /></EventConnections>
   <DataConnections><Connection Source="DataIn" Destination="inside.DataIn" />
+<Connection Source="printf_id" Destination="inside.printf_id" />
 <Connection Source="inside.DataOut" Destination="DataOut" /></DataConnections>
 </FBNetwork>
 </FBType>

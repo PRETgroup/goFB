@@ -8,8 +8,10 @@
 #include "fbtypes.h"
 
 //This is a CFB, so we need the #includes for the child blocks embedded here
-#include "passforward.h"
-#include "passforward.h"
+#include "container_one.h"
+#include "container_one.h"
+#include "container_one.h"
+#include "container_one.h"
 
 
 //this block had no input events
@@ -32,8 +34,10 @@ typedef struct {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	passforward_t Flattened_cf1_inside;
-	passforward_t Flattened_cf2_inside;
+	container_one_t cf1;
+	container_one_t cf2;
+	container_one_t cf3;
+	container_one_t cf4;
 	
 	//resource vars
 	
