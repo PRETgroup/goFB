@@ -17,6 +17,9 @@ int main() {
 		printf("Failed to initialize.");
 		return 1;
 	}
+
+	printf("Top: %20s   Size: %i\n", "topMANY", sizeof(mytopMANY));
+
 	int tickNum = 0;
 	do {
 		printf("=====TICK %i=====\n",tickNum);
