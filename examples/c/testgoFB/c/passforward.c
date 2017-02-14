@@ -11,7 +11,7 @@
  */
 int passforward_preinit(passforward_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.DataInChanged = 0;
 	
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -77,18 +77,22 @@ void passforward_run(passforward_t  *me) {
 			if(true) {
 				me->_state = STATE_passforward_emit_data;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_passforward_emit_data:
 			if(me->inputEvents.event.DataInChanged) {
 				me->_state = STATE_passforward_count;
 				me->_trigger = true;
+				me->inputEvents.event.DataInChanged--;
+				
 			};
 			break;
 		case STATE_passforward_count:
 			if(true) {
 				me->_state = STATE_passforward_emit_data;
 				me->_trigger = true;
+				
 			};
 			break;
 		

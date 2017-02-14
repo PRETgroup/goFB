@@ -9,7 +9,7 @@ import (
 //checkFB is used internally to ensure that a given inputted function block is amenable to this conversion tool
 func (c *Converter) checkFB(fb *iec61499.FB) error {
 	//1. Make sure all algorithms are written in VHDL
-	if c.ignoreAlgorithmLanguages == false {
+	if c.IgnoreAlgorithmLanguages == false {
 		if fb.BasicFB != nil {
 			for i := 0; i < len(fb.BasicFB.Algorithms); i++ {
 				if !c.outputLanguage.equals(fb.BasicFB.Algorithms[i].Other.Language) {

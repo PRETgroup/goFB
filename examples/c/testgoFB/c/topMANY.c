@@ -119,13 +119,13 @@ void topMANY_syncOutputEvents(topMANY_t  *me) {
 void topMANY_syncInputEvents(topMANY_t  *me) {
 	//first, we explicitly synchronise the children
 	
-	me->Flattened_basic_pf1.inputEvents.event.DataInChanged = me->Flattened_mixed_pf2.outputEvents.event.DataOutChanged; 
+	me->Flattened_basic_pf1.inputEvents.event.DataInChanged += me->Flattened_mixed_pf2.outputEvents.event.DataOutChanged; 
 	
-	me->Flattened_basic_pf2.inputEvents.event.DataInChanged = me->Flattened_basic_pf1.outputEvents.event.DataOutChanged; 
+	me->Flattened_basic_pf2.inputEvents.event.DataInChanged += me->Flattened_basic_pf1.outputEvents.event.DataOutChanged; 
 	
-	me->Flattened_mixed_pf2.inputEvents.event.DataInChanged = me->Flattened_Flattened_mixed_cf1_inside.outputEvents.event.DataOutChanged; 
+	me->Flattened_mixed_pf2.inputEvents.event.DataInChanged += me->Flattened_Flattened_mixed_cf1_inside.outputEvents.event.DataOutChanged; 
 	
-	me->Flattened_Flattened_mixed_cf1_inside.inputEvents.event.DataInChanged = me->Flattened_basic_pf2.outputEvents.event.DataOutChanged; 
+	me->Flattened_Flattened_mixed_cf1_inside.inputEvents.event.DataInChanged += me->Flattened_basic_pf2.outputEvents.event.DataOutChanged; 
 	
 
 	//then, call this same function on all cfb children

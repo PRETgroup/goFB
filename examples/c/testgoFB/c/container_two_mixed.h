@@ -14,9 +14,8 @@
 
 union container_two_mixedInputEvents {
 	struct {
-		UDINT DataInChanged : 1;
+		INT DataInChanged;
 	} event;
-	UDINT events[1];
 };
 
 

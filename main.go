@@ -18,7 +18,8 @@ var (
 	outputLanguage         = flag.String("l", "c", "Specifies the output language for the program.")
 	algorithmLanguageCheck = flag.Bool("alc", false, "Enable checking algorithm language compatibility with output language.")
 	tcrestUsingSPM         = flag.Bool("tuspm", false, "When building for T-CREST processor, will put FBs into _SPM memory")
-	autoFlatten            = flag.Bool("f", false, "Automatically flatten out CFBs to save memory")
+	autoFlatten            = flag.Bool("af", false, "Automatically flatten out CFBs to save memory")
+	incrementEventsMode    = flag.Bool("iem", false, "Use Increment-Events Mode instead of the default Set-Events Mode, meaning events won't be missed")
 )
 
 func main() {
@@ -41,7 +42,7 @@ func main() {
 		return
 	}
 
-	fileNames := make([]string, 0)
+	var fileNames []string
 
 	if fileInfo.IsDir() {
 		fmt.Println("Running in Dir mode")
@@ -78,6 +79,10 @@ func main() {
 
 	if *tcrestUsingSPM == true {
 		conv.SetTcrestUsingSPM()
+	}
+
+	if *incrementEventsMode == true {
+		conv.SetIncrementEventsMode()
 	}
 
 	for _, name := range fileNames {

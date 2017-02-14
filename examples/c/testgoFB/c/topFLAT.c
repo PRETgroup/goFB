@@ -119,13 +119,13 @@ void topFLAT_syncOutputEvents(topFLAT_t  *me) {
 void topFLAT_syncInputEvents(topFLAT_t  *me) {
 	//first, we explicitly synchronise the children
 	
-	me->pf1.inputEvents.event.DataInChanged = me->pf4.outputEvents.event.DataOutChanged; 
+	me->pf1.inputEvents.event.DataInChanged += me->pf4.outputEvents.event.DataOutChanged; 
 	
-	me->pf2.inputEvents.event.DataInChanged = me->pf1.outputEvents.event.DataOutChanged; 
+	me->pf2.inputEvents.event.DataInChanged += me->pf1.outputEvents.event.DataOutChanged; 
 	
-	me->pf3.inputEvents.event.DataInChanged = me->pf2.outputEvents.event.DataOutChanged; 
+	me->pf3.inputEvents.event.DataInChanged += me->pf2.outputEvents.event.DataOutChanged; 
 	
-	me->pf4.inputEvents.event.DataInChanged = me->pf3.outputEvents.event.DataOutChanged; 
+	me->pf4.inputEvents.event.DataInChanged += me->pf3.outputEvents.event.DataOutChanged; 
 	
 
 	//then, call this same function on all cfb children

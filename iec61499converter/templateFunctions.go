@@ -85,8 +85,17 @@ func connChildNameMatches(in string, name string) bool {
 	return strings.HasPrefix(in, name+".")
 }
 
-//getCECCTransitionCondition returns the C "if" condition to use in state machine next state logic
-func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string {
+//CECCTransition is used with getCECCTransitionCondition to return results to the template
+type CECCTransition struct {
+	IfCond    string
+	AssEvents []string
+}
+
+//getCECCTransitionCondition returns the C "if" condition to use in state machine next state logic and associated events
+// returns "full condition", "associated events"
+func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTransition {
+	var events []string
+
 	re1 := regexp.MustCompile("([<>=!]+)")
 	re2 := regexp.MustCompile("([a-zA-Z_<>=]+)")
 
@@ -111,6 +120,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string 
 		if block.EventInputs != nil {
 			for _, event := range block.EventInputs.Events {
 				if event.Name == in {
+					events = append(events, "me->inputEvents.event."+event.Name)
 					return "me->inputEvents.event." + event.Name //FUTURE WORK: Consider use of pointers and offsets to minimise memory footprint for events? i.e. "*(me->inputEvents." + in + " + ev_offset)"
 				}
 			}
@@ -122,7 +132,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) string 
 	//tidy the whitespace
 	retVal = strings.Replace(retVal, "  ", " ", -1)
 
-	return retVal
+	return CECCTransition{IfCond: retVal, AssEvents: events}
 }
 
 //locationType = 0 (Var)

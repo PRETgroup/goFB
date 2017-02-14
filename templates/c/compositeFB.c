@@ -41,8 +41,8 @@ void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_S
  */
 void {{$block.Name}}_syncInputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//first, we explicitly synchronise the children
-	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs.Events}}
-	me->{{$child.Name}}.inputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections $child.Name $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}me->{{$eventSource}}{{end}}{{else}}0{{end}}; 
+	{{$iem := .IncrementEventsMode}}{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs.Events}}
+	me->{{$child.Name}}.inputEvents.event.{{$event.Name}} {{if and ($iem) ($childType.BasicFB)}}+{{end}}= {{$allEventSources := findSourcesEventName $compositeFB.EventConnections $child.Name $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}me->{{$eventSource}}{{end}}{{else}}0{{end}}; 
 	{{end}}{{end}}{{end}}
 
 	//then, call this same function on all cfb children

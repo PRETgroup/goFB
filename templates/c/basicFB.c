@@ -4,7 +4,7 @@
 // This file represents the implementation of the Basic Function Block for {{$block.Name}}
 #include "{{$block.Name}}.h"
 
-{{template "_fbinit" .}}
+{{template "_fbinit" .}}{{$iem := .IncrementEventsMode}}
 
 /* {{$block.Name}}_run() executes a single tick of an
  * instance of {{$block.Name}} according to synchronous semantics.
@@ -21,9 +21,11 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 	if(me->_trigger == false) {
 		switch(me->_state) {
 		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$block.Name}}_{{$curState.Name}}:
-			{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{getCECCTransitionCondition $block $trans.Condition}}) {
+			{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{$cond := getCECCTransitionCondition $block $trans.Condition}}{{$cond.IfCond}}) {
 				me->_state = STATE_{{$block.Name}}_{{$trans.Destination}};
 				me->_trigger = true;
+				{{if $iem}}{{range $assEventIndex, $assEvent := $cond.AssEvents}}{{$assEvent}}--;{{/*In incrementEvent mode we need to decrement all associated events when they are consumed by a condition*/}}
+				{{end}}{{end}}
 			{{end}}{{if $basicFB.GetTransitionsForState $curState.Name}}};{{end}}
 			break;
 		{{end}}

@@ -13,9 +13,8 @@ enum passforward_states { STATE_passforward_Start, STATE_passforward_emit_data, 
 
 union passforwardInputEvents {
 	struct {
-		UDINT DataInChanged : 1;
+		INT DataInChanged;
 	} event;
-	UDINT events[1];
 };
 
 

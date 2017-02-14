@@ -13,13 +13,18 @@
 enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{{if $index}}, {{end}}STATE_{{$block.Name}}_{{$state.Name}}{{end}} };
 {{end}}
 
-{{if $block.EventInputs}}union {{$block.Name}}InputEvents {
+{{if $block.EventInputs}}{{if .IncrementEventsMode}}union {{$block.Name}}InputEvents {
+	struct {
+	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	INT {{$event.Name}};
+	{{end}}{{end}}} event;
+};
+{{else}}union {{$block.Name}}InputEvents {
 	struct {
 	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	UDINT {{$event.Name}} : 1;
 	{{end}}{{end}}} event;
 	UDINT events[{{if $block.EventInputs}}{{add (div (len $block.EventInputs.Events) 32) 1}}{{else}}1{{end}}];
 };
-{{else}}//this block had no input events
+{{end}}{{else}}//this block had no input events
 {{end}}{{if $block.Resources}}//This block is a device and probably contains resources
 {{range $index, $res := $block.Resources}}#include "{{$res.Type}}.h"
 {{end}}{{end}}
