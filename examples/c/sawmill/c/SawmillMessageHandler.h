@@ -57,18 +57,17 @@ typedef struct {
 } SawmillMessageHandler_t;
 
 //all FBs get a preinit function
-int SawmillMessageHandler_preinit(SawmillMessageHandler_t *me);
+int SawmillMessageHandler_preinit(SawmillMessageHandler_t  *me);
 
 //all FBs get an init function
-int SawmillMessageHandler_init(SawmillMessageHandler_t *me);
+int SawmillMessageHandler_init(SawmillMessageHandler_t  *me);
 
 //all FBs get a run function
-void SawmillMessageHandler_run(SawmillMessageHandler_t *me);
-
+void SawmillMessageHandler_run(SawmillMessageHandler_t  *me);
 
 //basic FBs have a number of algorithm functions
 
-void SawmillMessageHandler_LoadData(SawmillMessageHandler_t *me);
+void SawmillMessageHandler_LoadData(SawmillMessageHandler_t  *me);
 
 
 #endif

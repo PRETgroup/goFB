@@ -145,7 +145,7 @@ void SawmillControl_run(SawmillControl_t *me) {
 
 	//state output logic
 	if(me->_trigger == true) {
-		HEX = me->_state;
+		//HEX = me->_state;
 		//printf("Entered state %i\n", me->_state);
 		switch(me->_state) {
 		case STATE_SawmillControl_Start:

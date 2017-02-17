@@ -4,20 +4,24 @@
 // This file represents the implementation of the Device Function Block for _TCREST
 #include "_TCREST.h"
 
-//When running a device block, note that you would call the functions in this order
-//_init(); 
+//When running a composite block, note that you would call the functions in this order (and this is very important)
+//_preinit(); 
+//_init();
 //do {
-//_syncEvents();
-//_syncData();
-//_run();
+//	_syncOutputEvents();
+//	_syncInputEvents();
+//	_syncOutputData();
+//	_syncInputData();
+//	_run();
 //} loop;
+
 
 
 /* _TCREST_preinit() is required to be called to 
  * initialise an instance of _TCREST. 
  * It sets all I/O values to zero.
  */
-int _TCREST_preinit(_TCREST_t *me) {
+int _TCREST_preinit(_TCREST_t  *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -57,7 +61,7 @@ int _TCREST_preinit(_TCREST_t *me) {
  * set up an instance of _TCREST. 
  * It passes around configuration data.
  */
-int _TCREST_init(_TCREST_t *me) {
+int _TCREST_init(_TCREST_t  *me) {
 	//pass in any parameters on this level
 	
 	
@@ -87,37 +91,57 @@ int _TCREST_init(_TCREST_t *me) {
 
 
 
-/* _TCREST_syncEvents() synchronises the events of an
+/* _TCREST_sync[Output/Input]Events() synchronises the events of an
  * instance of _TCREST as required by synchronous semantics.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _TCREST_syncEvents(_TCREST_t *me) {
+void _TCREST_syncOutputEvents(_TCREST_t  *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	//sync for c0 (of type _Core0) which is a Resource
-	_Core0_syncEvents(&me->c0);//sync for c1 (of type _Core1) which is a Resource
-	_Core1_syncEvents(&me->c1);//sync for c2 (of type _Core2) which is a Resource
-	_Core2_syncEvents(&me->c2);//sync for c3 (of type _Core3) which is a Resource
-	_Core3_syncEvents(&me->c3);
+	_Core0_syncOutputEvents(&me->c0);//sync for c1 (of type _Core1) which is a Resource
+	_Core1_syncOutputEvents(&me->c1);//sync for c2 (of type _Core2) which is a Resource
+	_Core2_syncOutputEvents(&me->c2);//sync for c3 (of type _Core3) which is a Resource
+	_Core3_syncOutputEvents(&me->c3);
+	
+}
+void _TCREST_syncInputEvents(_TCREST_t  *me) {
+	//for all device function block resource function blocks, call this same function
+	//resources are the only things that can be embedded in devices
+	//sync for c0 (of type _Core0) which is a Resource
+	_Core0_syncInputEvents(&me->c0);//sync for c1 (of type _Core1) which is a Resource
+	_Core1_syncInputEvents(&me->c1);//sync for c2 (of type _Core2) which is a Resource
+	_Core2_syncInputEvents(&me->c2);//sync for c3 (of type _Core3) which is a Resource
+	_Core3_syncInputEvents(&me->c3);
 	
 }
 
-/* _TCREST_syncData() synchronises the data connections of an
+/* _TCREST_sync[Output/Input]Data() synchronises the data connections of an
  * instance of _TCREST as required by synchronous semantics.
  * It does the checking to ensure that only connections which have had their
  * associated event fire are updated.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _TCREST_syncData(_TCREST_t *me) {
+void _TCREST_syncOutputData(_TCREST_t  *me) {
 	//for all device function block resource function blocks, call this same function
 	//resources are the only things that can be embedded in devices
 	//sync for c0 (of type _Core0) which is a Resource
-	_Core0_syncData(&me->c0);//sync for c1 (of type _Core1) which is a Resource
-	_Core1_syncData(&me->c1);//sync for c2 (of type _Core2) which is a Resource
-	_Core2_syncData(&me->c2);//sync for c3 (of type _Core3) which is a Resource
-	_Core3_syncData(&me->c3);
+	_Core0_syncOutputData(&me->c0);//sync for c1 (of type _Core1) which is a Resource
+	_Core1_syncOutputData(&me->c1);//sync for c2 (of type _Core2) which is a Resource
+	_Core2_syncOutputData(&me->c2);//sync for c3 (of type _Core3) which is a Resource
+	_Core3_syncOutputData(&me->c3);
+
+}
+void _TCREST_syncInputData(_TCREST_t  *me) {
+	//for all device function block resource function blocks, call this same function
+	//resources are the only things that can be embedded in devices
+	//sync for c0 (of type _Core0) which is a Resource
+	_Core0_syncInputData(&me->c0);//sync for c1 (of type _Core1) which is a Resource
+	_Core1_syncInputData(&me->c1);//sync for c2 (of type _Core2) which is a Resource
+	_Core2_syncInputData(&me->c2);//sync for c3 (of type _Core3) which is a Resource
+	_Core3_syncInputData(&me->c3);
 
 }
 
@@ -127,7 +151,7 @@ void _TCREST_syncData(_TCREST_t *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _TCREST_run(_TCREST_t *me) {
+void _TCREST_run(_TCREST_t  *me) {
 	_Core0_run(&me->c0);
 	_Core1_run(&me->c1);
 	_Core2_run(&me->c2);

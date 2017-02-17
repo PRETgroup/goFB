@@ -81,7 +81,7 @@ void ArgoRx_run(ArgoRx_t *me) {
 		me->needToAck = true;
 		me->Data = *((volatile INT _SPM*)me->chan->read_buf);
 		
-		printf("chan %i recieved %i\n", me->ChanId, me->Data);
+		//printf("chan %i recieved %i\n", me->ChanId, me->Data);
 
 		if(mp_nback(me->chan)) {
 			me->needToAck = false;

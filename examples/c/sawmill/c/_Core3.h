@@ -46,16 +46,21 @@ typedef struct {
 } _Core3_t;
 
 //all FBs get a preinit function
-int _Core3_preinit(_Core3_t *me);
+int _Core3_preinit(_Core3_t  *me);
 
 //all FBs get an init function
-int _Core3_init(_Core3_t *me);
+int _Core3_init(_Core3_t  *me);
 
 //all FBs get a run function
-void _Core3_run(_Core3_t *me);
+void _Core3_run(_Core3_t  *me);
 
 //composite/resource/device FBs get sync functions
-void _Core3_syncEvents(_Core3_t *me);
-void _Core3_syncData(_Core3_t *me);
+void _Core3_syncOutputEvents(_Core3_t  *me);
+void _Core3_syncInputEvents(_Core3_t  *me);
+
+void _Core3_syncOutputData(_Core3_t  *me);
+void _Core3_syncInputData(_Core3_t  *me);
+
+
 
 #endif

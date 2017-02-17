@@ -4,12 +4,15 @@
 // This file represents the implementation of the Composite Function Block for _Core0
 #include "_Core0.h"
 
-//When running a composite block, note that you would call the functions in this order
-//_init(); 
+//When running a composite block, note that you would call the functions in this order (and this is very important)
+//_preinit(); 
+//_init();
 //do {
-//_syncEvents();
-//_syncData();
-//_run();
+//	_syncOutputEvents();
+//	_syncInputEvents();
+//	_syncOutputData();
+//	_syncInputData();
+//	_run();
 //} loop;
 
 
@@ -17,7 +20,7 @@
  * initialise an instance of _Core0. 
  * It sets all I/O values to zero.
  */
-int _Core0_preinit(_Core0_t *me) {
+int _Core0_preinit(_Core0_t  *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -57,7 +60,7 @@ int _Core0_preinit(_Core0_t *me) {
  * set up an instance of _Core0. 
  * It passes around configuration data.
  */
-int _Core0_init(_Core0_t *me) {
+int _Core0_init(_Core0_t  *me) {
 	//pass in any parameters on this level
 	me->saw1rx.ChanId = 1;
 	me->saw2rx.ChanId = 2;
@@ -93,40 +96,59 @@ int _Core0_init(_Core0_t *me) {
 
 
 
-/* _Core0_syncEvents() synchronises the events of an
+/* _Core0_syncOutputEvents() synchronises the output events of an
  * instance of _Core0 as required by synchronous semantics.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core0_syncEvents(_Core0_t *me) {
-	//for all composite function block children, call this same function
+void _Core0_syncOutputEvents(_Core0_t  *me) {
+	//first, for all cfb children, call this same function
 	
-	//for all basic function block children, perform their synchronisations explicitly
-	//events are always copied
-	//inputs that go to children
 	
-	me->statusprint.inputEvents.event.StatusUpdate = me->saw1rx.outputEvents.event.DataPresent || me->saw2rx.outputEvents.event.DataPresent || me->saw3rx.outputEvents.event.DataPresent; 
-	
-	printf("%i = %i || %i || %i\n", me->statusprint.inputEvents.event.StatusUpdate, me->saw1rx.outputEvents.event.DataPresent, me->saw2rx.outputEvents.event.DataPresent, me->saw3rx.outputEvents.event.DataPresent);
-	printf("0x%08x 0x%08x 0x%08x 0x%08x\n", (unsigned int)&me->statusprint.inputEvents, (unsigned int)&me->saw1rx.outputEvents, (unsigned int)&me->saw2rx.outputEvents, (unsigned int)&me->saw3rx.outputEvents);
-	
-	//outputs of parent cfb
-	
+	//then, for all connections that are connected to an output on the parent, run their run their copy
 	
 }
 
-/* _Core0_syncData() synchronises the data connections of an
+/* _Core0_syncInputEvents() synchronises the input events of an
+ * instance of _Core0 as required by synchronous semantics.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void _Core0_syncInputEvents(_Core0_t  *me) {
+	//first, we explicitly synchronise the children
+	
+	me->statusprint.inputEvents.event.StatusUpdate = me->saw1rx.outputEvents.event.DataPresent || me->saw2rx.outputEvents.event.DataPresent || me->saw3rx.outputEvents.event.DataPresent; 
+	
+
+	//then, call this same function on all cfb children
+	
+}
+
+/* _Core0_syncOutputData() synchronises the output data connections of an
  * instance of _Core0 as required by synchronous semantics.
  * It does the checking to ensure that only connections which have had their
  * associated event fire are updated.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core0_syncData(_Core0_t *me) {
+void _Core0_syncOutputData(_Core0_t  *me) {
 	//for all composite function block children, call this same function
 	
+	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
+	
+	
+}
+
+/* _Core0_syncInputData() synchronises the input data connections of an
+ * instance of _Core0 as required by synchronous semantics.
+ * It does the checking to ensure that only connections which have had their
+ * associated event fire are updated.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void _Core0_syncInputData(_Core0_t  *me) {
 	//for all basic function block children, perform their synchronisations explicitly
-	//Data is sometimes copied
 	
 	//sync for saw1rx (of type ArgoRx) which is a BFB
 	
@@ -146,10 +168,9 @@ void _Core0_syncData(_Core0_t *me) {
 	} 
 	
 	
-	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	//for all composite function block children, call this same function
 	
 	
-
 }
 
 
@@ -158,7 +179,7 @@ void _Core0_syncData(_Core0_t *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core0_run(_Core0_t *me) {
+void _Core0_run(_Core0_t  *me) {
 	ArgoRx_run(&me->saw1rx);
 	ArgoRx_run(&me->saw2rx);
 	ArgoRx_run(&me->saw3rx);

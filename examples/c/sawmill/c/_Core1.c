@@ -4,12 +4,15 @@
 // This file represents the implementation of the Composite Function Block for _Core1
 #include "_Core1.h"
 
-//When running a composite block, note that you would call the functions in this order
-//_init(); 
+//When running a composite block, note that you would call the functions in this order (and this is very important)
+//_preinit(); 
+//_init();
 //do {
-//_syncEvents();
-//_syncData();
-//_run();
+//	_syncOutputEvents();
+//	_syncInputEvents();
+//	_syncOutputData();
+//	_syncInputData();
+//	_run();
 //} loop;
 
 
@@ -17,7 +20,7 @@
  * initialise an instance of _Core1. 
  * It sets all I/O values to zero.
  */
-int _Core1_preinit(_Core1_t *me) {
+int _Core1_preinit(_Core1_t  *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -54,7 +57,7 @@ int _Core1_preinit(_Core1_t *me) {
  * set up an instance of _Core1. 
  * It passes around configuration data.
  */
-int _Core1_init(_Core1_t *me) {
+int _Core1_init(_Core1_t  *me) {
 	//pass in any parameters on this level
 	me->tx.ChanId = 1;
 	
@@ -85,18 +88,28 @@ int _Core1_init(_Core1_t *me) {
 
 
 
-/* _Core1_syncEvents() synchronises the events of an
+/* _Core1_syncOutputEvents() synchronises the output events of an
  * instance of _Core1 as required by synchronous semantics.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core1_syncEvents(_Core1_t *me) {
-	//for all composite function block children, call this same function
+void _Core1_syncOutputEvents(_Core1_t  *me) {
+	//first, for all cfb children, call this same function
 	
-	SawmillModule_syncEvents(&me->sawmill);//sync for sawmill (of type SawmillModule) which is a CFB
-	//for all basic function block children, perform their synchronisations explicitly
-	//events are always copied
-	//inputs that go to children
+	SawmillModule_syncOutputEvents(&me->sawmill);//sync for sawmill (of type SawmillModule) which is a CFB
+	
+	
+	//then, for all connections that are connected to an output on the parent, run their run their copy
+	
+}
+
+/* _Core1_syncInputEvents() synchronises the input events of an
+ * instance of _Core1 as required by synchronous semantics.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void _Core1_syncInputEvents(_Core1_t  *me) {
+	//first, we explicitly synchronise the children
 	
 	me->messageHandler.inputEvents.event.MessageChanged = me->sawmill.outputEvents.event.MessageChange; 
 	
@@ -104,25 +117,40 @@ void _Core1_syncEvents(_Core1_t *me) {
 	
 	me->tx.inputEvents.event.DataPresent = me->messageHandler.outputEvents.event.TxDataPresent; 
 	
-	//outputs of parent cfb
+
+	//then, call this same function on all cfb children
 	
+	SawmillModule_syncInputEvents(&me->sawmill);//sync for sawmill (of type SawmillModule) which is a CFB
 	
 }
 
-/* _Core1_syncData() synchronises the data connections of an
+/* _Core1_syncOutputData() synchronises the output data connections of an
  * instance of _Core1 as required by synchronous semantics.
  * It does the checking to ensure that only connections which have had their
  * associated event fire are updated.
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core1_syncData(_Core1_t *me) {
+void _Core1_syncOutputData(_Core1_t  *me) {
 	//for all composite function block children, call this same function
 	//sync for sawmill (of type SawmillModule) which is a CFB
-	SawmillModule_syncData(&me->sawmill);
-	//for all basic function block children, perform their synchronisations explicitly
-	//Data is sometimes copied
+	SawmillModule_syncOutputData(&me->sawmill);
 	
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
+	
+	
+}
+
+/* _Core1_syncInputData() synchronises the input data connections of an
+ * instance of _Core1 as required by synchronous semantics.
+ * It does the checking to ensure that only connections which have had their
+ * associated event fire are updated.
+ * Notice that it does NOT perform any computation - this occurs in the
+ * _run function.
+ */
+void _Core1_syncInputData(_Core1_t  *me) {
+	//for all basic function block children, perform their synchronisations explicitly
+	//sync for sawmill (of Type SawmillModule) which is a CFB
 	
 	//sync for messageHandler (of type SawmillMessageHandler) which is a BFB
 	
@@ -140,10 +168,10 @@ void _Core1_syncData(_Core1_t *me) {
 	} 
 	
 	
-	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	//for all composite function block children, call this same function
+	//sync for sawmill (of type SawmillModule) which is a CFB
+	SawmillModule_syncInputData(&me->sawmill);
 	
-	
-
 }
 
 
@@ -152,7 +180,7 @@ void _Core1_syncData(_Core1_t *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core1_run(_Core1_t *me) {
+void _Core1_run(_Core1_t  *me) {
 	SawmillModule_run(&me->sawmill);
 	SawmillMessageHandler_run(&me->messageHandler);
 	ArgoTx_run(&me->tx);

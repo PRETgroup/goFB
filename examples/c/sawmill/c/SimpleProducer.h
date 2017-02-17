@@ -56,18 +56,17 @@ typedef struct {
 } SimpleProducer_t;
 
 //all FBs get a preinit function
-int SimpleProducer_preinit(SimpleProducer_t *me);
+int SimpleProducer_preinit(SimpleProducer_t  *me);
 
 //all FBs get an init function
-int SimpleProducer_init(SimpleProducer_t *me);
+int SimpleProducer_init(SimpleProducer_t  *me);
 
 //all FBs get a run function
-void SimpleProducer_run(SimpleProducer_t *me);
-
+void SimpleProducer_run(SimpleProducer_t  *me);
 
 //basic FBs have a number of algorithm functions
 
-void SimpleProducer_update_count(SimpleProducer_t *me);
+void SimpleProducer_update_count(SimpleProducer_t  *me);
 
 
 #endif

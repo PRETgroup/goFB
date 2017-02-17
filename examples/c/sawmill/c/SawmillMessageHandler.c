@@ -9,9 +9,10 @@
  * initialise an instance of SawmillMessageHandler. 
  * It sets all I/O values to zero.
  */
-int SawmillMessageHandler_preinit(SawmillMessageHandler_t *me) {
+int SawmillMessageHandler_preinit(SawmillMessageHandler_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.MessageChanged = 0;
+	me->inputEvents.event.TxSuccessChanged = 0;
 	
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
@@ -41,7 +42,7 @@ int SawmillMessageHandler_preinit(SawmillMessageHandler_t *me) {
  * set up an instance of SawmillMessageHandler. 
  * It passes around configuration data.
  */
-int SawmillMessageHandler_init(SawmillMessageHandler_t *me) {
+int SawmillMessageHandler_init(SawmillMessageHandler_t  *me) {
 	//pass in any parameters on this level
 	
 	
@@ -66,7 +67,7 @@ int SawmillMessageHandler_init(SawmillMessageHandler_t *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void SawmillMessageHandler_run(SawmillMessageHandler_t *me) {
+void SawmillMessageHandler_run(SawmillMessageHandler_t  *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
 	
@@ -77,21 +78,25 @@ void SawmillMessageHandler_run(SawmillMessageHandler_t *me) {
 			if(true) {
 				me->_state = STATE_SawmillMessageHandler_tx_done;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_SawmillMessageHandler_try_tx:
 			if(me->inputEvents.event.TxSuccessChanged && ( ! me->TxSuccess)) {
 				me->_state = STATE_SawmillMessageHandler_try_tx;
 				me->_trigger = true;
+				
 			} else if(me->inputEvents.event.TxSuccessChanged && (me->TxSuccess)) {
 				me->_state = STATE_SawmillMessageHandler_tx_done;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_SawmillMessageHandler_tx_done:
 			if(me->inputEvents.event.MessageChanged) {
 				me->_state = STATE_SawmillMessageHandler_try_tx;
 				me->_trigger = true;
+				
 			};
 			break;
 		
@@ -120,7 +125,7 @@ void SawmillMessageHandler_run(SawmillMessageHandler_t *me) {
 }
 //algorithms
 
-void SawmillMessageHandler_LoadData(SawmillMessageHandler_t *me) {
+void SawmillMessageHandler_LoadData(SawmillMessageHandler_t  *me) {
 me->TxData = me->Message;
 }
 

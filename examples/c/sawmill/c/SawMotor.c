@@ -102,10 +102,12 @@ void SawMotor_run(SawMotor_t *me) {
 
 		case STATE_SawMotor_Run:
 		//HEX=2;
+			LED = 1;
 			break;
 
 		case STATE_SawMotor_Stop:
 		//HEX=3;
+			LED = 0;
 			break;
 
 		

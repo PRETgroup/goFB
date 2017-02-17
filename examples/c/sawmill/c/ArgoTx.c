@@ -73,10 +73,9 @@ int ArgoTx_init(ArgoTx_t *me) {
 void ArgoTx_run(ArgoTx_t *me) {
 	//if there are output events, reset them
 	me->outputEvents.events[0] = 0;
-	LED = 0;
 	if(me->inputEvents.event.DataPresent) {
-		LED = 1;
-		*((volatile INT *)me->chan->write_buf) = me->Data;
+		HEX = me->Data;
+		*((volatile _SPM INT *)me->chan->write_buf) = me->Data;
 		me->Success = mp_nbsend(me->chan);
 		me->outputEvents.event.SuccessChanged = 1;
 	}
