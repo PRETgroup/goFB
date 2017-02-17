@@ -28,7 +28,11 @@ Usage of goFB:
         Specifies the name of the directory to put output files. If blank, uses current directory
   -t string
         Specifies the name of the top level fbt-type file. If blank, no top file will be generated.
+  -af
+        Automatically flatten out CFBs to save memory
+  -tuspm
+  		(Experimental flag) When building for T-CREST processor, will put FBs into _SPM memory
 ```
 
-Two example networks for use with the C compiler are presented. 
+Three example networks {BottlingPlant, Pointless, and testgoFB} can be used with the C compiler. 
 

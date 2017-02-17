@@ -128,7 +128,29 @@ func (c *Converter) Flatten() error {
 		return errors.New("Can't find top block when flattening")
 	}
 
-	return c.flattenFromCFB(topFB)
+	if topFB.CompositeFB != nil {
+		//top block is composite or resource
+		return c.flattenFromCFB(topFB)
+	}
+
+	//top block is probably device
+	if len(topFB.Resources) > 0 {
+		//yup, it is. Flatten each of the resource blocks independently
+		for i := 0; i < len(topFB.Resources); i++ {
+			for j := 0; j < len(c.Blocks); j++ {
+				if topFB.Resources[i].Type == c.Blocks[j].Name {
+					if err := c.flattenFromCFB(&c.Blocks[j]); err != nil {
+						return err
+					}
+				}
+			}
+		}
+		//done
+		return nil
+
+	}
+
+	return errors.New("Can't flatten top block, is neither composite/resource nor device")
 }
 
 //flattenFromCFB "flattens out" all the CFBs inside a parent CFB (so that it only contains BFBs)

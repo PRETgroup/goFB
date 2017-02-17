@@ -17,9 +17,9 @@ var (
 	topName                = flag.String("t", "", "Specifies the name of the top level fbt-type file. If blank, no top file will be generated.")
 	outputLanguage         = flag.String("l", "c", "Specifies the output language for the program.")
 	algorithmLanguageCheck = flag.Bool("alc", false, "Enable checking algorithm language compatibility with output language.")
-	tcrestUsingSPM         = flag.Bool("tuspm", false, "When building for T-CREST processor, will put FBs into _SPM memory")
+	tcrestUsingSPM         = flag.Bool("tuspm", false, "(Experimental flag) When building for T-CREST processor, will put FBs into _SPM memory")
 	autoFlatten            = flag.Bool("af", false, "Automatically flatten out CFBs to save memory")
-	incrementEventsMode    = flag.Bool("iem", false, "Use Increment-Events Mode instead of the default Set-Events Mode, meaning events won't be missed")
+	//incrementEventsMode    = flag.Bool("iem", false, "Use Increment-Events Mode instead of the default Set-Events Mode, meaning events won't be missed")
 )
 
 func main() {
@@ -81,9 +81,9 @@ func main() {
 		conv.SetTcrestUsingSPM()
 	}
 
-	if *incrementEventsMode == true {
-		conv.SetIncrementEventsMode()
-	}
+	// if *incrementEventsMode == true {
+	// 	conv.SetIncrementEventsMode()
+	// }
 
 	for _, name := range fileNames {
 		sourceFile, err := ioutil.ReadFile(fmt.Sprintf("%s%c%s", *inFileName, os.PathSeparator, name))
