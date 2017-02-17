@@ -50,16 +50,16 @@ typedef struct {
 		qpd_t* chan;
 	BOOL needToAck;
 	
-} _SPM ArgoRx_t;
+} ArgoRx_t;
 
 //all FBs get a preinit function
-int ArgoRx_preinit(ArgoRx_t _SPM *me);
+int ArgoRx_preinit(ArgoRx_t *me);
 
 //all FBs get an init function
-int ArgoRx_init(ArgoRx_t _SPM *me);
+int ArgoRx_init(ArgoRx_t *me);
 
 //all FBs get a run function
-void ArgoRx_run(ArgoRx_t _SPM *me);
+void ArgoRx_run(ArgoRx_t *me);
 
 
 

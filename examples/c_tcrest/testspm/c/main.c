@@ -5,23 +5,30 @@
 #include "main.h"
 
 typedef struct {
-	int x;
-	int y[3];
+	int y[500];
 } data_t;
 
 typedef struct {
 	data_t t;
 } container_t;
 
-void data_set(int size, int _SPM *arr) {
-	for(int i=0; i < size; i++) {
+void data_set(int _SPM *arr) {
+	for(int i=0; i < 500; i++) {
 		arr[i] = i;
 	}
 }
 
-void data_augment(data_t _SPM *d) {
-	d->y[2] = 40;
+void data_check(int _SPM *arr) {
+	for(int i=0; i < 500; i++) {
+		if(arr[i] != i) {
+			printf("ERROR at i:%i, value is %i\n", i, arr[i]);
+		}
+	}
 }
+
+
+
+
 
 int main() {
 	container_t _SPM *c;
@@ -31,15 +38,10 @@ int main() {
 	// u->t.x = 1;
 	// printf("Done\n");
 
-	printf("Setting *c...");
-	c->t.x = 1;
-	data_set(3, c->t.y);
-	data_augment(&c->t);
+	printf("Testing spm...");
+	data_set(c->t.y);
+	data_check(c->t.y);
+	
 	printf("Done\n");
-
-	printf("c->t.x = %i\n", c->t.x);
-	printf("c->t.y[0] = %i\n", c->t.y[0]);
-	printf("c->t.y[1] = %i\n", c->t.y[1]);
-	printf("c->t.y[2] = %i\n", c->t.y[2]);
 	return 0;
 }

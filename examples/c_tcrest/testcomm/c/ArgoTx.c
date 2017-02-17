@@ -9,7 +9,7 @@
  * initialise an instance of ArgoTx. 
  * It sets all I/O values to zero.
  */
-int ArgoTx_preinit(ArgoTx_t _SPM *me) {
+int ArgoTx_preinit(ArgoTx_t *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -42,7 +42,7 @@ int ArgoTx_preinit(ArgoTx_t _SPM *me) {
  * set up an instance of ArgoTx. 
  * It passes around configuration data.
  */
-int ArgoTx_init(ArgoTx_t _SPM *me) {
+int ArgoTx_init(ArgoTx_t *me) {
 	//pass in any parameters on this level
 	
 	
@@ -70,17 +70,15 @@ int ArgoTx_init(ArgoTx_t _SPM *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void ArgoTx_run(ArgoTx_t _SPM *me) {
+void ArgoTx_run(ArgoTx_t *me) {
 	//if there are output events, reset them
-	//me->outputEvents.events[0] = 0;
-	me->outputEvents.event.SuccessChanged = 0;
+	me->outputEvents.events[0] = 0;
 
 	if(me->inputEvents.event.DataPresent) {
-		//printf("Transmitting %i\n", me->Data);
+		printf("Transmitting %i\n", me->Data);
 		*((volatile INT _SPM *)me->chan->write_buf) = me->Data;
 		me->Success = mp_nbsend(me->chan);
 		me->outputEvents.event.SuccessChanged = 1;
-		//printf("hi\n");
 	}
 }
 //no algorithms were present for this function block

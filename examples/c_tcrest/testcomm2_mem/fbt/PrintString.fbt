@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="PrintString" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-09" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="DataPresent" Comment="">
+    <With Var="Data" />
+  </Event>
+</EventInputs>
+
+<InputVars>
+  <VarDeclaration Name="Data" Type="STRING" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="Await_data" Comment="" x="1053.64586114883" y="696.354180574417">
+    <ECAction Algorithm="DoPrintString" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Await_data" Condition="DataPresent" x="508.447930574417" y="483.427090287209" />
+  <ECTransition Source="Await_data" Destination="Await_data" Condition="DataPresent" x="923.645861148834" y="596.354180574417" />
+</ECC><Algorithm Name="DoPrintString" Comment="">
+  <Other Language="C" Prototype="" Text="printf(&quot;PrintString: %s\n&quot;, me-&gt;Data);" />
+</Algorithm></BasicFB>
+</FBType>
