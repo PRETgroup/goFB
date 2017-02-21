@@ -18,7 +18,6 @@ union SawmillLaserOutputEvents {
 	struct {
 		UDINT LaserChanged;
 	} event;
-	UDINT events[1];
 };
 
 

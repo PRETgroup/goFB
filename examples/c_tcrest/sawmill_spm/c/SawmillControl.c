@@ -11,11 +11,14 @@
  */
 int SawmillControl_preinit(SawmillControl_t _SPM *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.ControlChange = 0;
+	me->inputEvents.event.WeightChange = 0;
+	me->inputEvents.event.LaserChange = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
-	
+	me->outputEvents.event.CommandChange = 0;
+	me->outputEvents.event.MessageChange = 0;
+
 	//if there are input vars with default values, set them
 	
 	//if there are output vars with default values, set them

@@ -17,7 +17,6 @@ union SawmillControlInputEvents {
 		UDINT WeightChange;
 		UDINT LaserChange;
 	} event;
-	UDINT events[1];
 };
 
 
@@ -26,7 +25,6 @@ union SawmillControlOutputEvents {
 		UDINT CommandChange;
 		UDINT MessageChange;
 	} event;
-	UDINT events[1];
 };
 
 
