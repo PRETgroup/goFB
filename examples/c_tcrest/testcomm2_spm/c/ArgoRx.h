@@ -16,7 +16,7 @@ enum ArgoRx_states { STATE_ArgoRx_Start };
 
 union ArgoRxOutputEvents {
 	struct {
-		UDINT DataPresent : 1;
+		UDINT DataPresent;
 	} event;
 	UDINT events[1];
 };

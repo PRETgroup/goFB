@@ -61,7 +61,7 @@ int _Core0_init(_Core0_t _SPM *me) {
 	
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
-	//me->rx.ChanId = me->RxChanId;
+	me->rx.ChanId = me->RxChanId;
 	me->print.Data = me->rx.Data;
 	
 

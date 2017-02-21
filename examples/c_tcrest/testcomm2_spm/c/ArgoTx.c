@@ -9,7 +9,7 @@
  * initialise an instance of ArgoTx. 
  * It sets all I/O values to zero.
  */
-int __attribute__ ((noinline)) ArgoTx_preinit(ArgoTx_t _SPM *me) {
+int ArgoTx_preinit(ArgoTx_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.events[0] = 0;
 	
@@ -42,7 +42,7 @@ int __attribute__ ((noinline)) ArgoTx_preinit(ArgoTx_t _SPM *me) {
  * set up an instance of ArgoTx. 
  * It passes around configuration data.
  */
-int __attribute__ ((noinline)) ArgoTx_init(ArgoTx_t _SPM *me) {
+int ArgoTx_init(ArgoTx_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -74,13 +74,15 @@ int __attribute__ ((noinline)) ArgoTx_init(ArgoTx_t _SPM *me) {
  */
 void ArgoTx_run(ArgoTx_t _SPM *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.SuccessChanged = 0;
 
 	if(me->inputEvents.event.DataPresent) {
-		//HEX = me->Data;
+		//printf("tx: attempt tx - result: ");
+		HEX = me->Data;
 		*((volatile INT _SPM *)me->chan->write_buf) = me->Data;
 		me->Success = mp_nbsend(me->chan);
 		LED = me->Success;
+		//printf("%s\n", me->Success ? "OK":"FAIL");
 		me->outputEvents.event.SuccessChanged = 1;
 	}
 }

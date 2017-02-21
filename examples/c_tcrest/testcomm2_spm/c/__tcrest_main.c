@@ -18,12 +18,12 @@ void task1(_Core1_t _SPM * c1);
 
 int main() {
 	mp_init();
-	printf("testcomm2_mem startup.\n");
+	printf("testcomm2_spm startup.\n");
 
-	printf("Starting t1 and initialising...\n");
+	printf("Starting c1 and initialising...\n");
 	corethread_t core1 = 1;
 	corethread_create(&core1, &t1, NULL);
-	printf("Started t1\n");
+	printf("Started c1\n");
 	t0(NULL);
 }
 

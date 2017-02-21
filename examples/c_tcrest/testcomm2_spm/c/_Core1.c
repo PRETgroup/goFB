@@ -64,7 +64,7 @@ int _Core1_init(_Core1_t _SPM *me) {
 	
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
-	//me->tx.ChanId = me->TxChanId;
+	me->tx.ChanId = me->TxChanId;
 	me->prod.TxSuccess = me->tx.Success;
 	me->tx.Data = me->prod.Data;
 	me->prod.DataIn = me->switches.Data;
@@ -148,7 +148,8 @@ void _Core1_syncInputData(_Core1_t _SPM *me) {
 	
 	//sync for tx (of type ArgoTx) which is a BFB
 	
-	if(me->tx.inputEvents.event.DataPresent == 1) { 
+	if(me->tx.inputEvents.event.DataPresent) {
+		HEX = HEX + 1;
 		me->tx.Data = me->prod.Data;
 	} 
 	
@@ -162,7 +163,6 @@ void _Core1_syncInputData(_Core1_t _SPM *me) {
 	} 
 	
 	//sync for switches (of type Switches) which is a BFB
-	
 	
 	
 	//for all composite function block children, call this same function

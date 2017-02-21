@@ -68,6 +68,8 @@ int PrintInt_init(PrintInt_t _SPM *me) {
 void PrintInt_run(PrintInt_t _SPM *me) {
 	//if there are output events, reset them
 	
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {

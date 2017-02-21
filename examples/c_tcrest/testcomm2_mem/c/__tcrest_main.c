@@ -74,6 +74,7 @@ void task1(_Core1_t * c1) {
 }
 
 
+
 void t1(void* param) {
 	//HEX = 1;
 	_Core1_t c1;

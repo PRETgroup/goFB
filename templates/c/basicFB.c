@@ -15,8 +15,11 @@
  */
 void {{$block.Name}}_run({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
+	{{/*{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
+	{{end}}{{end}}// this method seems to be having trouble on the SPM memory*/}}
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.event.{{$event.Name}} = 0;
 	{{end}}{{end}}
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {

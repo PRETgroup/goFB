@@ -13,7 +13,7 @@ enum PrintString_states { STATE_PrintString_Start, STATE_PrintString_Await_data 
 
 union PrintStringInputEvents {
 	struct {
-		UDINT DataPresent : 1;
+		UDINT DataPresent;
 	} event;
 	UDINT events[1];
 };

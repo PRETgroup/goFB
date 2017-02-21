@@ -70,8 +70,10 @@ int Producer_init(Producer_t _SPM *me) {
  */
 void Producer_run(Producer_t _SPM *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.DataPresent = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -127,7 +129,6 @@ void Producer_run(Producer_t _SPM *me) {
 //algorithms
 
 void Producer_update_count(Producer_t _SPM *me) {
-	HEX = me->Data;
 me->Data = me->DataIn;
 }
 

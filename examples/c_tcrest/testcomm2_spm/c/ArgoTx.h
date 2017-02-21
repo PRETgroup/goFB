@@ -13,7 +13,7 @@ enum ArgoTx_states { STATE_ArgoTx_Start };
 
 union ArgoTxInputEvents {
 	struct {
-		UDINT DataPresent : 1;
+		UDINT DataPresent;
 	} event;
 	UDINT events[1];
 };
@@ -21,7 +21,7 @@ union ArgoTxInputEvents {
 
 union ArgoTxOutputEvents {
 	struct {
-		UDINT SuccessChanged : 1;
+		UDINT SuccessChanged;
 	} event;
 	UDINT events[1];
 };
@@ -58,10 +58,10 @@ typedef struct {
 } ArgoTx_t;
 
 //all FBs get a preinit function
-int __attribute__ ((noinline)) ArgoTx_preinit(ArgoTx_t _SPM *me);
+int ArgoTx_preinit(ArgoTx_t _SPM *me);
 
 //all FBs get an init function
-int __attribute__ ((noinline)) ArgoTx_init(ArgoTx_t _SPM *me);
+int ArgoTx_init(ArgoTx_t _SPM *me);
 
 //all FBs get a run function
 void ArgoTx_run(ArgoTx_t _SPM *me);

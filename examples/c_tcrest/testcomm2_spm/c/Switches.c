@@ -58,6 +58,7 @@ int Switches_init(Switches_t _SPM *me) {
 
 
 
+
 /* Switches_run() executes a single tick of an
  * instance of Switches according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -67,8 +68,10 @@ int Switches_init(Switches_t _SPM *me) {
  */
 void Switches_run(Switches_t _SPM *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.DataChanged = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -109,10 +112,8 @@ void Switches_run(Switches_t _SPM *me) {
 //algorithms
 
 void Switches_switches_service(Switches_t _SPM *me) {
-INT raw = SWITCHES;
-if(raw != me->Data) {
-	//HEX = raw;
-	me->Data = raw;
+if(SWITCHES != me->Data) {
+	me->Data = SWITCHES;
 	me->outputEvents.event.DataChanged = 1;
 }
 }
