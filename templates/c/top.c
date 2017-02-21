@@ -18,7 +18,7 @@ int main() {
 		return 1;
 	}
 
-	printf("Top: %20s   Size: %i\n", "{{$block.Name}}", sizeof(my{{$block.Name}}));
+	printf("Top: %20s   Size: %lu\n", "{{$block.Name}}", sizeof(my{{$block.Name}}));
 
 	int tickNum = 0;
 	do {

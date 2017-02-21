@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SawMotor" Comment="goFB_ignore" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="CommandChange" Comment="">
+    <With Var="Run" />
+  </Event>
+</EventInputs>
+
+<InputVars>
+  <VarDeclaration Name="Run" Type="BOOL" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="Run" Comment="" x="871.354138851166" y="707.291638851166">
+  </ECState>
+  <ECState Name="Stop" Comment="" x="1181.25" y="426.5625">
+  </ECState>
+  <ECTransition Source="Start" Destination="Stop" Condition="true" x="757.25" y="357.53125" />
+  <ECTransition Source="Run" Destination="Stop" Condition="!Run" x="1006.30206942558" y="566.927069425583" />
+  <ECTransition Source="Stop" Destination="Run" Condition="Run" x="1019.30206942558" y="579.927069425583" />
+</ECC></BasicFB>
+</FBType>

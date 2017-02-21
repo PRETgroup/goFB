@@ -51,6 +51,12 @@ func (c *Converter) SetIncrementEventsMode() {
 	c.IncrementEventsMode = true
 }
 
+//SetTcrestIncludes sets that the output fbtypes.h should include the TCREST headers
+// than set and forget
+func (c *Converter) SetTcrestIncludes() {
+	c.TcrestIncludes = true
+}
+
 //AddBlock should be called for each block in the network
 func (c *Converter) AddBlock(iec61499bytes []byte) error {
 	FB := iec61499.FB{}
@@ -69,6 +75,7 @@ func (c *Converter) AddBlock(iec61499bytes []byte) error {
 //ConverterSettings holds the settings for this conversion
 type ConverterSettings struct {
 	TcrestUsingSPM           bool
+	TcrestIncludes           bool
 	IncrementEventsMode      bool
 	IgnoreAlgorithmLanguages bool
 }

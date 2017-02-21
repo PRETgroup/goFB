@@ -17,7 +17,8 @@ var (
 	topName                = flag.String("t", "", "Specifies the name of the top level fbt-type file. If blank, no top file will be generated.")
 	outputLanguage         = flag.String("l", "c", "Specifies the output language for the program.")
 	algorithmLanguageCheck = flag.Bool("alc", false, "Enable checking algorithm language compatibility with output language.")
-	tcrestUsingSPM         = flag.Bool("tuspm", false, "(Experimental flag) When building for T-CREST processor, will put FBs into _SPM memory")
+	tcrestUsingSPM         = flag.Bool("tuspm", false, "(Experimental flag) When building for T-CREST processor, will put FBs into _SPM memory, also includes -ti")
+	tcrestIncludes         = flag.Bool("ti", false, "(Experimental flag) Include the TCREST header files in fbtypes.h")
 	autoFlatten            = flag.Bool("af", false, "Automatically flatten out CFBs to save memory")
 	//incrementEventsMode    = flag.Bool("iem", false, "Use Increment-Events Mode instead of the default Set-Events Mode, meaning events won't be missed")
 )
@@ -79,6 +80,11 @@ func main() {
 
 	if *tcrestUsingSPM == true {
 		conv.SetTcrestUsingSPM()
+		conv.SetTcrestIncludes()
+	}
+
+	if *tcrestIncludes == true {
+		conv.SetTcrestIncludes()
 	}
 
 	// if *incrementEventsMode == true {

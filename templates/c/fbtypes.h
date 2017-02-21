@@ -5,7 +5,7 @@
 #define FBTYPES_H_
 
 #include <stdio.h>
-{{if .TcrestUsingSPM}}
+{{if or .TcrestUsingSPM .TcrestIncludes}}
 #include <machine/spm.h>
 #include <machine/patmos.h>
 #include "libcorethread/corethread.h"
