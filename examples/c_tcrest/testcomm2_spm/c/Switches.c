@@ -13,7 +13,7 @@ int Switches_preinit(Switches_t _SPM *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.DataChanged = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -55,7 +55,6 @@ int Switches_init(Switches_t _SPM *me) {
 
 	return 0;
 }
-
 
 
 

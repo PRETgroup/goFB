@@ -148,8 +148,7 @@ void _Core1_syncInputData(_Core1_t _SPM *me) {
 	
 	//sync for tx (of type ArgoTx) which is a BFB
 	
-	if(me->tx.inputEvents.event.DataPresent) {
-		HEX = HEX + 1;
+	if(me->tx.inputEvents.event.DataPresent == 1) { 
 		me->tx.Data = me->prod.Data;
 	} 
 	
@@ -163,6 +162,7 @@ void _Core1_syncInputData(_Core1_t _SPM *me) {
 	} 
 	
 	//sync for switches (of type Switches) which is a BFB
+	
 	
 	
 	//for all composite function block children, call this same function

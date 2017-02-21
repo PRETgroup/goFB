@@ -18,7 +18,7 @@ union SwitchesOutputEvents {
 	struct {
 		UDINT DataChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 

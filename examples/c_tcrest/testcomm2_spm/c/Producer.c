@@ -15,7 +15,7 @@ int Producer_preinit(Producer_t _SPM *me) {
 	me->inputEvents.event.DataInChanged = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.DataPresent = 0;
 	
 	//if there are input vars with default values, set them
 	

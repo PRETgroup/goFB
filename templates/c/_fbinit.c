@@ -8,7 +8,7 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}me->inputEvents.event.{{$event.Name}} = 0;
 	{{end}}{{end}}
 	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.event.{{$event.Name}} = 0;
 	{{end}}{{end}}
 	//if there are input vars with default values, set them
 	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};

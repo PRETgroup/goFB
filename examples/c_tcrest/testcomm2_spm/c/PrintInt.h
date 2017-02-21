@@ -15,7 +15,7 @@ union PrintIntInputEvents {
 	struct {
 		UDINT DataPresent;
 	} event;
-	UDINT events[1];
+	
 };
 
 

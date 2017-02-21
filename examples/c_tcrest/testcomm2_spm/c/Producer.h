@@ -16,7 +16,7 @@ union ProducerInputEvents {
 		UDINT TxSuccessChanged;
 		UDINT DataInChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 
@@ -24,7 +24,7 @@ union ProducerOutputEvents {
 	struct {
 		UDINT DataPresent;
 	} event;
-	UDINT events[1];
+	
 };
 
 

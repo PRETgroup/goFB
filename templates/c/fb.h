@@ -20,9 +20,9 @@ enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{
 };
 {{else}}union {{$block.Name}}InputEvents {
 	struct {
-	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	UDINT {{$event.Name}} : 1;
+	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	UDINT {{$event.Name}};
 	{{end}}{{end}}} event;
-	UDINT events[{{if $block.EventInputs}}{{add (div (len $block.EventInputs.Events) 32) 1}}{{else}}1{{end}}];
+	{{/*UDINT events[{{if $block.EventInputs}}{{add (div (len $block.EventInputs.Events) 32) 1}}{{else}}1{{end}}]; //this has been known to cause issues*/}}
 };
 {{end}}{{else}}//this block had no input events
 {{end}}{{if $block.Resources}}//This block is a device and probably contains resources
@@ -31,9 +31,9 @@ enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{
 
 {{if $block.EventOutputs}}union {{$block.Name}}OutputEvents {
 	struct {
-	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	UDINT {{$event.Name}} : 1;
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	UDINT {{$event.Name}};
 	{{end}}{{end}}} event;
-	UDINT events[{{if $block.EventOutputs}}{{add (div (len $block.EventOutputs.Events) 32) 1}}{{else}}1{{end}}];
+	{{/*UDINT events[{{if $block.EventOutputs}}{{add (div (len $block.EventOutputs.Events) 32) 1}}{{else}}1{{end}}]; //this has been known to cause issues*/}}
 };
 {{else}}//this block had no output events
 {{end}}
