@@ -11,10 +11,10 @@
  */
 int __attribute__ ((noinline)) ArgoTx_preinit(ArgoTx_t *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.DataPresent = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.SuccessChanged = 0;
 	
 	//if there are input vars with default values, set them
 	me->ChanId = 1;
@@ -74,7 +74,7 @@ int __attribute__ ((noinline)) ArgoTx_init(ArgoTx_t *me) {
  */
 void ArgoTx_run(ArgoTx_t *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.SuccessChanged = 0;
 
 	if(me->inputEvents.event.DataPresent) {
 		HEX = me->Data;

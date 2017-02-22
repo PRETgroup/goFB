@@ -13,9 +13,9 @@ enum PrintInt_states { STATE_PrintInt_Start, STATE_PrintInt_Await_Data };
 
 union PrintIntInputEvents {
 	struct {
-		UDINT DataPresent : 1;
+		UDINT DataPresent;
 	} event;
-	UDINT events[1];
+	
 };
 
 

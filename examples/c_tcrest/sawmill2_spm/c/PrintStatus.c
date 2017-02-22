@@ -171,7 +171,7 @@ if(me->inputEvents.event.StatusUpdate) {
 		default:
 			printf("ERR:UNKNOWN  ");
 	}
-	printf("\n");
+	printf("\n");HEX=me->Saw1Status + me->Saw2Status + me->Saw3Status;
 
 }
 }

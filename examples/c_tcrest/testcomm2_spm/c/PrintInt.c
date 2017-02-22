@@ -110,7 +110,8 @@ void PrintInt_run(PrintInt_t _SPM *me) {
 //algorithms
 
 void PrintInt_DoPrintInt(PrintInt_t _SPM *me) {
-printf("PrintInt: %d\n", me->Data);
+	HEX = me->Data;
+//printf("PrintInt: %d\n", me->Data);
 }
 
 

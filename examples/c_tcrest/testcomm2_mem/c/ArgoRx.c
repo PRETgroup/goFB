@@ -12,7 +12,7 @@
 int ArgoRx_preinit(ArgoRx_t *me) {
 	//if there are input events, reset them
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.DataPresent = 0;
 	//if there are input vars with default values, set them
 	me->ChanId = 1;
 	
@@ -66,7 +66,7 @@ int ArgoRx_init(ArgoRx_t *me) {
  */
 void ArgoRx_run(ArgoRx_t *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.DataPresent = 0;
 
 	if(me->needToAck == true) {
 		if(!mp_nback(me->chan)) {

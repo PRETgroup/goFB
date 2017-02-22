@@ -68,6 +68,8 @@ int PrintInt_init(PrintInt_t  *me) {
 void PrintInt_run(PrintInt_t  *me) {
 	//if there are output events, reset them
 	
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -108,7 +110,8 @@ void PrintInt_run(PrintInt_t  *me) {
 //algorithms
 
 void PrintInt_DoPrintInt(PrintInt_t  *me) {
-printf("PrintInt: %d\n", me->Data);
+	HEX = me->Data;
+//printf("PrintInt: %d\n", me->Data);
 }
 
 

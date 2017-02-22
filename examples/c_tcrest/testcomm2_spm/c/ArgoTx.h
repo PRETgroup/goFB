@@ -15,7 +15,6 @@ union ArgoTxInputEvents {
 	struct {
 		UDINT DataPresent;
 	} event;
-	UDINT events[1];
 };
 
 
@@ -23,7 +22,6 @@ union ArgoTxOutputEvents {
 	struct {
 		UDINT SuccessChanged;
 	} event;
-	UDINT events[1];
 };
 
 

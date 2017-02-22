@@ -13,17 +13,15 @@ enum ArgoTx_states { STATE_ArgoTx_Start };
 
 union ArgoTxInputEvents {
 	struct {
-		UDINT DataPresent : 1;
+		UDINT DataPresent;
 	} event;
-	UDINT events[1];
 };
 
 
 union ArgoTxOutputEvents {
 	struct {
-		UDINT SuccessChanged : 1;
+		UDINT SuccessChanged;
 	} event;
-	UDINT events[1];
 };
 
 

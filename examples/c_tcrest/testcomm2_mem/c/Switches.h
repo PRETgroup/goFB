@@ -16,9 +16,9 @@ enum Switches_states { STATE_Switches_Start, STATE_Switches_Update };
 
 union SwitchesOutputEvents {
 	struct {
-		UDINT DataChanged : 1;
+		UDINT DataChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 

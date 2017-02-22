@@ -15,7 +15,7 @@ int Producer_preinit(Producer_t  *me) {
 	me->inputEvents.event.DataInChanged = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.DataPresent = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -70,8 +70,10 @@ int Producer_init(Producer_t  *me) {
  */
 void Producer_run(Producer_t  *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.DataPresent = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {

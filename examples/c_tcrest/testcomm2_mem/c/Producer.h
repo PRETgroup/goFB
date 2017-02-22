@@ -13,18 +13,18 @@ enum Producer_states { STATE_Producer_Start, STATE_Producer_wait, STATE_Producer
 
 union ProducerInputEvents {
 	struct {
-		UDINT TxSuccessChanged : 1;
-		UDINT DataInChanged : 1;
+		UDINT TxSuccessChanged;
+		UDINT DataInChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union ProducerOutputEvents {
 	struct {
-		UDINT DataPresent : 1;
+		UDINT DataPresent;
 	} event;
-	UDINT events[1];
+	
 };
 
 

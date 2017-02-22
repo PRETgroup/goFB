@@ -19,15 +19,15 @@ void task1(_Core1_t _SPM * c1);
 int main() {
 	mp_init();
 	printf("testcomm2_spm startup.\n");
-
+	printf("sizes: %lu, %lu\n", sizeof(_Core0_t), sizeof(_Core1_t));
 	printf("Starting c1 and initialising...\n");
 	corethread_t core1 = 1;
-	corethread_create(&core1, &t1, NULL);
+	corethread_create(&core1, &t0, NULL);
 	printf("Started c1\n");
-	t0(NULL);
+	t1(NULL);
 }
 
-void __attribute__ ((noinline)) timed_task(_Core0_t _SPM * c0) {
+void __attribute__ ((noinline)) timed_task0(_Core0_t _SPM * c0) {
 	_Core0_syncOutputEvents(c0);
 	_Core0_syncInputEvents(c0);
 
@@ -35,6 +35,16 @@ void __attribute__ ((noinline)) timed_task(_Core0_t _SPM * c0) {
 	_Core0_syncInputData(c0);
 
 	_Core0_run(c0);
+}
+
+void __attribute__ ((noinline)) timed_task1(_Core1_t _SPM * c1) {
+	_Core1_syncOutputEvents(c1);
+	_Core1_syncInputEvents(c1);
+	
+	_Core1_syncOutputData(c1);
+	_Core1_syncInputData(c1);
+
+	_Core1_run(c1);
 }
 
 void task0(_Core0_t _SPM * c0) {
@@ -45,13 +55,12 @@ void task0(_Core0_t _SPM * c0) {
 	unsigned long long end_time;
 
 	do {
-		HEX = HEX + 1;
 		start_time = get_cpu_cycles();
 
-		timed_task(c0);
+		timed_task0(c0);
 
 		end_time = get_cpu_cycles();
-		//printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
+		printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
 
 		tickCount++;
 	} while(1);
@@ -59,17 +68,21 @@ void task0(_Core0_t _SPM * c0) {
 
 
 void task1(_Core1_t _SPM * c1) {
-	//task1 runs core1
-
+	//task0 runs core0
 	unsigned int tickCount = 0;
-	do {
-		_Core1_syncOutputEvents(c1);
-		_Core1_syncInputEvents(c1);
-		
-		_Core1_syncOutputData(c1);
-		_Core1_syncInputData(c1);
 
-		_Core1_run(c1);
+	unsigned long long start_time;
+	unsigned long long end_time;
+
+	do {
+		start_time = get_cpu_cycles();
+
+		timed_task1(c1);
+
+		end_time = get_cpu_cycles();
+		printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
+
+		tickCount++;
 	} while(1);
 }
 

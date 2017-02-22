@@ -68,6 +68,8 @@ int PrintString_init(PrintString_t  *me) {
 void PrintString_run(PrintString_t  *me) {
 	//if there are output events, reset them
 	
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
