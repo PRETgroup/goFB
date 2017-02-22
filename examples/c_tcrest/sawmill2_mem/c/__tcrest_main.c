@@ -25,6 +25,7 @@ void task3(_Core3_t * c3);
 
 int main() {
 	printf("sawmill2_mem tcrest4 startup.\n");
+	printf("sizes: %lu, %lu, %lu, %lu\n", sizeof(_Core0_t), sizeof(_Core1_t), sizeof(_Core2_t), sizeof(_Core3_t));
 	mp_init();
 	printf("Starting t1,t2,t3 and initialising my_TCREST...\n");
 	corethread_t core1 = 1;
