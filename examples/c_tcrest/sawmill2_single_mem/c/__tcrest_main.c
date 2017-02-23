@@ -14,7 +14,7 @@ void task0(_CoreSingle_t * c0);
 int main() {
 	printf("sawmill2_mem tcrest4 startup.\n");
 	printf("sizes: %lu\n", sizeof(_CoreSingle_t));
-	mp_init();
+	//mp_init();
 
 
 	t0(NULL);
