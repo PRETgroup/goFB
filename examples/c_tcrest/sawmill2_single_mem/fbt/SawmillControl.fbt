@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SawmillControl" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="ControlChange" Comment="">
+    <With Var="ControlRun" />
+  </Event>
+  <Event Name="WeightChange" Comment="">
+    <With Var="ScaleOverweight" />
+  </Event>
+  <Event Name="LaserChange" Comment="">
+    <With Var="LaserBroken" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="CommandChange" Comment="">
+    <With Var="SawRun" />
+  </Event>
+  <Event Name="MessageChange" Comment="">
+    <With Var="Message" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="ControlRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="ScaleOverweight" Type="BOOL" Comment="" />
+  <VarDeclaration Name="LaserBroken" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="SawRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="Message" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="startup" Comment="" x="1575" y="787.5">
+    <ECAction Algorithm="SawStop" Output="CommandChange" />
+  </ECState>
+  <ECState Name="check_weight" Comment="" x="1743.23956942558" y="1283.53125">
+  </ECState>
+  <ECState Name="check_laser" Comment="" x="1988.38543057442" y="1630.3125">
+  </ECState>
+  <ECState Name="run" Comment="" x="2490.10413885117" y="2070.83327770233">
+    <ECAction Algorithm="SawRun" Output="CommandChange" />
+    <ECAction Algorithm="MessageRun" Output="MessageChange" />
+  </ECState>
+  <ECState Name="await_weight" Comment="" x="481.25" y="1400">
+    <ECAction Algorithm="MessageHaltWeight" Output="MessageChange" />
+    <ECAction Algorithm="SawStop" Output="CommandChange" />
+  </ECState>
+  <ECState Name="await_laser" Comment="" x="988.020861148834" y="1954.16672229767">
+    <ECAction Algorithm="MessageHaltLaser" Output="MessageChange" />
+    <ECAction Algorithm="SawStop" Output="CommandChange" />
+  </ECState>
+  <ECState Name="await_command" Comment="" x="2457.29172229767" y="557.8125">
+    <ECAction Algorithm="MessageStop" Output="MessageChange" />
+    <ECAction Algorithm="SawStop" Output="CommandChange" />
+  </ECState>
+  <ECTransition Source="Start" Destination="startup" Condition="true" x="393.75" y="656.25" />
+  <ECTransition Source="startup" Destination="check_weight" Condition="ControlRun" x="1563.01043057442" y="1041.9375" />
+  <ECTransition Source="startup" Destination="await_command" Condition="true" x="1968.75" y="481.25" />
+  <ECTransition Source="check_weight" Destination="check_laser" Condition="!ScaleOverweight" x="1775.52086114883" y="1465.625" />
+  <ECTransition Source="check_weight" Destination="await_weight" Condition="ScaleOverweight" x="875" y="1181.25" />
+  <ECTransition Source="check_laser" Destination="run" Condition="!LaserBroken" x="2125.52086114883" y="1903.125" />
+  <ECTransition Source="check_laser" Destination="await_laser" Condition="LaserBroken" x="1393.14586114883" y="1780.39586114883" />
+  <ECTransition Source="check_laser" Destination="await_command" Condition="!ControlRun" x="2493.75" y="1137.5" />
+  <ECTransition Source="run" Destination="check_laser" Condition="LaserBroken" x="2475.52086114883" y="1684.375" />
+  <ECTransition Source="run" Destination="check_weight" Condition="ScaleOverweight" x="3000.52086114883" y="1421.875" />
+  <ECTransition Source="run" Destination="await_command" Condition="!ControlRun" x="3675" y="1443.75" />
+  <ECTransition Source="await_weight" Destination="check_weight" Condition="!ScaleOverweight" x="1181.25" y="1400" />
+  <ECTransition Source="await_laser" Destination="check_laser" Condition="!LaserBroken" x="1618.75" y="2012.5" />
+  <ECTransition Source="await_command" Destination="check_weight" Condition="ControlRun" x="2143.75" y="1006.25" />
+</ECC><Algorithm Name="MessageHaltWeight" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Message = -1;" />
+</Algorithm>
+<Algorithm Name="MessageHaltLaser" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Message = -2;" />
+</Algorithm>
+<Algorithm Name="MessageRun" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Message = 1;" />
+</Algorithm>
+<Algorithm Name="MessageStop" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Message = 0;" />
+</Algorithm>
+<Algorithm Name="SawRun" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;SawRun = 1;" />
+</Algorithm>
+<Algorithm Name="SawStop" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;SawRun = 0;" />
+</Algorithm></BasicFB>
+</FBType>

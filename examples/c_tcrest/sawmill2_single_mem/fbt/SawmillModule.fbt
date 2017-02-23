@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SawmillModule" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="MessageChange" Comment="">
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="Message" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="saw" Type="Led" x="3193.75" y="700" />
+  <FB Name="control" Type="SawmillControl" x="1881.25" y="1356.25" />
+  <FB Name="runswitch" Type="MaskedSwitch" x="175" y="743.75">
+    <Parameter Name="SwitchMask" Value="0b0001" />
+  </FB>
+  <FB Name="scale" Type="MaskedSwitch" x="175" y="1666.14583333333">
+    <Parameter Name="SwitchMask" Value="0b0010" />
+  </FB>
+  <FB Name="laser" Type="MaskedSwitch" x="175" y="2318.75">
+    <Parameter Name="SwitchMask" Value="0b0100" />
+  </FB>
+  <EventConnections><Connection Source="control.MessageChange" Destination="MessageChange" />
+<Connection Source="control.CommandChange" Destination="saw.CommandChange" />
+<Connection Source="runswitch.SwitchChanged" Destination="control.ControlChange" />
+<Connection Source="scale.SwitchChanged" Destination="control.WeightChange" />
+<Connection Source="laser.SwitchChanged" Destination="control.LaserChange" /></EventConnections>
+  <DataConnections><Connection Source="control.Message" Destination="Message" />
+<Connection Source="control.SawRun" Destination="saw.Run" />
+<Connection Source="runswitch.SwitchOn" Destination="control.ControlRun" />
+<Connection Source="scale.SwitchOn" Destination="control.ScaleOverweight" />
+<Connection Source="laser.SwitchOn" Destination="control.LaserBroken" /></DataConnections>
+</FBNetwork>
+</FBType>
