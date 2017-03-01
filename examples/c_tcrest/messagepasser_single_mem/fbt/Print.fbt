@@ -26,6 +26,6 @@
   <ECTransition Source="Start" Destination="print" Condition="CountChanged" x="572.447930574417" y="512.885430574417" />
   <ECTransition Source="print" Destination="print" Condition="CountChanged" x="1010.64586114883" y="721.270861148834" />
 </ECC><Algorithm Name="PrintService" Comment="">
-  <Other Language="C" Prototype="" Text="printf(&quot;%lu\n&quot;, me-&gt;Count);" />
+  <Other Language="C" Prototype="" Text="HEX = (unsigned int)me-&gt;Count; //printf(&quot;%lu\n&quot;, me-&gt;Count);" />
 </Algorithm></BasicFB>
 </FBType>

@@ -287,16 +287,66 @@ void Pass10_syncInputData(Pass10_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void Pass10_run(Pass10_t  *me) {
-	Pass_run(&me->p1);
-	Pass_run(&me->p2);
-	Pass_run(&me->p3);
-	Pass_run(&me->p4);
-	Pass_run(&me->p5);
-	Pass_run(&me->p9);
-	Pass_run(&me->p6);
-	Pass_run(&me->p10);
-	Pass_run(&me->p7);
-	Pass_run(&me->p8);
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p1_spm = SPM_BASE;
+	spm_copy_from_ext(p1_spm, &me->p1, sizeof(Pass_t));
+	Pass_run(p1_spm);
+	spm_copy_to_ext(&me->p1, p1_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p2_spm = SPM_BASE;
+	spm_copy_from_ext(p2_spm, &me->p2, sizeof(Pass_t));
+	Pass_run(p2_spm);
+	spm_copy_to_ext(&me->p2, p2_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p3_spm = SPM_BASE;
+	spm_copy_from_ext(p3_spm, &me->p3, sizeof(Pass_t));
+	Pass_run(p3_spm);
+	spm_copy_to_ext(&me->p3, p3_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p4_spm = SPM_BASE;
+	spm_copy_from_ext(p4_spm, &me->p4, sizeof(Pass_t));
+	Pass_run(p4_spm);
+	spm_copy_to_ext(&me->p4, p4_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p5_spm = SPM_BASE;
+	spm_copy_from_ext(p5_spm, &me->p5, sizeof(Pass_t));
+	Pass_run(p5_spm);
+	spm_copy_to_ext(&me->p5, p5_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p9_spm = SPM_BASE;
+	spm_copy_from_ext(p9_spm, &me->p9, sizeof(Pass_t));
+	Pass_run(p9_spm);
+	spm_copy_to_ext(&me->p9, p9_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p6_spm = SPM_BASE;
+	spm_copy_from_ext(p6_spm, &me->p6, sizeof(Pass_t));
+	Pass_run(p6_spm);
+	spm_copy_to_ext(&me->p6, p6_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p10_spm = SPM_BASE;
+	spm_copy_from_ext(p10_spm, &me->p10, sizeof(Pass_t));
+	Pass_run(p10_spm);
+	spm_copy_to_ext(&me->p10, p10_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p7_spm = SPM_BASE;
+	spm_copy_from_ext(p7_spm, &me->p7, sizeof(Pass_t));
+	Pass_run(p7_spm);
+	spm_copy_to_ext(&me->p7, p7_spm, sizeof(Pass_t));
+	
+	//Next block is BFB so we'll copy to SPM first
+	Pass_t _SPM *p8_spm = SPM_BASE;
+	spm_copy_from_ext(p8_spm, &me->p8, sizeof(Pass_t));
+	Pass_run(p8_spm);
+	spm_copy_to_ext(&me->p8, p8_spm, sizeof(Pass_t));
+	
 	
 }
 

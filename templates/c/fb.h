@@ -76,7 +76,7 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 //all FBs get a run function
-void {{$block.Name}}_run({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+void {{$block.Name}}_run({{$block.Name}}_t {{if or .TcrestUsingSPM (and $block.BasicFB .TcrestSmartSPM)}}_SPM{{end}} *me);
 
 {{if not $block.BasicFB}}//composite/resource/device FBs get sync functions
 void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
@@ -85,10 +85,7 @@ void {{$block.Name}}_syncInputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SP
 void {{$block.Name}}_syncOutputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
-{{end}}{{if $block.BasicFB}}{{$basicFB := $block.BasicFB}}{{if $basicFB.Algorithms}}//basic FBs have a number of algorithm functions
-{{$tcrestUsingSPM := .TcrestUsingSPM}}{{range $algIndex, $alg := $basicFB.Algorithms}}
-void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t {{if $tcrestUsingSPM}}_SPM{{end}} *me);
-{{end}}{{end}}{{end}}
+{{end}}
 
 #endif
 {{end}}

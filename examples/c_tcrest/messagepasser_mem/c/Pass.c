@@ -59,6 +59,14 @@ int Pass_init(Pass_t  *me) {
 
 
 
+//algorithms
+
+void Pass_UpdateCountOut(Pass_t _SPM *me) {
+me->OutCount = me->Count;
+}
+
+
+
 /* Pass_run() executes a single tick of an
  * instance of Pass according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -66,7 +74,7 @@ int Pass_init(Pass_t  *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Pass_run(Pass_t  *me) {
+void Pass_run(Pass_t _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.OutCountChanged = 0;
@@ -110,11 +118,5 @@ void Pass_run(Pass_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void Pass_UpdateCountOut(Pass_t  *me) {
-me->OutCount = me->Count;
-}
-
 
 

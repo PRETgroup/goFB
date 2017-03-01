@@ -57,6 +57,11 @@ func (c *Converter) SetTcrestIncludes() {
 	c.TcrestIncludes = true
 }
 
+//SetTcrestSmartSPM sets that the output should be formatted for T-CREST architecture and use the SPMs for BFB execution
+func (c *Converter) SetTcrestSmartSPM() {
+	c.TcrestSmartSPM = true
+}
+
 //AddBlock should be called for each block in the network
 func (c *Converter) AddBlock(iec61499bytes []byte) error {
 	FB := iec61499.FB{}
@@ -75,6 +80,7 @@ func (c *Converter) AddBlock(iec61499bytes []byte) error {
 //ConverterSettings holds the settings for this conversion
 type ConverterSettings struct {
 	TcrestUsingSPM           bool
+	TcrestSmartSPM           bool
 	TcrestIncludes           bool
 	IncrementEventsMode      bool
 	IgnoreAlgorithmLanguages bool

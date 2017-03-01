@@ -59,6 +59,14 @@ int Gen_init(Gen_t  *me) {
 
 
 
+//algorithms
+
+void Gen_IncCountService(Gen_t _SPM *me) {
+me->Count++;
+}
+
+
+
 /* Gen_run() executes a single tick of an
  * instance of Gen according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -66,7 +74,7 @@ int Gen_init(Gen_t  *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Gen_run(Gen_t  *me) {
+void Gen_run(Gen_t _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.CountChanged = 0;
@@ -120,11 +128,5 @@ void Gen_run(Gen_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void Gen_IncCountService(Gen_t  *me) {
-me->Count++;
-}
-
 
 

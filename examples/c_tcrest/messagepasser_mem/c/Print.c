@@ -58,6 +58,14 @@ int Print_init(Print_t  *me) {
 
 
 
+//algorithms
+
+void Print_PrintService(Print_t _SPM *me) {
+HEX = (unsigned int)me->Count; //printf("%lu\n", me->Count);
+}
+
+
+
 /* Print_run() executes a single tick of an
  * instance of Print according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -65,7 +73,7 @@ int Print_init(Print_t  *me) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Print_run(Print_t  *me) {
+void Print_run(Print_t _SPM *me) {
 	//if there are output events, reset them
 	
 	
@@ -107,12 +115,5 @@ void Print_run(Print_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void Print_PrintService(Print_t  *me) {
-//printf("%lld\n", me->Count);
-HEX = (unsigned int)me->Count;
-}
-
 
 

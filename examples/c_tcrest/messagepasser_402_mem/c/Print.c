@@ -110,8 +110,7 @@ void Print_run(Print_t  *me) {
 //algorithms
 
 void Print_PrintService(Print_t  *me) {
-//printf("%lld\n", me->Count);
-HEX = (unsigned int)me->Count;
+HEX = (unsigned int)me->Count; //printf("%lu\n", me->Count);
 }
 
 

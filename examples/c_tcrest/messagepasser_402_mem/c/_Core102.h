@@ -10,8 +10,106 @@
 //This is a CFB, so we need the #includes for the child blocks embedded here
 #include "Gen.h"
 #include "Print.h"
-#include "Pass50.h"
-#include "Pass50.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
+#include "Pass.h"
 
 
 //this block had no input events
@@ -36,8 +134,106 @@ typedef struct {
 	//any child FBs (CFBs only)
 	Gen_t gen;
 	Print_t print;
-	Pass50_t p50_1;
-	Pass50_t p50_2;
+	Pass_t Flattened_Flattened_p50_1_c1_p1;
+	Pass_t Flattened_Flattened_p50_1_c1_p2;
+	Pass_t Flattened_Flattened_p50_1_c1_p3;
+	Pass_t Flattened_Flattened_p50_1_c1_p4;
+	Pass_t Flattened_Flattened_p50_1_c1_p5;
+	Pass_t Flattened_Flattened_p50_1_c1_p9;
+	Pass_t Flattened_Flattened_p50_1_c1_p6;
+	Pass_t Flattened_Flattened_p50_1_c1_p10;
+	Pass_t Flattened_Flattened_p50_1_c1_p7;
+	Pass_t Flattened_Flattened_p50_1_c1_p8;
+	Pass_t Flattened_Flattened_p50_1_c2_p1;
+	Pass_t Flattened_Flattened_p50_1_c2_p2;
+	Pass_t Flattened_Flattened_p50_1_c2_p3;
+	Pass_t Flattened_Flattened_p50_1_c2_p4;
+	Pass_t Flattened_Flattened_p50_1_c2_p5;
+	Pass_t Flattened_Flattened_p50_1_c2_p9;
+	Pass_t Flattened_Flattened_p50_1_c2_p6;
+	Pass_t Flattened_Flattened_p50_1_c2_p10;
+	Pass_t Flattened_Flattened_p50_1_c2_p7;
+	Pass_t Flattened_Flattened_p50_1_c2_p8;
+	Pass_t Flattened_Flattened_p50_1_c3_p1;
+	Pass_t Flattened_Flattened_p50_1_c3_p2;
+	Pass_t Flattened_Flattened_p50_1_c3_p3;
+	Pass_t Flattened_Flattened_p50_1_c3_p4;
+	Pass_t Flattened_Flattened_p50_1_c3_p5;
+	Pass_t Flattened_Flattened_p50_1_c3_p9;
+	Pass_t Flattened_Flattened_p50_1_c3_p6;
+	Pass_t Flattened_Flattened_p50_1_c3_p10;
+	Pass_t Flattened_Flattened_p50_1_c3_p7;
+	Pass_t Flattened_Flattened_p50_1_c3_p8;
+	Pass_t Flattened_Flattened_p50_1_c4_p1;
+	Pass_t Flattened_Flattened_p50_1_c4_p2;
+	Pass_t Flattened_Flattened_p50_1_c4_p3;
+	Pass_t Flattened_Flattened_p50_1_c4_p4;
+	Pass_t Flattened_Flattened_p50_1_c4_p5;
+	Pass_t Flattened_Flattened_p50_1_c4_p9;
+	Pass_t Flattened_Flattened_p50_1_c4_p6;
+	Pass_t Flattened_Flattened_p50_1_c4_p10;
+	Pass_t Flattened_Flattened_p50_1_c4_p7;
+	Pass_t Flattened_Flattened_p50_1_c4_p8;
+	Pass_t Flattened_Flattened_p50_1_c5_p1;
+	Pass_t Flattened_Flattened_p50_1_c5_p2;
+	Pass_t Flattened_Flattened_p50_1_c5_p3;
+	Pass_t Flattened_Flattened_p50_1_c5_p4;
+	Pass_t Flattened_Flattened_p50_1_c5_p5;
+	Pass_t Flattened_Flattened_p50_1_c5_p9;
+	Pass_t Flattened_Flattened_p50_1_c5_p6;
+	Pass_t Flattened_Flattened_p50_1_c5_p10;
+	Pass_t Flattened_Flattened_p50_1_c5_p7;
+	Pass_t Flattened_Flattened_p50_1_c5_p8;
+	Pass_t Flattened_Flattened_p50_2_c1_p1;
+	Pass_t Flattened_Flattened_p50_2_c1_p2;
+	Pass_t Flattened_Flattened_p50_2_c1_p3;
+	Pass_t Flattened_Flattened_p50_2_c1_p4;
+	Pass_t Flattened_Flattened_p50_2_c1_p5;
+	Pass_t Flattened_Flattened_p50_2_c1_p9;
+	Pass_t Flattened_Flattened_p50_2_c1_p6;
+	Pass_t Flattened_Flattened_p50_2_c1_p10;
+	Pass_t Flattened_Flattened_p50_2_c1_p7;
+	Pass_t Flattened_Flattened_p50_2_c1_p8;
+	Pass_t Flattened_Flattened_p50_2_c2_p1;
+	Pass_t Flattened_Flattened_p50_2_c2_p2;
+	Pass_t Flattened_Flattened_p50_2_c2_p3;
+	Pass_t Flattened_Flattened_p50_2_c2_p4;
+	Pass_t Flattened_Flattened_p50_2_c2_p5;
+	Pass_t Flattened_Flattened_p50_2_c2_p9;
+	Pass_t Flattened_Flattened_p50_2_c2_p6;
+	Pass_t Flattened_Flattened_p50_2_c2_p10;
+	Pass_t Flattened_Flattened_p50_2_c2_p7;
+	Pass_t Flattened_Flattened_p50_2_c2_p8;
+	Pass_t Flattened_Flattened_p50_2_c3_p1;
+	Pass_t Flattened_Flattened_p50_2_c3_p2;
+	Pass_t Flattened_Flattened_p50_2_c3_p3;
+	Pass_t Flattened_Flattened_p50_2_c3_p4;
+	Pass_t Flattened_Flattened_p50_2_c3_p5;
+	Pass_t Flattened_Flattened_p50_2_c3_p9;
+	Pass_t Flattened_Flattened_p50_2_c3_p6;
+	Pass_t Flattened_Flattened_p50_2_c3_p10;
+	Pass_t Flattened_Flattened_p50_2_c3_p7;
+	Pass_t Flattened_Flattened_p50_2_c3_p8;
+	Pass_t Flattened_Flattened_p50_2_c4_p1;
+	Pass_t Flattened_Flattened_p50_2_c4_p2;
+	Pass_t Flattened_Flattened_p50_2_c4_p3;
+	Pass_t Flattened_Flattened_p50_2_c4_p4;
+	Pass_t Flattened_Flattened_p50_2_c4_p5;
+	Pass_t Flattened_Flattened_p50_2_c4_p9;
+	Pass_t Flattened_Flattened_p50_2_c4_p6;
+	Pass_t Flattened_Flattened_p50_2_c4_p10;
+	Pass_t Flattened_Flattened_p50_2_c4_p7;
+	Pass_t Flattened_Flattened_p50_2_c4_p8;
+	Pass_t Flattened_Flattened_p50_2_c5_p1;
+	Pass_t Flattened_Flattened_p50_2_c5_p2;
+	Pass_t Flattened_Flattened_p50_2_c5_p3;
+	Pass_t Flattened_Flattened_p50_2_c5_p4;
+	Pass_t Flattened_Flattened_p50_2_c5_p5;
+	Pass_t Flattened_Flattened_p50_2_c5_p9;
+	Pass_t Flattened_Flattened_p50_2_c5_p6;
+	Pass_t Flattened_Flattened_p50_2_c5_p10;
+	Pass_t Flattened_Flattened_p50_2_c5_p7;
+	Pass_t Flattened_Flattened_p50_2_c5_p8;
 	
 	//resource vars
 	
