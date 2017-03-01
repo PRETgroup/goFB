@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Gen" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-01" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="CountChanged" Comment="">
+    <With Var="Count" />
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="Count" Type="LINT" InitialValue="0" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="count" Comment="" x="787.5" y="962.5">
+    <ECAction Algorithm="IncCountService" Output="CountChanged" />
+  </ECState>
+  <ECState Name="wait" Comment="" x="831.25" y="525">
+  </ECState>
+  <ECTransition Source="Start" Destination="wait" Condition="true" x="538.25" y="411.75" />
+  <ECTransition Source="count" Destination="wait" Condition="true" x="812.375" y="706.75" />
+  <ECTransition Source="wait" Destination="count" Condition="true" x="810.375" y="752.75" />
+</ECC><Algorithm Name="IncCountService" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Count++;" />
+</Algorithm></BasicFB>
+</FBType>

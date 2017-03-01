@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Pass" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-01" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="CountChanged" Comment="">
+    <With Var="Count" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="OutCountChanged" Comment="">
+    <With Var="OutCount" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Count" Type="LINT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="OutCount" Type="LINT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="update" Comment="" x="787.5" y="612.5">
+    <ECAction Algorithm="UpdateCountOut" Output="OutCountChanged" />
+  </ECState>
+  <ECTransition Source="Start" Destination="update" Condition="CountChanged" x="471.71875" y="350" />
+  <ECTransition Source="update" Destination="update" Condition="CountChanged" x="1006.25" y="306.25" />
+</ECC><Algorithm Name="UpdateCountOut" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;OutCount = me-&gt;Count;" />
+</Algorithm></BasicFB>
+</FBType>

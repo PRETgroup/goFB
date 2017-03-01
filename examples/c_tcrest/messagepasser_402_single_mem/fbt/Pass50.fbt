@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Pass50" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-01" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="CountChanged" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="OutCountChanged" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Count" Type="LINT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="OutCount" Type="LINT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="c1" Type="Pass10" x="393.75" y="1093.75" />
+  <FB Name="c2" Type="Pass10" x="1400" y="1093.75" />
+  <FB Name="c3" Type="Pass10" x="2406.25" y="1093.75" />
+  <FB Name="c4" Type="Pass10" x="3412.5" y="1093.75" />
+  <FB Name="c5" Type="Pass10" x="4418.75" y="1093.75" />
+  <EventConnections><Connection Source="CountChanged" Destination="c1.CountChanged" />
+<Connection Source="c5.OutCountChanged" Destination="OutCountChanged" />
+<Connection Source="c1.OutCountChanged" Destination="c2.CountChanged" />
+<Connection Source="c2.OutCountChanged" Destination="c3.CountChanged" />
+<Connection Source="c3.OutCountChanged" Destination="c4.CountChanged" />
+<Connection Source="c4.OutCountChanged" Destination="c5.CountChanged" /></EventConnections>
+  <DataConnections><Connection Source="Count" Destination="c1.Count" />
+<Connection Source="c5.OutCount" Destination="OutCount" />
+<Connection Source="c1.OutCount" Destination="c2.Count" />
+<Connection Source="c2.OutCount" Destination="c3.Count" />
+<Connection Source="c3.OutCount" Destination="c4.Count" />
+<Connection Source="c4.OutCount" Destination="c5.Count" /></DataConnections>
+</FBNetwork>
+</FBType>
