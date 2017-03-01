@@ -13,6 +13,9 @@
 #include "MaskedSwitch.h"
 #include "MaskedSwitch.h"
 #include "MaskedSwitch.h"
+#include "SawmillSpeed.h"
+#include "SawmillPosGen.h"
+#include "MaskedSwitch.h"
 
 
 //this block had no input events
@@ -46,6 +49,9 @@ typedef struct {
 	MaskedSwitch_t runswitch;
 	MaskedSwitch_t scale;
 	MaskedSwitch_t laser;
+	SawmillSpeed_t speedmon;
+	SawmillPosGen_t posgen;
+	MaskedSwitch_t stall;
 	
 	//resource vars
 	

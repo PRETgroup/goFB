@@ -112,8 +112,10 @@ void PrintStatus_run(PrintStatus_t _SPM *me) {
 void PrintStatus_PrintService(PrintStatus_t _SPM *me) {
 // OFF 0
 // RUNNING 1
-// LASER -2
 // WEIGHT -1
+// LASER -2
+// STALL -3
+// SPEED -4
 
 if(me->inputEvents.event.StatusUpdate) {
 	// printf("Saw 1: ");
@@ -124,11 +126,17 @@ if(me->inputEvents.event.StatusUpdate) {
 	// 	case 1:
 	// 		printf("RUNNING      ");
 	// 		break;
+	// 	case -1:
+	// 		printf("ERR:SAWDUST  ");
+	// 		break;
 	// 	case -2:
 	// 		printf("ERR:PROXIMITY");
 	// 		break;
-	// 	case -1:
-	// 		printf("ERR:SAWDUST  ");
+	// 	case -3:
+	// 		printf("ERR:STALL    ");
+	// 		break;
+	// 	case -4:
+	// 		printf("ERR:JITTER   ");
 	// 		break;
 	// 	default:
 	// 		printf("ERR:UNKNOWN  ");
@@ -143,11 +151,17 @@ if(me->inputEvents.event.StatusUpdate) {
 	// 	case 1:
 	// 		printf("RUNNING      ");
 	// 		break;
+	// 	case -1:
+	// 		printf("ERR:SAWDUST  ");
+	// 		break;
 	// 	case -2:
 	// 		printf("ERR:PROXIMITY");
 	// 		break;
-	// 	case -1:
-	// 		printf("ERR:SAWDUST  ");
+	// 	case -3:
+	// 		printf("ERR:STALL    ");
+	// 		break;
+	// 	case -4:
+	// 		printf("ERR:JITTER   ");
 	// 		break;
 	// 	default:
 	// 		printf("ERR:UNKNOWN  ");
@@ -162,11 +176,17 @@ if(me->inputEvents.event.StatusUpdate) {
 	// 	case 1:
 	// 		printf("RUNNING      ");
 	// 		break;
+	// 	case -1:
+	// 		printf("ERR:SAWDUST  ");
+	// 		break;
 	// 	case -2:
 	// 		printf("ERR:PROXIMITY");
 	// 		break;
-	// 	case -1:
-	// 		printf("ERR:SAWDUST  ");
+	// 	case -3:
+	// 		printf("ERR:STALL    ");
+	// 		break;
+	// 	case -4:
+	// 		printf("ERR:JITTER   ");
 	// 		break;
 	// 	default:
 	// 		printf("ERR:UNKNOWN  ");

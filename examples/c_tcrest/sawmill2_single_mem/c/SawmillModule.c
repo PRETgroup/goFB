@@ -52,6 +52,15 @@ int SawmillModule_preinit(SawmillModule_t  *me) {
 	if(MaskedSwitch_preinit(&me->laser) != 0) {
 		return 1;
 	}
+	if(SawmillSpeed_preinit(&me->speedmon) != 0) {
+		return 1;
+	}
+	if(SawmillPosGen_preinit(&me->posgen) != 0) {
+		return 1;
+	}
+	if(MaskedSwitch_preinit(&me->stall) != 0) {
+		return 1;
+	}
 	
 	
 	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
@@ -69,6 +78,7 @@ int SawmillModule_init(SawmillModule_t  *me) {
 	me->runswitch.SwitchMask = 0b0001;
 	me->scale.SwitchMask = 0b0010;
 	me->laser.SwitchMask = 0b0100;
+	me->stall.SwitchMask = 0b1000;
 	
 	
 	
@@ -76,9 +86,13 @@ int SawmillModule_init(SawmillModule_t  *me) {
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	me->Message = me->control.Message;
 	me->saw.Run = me->control.SawRun;
+	me->posgen.SawRun = me->control.SawRun;
 	me->control.ControlRun = me->runswitch.SwitchOn;
 	me->control.ScaleOverweight = me->scale.SwitchOn;
 	me->control.LaserBroken = me->laser.SwitchOn;
+	me->control.BadSpeed = me->speedmon.BadSpeed;
+	me->speedmon.Pos = me->posgen.NewPos;
+	me->control.StallDetected = me->stall.SwitchOn;
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
@@ -95,6 +109,15 @@ int SawmillModule_init(SawmillModule_t  *me) {
 		return 1;
 	}
 	if(MaskedSwitch_init(&me->laser) != 0) {
+		return 1;
+	}
+	if(SawmillSpeed_init(&me->speedmon) != 0) {
+		return 1;
+	}
+	if(SawmillPosGen_init(&me->posgen) != 0) {
+		return 1;
+	}
+	if(MaskedSwitch_init(&me->stall) != 0) {
 		return 1;
 	}
 	
@@ -135,6 +158,14 @@ void SawmillModule_syncInputEvents(SawmillModule_t  *me) {
 	me->control.inputEvents.event.WeightChange = me->scale.outputEvents.event.SwitchChanged; 
 	
 	me->control.inputEvents.event.LaserChange = me->laser.outputEvents.event.SwitchChanged; 
+	
+	me->control.inputEvents.event.BadSpeedChange = me->speedmon.outputEvents.event.BadSpeedChange; 
+	
+	me->control.inputEvents.event.StallDetectedChange = me->stall.outputEvents.event.SwitchChanged; 
+	
+	me->speedmon.inputEvents.event.NewPos = me->posgen.outputEvents.event.NewPosChange; 
+	
+	me->posgen.inputEvents.event.SawRunChange = me->control.outputEvents.event.CommandChange; 
 	
 
 	//then, call this same function on all cfb children
@@ -185,6 +216,12 @@ void SawmillModule_syncInputData(SawmillModule_t  *me) {
 	if(me->control.inputEvents.event.LaserChange == 1) { 
 		me->control.LaserBroken = me->laser.SwitchOn;
 	} 
+	if(me->control.inputEvents.event.BadSpeedChange == 1) { 
+		me->control.BadSpeed = me->speedmon.BadSpeed;
+	} 
+	if(me->control.inputEvents.event.StallDetectedChange == 1) { 
+		me->control.StallDetected = me->stall.SwitchOn;
+	} 
 	
 	//sync for runswitch (of type MaskedSwitch) which is a BFB
 	
@@ -193,6 +230,21 @@ void SawmillModule_syncInputData(SawmillModule_t  *me) {
 	
 	
 	//sync for laser (of type MaskedSwitch) which is a BFB
+	
+	
+	//sync for speedmon (of type SawmillSpeed) which is a BFB
+	
+	if(me->speedmon.inputEvents.event.NewPos == 1) { 
+		me->speedmon.Pos = me->posgen.NewPos;
+	} 
+	
+	//sync for posgen (of type SawmillPosGen) which is a BFB
+	
+	if(me->posgen.inputEvents.event.SawRunChange == 1) { 
+		me->posgen.SawRun = me->control.SawRun;
+	} 
+	
+	//sync for stall (of type MaskedSwitch) which is a BFB
 	
 	
 	
@@ -213,6 +265,9 @@ void SawmillModule_run(SawmillModule_t  *me) {
 	MaskedSwitch_run(&me->runswitch);
 	MaskedSwitch_run(&me->scale);
 	MaskedSwitch_run(&me->laser);
+	SawmillSpeed_run(&me->speedmon);
+	SawmillPosGen_run(&me->posgen);
+	MaskedSwitch_run(&me->stall);
 	
 }
 

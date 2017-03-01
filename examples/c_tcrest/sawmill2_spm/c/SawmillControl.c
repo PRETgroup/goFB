@@ -14,6 +14,8 @@ int SawmillControl_preinit(SawmillControl_t _SPM *me) {
 	me->inputEvents.event.ControlChange = 0;
 	me->inputEvents.event.WeightChange = 0;
 	me->inputEvents.event.LaserChange = 0;
+	me->inputEvents.event.BadSpeedChange = 0;
+	me->inputEvents.event.StallDetectedChange = 0;
 	
 	//if there are output events, reset them
 	me->outputEvents.event.CommandChange = 0;
@@ -87,11 +89,7 @@ void SawmillControl_run(SawmillControl_t _SPM *me) {
 			};
 			break;
 		case STATE_SawmillControl_startup:
-			if(me->ControlRun) {
-				me->_state = STATE_SawmillControl_check_weight;
-				me->_trigger = true;
-				
-			} else if(true) {
+			if(true) {
 				me->_state = STATE_SawmillControl_await_command;
 				me->_trigger = true;
 				
@@ -132,8 +130,16 @@ void SawmillControl_run(SawmillControl_t _SPM *me) {
 				me->_state = STATE_SawmillControl_check_weight;
 				me->_trigger = true;
 				
+			} else if(me->BadSpeed) {
+				me->_state = STATE_SawmillControl_bad_speed;
+				me->_trigger = true;
+				
 			} else if( ! me->ControlRun) {
-				me->_state = STATE_SawmillControl_await_command;
+				me->_state = STATE_SawmillControl_control_stop;
+				me->_trigger = true;
+				
+			} else if(me->StallDetected) {
+				me->_state = STATE_SawmillControl_stall_detected;
 				me->_trigger = true;
 				
 			};
@@ -153,8 +159,29 @@ void SawmillControl_run(SawmillControl_t _SPM *me) {
 			};
 			break;
 		case STATE_SawmillControl_await_command:
-			if(me->ControlRun) {
+			if(me->inputEvents.event.ControlChange && (me->ControlRun)) {
 				me->_state = STATE_SawmillControl_check_weight;
+				me->_trigger = true;
+				
+			};
+			break;
+		case STATE_SawmillControl_bad_speed:
+			if(true) {
+				me->_state = STATE_SawmillControl_await_command;
+				me->_trigger = true;
+				
+			};
+			break;
+		case STATE_SawmillControl_control_stop:
+			if(true) {
+				me->_state = STATE_SawmillControl_await_command;
+				me->_trigger = true;
+				
+			};
+			break;
+		case STATE_SawmillControl_stall_detected:
+			if(true) {
+				me->_state = STATE_SawmillControl_await_command;
 				me->_trigger = true;
 				
 			};
@@ -172,6 +199,8 @@ void SawmillControl_run(SawmillControl_t _SPM *me) {
 		case STATE_SawmillControl_startup:
 			SawmillControl_SawStop(me);
 			me->outputEvents.event.CommandChange = 1;
+			SawmillControl_MessageStop(me);
+			me->outputEvents.event.MessageChange = 1;
 			break;
 
 		case STATE_SawmillControl_check_weight:
@@ -202,10 +231,27 @@ void SawmillControl_run(SawmillControl_t _SPM *me) {
 			break;
 
 		case STATE_SawmillControl_await_command:
+			break;
+
+		case STATE_SawmillControl_bad_speed:
+			SawmillControl_MessageBadSpeed(me);
+			me->outputEvents.event.MessageChange = 1;
+			SawmillControl_SawStop(me);
+			me->outputEvents.event.CommandChange = 1;
+			break;
+
+		case STATE_SawmillControl_control_stop:
 			SawmillControl_MessageStop(me);
 			me->outputEvents.event.MessageChange = 1;
 			SawmillControl_SawStop(me);
 			me->outputEvents.event.CommandChange = 1;
+			break;
+
+		case STATE_SawmillControl_stall_detected:
+			SawmillControl_SawStop(me);
+			me->outputEvents.event.CommandChange = 1;
+			SawmillControl_MessageStallDetected(me);
+			me->outputEvents.event.MessageChange = 1;
 			break;
 
 		
@@ -238,6 +284,14 @@ me->SawRun = 1;
 
 void SawmillControl_SawStop(SawmillControl_t _SPM *me) {
 me->SawRun = 0;
+}
+
+void SawmillControl_MessageBadSpeed(SawmillControl_t _SPM *me) {
+me->Message = -4;
+}
+
+void SawmillControl_MessageStallDetected(SawmillControl_t _SPM *me) {
+me->Message = -3;
 }
 
 

@@ -8,7 +8,7 @@
 #include "fbtypes.h"
 
 //This is a BFB, so we need an enum type for the state machine
-enum SawmillControl_states { STATE_SawmillControl_Start, STATE_SawmillControl_startup, STATE_SawmillControl_check_weight, STATE_SawmillControl_check_laser, STATE_SawmillControl_run, STATE_SawmillControl_await_weight, STATE_SawmillControl_await_laser, STATE_SawmillControl_await_command };
+enum SawmillControl_states { STATE_SawmillControl_Start, STATE_SawmillControl_startup, STATE_SawmillControl_check_weight, STATE_SawmillControl_check_laser, STATE_SawmillControl_run, STATE_SawmillControl_await_weight, STATE_SawmillControl_await_laser, STATE_SawmillControl_await_command, STATE_SawmillControl_bad_speed, STATE_SawmillControl_control_stop, STATE_SawmillControl_stall_detected };
 
 
 union SawmillControlInputEvents {
@@ -16,6 +16,8 @@ union SawmillControlInputEvents {
 		UDINT ControlChange;
 		UDINT WeightChange;
 		UDINT LaserChange;
+		UDINT BadSpeedChange;
+		UDINT StallDetectedChange;
 	} event;
 	
 };
@@ -41,6 +43,8 @@ typedef struct {
 	BOOL ControlRun;
     BOOL ScaleOverweight;
     BOOL LaserBroken;
+    BOOL BadSpeed;
+    BOOL StallDetected;
     
     //output vars
 	BOOL SawRun;
@@ -82,6 +86,10 @@ void SawmillControl_MessageStop(SawmillControl_t  *me);
 void SawmillControl_SawRun(SawmillControl_t  *me);
 
 void SawmillControl_SawStop(SawmillControl_t  *me);
+
+void SawmillControl_MessageBadSpeed(SawmillControl_t  *me);
+
+void SawmillControl_MessageStallDetected(SawmillControl_t  *me);
 
 
 #endif
