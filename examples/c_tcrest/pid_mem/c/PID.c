@@ -9,7 +9,7 @@
  * initialise an instance of PID. 
  * It sets all I/O values to zero.
  */
-int PID_preinit(PID_t  *me) {
+int PID_preinit(PID_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.event.Zero = 0;
 	me->inputEvents.event.Tick = 0;
@@ -43,7 +43,7 @@ int PID_preinit(PID_t  *me) {
  * set up an instance of PID. 
  * It passes around configuration data.
  */
-int PID_init(PID_t  *me) {
+int PID_init(PID_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -63,7 +63,7 @@ int PID_init(PID_t  *me) {
 
 //algorithms
 
-void PID_PIDTick(PID_t  *me) {
+void PID_PIDTick(PID_t _SPM *me) {
 	REAL diff;
 	REAL p_term;
 	REAL i_term;
@@ -96,7 +96,7 @@ void PID_PIDTick(PID_t  *me) {
     me->PreviousError = currentError;
 }
 
-void PID_PIDZero(PID_t  *me) {
+void PID_PIDZero(PID_t _SPM *me) {
 me->PreviousError = 0.0;
 me->IntegrationError = 0.0;
 }
@@ -110,7 +110,7 @@ me->IntegrationError = 0.0;
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void PID_run(PID_t  *me) {
+void PID_run(PID_t _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.ControlChanged = 0;

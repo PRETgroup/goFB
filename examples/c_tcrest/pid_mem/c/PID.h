@@ -64,13 +64,13 @@ typedef struct {
 } PID_t;
 
 //all FBs get a preinit function
-int PID_preinit(PID_t  *me);
+int PID_preinit(PID_t _SPM *me);
 
 //all FBs get an init function
-int PID_init(PID_t  *me);
+int PID_init(PID_t _SPM *me);
 
 //all FBs get a run function
-void PID_run(PID_t  *me);
+void PID_run(PID_t _SPM *me);
 
 
 

@@ -52,13 +52,13 @@ typedef struct {
 } BadRandom_t;
 
 //all FBs get a preinit function
-int BadRandom_preinit(BadRandom_t  *me);
+int BadRandom_preinit(BadRandom_t _SPM *me);
 
 //all FBs get an init function
-int BadRandom_init(BadRandom_t  *me);
+int BadRandom_init(BadRandom_t _SPM *me);
 
 //all FBs get a run function
-void BadRandom_run(BadRandom_t  *me);
+void BadRandom_run(BadRandom_t _SPM *me);
 
 
 

@@ -57,20 +57,20 @@ typedef struct {
 } Plant_t;
 
 //all FBs get a preinit function
-int Plant_preinit(Plant_t  *me);
+int Plant_preinit(Plant_t _SPM *me);
 
 //all FBs get an init function
-int Plant_init(Plant_t  *me);
+int Plant_init(Plant_t _SPM *me);
 
 //all FBs get a run function
-void Plant_run(Plant_t  *me);
+void Plant_run(Plant_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void Plant_syncOutputEvents(Plant_t  *me);
-void Plant_syncInputEvents(Plant_t  *me);
+void Plant_syncOutputEvents(Plant_t _SPM *me);
+void Plant_syncInputEvents(Plant_t _SPM *me);
 
-void Plant_syncOutputData(Plant_t  *me);
-void Plant_syncInputData(Plant_t  *me);
+void Plant_syncOutputData(Plant_t _SPM *me);
+void Plant_syncInputData(Plant_t _SPM *me);
 
 
 

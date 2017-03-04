@@ -9,7 +9,7 @@
  * initialise an instance of Manager. 
  * It sets all I/O values to zero.
  */
-int Manager_preinit(Manager_t  *me) {
+int Manager_preinit(Manager_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.event.ActualValueChanged = 0;
 	
@@ -55,7 +55,7 @@ int Manager_preinit(Manager_t  *me) {
  * set up an instance of Manager. 
  * It passes around configuration data.
  */
-int Manager_init(Manager_t  *me) {
+int Manager_init(Manager_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -75,19 +75,18 @@ int Manager_init(Manager_t  *me) {
 
 //algorithms
 
-void Manager_ManagerSetNextVal(Manager_t  *me) {
+void Manager_ManagerSetNextVal(Manager_t _SPM *me) {
 me->DesiredValue = me->Vals[me->Pos];
 me->Pos++;
 if(me->Pos >= me->Len) {
 	me->Pos = 0;
 }
 me->TickCount = 0;
-//printf("NEW DESIRE\nSetting Desired Value to %f\n", me->DesiredValue); 
+printf("NEW DESIRE\nSetting Desired Value to %f\n", me->DesiredValue); 
 }
 
-void Manager_ManagerRun(Manager_t  *me) {
-//printf("Tick:\t%i\tDesired:\t%f\tActual:\t%f\n", me->TickCount, me->DesiredValue, me->ActualValue);
-HEX = me->ActualValue;
+void Manager_ManagerRun(Manager_t _SPM *me) {
+printf("Tick:\t%i\tDesired:\t%f\tActual:\t%f\n", me->TickCount, me->DesiredValue, me->ActualValue);
 me->TickCount++;
 }
 
@@ -100,7 +99,7 @@ me->TickCount++;
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Manager_run(Manager_t  *me) {
+void Manager_run(Manager_t _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.Zero = 0;

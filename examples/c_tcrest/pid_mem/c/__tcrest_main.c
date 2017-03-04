@@ -38,12 +38,16 @@ int main() {
 
 void __attribute__ ((noinline)) timed_task(_Core_t * c) {
 	int i;
+	_Core_t _SPM *c_spm;
+	c_spm = SPM_BASE;
 	for(i=0; i < PROGS_PER_CORE; i++) {
-		_Core_syncOutputEvents(&c[i]);
-		_Core_syncInputEvents(&c[i]);
-		_Core_syncOutputData(&c[i]);
-		_Core_syncInputData(&c[i]);
-		_Core_run(&c[i]);
+		spm_copy_from_ext(c_spm, &c[i], sizeof(_Core_t));
+		_Core_syncOutputEvents(c_spm);
+		_Core_syncInputEvents(c_spm);
+		_Core_syncOutputData(c_spm);
+		_Core_syncInputData(c_spm);
+		_Core_run(c_spm);
+		spm_copy_to_ext(&c[i], c_spm, sizeof(_Core_t));
 	}
 }
 
@@ -70,14 +74,21 @@ void t(void* param) {
 	HEX = 7;
 
 	_Core_t c[PROGS_PER_CORE];
+	_Core_t _SPM *c_spm;
 
 	int i;
 	for(i=0; i<PROGS_PER_CORE; i++) {
-		
-		if(_Core_preinit(&c[i]) != 0 || _Core_init(&c[i]) != 0) {
+
+		c_spm = SPM_BASE;
+
+		spm_copy_from_ext(c_spm, &c[i], sizeof(_Core_t));
+
+		if(_Core_preinit(c_spm) != 0 || _Core_init(c_spm) != 0) {
 			HEX = 15;
 			return;
 		}
+
+		spm_copy_to_ext(&c[i], c_spm, sizeof(_Core_t));
 	}
 	
 

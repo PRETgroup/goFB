@@ -42,20 +42,20 @@ typedef struct {
 } _TCREST_t;
 
 //all FBs get a preinit function
-int _TCREST_preinit(_TCREST_t  *me);
+int _TCREST_preinit(_TCREST_t _SPM *me);
 
 //all FBs get an init function
-int _TCREST_init(_TCREST_t  *me);
+int _TCREST_init(_TCREST_t _SPM *me);
 
 //all FBs get a run function
-void _TCREST_run(_TCREST_t  *me);
+void _TCREST_run(_TCREST_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _TCREST_syncOutputEvents(_TCREST_t  *me);
-void _TCREST_syncInputEvents(_TCREST_t  *me);
+void _TCREST_syncOutputEvents(_TCREST_t _SPM *me);
+void _TCREST_syncInputEvents(_TCREST_t _SPM *me);
 
-void _TCREST_syncOutputData(_TCREST_t  *me);
-void _TCREST_syncInputData(_TCREST_t  *me);
+void _TCREST_syncOutputData(_TCREST_t _SPM *me);
+void _TCREST_syncInputData(_TCREST_t _SPM *me);
 
 
 

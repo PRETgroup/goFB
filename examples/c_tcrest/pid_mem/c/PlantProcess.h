@@ -58,13 +58,13 @@ typedef struct {
 } PlantProcess_t;
 
 //all FBs get a preinit function
-int PlantProcess_preinit(PlantProcess_t  *me);
+int PlantProcess_preinit(PlantProcess_t _SPM *me);
 
 //all FBs get an init function
-int PlantProcess_init(PlantProcess_t  *me);
+int PlantProcess_init(PlantProcess_t _SPM *me);
 
 //all FBs get a run function
-void PlantProcess_run(PlantProcess_t  *me);
+void PlantProcess_run(PlantProcess_t _SPM *me);
 
 
 
