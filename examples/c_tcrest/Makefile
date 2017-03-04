@@ -21,6 +21,7 @@ G_DELAY_CYCLES?=0
 #Transfer size (burst size) of the global memory in bytes
 B_SIZE?=16
 
+PROGS_PER_CORE?=1
 
 $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.h
 	patmos-clang \
@@ -46,6 +47,7 @@ $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.
 	-lcorethread \
 	-leth \
 	-lelf \
+	-D PROGS_PER_CORE=$(PROGS_PER_CORE) \
 	-mserialize=$(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).pml
 
 build: $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf

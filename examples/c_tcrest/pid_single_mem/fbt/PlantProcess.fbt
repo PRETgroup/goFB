@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="PlantProcess" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-02" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="Zero" Comment="">
+  </Event>
+  <Event Name="ControlChange" Comment="">
+    <With Var="Control" />
+  </Event>
+  <Event Name="RandomChange" Comment="">
+    <With Var="Random" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="ValueChange" Comment="">
+    <With Var="Value" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Control" Type="REAL" Comment="" />
+  <VarDeclaration Name="Random" Type="REAL" InitialValue="0.0" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="Value" Type="REAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="zero" Comment="" x="951.5625" y="659.895819425583">
+    <ECAction Algorithm="PlantZero" />
+  </ECState>
+  <ECState Name="tick" Comment="" x="1046.35413885117" y="1243.22913885117">
+    <ECAction Algorithm="PlantTick" Output="ValueChange" />
+  </ECState>
+  <ECTransition Source="Start" Destination="zero" Condition="true" x="486.40625" y="447.197909712791" />
+  <ECTransition Source="zero" Destination="tick" Condition="true" x="999.958319425583" y="992.562479138374" />
+  <ECTransition Source="tick" Destination="zero" Condition="Zero" x="993.958319425583" y="955.562479138374" />
+  <ECTransition Source="tick" Destination="tick" Condition="true" x="1027.35413885117" y="1144.22913885117" />
+</ECC><Algorithm Name="PlantZero" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Value = 0;" />
+</Algorithm>
+<Algorithm Name="PlantTick" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Value += me-&gt;Control + me-&gt;Random;" />
+</Algorithm></BasicFB>
+</FBType>

@@ -17,17 +17,9 @@ void task(_Core_t * c0);
 
 
 int main() {
-	printf("pid_mem tcrest4 startup.\n");
-	printf("sizes: %lu, %lu, %lu, %lu\n", sizeof(_Core_t), sizeof(_Core_t), sizeof(_Core_t), sizeof(_Core_t));
-	mp_init();
-	printf("Starting t1,t2,t3 and initialising my_TCREST...\n");
-	corethread_t core1 = 1;
-	corethread_create(&core1, &t, NULL);
-	corethread_t core2 = 2;
-	corethread_create(&core2, &t, NULL);
-	corethread_t core3 = 3;
-	corethread_create(&core3, &t, NULL);
-	printf("Started t1,t2,t3\n");
+	printf("pid_single_mem patmos startup.\n");
+	printf("sizes: %lu\n", sizeof(_Core_t)*4);
+	printf("starting\n");
 
 	t(NULL);
 	int* res;
@@ -38,7 +30,7 @@ int main() {
 
 void __attribute__ ((noinline)) timed_task(_Core_t * c) {
 	int i;
-	for(i=0; i < PROGS_PER_CORE; i++) {
+	for(i=0; i < PROGS_PER_CORE*4; i++) {
 		_Core_syncOutputEvents(&c[i]);
 		_Core_syncInputEvents(&c[i]);
 		_Core_syncOutputData(&c[i]);
@@ -69,10 +61,10 @@ void task(_Core_t * c) {
 void t(void* param) {
 	HEX = 7;
 
-	_Core_t c[PROGS_PER_CORE];
+	_Core_t c[PROGS_PER_CORE*4];
 
 	int i;
-	for(i=0; i<PROGS_PER_CORE; i++) {
+	for(i=0; i<PROGS_PER_CORE*4; i++) {
 		
 		if(_Core_preinit(&c[i]) != 0 || _Core_init(&c[i]) != 0) {
 			HEX = 15;

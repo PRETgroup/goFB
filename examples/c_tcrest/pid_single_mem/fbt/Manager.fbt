@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Manager" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-02" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="ActualValueChanged" Comment="">
+    <With Var="ActualValue" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="Zero" Comment="">
+  </Event>
+  <Event Name="Tick" Comment="">
+    <With Var="DesiredValue" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="ActualValue" Type="REAL" Comment="" />
+  <VarDeclaration Name="TicksPerVal" Type="BOOL" InitialValue="100" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="DesiredValue" Type="REAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="Len" Type="INT" InitialValue="10" Comment="" />
+  <VarDeclaration Name="Pos" Type="INT" InitialValue="0" Comment="" />
+  <VarDeclaration Name="Vals" Type="REAL" InitialValue="[1.0,2.5,3.0,4.0,-5.0,-1.0,3.0,8.0,9.0,-5.5]" ArraySize="10" Comment="" />
+  <VarDeclaration Name="TickCount" Type="INT" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="next_val" Comment="" x="1181.25" y="612.5">
+    <ECAction Algorithm="ManagerSetNextVal" />
+  </ECState>
+  <ECState Name="run" Comment="" x="765.625" y="1122.91663885117">
+    <ECAction Algorithm="ManagerRun" Output="Tick" />
+  </ECState>
+  <ECState Name="zero" Comment="" x="175" y="831.25">
+    <ECAction Output="Zero" />
+  </ECState>
+  <ECTransition Source="Start" Destination="zero" Condition="true" x="175" y="568.75" />
+  <ECTransition Source="next_val" Destination="run" Condition="true" x="743.75" y="831.25" />
+  <ECTransition Source="run" Destination="next_val" Condition="TickCount &gt;= TicksPerVal" x="1050" y="918.75" />
+  <ECTransition Source="run" Destination="run" Condition="TickCount &lt; TicksPerVal" x="525" y="1618.75" />
+  <ECTransition Source="zero" Destination="next_val" Condition="true" x="481.25" y="743.75" />
+</ECC><Algorithm Name="ManagerSetNextVal" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;DesiredValue = me-&gt;Vals[me-&gt;Pos];&#xD;&#xA;me-&gt;Pos++;&#xD;&#xA;if(me-&gt;Pos &gt;= me-&gt;Len) {&#xD;&#xA;	me-&gt;Pos = 0;&#xD;&#xA;}&#xD;&#xA;me-&gt;TickCount = 0;&#xD;&#xA;printf(&quot;NEW DESIRE\nSetting Desired Value to %f\n&quot;, me-&gt;DesiredValue); " />
+</Algorithm>
+<Algorithm Name="ManagerRun" Comment="">
+  <Other Language="C" Prototype="" Text="printf(&quot;Tick:\t%i\tDesired:\t%f\tActual:\t%f\n&quot;, me-&gt;TickCount, me-&gt;DesiredValue, me-&gt;ActualValue);&#xD;&#xA;me-&gt;TickCount++;" />
+</Algorithm></BasicFB>
+</FBType>
