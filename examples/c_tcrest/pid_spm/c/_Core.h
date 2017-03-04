@@ -46,20 +46,20 @@ typedef struct {
 } _Core_t;
 
 //all FBs get a preinit function
-int _Core_preinit(_Core_t  *me);
+int _Core_preinit(_Core_t _SPM *me);
 
 //all FBs get an init function
-int _Core_init(_Core_t  *me);
+int _Core_init(_Core_t _SPM *me);
 
 //all FBs get a run function
-void _Core_run(_Core_t  *me);
+void _Core_run(_Core_t _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _Core_syncOutputEvents(_Core_t  *me);
-void _Core_syncInputEvents(_Core_t  *me);
+void _Core_syncOutputEvents(_Core_t _SPM *me);
+void _Core_syncInputEvents(_Core_t _SPM *me);
 
-void _Core_syncOutputData(_Core_t  *me);
-void _Core_syncInputData(_Core_t  *me);
+void _Core_syncOutputData(_Core_t _SPM *me);
+void _Core_syncInputData(_Core_t _SPM *me);
 
 
 

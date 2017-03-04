@@ -9,7 +9,7 @@
  * initialise an instance of PlantProcess. 
  * It sets all I/O values to zero.
  */
-int PlantProcess_preinit(PlantProcess_t  *me) {
+int PlantProcess_preinit(PlantProcess_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.event.Zero = 0;
 	me->inputEvents.event.ControlChange = 0;
@@ -44,7 +44,7 @@ int PlantProcess_preinit(PlantProcess_t  *me) {
  * set up an instance of PlantProcess. 
  * It passes around configuration data.
  */
-int PlantProcess_init(PlantProcess_t  *me) {
+int PlantProcess_init(PlantProcess_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -64,11 +64,11 @@ int PlantProcess_init(PlantProcess_t  *me) {
 
 //algorithms
 
-void PlantProcess_PlantZero(PlantProcess_t  *me) {
+void PlantProcess_PlantZero(PlantProcess_t _SPM *me) {
 me->Value = 0;
 }
 
-void PlantProcess_PlantTick(PlantProcess_t  *me) {
+void PlantProcess_PlantTick(PlantProcess_t _SPM *me) {
 me->Value += me->Control + me->Random;
 }
 
@@ -81,7 +81,7 @@ me->Value += me->Control + me->Random;
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void PlantProcess_run(PlantProcess_t  *me) {
+void PlantProcess_run(PlantProcess_t _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.ValueChange = 0;

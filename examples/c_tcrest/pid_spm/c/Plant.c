@@ -20,7 +20,7 @@
  * initialise an instance of Plant. 
  * It sets all I/O values to zero.
  */
-int Plant_preinit(Plant_t  *me) {
+int Plant_preinit(Plant_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.event.Zero = 0;
 	me->inputEvents.event.ControlChange = 0;
@@ -57,7 +57,7 @@ int Plant_preinit(Plant_t  *me) {
  * set up an instance of Plant. 
  * It passes around configuration data.
  */
-int Plant_init(Plant_t  *me) {
+int Plant_init(Plant_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -89,7 +89,7 @@ int Plant_init(Plant_t  *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void Plant_syncOutputEvents(Plant_t  *me) {
+void Plant_syncOutputEvents(Plant_t _SPM *me) {
 	//first, for all cfb children, call this same function
 	
 	
@@ -104,7 +104,7 @@ void Plant_syncOutputEvents(Plant_t  *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void Plant_syncInputEvents(Plant_t  *me) {
+void Plant_syncInputEvents(Plant_t _SPM *me) {
 	//first, we explicitly synchronise the children
 	
 	me->plantProc.inputEvents.event.Zero = me->inputEvents.event.Zero; 
@@ -125,7 +125,7 @@ void Plant_syncInputEvents(Plant_t  *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void Plant_syncOutputData(Plant_t  *me) {
+void Plant_syncOutputData(Plant_t _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	
@@ -142,7 +142,7 @@ void Plant_syncOutputData(Plant_t  *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void Plant_syncInputData(Plant_t  *me) {
+void Plant_syncInputData(Plant_t _SPM *me) {
 	//for all basic function block children, perform their synchronisations explicitly
 	
 	//sync for badRNG (of type BadRandom) which is a BFB
@@ -169,7 +169,7 @@ void Plant_syncInputData(Plant_t  *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void Plant_run(Plant_t  *me) {
+void Plant_run(Plant_t _SPM *me) {
 	BadRandom_run(&me->badRNG);
 	PlantProcess_run(&me->plantProc);
 	

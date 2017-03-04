@@ -61,13 +61,13 @@ typedef struct {
 } Manager_t;
 
 //all FBs get a preinit function
-int Manager_preinit(Manager_t _SPM *me);
+int Manager_preinit(Manager_t  *me);
 
 //all FBs get an init function
-int Manager_init(Manager_t _SPM *me);
+int Manager_init(Manager_t  *me);
 
 //all FBs get a run function
-void Manager_run(Manager_t _SPM *me);
+void Manager_run(Manager_t  *me);
 
 
 

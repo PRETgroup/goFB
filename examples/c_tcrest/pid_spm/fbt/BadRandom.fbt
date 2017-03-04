@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BadRandom" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-02" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="RandomChange" Comment="">
+    <With Var="Random" />
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="Random" Type="REAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="Len" Type="INT" InitialValue="10" Comment="" />
+  <VarDeclaration Name="Pos" Type="INT" InitialValue="0" Comment="" />
+  <VarDeclaration Name="Vals" Type="REAL" InitialValue="[0.01,0.05,-0.02,0.03,-0.04,-0.02,0.01,0.03,-0.02,-0.02]" ArraySize="10" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="r" Comment="" x="1152.08336114883" y="703.645861148834">
+    <ECAction Algorithm="BadRandomRun" Output="RandomChange" />
+  </ECState>
+  <ECTransition Source="Start" Destination="r" Condition="true" x="642.666680574417" y="486.072930574417" />
+  <ECTransition Source="r" Destination="r" Condition="true" x="1137.5" y="437.5" />
+</ECC><Algorithm Name="BadRandomRun" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Random = me-&gt;Vals[me-&gt;Pos];&#xD;&#xA;&#xD;&#xA;me-&gt;Pos++;&#xD;&#xA;&#xD;&#xA;if(me-&gt;Pos &gt;= me-&gt;Len) {&#xD;&#xA;	me-&gt;Pos = 0;&#xD;&#xA;}" />
+</Algorithm></BasicFB>
+</FBType>

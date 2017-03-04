@@ -20,7 +20,7 @@
  * initialise an instance of _Core. 
  * It sets all I/O values to zero.
  */
-int _Core_preinit(_Core_t  *me) {
+int _Core_preinit(_Core_t _SPM *me) {
 	//if there are input events, reset them
 	
 	//if there are output events, reset them
@@ -57,7 +57,7 @@ int _Core_preinit(_Core_t  *me) {
  * set up an instance of _Core. 
  * It passes around configuration data.
  */
-int _Core_init(_Core_t  *me) {
+int _Core_init(_Core_t _SPM *me) {
 	//pass in any parameters on this level
 	me->pid.PGain = 0.4;
 	me->pid.IGain = 0.05;
@@ -98,7 +98,7 @@ int _Core_init(_Core_t  *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core_syncOutputEvents(_Core_t  *me) {
+void _Core_syncOutputEvents(_Core_t _SPM *me) {
 	//first, for all cfb children, call this same function
 	
 	Plant_syncOutputEvents(&me->plant);//sync for plant (of type Plant) which is a CFB
@@ -113,7 +113,7 @@ void _Core_syncOutputEvents(_Core_t  *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core_syncInputEvents(_Core_t  *me) {
+void _Core_syncInputEvents(_Core_t _SPM *me) {
 	//first, we explicitly synchronise the children
 	
 	me->pid.inputEvents.event.Zero = me->manager.outputEvents.event.Zero; 
@@ -142,7 +142,7 @@ void _Core_syncInputEvents(_Core_t  *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core_syncOutputData(_Core_t  *me) {
+void _Core_syncOutputData(_Core_t _SPM *me) {
 	//for all composite function block children, call this same function
 	//sync for plant (of type Plant) which is a CFB
 	Plant_syncOutputData(&me->plant);
@@ -159,7 +159,7 @@ void _Core_syncOutputData(_Core_t  *me) {
  * Notice that it does NOT perform any computation - this occurs in the
  * _run function.
  */
-void _Core_syncInputData(_Core_t  *me) {
+void _Core_syncInputData(_Core_t _SPM *me) {
 	//for all basic function block children, perform their synchronisations explicitly
 	
 	//sync for pid (of type PID) which is a BFB
@@ -196,7 +196,7 @@ void _Core_syncInputData(_Core_t  *me) {
  * Notice that it does NOT perform any I/O - synchronisation
  * is done using the _syncX functions at this (and any higher) level.
  */
-void _Core_run(_Core_t  *me) {
+void _Core_run(_Core_t _SPM *me) {
 	PID_run(&me->pid);
 	Manager_run(&me->manager);
 	Plant_run(&me->plant);

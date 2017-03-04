@@ -13,7 +13,7 @@ const int NOC_MASTER = 0;
 
 void t(void* param);
 
-void task(_Core_t * c0);
+void task(_Core_t _SPM * c0);
 
 
 int main() {
@@ -36,19 +36,20 @@ int main() {
 	return 0;
 }
 
-void __attribute__ ((noinline)) timed_task(_Core_t * c) {
+void __attribute__ ((noinline)) timed_task(_Core_t _SPM * c_spm) {
 	int i;
-
 	for(i=0; i < PROGS_PER_CORE; i++) {
-		_Core_syncOutputEvents(&c[i]);
-		_Core_syncInputEvents(&c[i]);
-		_Core_syncOutputData(&c[i]);
-		_Core_syncInputData(&c[i]);
-		_Core_run(&c[i]);
+		
+		_Core_syncOutputEvents(&c_spm[i]);
+		_Core_syncInputEvents(&c_spm[i]);
+		_Core_syncOutputData(&c_spm[i]);
+		_Core_syncInputData(&c_spm[i]);
+		_Core_run(&c_spm[i]);
+		
 	}
 }
 
-void task(_Core_t * c) {
+void task(_Core_t _SPM * c) {
 	//task0 runs core0
 	unsigned int tickCount = 0;
 
@@ -70,14 +71,16 @@ void task(_Core_t * c) {
 void t(void* param) {
 	HEX = 7;
 
-	_Core_t c[PROGS_PER_CORE];
-
+	_Core_t _SPM *c_spm;
+	c_spm = SPM_BASE;
+	
 	int i;
 	for(i=0; i<PROGS_PER_CORE; i++) {
 
 
 
-		if(_Core_preinit(&c[i]) != 0 || _Core_init(&c[i]) != 0) {
+		
+		if(_Core_preinit(&c_spm[i]) != 0 || _Core_init(&c_spm[i]) != 0) {
 			HEX = 15;
 			return;
 		}
@@ -98,6 +101,6 @@ void t(void* param) {
 
 	HEX = 10;
 	
-	task(c);
+	task(c_spm);
 }
 
