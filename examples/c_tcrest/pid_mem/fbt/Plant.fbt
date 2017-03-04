@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Plant" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-02" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="Zero" Comment="">
+  </Event>
+  <Event Name="ControlChange" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="ValueChange" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Control" Type="REAL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="Value" Type="REAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="badRNG" Type="BadRandom" x="1513.02083333333" y="554.166666666667" />
+  <FB Name="plantProc" Type="PlantProcess" x="1881.25" y="1575" />
+  <EventConnections><Connection Source="Zero" Destination="plantProc.Zero" />
+<Connection Source="ControlChange" Destination="plantProc.ControlChange" />
+<Connection Source="plantProc.ValueChange" Destination="ValueChange" />
+<Connection Source="badRNG.RandomChange" Destination="plantProc.RandomChange" /></EventConnections>
+  <DataConnections><Connection Source="Control" Destination="plantProc.Control" />
+<Connection Source="plantProc.Value" Destination="Value" />
+<Connection Source="badRNG.Random" Destination="plantProc.Random" /></DataConnections>
+</FBNetwork>
+</FBType>

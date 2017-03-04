@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE DeviceType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<DeviceType Name="_TCREST" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-02" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+
+<Resource Name="c" Type="_Core" x="2880.20833333333" y="1400">
+</Resource>
+
+</DeviceType>

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="PID" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-02" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="Zero" Comment="">
+    <With Var="PGain" />
+    <With Var="IGain" />
+    <With Var="DGain" />
+    <With Var="WindupGuard" />
+  </Event>
+  <Event Name="Tick" Comment="">
+    <With Var="DesiredValue" />
+  </Event>
+  <Event Name="ActualValueChanged" Comment="">
+    <With Var="ActualValue" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="ControlChanged" Comment="">
+    <With Var="Control" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DesiredValue" Type="REAL" Comment="" />
+  <VarDeclaration Name="ActualValue" Type="REAL" Comment="" />
+  <VarDeclaration Name="PGain" Type="REAL" Comment="" />
+  <VarDeclaration Name="IGain" Type="REAL" Comment="" />
+  <VarDeclaration Name="DGain" Type="REAL" Comment="" />
+  <VarDeclaration Name="WindupGuard" Type="REAL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="Control" Type="REAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="PreviousError" Type="REAL" Comment="" />
+  <VarDeclaration Name="IntegrationError" Type="REAL" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="update" Comment="" x="831.25" y="962.5">
+    <ECAction Algorithm="PIDTick" Output="ControlChanged" />
+  </ECState>
+  <ECState Name="zero" Comment="" x="856.770861148834" y="495.833319425583">
+    <ECAction Algorithm="PIDZero" />
+  </ECState>
+  <ECTransition Source="Start" Destination="zero" Condition="true" x="453.010430574417" y="396.166659712791" />
+  <ECTransition Source="update" Destination="zero" Condition="Zero" x="918.75" y="700" />
+  <ECTransition Source="update" Destination="update" Condition="Tick" x="831.25" y="1268.75" />
+  <ECTransition Source="zero" Destination="update" Condition="Tick" x="612.5" y="700" />
+  <ECTransition Source="zero" Destination="zero" Condition="Zero" x="918.75" y="262.5" />
+</ECC><Algorithm Name="PIDTick" Comment="">
+  <Other Language="C" Prototype="" Text="	REAL diff;&#xD;&#xA;	REAL p_term;&#xD;&#xA;	REAL i_term;&#xD;&#xA;	REAL d_term;&#xD;&#xA;&#xD;&#xA;	REAL currentError = me-&gt;DesiredValue - me-&gt;ActualValue;&#xD;&#xA; &#xD;&#xA;    // integration with windup guarding&#xD;&#xA;    me-&gt;IntegrationError += currentError;&#xD;&#xA;    if (me-&gt;IntegrationError &lt; -(me-&gt;WindupGuard)) {&#xD;&#xA;        me-&gt;IntegrationError = -(me-&gt;WindupGuard);&#xD;&#xA;&#xD;&#xA;	} else if (me-&gt;IntegrationError &gt; me-&gt;WindupGuard) {&#xD;&#xA;        me-&gt;IntegrationError = me-&gt;WindupGuard;&#xD;&#xA;&#xD;&#xA;	}&#xD;&#xA;&#xD;&#xA;    // differentiation&#xD;&#xA;    diff = currentError - me-&gt;PreviousError;&#xD;&#xA; &#xD;&#xA;    // scaling&#xD;&#xA;    p_term = (me-&gt;PGain * currentError);&#xD;&#xA;    i_term = (me-&gt;IGain * me-&gt;IntegrationError);&#xD;&#xA;    d_term = (me-&gt;DGain * diff);&#xD;&#xA; &#xD;&#xA;    // summation of terms&#xD;&#xA;    me-&gt;Control = p_term + i_term + d_term;&#xD;&#xA; &#xD;&#xA;    // save current error as previous error for next iteration&#xD;&#xA;    me-&gt;PreviousError = currentError;" />
+</Algorithm>
+<Algorithm Name="PIDZero" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;PreviousError = 0.0;&#xD;&#xA;me-&gt;IntegrationError = 0.0;" />
+</Algorithm></BasicFB>
+</FBType>
