@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="RequestConsumer" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="CANTO-AIR-PC" Version="0.1" Author="Canto-Air" Date="2014-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="CurrentPriority" Comment="">
+    <With Var="CurrentPriorityValue" />
+  </Event>
+  <Event Name="StoppedAtFloor" Comment="">
+    <With Var="StoppedAtFloorValue" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="request" Comment="">
+    <With Var="requestValue" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="CurrentPriorityValue" Type="INT" Comment="" />
+  <VarDeclaration Name="StoppedAtFloorValue" Type="INT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="requestValue" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="FloorHasHighestPriority" Comment="" x="1487.5" y="568.75">
+  </ECState>
+  <ECState Name="FloorHasNotHighestPriority" Comment="" x="1750" y="1400">
+    <ECAction Algorithm="UpdateRequest" Output="request" />
+  </ECState>
+  <ECTransition Source="FloorHasHighestPriority" Destination="FloorHasNotHighestPriority" Condition="CurrentPriority AND (CurrentPriorityValue &lt;&gt; StoppedAtFloorValue)" x="2493.75" y="1006.25" />
+  <ECTransition Source="FloorHasNotHighestPriority" Destination="FloorHasHighestPriority" Condition="StoppedAtFloor AND (CurrentPriorityValue = StoppedAtFloorValue)" x="262.5" y="1050" />
+  <ECTransition Source="FloorHasNotHighestPriority" Destination="FloorHasNotHighestPriority" Condition="true" x="2012.5" y="1618.75" />
+</ECC><Algorithm Name="UpdateRequest" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;requestValue = me-&gt;CurrentPriorityValue;" />
+</Algorithm></BasicFB>
+</FBType>

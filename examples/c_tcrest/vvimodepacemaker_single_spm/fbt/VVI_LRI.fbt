@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="VVI_LRI" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="CANTO-AIR-PC" Version="0.1" Author="Canto-Air" Date="2014-00-18" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="VSense" Comment="">
+  </Event>
+  <Event Name="LRI_Timer_Timeout" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="LRI_Timer_Start" Comment="">
+    <With Var="LRI_Timeout_Value" />
+  </Event>
+  <Event Name="LRI_Timer_Stop" Comment="">
+  </Event>
+  <Event Name="VPace" Comment="">
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="LRI_Timeout_Value" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="1312.5" y="875">
+  </ECState>
+  <ECState Name="Resting" Comment="" x="2052.60422229767" y="882.291680574417">
+    <ECAction Algorithm="LRI_Set_Timeout_Value" Output="LRI_Timer_Start" />
+  </ECState>
+  <ECState Name="LRI_Timer_Expired" Comment="" x="1925" y="1225">
+    <ECAction Output="VPace" />
+  </ECState>
+  <ECState Name="VSense_Detected" Comment="" x="1925" y="525">
+    <ECAction Output="LRI_Timer_Stop" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Resting" Condition="true" x="1618.75" y="875" />
+  <ECTransition Source="Resting" Destination="VSense_Detected" Condition="VSense" x="2187.5" y="700" />
+  <ECTransition Source="Resting" Destination="LRI_Timer_Expired" Condition="LRI_Timer_Timeout" x="2143.75" y="1050" />
+  <ECTransition Source="LRI_Timer_Expired" Destination="Resting" Condition="true" x="1881.25" y="1050" />
+  <ECTransition Source="VSense_Detected" Destination="Resting" Condition="true" x="1881.25" y="700" />
+</ECC><Algorithm Name="LRI_Set_Timeout_Value" Comment="">
+  <Other Language="C" Prototype="" Text="me -&gt; LRI_Timeout_Value = 800;" />
+</Algorithm></BasicFB>
+</FBType>

@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="HighestRequestProducer" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="CANTO-AIR-PC" Version="0.1" Author="Canto-Air" Date="2014-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="MotorDirectionUp" Comment="">
+  </Event>
+  <Event Name="MotorDirectionDown" Comment="">
+  </Event>
+  <Event Name="MotorDirectionIdle" Comment="">
+  </Event>
+  <Event Name="FloorSensor" Comment="">
+    <With Var="FloorSensorValue" />
+  </Event>
+  <Event Name="PendingReq" Comment="">
+    <With Var="PendingReqValue" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="CurrentPriority" Comment="">
+    <With Var="CurrentPriorityValue" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="FloorSensorValue" Type="INT" Comment="" />
+  <VarDeclaration Name="PendingReqValue" Type="BOOL" ArraySize="4" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="CurrentPriorityValue" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="481.25" y="1137.5">
+  </ECState>
+  <ECState Name="DirectionUp" Comment="" x="1575" y="262.5">
+    <ECAction Algorithm="ResolvePriorityUp" Output="CurrentPriority" />
+  </ECState>
+  <ECState Name="DirectionDown" Comment="" x="1662.5" y="1137.5">
+    <ECAction Algorithm="ResolvePriorityDown" Output="CurrentPriority" />
+  </ECState>
+  <ECState Name="DirectionIdle" Comment="" x="1706.25" y="2187.5">
+    <ECAction Algorithm="ResolvePriorityIdle" Output="CurrentPriority" />
+  </ECState>
+  <ECTransition Source="Start" Destination="DirectionUp" Condition="MotorDirectionUp AND FloorSensor AND PendingReq" x="481.25" y="481.25" />
+  <ECTransition Source="Start" Destination="DirectionDown" Condition="MotorDirectionDown AND FloorSensor AND PendingReq" x="437.5" y="1400" />
+  <ECTransition Source="Start" Destination="DirectionIdle" Condition="MotorDirectionIdle AND FloorSensor AND PendingReq" x="175" y="2143.75" />
+  <ECTransition Source="DirectionUp" Destination="DirectionIdle" Condition="MotorDirectionIdle AND FloorSensor AND PendingReq" x="4112.5" y="962.5" />
+  <ECTransition Source="DirectionUp" Destination="DirectionDown" Condition="MotorDirectionDown AND FloorSensor AND PendingReq" x="1006.25" y="787.5" />
+  <ECTransition Source="DirectionUp" Destination="Start" Condition="true" x="393.75" y="306.25" />
+  <ECTransition Source="DirectionDown" Destination="DirectionUp" Condition="MotorDirectionUp AND FloorSensor AND PendingReq" x="1837.5" y="656.25" />
+  <ECTransition Source="DirectionDown" Destination="DirectionIdle" Condition="MotorDirectionIdle AND FloorSensor AND PendingReq" x="1706.25" y="1443.75" />
+  <ECTransition Source="DirectionDown" Destination="Start" Condition="true" x="1137.5" y="1181.25" />
+  <ECTransition Source="DirectionIdle" Destination="DirectionUp" Condition="MotorDirectionUp AND FloorSensor AND PendingReq" x="2887.5" y="962.5" />
+  <ECTransition Source="DirectionIdle" Destination="DirectionDown" Condition="MotorDirectionDown AND FloorSensor AND PendingReq" x="1093.75" y="1662.5" />
+  <ECTransition Source="DirectionIdle" Destination="Start" Condition="true" x="700" y="1881.25" />
+</ECC><Algorithm Name="ResolvePriorityUp" Comment="">
+  <Other Language="C" Prototype="" Text="int bitmask;&#xD;&#xA;int PendingReq = 0;&#xD;&#xA;int i = 0;&#xD;&#xA;me-&gt;CurrentPriorityValue = -1;&#xD;&#xA;for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;    PendingReq |= me-&gt;PendingReqValue[i] &lt;&lt; i;&#xD;&#xA;}&#xD;&#xA;printf(&quot;Pending Request, direction, current: %d 1 %d\n&quot;, PendingReq, me-&gt;FloorSensorValue);&#xD;&#xA;// initial condition =&gt; priority hasn't been changed&#xD;&#xA;me-&gt;CurrentPriorityValue = -1;&#xD;&#xA;bitmask = 0x01;&#xD;&#xA;for (i = 0 ; i &lt; 4; ++i) {&#xD;&#xA;    if (i &gt; me-&gt;FloorSensorValue &amp;&amp; (PendingReq &amp; bitmask)) {&#xD;&#xA;        me-&gt;CurrentPriorityValue = i;&#xD;&#xA;        printf(&quot;Up Priority = %d\n&quot;, me-&gt;CurrentPriorityValue );&#xD;&#xA;        break;&#xD;&#xA;    }&#xD;&#xA;    bitmask = bitmask &lt;&lt; 1;&#xD;&#xA;}&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="ResolvePriorityDown" Comment="">
+  <Other Language="C" Prototype="" Text="int bitmask;&#xD;&#xA;int PendingReq = 0;&#xD;&#xA;int i = 0;&#xD;&#xA;me-&gt;CurrentPriorityValue = -1;&#xD;&#xA;for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;    PendingReq |= me-&gt;PendingReqValue[i] &lt;&lt; i;&#xD;&#xA;}&#xD;&#xA;printf(&quot;Pending Request, direction, current: %d 2 %d\n&quot;, PendingReq, me-&gt;FloorSensorValue);&#xD;&#xA;bitmask = 0x08;&#xD;&#xA;for (i = 4 - 1; i &gt; -1; --i) {&#xD;&#xA;    if (i &lt; me-&gt;FloorSensorValue &amp;&amp; (PendingReq &amp; bitmask)) {&#xD;&#xA;        me-&gt;CurrentPriorityValue  = i;&#xD;&#xA;        printf(&quot;Down Priority = %d\n&quot;, me-&gt;CurrentPriorityValue );&#xD;&#xA;        break;&#xD;&#xA;    }&#xD;&#xA;    bitmask = bitmask &gt;&gt; 1;&#xD;&#xA;}&#xD;&#xA;    " />
+</Algorithm>
+<Algorithm Name="ResolvePriorityIdle" Comment="">
+  <Other Language="C" Prototype="" Text="int bitmask;&#xD;&#xA;int PendingReq = 0;&#xD;&#xA;int i = 0;&#xD;&#xA;me-&gt;CurrentPriorityValue = -1;&#xD;&#xA;for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;    PendingReq |= me-&gt;PendingReqValue[i] &lt;&lt; i;&#xD;&#xA;}&#xD;&#xA;printf(&quot;Pending Request, direction, current: %d 3 %d\n&quot;, PendingReq, me-&gt;FloorSensorValue);&#xD;&#xA;printf(&quot;Current %d \n&quot;, me-&gt;FloorSensorValue);&#xD;&#xA;if (me-&gt;FloorSensorValue == 0) {&#xD;&#xA;    printf(&quot;Idle case when on bottom floor\n&quot;);&#xD;&#xA;    bitmask = 0x01;&#xD;&#xA;    for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;        if (i &gt; me-&gt;FloorSensorValue &amp;&amp; (PendingReq &amp; bitmask)) {&#xD;&#xA;            me-&gt;CurrentPriorityValue = i;&#xD;&#xA;            printf(&quot;Init Up Priority = %d\n&quot;, me-&gt;CurrentPriorityValue);&#xD;&#xA;            break;&#xD;&#xA;        }&#xD;&#xA;        bitmask = bitmask &lt;&lt; 1;&#xD;&#xA;    }&#xD;&#xA;} else if (me-&gt;FloorSensorValue == 4 - 1) {&#xD;&#xA;    printf(&quot;Idle case when on top floor\n&quot;);&#xD;&#xA;    bitmask = 0x08;&#xD;&#xA;    for (i = 4 - 1; i &gt; -1; --i) {&#xD;&#xA;        if (i &lt; me-&gt;FloorSensorValue &amp;&amp; (PendingReq &amp; bitmask)) {&#xD;&#xA;            me-&gt;CurrentPriorityValue = i;&#xD;&#xA;            printf(&quot;Init Down Priority= %d\n&quot;, me-&gt;CurrentPriorityValue);&#xD;&#xA;            break;&#xD;&#xA;        }&#xD;&#xA;        bitmask = bitmask &gt;&gt; 1;&#xD;&#xA;    }&#xD;&#xA;} else {&#xD;&#xA;    //if lift is somewhere in the middle it will go down if&#xD;&#xA;    //there is any requests below the current floor&#xD;&#xA;    printf(&quot;Idle case when on some middle floor\n&quot;);&#xD;&#xA;    bitmask = 0x01;&#xD;&#xA;    for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;        if (i &gt; me-&gt;FloorSensorValue &amp;&amp; (PendingReq &amp; bitmask)) {&#xD;&#xA;            me-&gt;CurrentPriorityValue = i;&#xD;&#xA;            printf(&quot;Middle Up Priority = %d\n&quot;, me-&gt;CurrentPriorityValue);&#xD;&#xA;            break;&#xD;&#xA;        }&#xD;&#xA;        bitmask = bitmask &lt;&lt; 1;&#xD;&#xA;    }&#xD;&#xA;    // if there are no up requests &gt; current&#xD;&#xA;    if (me-&gt;CurrentPriorityValue == -1) {&#xD;&#xA;        bitmask = 0x08;&#xD;&#xA;        for(i = 4- 1; i &gt; -1; --i) {&#xD;&#xA;            if (i &lt; me-&gt;FloorSensorValue &amp;&amp; (PendingReq &amp; bitmask)) {&#xD;&#xA;                me-&gt;CurrentPriorityValue = i;&#xD;&#xA;                printf(&quot;Middle Down Priority = %d\n&quot;, me-&gt;CurrentPriorityValue);&#xD;&#xA;                break;&#xD;&#xA;            }&#xD;&#xA;            bitmask = bitmask &gt;&gt; 1;&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}" />
+</Algorithm></BasicFB>
+</FBType>

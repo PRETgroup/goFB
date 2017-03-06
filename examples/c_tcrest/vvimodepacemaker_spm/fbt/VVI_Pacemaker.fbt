@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="VVI_Pacemaker" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="NE734EFZE6G0NVX" Version="0.1" Author="Administrator" Date="2014-00-19" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="VPulse" Comment="">
+  </Event>
+  <Event Name="VRP_Timer_Timeout" Comment="">
+  </Event>
+  <Event Name="LRI_Timer_Timeout" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="VPace" Comment="">
+  </Event>
+  <Event Name="VRefractory" Comment="">
+  </Event>
+  <Event Name="VRP_Start_Timer" Comment="">
+  </Event>
+  <Event Name="LRI_Timer_Start" Comment="">
+  </Event>
+  <Event Name="LRI_Timer_Stop" Comment="">
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="VRP_Timeout_Value" Type="INT" Comment="" />
+  <VarDeclaration Name="LRI_Timeout_Value" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="VVI_LRI" Type="VVI_LRI" x="612.5" y="1181.25" />
+  <FB Name="VVI_VRP" Type="VVI_VRP" x="612.5" y="393.75" />
+  <EventConnections><Connection Source="VPulse" Destination="VVI_VRP.VPulse" />
+<Connection Source="VRP_Timer_Timeout" Destination="VVI_VRP.VRP_Timer_Timeout" />
+<Connection Source="LRI_Timer_Timeout" Destination="VVI_LRI.LRI_Timer_Timeout" />
+<Connection Source="VVI_LRI.VPace" Destination="VPace" />
+<Connection Source="VVI_VRP.VRefractory" Destination="VRefractory" />
+<Connection Source="VVI_VRP.VRP_Start_Timer" Destination="VRP_Start_Timer" />
+<Connection Source="VVI_LRI.LRI_Timer_Start" Destination="LRI_Timer_Start" />
+<Connection Source="VVI_LRI.LRI_Timer_Stop" Destination="LRI_Timer_Stop" />
+<Connection Source="VVI_LRI.VPace" Destination="VVI_VRP.VPace" />
+<Connection Source="VVI_VRP.VSense" Destination="VVI_LRI.VSense" /></EventConnections>
+  <DataConnections><Connection Source="VVI_VRP.VRP_Timeout_Value" Destination="VRP_Timeout_Value" />
+<Connection Source="VVI_LRI.LRI_Timeout_Value" Destination="LRI_Timeout_Value" /></DataConnections>
+</FBNetwork>
+</FBType>

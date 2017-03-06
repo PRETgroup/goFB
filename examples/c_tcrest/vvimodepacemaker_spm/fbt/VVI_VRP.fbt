@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="VVI_VRP" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="NE734EFZE6G0NVX" Version="0.1" Author="Administrator" Date="2014-00-19" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="VPulse" Comment="">
+  </Event>
+  <Event Name="VPace" Comment="">
+  </Event>
+  <Event Name="VRP_Timer_Timeout" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="VRP_Start_Timer" Comment="">
+    <With Var="VRP_Timeout_Value" />
+  </Event>
+  <Event Name="VSense" Comment="">
+  </Event>
+  <Event Name="VRefractory" Comment="">
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="VRP_Timeout_Value" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="1575" y="218.75">
+  </ECState>
+  <ECState Name="Wait_For_VSense" Comment="" x="1487.5" y="1050">
+  </ECState>
+  <ECState Name="Resting" Comment="" x="2318.75" y="1050">
+    <ECAction Algorithm="VRP_Set_Timeout_Value" Output="VRP_Start_Timer" />
+    <ECAction Output="VSense" />
+  </ECState>
+  <ECState Name="Detected_VPulse" Comment="" x="1487.5" y="568.75">
+    <ECAction Algorithm="VRP_Set_Timeout_Value" Output="VRP_Start_Timer" />
+  </ECState>
+  <ECState Name="Detected_VRefractory" Comment="" x="2187.5" y="700">
+    <ECAction Output="VRefractory" />
+  </ECState>
+  <ECTransition Source="Wait_For_VSense" Destination="Resting" Condition="VPulse" x="2012.5" y="1181.25" />
+  <ECTransition Source="Wait_For_VSense" Destination="Resting" Condition="VPace" x="2012.5" y="1006.25" />
+  <ECTransition Source="Resting" Destination="Detected_VRefractory" Condition="VPulse" x="2187.5" y="875" />
+  <ECTransition Source="Resting" Destination="Wait_For_VSense" Condition="VRP_Timer_Timeout" x="1881.25" y="1356.25" />
+  <ECTransition Source="Start" Destination="Detected_VPulse" Condition="true" x="1575" y="393.75" />
+  <ECTransition Source="Detected_VPulse" Destination="Wait_For_VSense" Condition="VRP_Timer_Timeout" x="1443.75" y="787.5" />
+  <ECTransition Source="Detected_VRefractory" Destination="Resting" Condition="true" x="2450" y="875" />
+</ECC><Algorithm Name="VRP_Set_Timeout_Value" Comment="">
+  <Other Language="C" Prototype="" Text="me -&gt; VRP_Timeout_Value = 300;" />
+</Algorithm></BasicFB>
+</FBType>

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="PendingRequestGenerator" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="CANTO-AIR-PC" Version="0.1" Author="Canto-Air" Date="2014-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="CabinCall" Comment="">
+    <With Var="CabinCallValue" />
+  </Event>
+  <Event Name="UpCall" Comment="">
+    <With Var="UpCallValue" />
+  </Event>
+  <Event Name="DownCall" Comment="">
+    <With Var="DownCallValue" />
+  </Event>
+  <Event Name="StoppedAtFloor" Comment="">
+    <With Var="StoppedAtFloorValue" />
+  </Event>
+  <Event Name="MotorDirectionUp" Comment="">
+  </Event>
+  <Event Name="MotorDirectionDown" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="PendingCabinCall" Comment="">
+    <With Var="PendingCabinCallValue" />
+  </Event>
+  <Event Name="PendingUpCall" Comment="">
+    <With Var="PendingUpCallValue" />
+  </Event>
+  <Event Name="PendingDownCall" Comment="">
+    <With Var="PendingDownCallValue" />
+  </Event>
+  <Event Name="PendingCall" Comment="">
+    <With Var="PendingCallValue" />
+  </Event>
+  <Event Name="PendingReq" Comment="">
+    <With Var="PendingReqValue" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="CabinCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="UpCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="DownCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="StoppedAtFloorValue" Type="INT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="PendingCabinCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingUpCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingDownCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingReqValue" Type="BOOL" ArraySize="4" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="preCallRequest" Type="BOOL" Comment="" />
+  <VarDeclaration Name="preMotorDirectionDown" Type="BOOL" Comment="" />
+  <VarDeclaration Name="preMotorDirectionUp" Type="BOOL" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="1400" y="656.25">
+    <ECAction Algorithm="UpdateCallValues" Output="PendingCabinCall" />
+    <ECAction Output="PendingUpCall" />
+    <ECAction Output="PendingDownCall" />
+    <ECAction Output="PendingCall" />
+  </ECState>
+  <ECState Name="PendingReq" Comment="" x="1312.5" y="1356.25">
+    <ECAction Algorithm="UpdateCallValues" Output="PendingReq" />
+    <ECAction Output="PendingCabinCall" />
+    <ECAction Output="PendingUpCall" />
+    <ECAction Output="PendingDownCall" />
+    <ECAction Output="PendingCall" />
+  </ECState>
+  <ECTransition Source="Start" Destination="PendingReq" Condition="preCallRequest=true" x="824.4140625" y="1006.25" />
+  <ECTransition Source="Start" Destination="Start" Condition="true" x="1400" y="437.5" />
+  <ECTransition Source="PendingReq" Destination="Start" Condition="preCallRequest=false" x="1447.70202636719" y="1006.25" />
+  <ECTransition Source="PendingReq" Destination="PendingReq" Condition="true" x="1400" y="1618.75" />
+</ECC><Algorithm Name="UpdateCallValues" Comment="">
+  <Other Language="C" Prototype="" Text="int i = 0;&#xD;&#xA;//update PendingCabinCall&#xD;&#xA;if (me-&gt;_input.event.CabinCall) {&#xD;&#xA;	for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;		me-&gt;PendingCabinCallValue[i] |= me-&gt;CabinCallValue[i];&#xD;&#xA;	}&#xD;&#xA;}&#xD;&#xA;if (me-&gt;_input.event.StoppedAtFloor) {&#xD;&#xA;	me-&gt;PendingCabinCallValue[me-&gt;StoppedAtFloorValue] = 0;&#xD;&#xA;}&#xD;&#xA;//update PendingUpCall&#xD;&#xA;int hasUpRequests = 0;&#xD;&#xA;if (me-&gt;_input.event.UpCall) {&#xD;&#xA;	for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;		me-&gt;PendingUpCallValue[i] |= me-&gt;UpCallValue[i];&#xD;&#xA;		hasUpRequests|= me-&gt;UpCallValue[i];&#xD;&#xA;	}&#xD;&#xA;}&#xD;&#xA;//update PendingDownCall&#xD;&#xA;int hasDownRequests = 0;&#xD;&#xA;if (me-&gt;_input.event.DownCall) {&#xD;&#xA;	for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;		me-&gt;PendingDownCallValue[i] |= me-&gt;DownCallValue[i];&#xD;&#xA;		hasDownRequests |= me-&gt;DownCallValue[i];&#xD;&#xA;	}&#xD;&#xA;}&#xD;&#xA;if ((me-&gt;_input.event.StoppedAtFloor&amp;&amp;me-&gt;preMotorDirectionUp) || (hasDownRequests==0)) {&#xD;&#xA;	me-&gt;PendingUpCallValue[me-&gt;StoppedAtFloorValue] = 0;&#xD;&#xA;}&#xD;&#xA;if ((me-&gt;_input.event.StoppedAtFloor&amp;&amp;me-&gt;preMotorDirectionDown) || (hasUpRequests==0)) {&#xD;&#xA;	me-&gt;PendingDownCallValue[me-&gt;StoppedAtFloorValue] = 0;&#xD;&#xA;}&#xD;&#xA;me-&gt;preCallRequest = 0;&#xD;&#xA;//update PendingCall&#xD;&#xA;for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;    me-&gt;PendingCallValue[i] |=  me-&gt;PendingCabinCallValue[i] ||  me-&gt;PendingUpCallValue[i] || me-&gt;PendingDownCallValue[i];&#xD;&#xA;	me-&gt;preCallRequest |= me-&gt;PendingCallValue[i];&#xD;&#xA;}&#xD;&#xA;if (me-&gt;_input.event.StoppedAtFloor) {&#xD;&#xA;	me-&gt;PendingCallValue[me-&gt;StoppedAtFloorValue] = 0;&#xD;&#xA;}&#xD;&#xA;//update PendingReq&#xD;&#xA;for (i = 0; i &lt; 4; ++i) {&#xD;&#xA;    me-&gt;PendingReqValue[i] = me-&gt;PendingCallValue[i];&#xD;&#xA;}&#xD;&#xA;me-&gt;preMotorDirectionUp = me-&gt;_input.event.MotorDirectionUp;&#xD;&#xA;me-&gt;preMotorDirectionDown = me-&gt;_input.event.MotorDirectionDown;&#xD;&#xA;&#xD;&#xA;" />
+</Algorithm></BasicFB>
+</FBType>

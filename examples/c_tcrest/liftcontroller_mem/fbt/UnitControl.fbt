@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="UnitControl" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="CANTO-AIR-PC" Version="0.1" Author="Canto-Air" Date="2014-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="TimerExpired" Comment="">
+  </Event>
+  <Event Name="Request" Comment="">
+    <With Var="RequestValue" />
+  </Event>
+  <Event Name="FloorSensor" Comment="">
+    <With Var="FloorSensorValue" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="MotorDirectionUp" Comment="">
+  </Event>
+  <Event Name="MotorDirectionDown" Comment="">
+  </Event>
+  <Event Name="MotorDirectionIdle" Comment="">
+  </Event>
+  <Event Name="DoorOpen" Comment="">
+  </Event>
+  <Event Name="DoorClose" Comment="">
+  </Event>
+  <Event Name="StartTimer" Comment="">
+  </Event>
+  <Event Name="StoppedAtFloor" Comment="">
+    <With Var="StoppedAtFloorValue" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="FloorSensorValue" Type="INT" Comment="" />
+  <VarDeclaration Name="RequestValue" Type="INT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="StoppedAtFloorValue" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="2187.5" y="568.75">
+    <ECAction Algorithm="ResetStoppedAtFloor" Output="DoorOpen" />
+    <ECAction Output="MotorDirectionIdle" />
+    <ECAction Output="StoppedAtFloor" />
+  </ECState>
+  <ECState Name="IdleState" Comment="" x="2143.75" y="962.5">
+    <ECAction Output="MotorDirectionIdle" />
+    <ECAction Output="DoorClose" />
+  </ECState>
+  <ECState Name="UpState" Comment="" x="1575" y="1400">
+    <ECAction Output="MotorDirectionUp" />
+  </ECState>
+  <ECState Name="DoorOpen" Comment="" x="2143.75" y="2143.75">
+    <ECAction Algorithm="UpdateStoppedAtFloor" Output="DoorOpen" />
+    <ECAction Output="StartTimer" />
+    <ECAction Output="StoppedAtFloor" />
+    <ECAction Output="MotorDirectionIdle" />
+  </ECState>
+  <ECState Name="DownState" Comment="" x="2712.5" y="1400">
+    <ECAction Output="MotorDirectionDown" />
+  </ECState>
+  <ECState Name="DoorOpened" Comment="" x="2100" y="1618.75">
+    <ECAction Algorithm="ResetStoppedAtFloor" Output="StoppedAtFloor" />
+    <ECAction Output="MotorDirectionIdle" />
+  </ECState>
+  <ECTransition Source="Start" Destination="IdleState" Condition="true" x="2187.5" y="743.75" />
+  <ECTransition Source="IdleState" Destination="UpState" Condition="Request AND FloorSensor AND (RequestValue&gt;FloorSensorValue)" x="787.5" y="1181.25" />
+  <ECTransition Source="IdleState" Destination="DownState" Condition="Request AND FloorSensor AND (RequestValue&lt;FloorSensorValue)" x="2537.5" y="1181.25" />
+  <ECTransition Source="IdleState" Destination="IdleState" Condition="true" x="1750" y="962.5" />
+  <ECTransition Source="UpState" Destination="DoorOpen" Condition="Request AND FloorSensor AND (RequestValue=FloorSensorValue)" x="612.5" y="2012.5" />
+  <ECTransition Source="UpState" Destination="UpState" Condition="true" x="1968.75" y="1400" />
+  <ECTransition Source="DoorOpen" Destination="DoorOpened" Condition="true" x="2187.5" y="1881.25" />
+  <ECTransition Source="DownState" Destination="DoorOpen" Condition="Request AND FloorSensor AND (RequestValue=FloorSensorValue)" x="2756.25" y="2012.5" />
+  <ECTransition Source="DownState" Destination="DownState" Condition="true" x="2406.25" y="1400" />
+  <ECTransition Source="DoorOpened" Destination="IdleState" Condition="TimerExpired" x="2100" y="1312.5" />
+  <ECTransition Source="DoorOpened" Destination="DoorOpened" Condition="true" x="1793.75" y="1618.75" />
+</ECC><Algorithm Name="UpdateStoppedAtFloor" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;StoppedAtFloorValue =  me-&gt;FloorSensorValue;" />
+</Algorithm>
+<Algorithm Name="ResetStoppedAtFloor" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;StoppedAtFloorValue =  -1;" />
+</Algorithm></BasicFB>
+</FBType>

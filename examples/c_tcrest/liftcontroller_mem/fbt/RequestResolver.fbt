@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="RequestResolver" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="CANTO-AIR-PC" Version="0.1" Author="Canto-Air" Date="2014-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="FloorSensor" Comment="">
+  </Event>
+  <Event Name="MotorDirectionUp" Comment="">
+  </Event>
+  <Event Name="MotorDirectionDown" Comment="">
+  </Event>
+  <Event Name="MotorDirectionIdle" Comment="">
+  </Event>
+  <Event Name="StoppedAtFloor" Comment="">
+  </Event>
+  <Event Name="CabinCall" Comment="">
+  </Event>
+  <Event Name="UpCall" Comment="">
+  </Event>
+  <Event Name="DownCall" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="PendingReq" Comment="">
+  </Event>
+  <Event Name="CurrentPriority" Comment="">
+  </Event>
+  <Event Name="request" Comment="">
+  </Event>
+  <Event Name="PendingCabinCall" Comment="">
+  </Event>
+  <Event Name="PendingUpCall" Comment="">
+  </Event>
+  <Event Name="PendingDownCall" Comment="">
+  </Event>
+  <Event Name="PendingCall" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="StoppedAtFloorValue" Type="INT" Comment="" />
+  <VarDeclaration Name="CabinCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="UpCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="DownCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="FloorSensorValue" Type="INT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="PendingReqValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="CurrentPriorityValue" Type="INT" Comment="" />
+  <VarDeclaration Name="requestValue" Type="INT" Comment="" />
+  <VarDeclaration Name="PendingCabinCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingUpCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingDownCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingCallValue" Type="BOOL" ArraySize="4" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="PendingRequestGenerator" Type="PendingRequestGenerator" x="743.75" y="1093.75" />
+  <FB Name="HighestRequestProducer" Type="HighestRequestProducer" x="2450" y="1312.5" />
+  <FB Name="RequestConsumer" Type="RequestConsumer" x="2537.5" y="612.5" />
+  <EventConnections><Connection Source="FloorSensor" Destination="HighestRequestProducer.FloorSensor" />
+<Connection Source="MotorDirectionUp" Destination="HighestRequestProducer.MotorDirectionUp" />
+<Connection Source="MotorDirectionUp" Destination="PendingRequestGenerator.MotorDirectionUp" />
+<Connection Source="MotorDirectionDown" Destination="HighestRequestProducer.MotorDirectionDown" />
+<Connection Source="MotorDirectionDown" Destination="PendingRequestGenerator.MotorDirectionDown" />
+<Connection Source="MotorDirectionIdle" Destination="HighestRequestProducer.MotorDirectionIdle" />
+<Connection Source="StoppedAtFloor" Destination="RequestConsumer.StoppedAtFloor" />
+<Connection Source="StoppedAtFloor" Destination="PendingRequestGenerator.StoppedAtFloor" />
+<Connection Source="CabinCall" Destination="PendingRequestGenerator.CabinCall" />
+<Connection Source="UpCall" Destination="PendingRequestGenerator.UpCall" />
+<Connection Source="DownCall" Destination="PendingRequestGenerator.DownCall" />
+<Connection Source="PendingRequestGenerator.PendingReq" Destination="PendingReq" />
+<Connection Source="HighestRequestProducer.CurrentPriority" Destination="CurrentPriority" />
+<Connection Source="RequestConsumer.request" Destination="request" />
+<Connection Source="PendingRequestGenerator.PendingCabinCall" Destination="PendingCabinCall" />
+<Connection Source="PendingRequestGenerator.PendingUpCall" Destination="PendingUpCall" />
+<Connection Source="PendingRequestGenerator.PendingDownCall" Destination="PendingDownCall" />
+<Connection Source="PendingRequestGenerator.PendingCall" Destination="PendingCall" />
+<Connection Source="PendingRequestGenerator.PendingReq" Destination="HighestRequestProducer.PendingReq" />
+<Connection Source="HighestRequestProducer.CurrentPriority" Destination="RequestConsumer.CurrentPriority" /></EventConnections>
+  <DataConnections><Connection Source="FloorSensorValue" Destination="HighestRequestProducer.FloorSensorValue" />
+<Connection Source="StoppedAtFloorValue" Destination="RequestConsumer.StoppedAtFloorValue" />
+<Connection Source="StoppedAtFloorValue" Destination="PendingRequestGenerator.StoppedAtFloorValue" />
+<Connection Source="CabinCallValue" Destination="PendingRequestGenerator.CabinCallValue" />
+<Connection Source="UpCallValue" Destination="PendingRequestGenerator.UpCallValue" />
+<Connection Source="DownCallValue" Destination="PendingRequestGenerator.DownCallValue" />
+<Connection Source="PendingRequestGenerator.PendingReqValue" Destination="PendingReqValue" />
+<Connection Source="HighestRequestProducer.CurrentPriorityValue" Destination="CurrentPriorityValue" />
+<Connection Source="RequestConsumer.requestValue" Destination="requestValue" />
+<Connection Source="PendingRequestGenerator.PendingCabinCallValue" Destination="PendingCabinCallValue" />
+<Connection Source="PendingRequestGenerator.PendingUpCallValue" Destination="PendingUpCallValue" />
+<Connection Source="PendingRequestGenerator.PendingDownCallValue" Destination="PendingDownCallValue" />
+<Connection Source="PendingRequestGenerator.PendingCallValue" Destination="PendingCallValue" />
+<Connection Source="PendingRequestGenerator.PendingReqValue" Destination="HighestRequestProducer.PendingReqValue" />
+<Connection Source="HighestRequestProducer.CurrentPriorityValue" Destination="RequestConsumer.CurrentPriorityValue" /></DataConnections>
+</FBNetwork>
+</FBType>

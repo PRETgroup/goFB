@@ -23,6 +23,8 @@ B_SIZE?=16
 
 PROGS_PER_CORE?=1
 
+C_DIR?=c
+
 $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.h
 	patmos-clang \
 	-target patmos-unknown-unknown-elf \
@@ -30,7 +32,7 @@ $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.
 	-I $(TCRESTINCLUDEDIR) \
 	-I $(TCRESTINCLUDEDIR)/libelf/ \
 	-I $(FBINCLUDEDIR) \
-	-I ./$(PROJECT)/c \
+	-I ./$(PROJECT)/$(C_DIR) \
 	-mpatmos-disable-vliw \
 	-mpatmos-method-cache-size=0x1000 \
 	-mpatmos-stack-base=0x200000 \
@@ -39,7 +41,7 @@ $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.
 	-Xgold -T \
 	-Xgold $(TCRESTHOMEDIR)/patmos/hardware/spm_ram.t \
 	-o $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf \
-	./$(PROJECT)/c/*.c \
+	./$(PROJECT)/$(C_DIR)/*.c \
 	$(TCRESTNOCINIT) \
 	-L $(TCRESTLINKDIR) \
 	-lmp \

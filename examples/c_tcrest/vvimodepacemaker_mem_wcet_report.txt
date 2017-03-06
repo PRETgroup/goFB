@@ -1,0 +1,15 @@
+---
+- analysis-entry: timed_task
+  source: platin
+  cycles: 31587
+  cache-max-cycles-instr: 17762
+  cache-min-hits-instr: 10
+  cache-max-misses-instr: 34
+  cache-max-cycles-stack: 0
+  cache-max-misses-stack: 0
+  cache-max-cycles-data: 13280
+  cache-min-hits-data: 0
+  cache-max-misses-data: 84
+  cache-max-stores-data: 76
+  cache-unknown-address-data: 160
+  cache-max-cycles: 31042

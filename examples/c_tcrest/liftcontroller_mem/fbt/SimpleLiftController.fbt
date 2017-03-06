@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SimpleLiftController" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="CANTO-AIR-PC" Version="0.1" Author="Canto-Air" Date="2014-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="FloorSensor" Comment="">
+  </Event>
+  <Event Name="CabinCall" Comment="">
+  </Event>
+  <Event Name="UpCall" Comment="">
+  </Event>
+  <Event Name="DownCall" Comment="">
+  </Event>
+  <Event Name="TimerExpired" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="PendingReq" Comment="">
+  </Event>
+  <Event Name="CurrentPriority" Comment="">
+  </Event>
+  <Event Name="MotorDirectionUp" Comment="">
+  </Event>
+  <Event Name="MotorDirectionDown" Comment="">
+  </Event>
+  <Event Name="MotorDirectionIdle" Comment="">
+  </Event>
+  <Event Name="StoppedAtFloor" Comment="">
+  </Event>
+  <Event Name="StartTimer" Comment="">
+  </Event>
+  <Event Name="PendingCabinCall" Comment="">
+  </Event>
+  <Event Name="PendingUpCall" Comment="">
+  </Event>
+  <Event Name="PendingDownCall" Comment="">
+  </Event>
+  <Event Name="PendingCall" Comment="">
+  </Event>
+  <Event Name="DoorOpen" Comment="">
+  </Event>
+  <Event Name="DoorClose" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="FloorSensorValue" Type="INT" Comment="" />
+  <VarDeclaration Name="CabinCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="UpCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="DownCallValue" Type="BOOL" ArraySize="4" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="PendingReqValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="CurrentPriorityValue" Type="INT" Comment="" />
+  <VarDeclaration Name="StoppedAtFloorValue" Type="INT" Comment="" />
+  <VarDeclaration Name="PendingCabinCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingUpCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingDownCallValue" Type="BOOL" ArraySize="4" Comment="" />
+  <VarDeclaration Name="PendingCallValue" Type="BOOL" ArraySize="4" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="UnitControl" Type="UnitControl" x="1531.25" y="218.75" />
+  <FB Name="RequestResolver" Type="RequestResolver" x="3062.5" y="175" />
+  <EventConnections><Connection Source="FloorSensor" Destination="UnitControl.FloorSensor" />
+<Connection Source="FloorSensor" Destination="RequestResolver.FloorSensor" />
+<Connection Source="CabinCall" Destination="RequestResolver.CabinCall" />
+<Connection Source="UpCall" Destination="RequestResolver.UpCall" />
+<Connection Source="DownCall" Destination="RequestResolver.DownCall" />
+<Connection Source="TimerExpired" Destination="UnitControl.TimerExpired" />
+<Connection Source="RequestResolver.PendingReq" Destination="PendingReq" />
+<Connection Source="RequestResolver.CurrentPriority" Destination="CurrentPriority" />
+<Connection Source="UnitControl.MotorDirectionUp" Destination="MotorDirectionUp" />
+<Connection Source="UnitControl.MotorDirectionDown" Destination="MotorDirectionDown" />
+<Connection Source="UnitControl.MotorDirectionIdle" Destination="MotorDirectionIdle" />
+<Connection Source="UnitControl.StoppedAtFloor" Destination="StoppedAtFloor" />
+<Connection Source="UnitControl.StartTimer" Destination="StartTimer" />
+<Connection Source="RequestResolver.PendingCabinCall" Destination="PendingCabinCall" />
+<Connection Source="RequestResolver.PendingUpCall" Destination="PendingUpCall" />
+<Connection Source="RequestResolver.PendingDownCall" Destination="PendingDownCall" />
+<Connection Source="RequestResolver.PendingCall" Destination="PendingCall" />
+<Connection Source="UnitControl.DoorOpen" Destination="DoorOpen" />
+<Connection Source="UnitControl.DoorClose" Destination="DoorClose" />
+<Connection Source="UnitControl.MotorDirectionUp" Destination="RequestResolver.MotorDirectionUp" />
+<Connection Source="UnitControl.MotorDirectionDown" Destination="RequestResolver.MotorDirectionDown" />
+<Connection Source="UnitControl.MotorDirectionIdle" Destination="RequestResolver.MotorDirectionIdle" />
+<Connection Source="UnitControl.StoppedAtFloor" Destination="RequestResolver.StoppedAtFloor" />
+<Connection Source="RequestResolver.request" Destination="UnitControl.Request" /></EventConnections>
+  <DataConnections><Connection Source="FloorSensorValue" Destination="UnitControl.FloorSensorValue" />
+<Connection Source="FloorSensorValue" Destination="RequestResolver.FloorSensorValue" />
+<Connection Source="CabinCallValue" Destination="RequestResolver.CabinCallValue" />
+<Connection Source="UpCallValue" Destination="RequestResolver.UpCallValue" />
+<Connection Source="DownCallValue" Destination="RequestResolver.DownCallValue" />
+<Connection Source="RequestResolver.PendingReqValue" Destination="PendingReqValue" />
+<Connection Source="RequestResolver.CurrentPriorityValue" Destination="CurrentPriorityValue" />
+<Connection Source="UnitControl.StoppedAtFloorValue" Destination="StoppedAtFloorValue" />
+<Connection Source="RequestResolver.PendingCabinCallValue" Destination="PendingCabinCallValue" />
+<Connection Source="RequestResolver.PendingUpCallValue" Destination="PendingUpCallValue" />
+<Connection Source="RequestResolver.PendingDownCallValue" Destination="PendingDownCallValue" />
+<Connection Source="RequestResolver.PendingCallValue" Destination="PendingCallValue" />
+<Connection Source="UnitControl.StoppedAtFloorValue" Destination="RequestResolver.StoppedAtFloorValue" />
+<Connection Source="RequestResolver.requestValue" Destination="UnitControl.RequestValue" /></DataConnections>
+</FBNetwork>
+</FBType>
