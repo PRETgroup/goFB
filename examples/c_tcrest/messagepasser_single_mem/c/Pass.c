@@ -59,6 +59,14 @@ int Pass_init(Pass_t  *me) {
 
 
 
+//algorithms
+
+void Pass_UpdateCountOut(Pass_t  *me) {
+me->OutCount = me->Count;
+}
+
+
+
 /* Pass_run() executes a single tick of an
  * instance of Pass according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -110,11 +118,5 @@ void Pass_run(Pass_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void Pass_UpdateCountOut(Pass_t  *me) {
-me->OutCount = me->Count;
-}
-
 
 

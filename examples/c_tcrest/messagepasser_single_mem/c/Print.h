@@ -57,9 +57,6 @@ int Print_init(Print_t  *me);
 //all FBs get a run function
 void Print_run(Print_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void Print_PrintService(Print_t  *me);
 
 
 #endif

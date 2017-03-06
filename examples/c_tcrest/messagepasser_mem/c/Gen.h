@@ -55,7 +55,7 @@ int Gen_preinit(Gen_t  *me);
 int Gen_init(Gen_t  *me);
 
 //all FBs get a run function
-void Gen_run(Gen_t _SPM *me);
+void Gen_run(Gen_t  *me);
 
 
 

@@ -193,18 +193,8 @@ void _Core102_syncInputData(_Core102_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void _Core102_run(_Core102_t  *me) {
-	//Next block is BFB so we'll copy to SPM first
-	Gen_t _SPM *gen_spm = SPM_BASE;
-	spm_copy_from_ext(gen_spm, &me->gen, sizeof(Gen_t));
-	Gen_run(gen_spm);
-	spm_copy_to_ext(&me->gen, gen_spm, sizeof(Gen_t));
-	
-	//Next block is BFB so we'll copy to SPM first
-	Print_t _SPM *print_spm = SPM_BASE;
-	spm_copy_from_ext(print_spm, &me->print, sizeof(Print_t));
-	Print_run(print_spm);
-	spm_copy_to_ext(&me->print, print_spm, sizeof(Print_t));
-	
+	Gen_run(&me->gen);
+	Print_run(&me->print);
 	Pass50_run(&me->p50_1);
 	Pass50_run(&me->p50_2);
 	

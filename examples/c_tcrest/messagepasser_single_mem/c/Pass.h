@@ -63,9 +63,6 @@ int Pass_init(Pass_t  *me);
 //all FBs get a run function
 void Pass_run(Pass_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void Pass_UpdateCountOut(Pass_t  *me);
 
 
 #endif

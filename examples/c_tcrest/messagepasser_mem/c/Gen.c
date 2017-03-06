@@ -61,7 +61,7 @@ int Gen_init(Gen_t  *me) {
 
 //algorithms
 
-void Gen_IncCountService(Gen_t _SPM *me) {
+void Gen_IncCountService(Gen_t  *me) {
 me->Count++;
 }
 
@@ -74,7 +74,7 @@ me->Count++;
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Gen_run(Gen_t _SPM *me) {
+void Gen_run(Gen_t  *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.CountChanged = 0;

@@ -61,7 +61,7 @@ int Pass_init(Pass_t  *me) {
 
 //algorithms
 
-void Pass_UpdateCountOut(Pass_t _SPM *me) {
+void Pass_UpdateCountOut(Pass_t  *me) {
 me->OutCount = me->Count;
 }
 
@@ -74,7 +74,7 @@ me->OutCount = me->Count;
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Pass_run(Pass_t _SPM *me) {
+void Pass_run(Pass_t  *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.OutCountChanged = 0;

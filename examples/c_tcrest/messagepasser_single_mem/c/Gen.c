@@ -59,6 +59,14 @@ int Gen_init(Gen_t  *me) {
 
 
 
+//algorithms
+
+void Gen_IncCountService(Gen_t  *me) {
+me->Count++;
+}
+
+
+
 /* Gen_run() executes a single tick of an
  * instance of Gen according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -120,11 +128,5 @@ void Gen_run(Gen_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void Gen_IncCountService(Gen_t  *me) {
-me->Count++;
-}
-
 
 

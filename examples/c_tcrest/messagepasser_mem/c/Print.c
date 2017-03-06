@@ -60,7 +60,7 @@ int Print_init(Print_t  *me) {
 
 //algorithms
 
-void Print_PrintService(Print_t _SPM *me) {
+void Print_PrintService(Print_t  *me) {
 HEX = (unsigned int)me->Count; //printf("%lu\n", me->Count);
 }
 
@@ -73,7 +73,7 @@ HEX = (unsigned int)me->Count; //printf("%lu\n", me->Count);
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void Print_run(Print_t _SPM *me) {
+void Print_run(Print_t  *me) {
 	//if there are output events, reset them
 	
 	

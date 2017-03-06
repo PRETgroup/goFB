@@ -57,9 +57,6 @@ int Gen_init(Gen_t  *me);
 //all FBs get a run function
 void Gen_run(Gen_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void Gen_IncCountService(Gen_t  *me);
 
 
 #endif
