@@ -18,7 +18,7 @@ void task(_Core_t * c0);
 
 int main() {
 	printf("pid_single_mem patmos startup.\n");
-	printf("sizes: %lu\n", sizeof(_Core_t)*4);
+	printf("sizes: %lu\n", sizeof(_Core_t)*PROGS_PER_CORE*4);
 	printf("starting\n");
 
 	t(NULL);
@@ -52,7 +52,7 @@ void task(_Core_t * c) {
 		timed_task(c);
 
 		end_time = get_cpu_cycles();
-		// printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
+		printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
 
 		tickCount++;
 	} while(1);

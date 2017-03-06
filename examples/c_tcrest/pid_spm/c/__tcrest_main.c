@@ -62,7 +62,7 @@ void task(_Core_t _SPM * c) {
 		timed_task(c);
 
 		end_time = get_cpu_cycles();
-		// printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
+		printf("%4d\t\t%lld\n", tickCount, end_time-start_time-3);
 
 		tickCount++;
 	} while(1);
