@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="InjectorController" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="InjectorArmFinishedMovement" Comment="">
+  </Event>
+  <Event Name="EmergencyStopChanged" Comment="">
+  </Event>
+  <Event Name="CanisterPressureChanged" Comment="">
+  </Event>
+  <Event Name="FillContentsAvailableChanged" Comment="">
+  </Event>
+  <Event Name="ConveyorStoppedForInject" Comment="">
+  </Event>
+  <Event Name="VacuumTimerElapsed" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="InjectDone" Comment="">
+  </Event>
+  <Event Name="InjectorPositionChanged" Comment="">
+  </Event>
+  <Event Name="InjectorControlsChanged" Comment="">
+  </Event>
+  <Event Name="RejectCanister" Comment="">
+  </Event>
+  <Event Name="FillContentsChanged" Comment="">
+  </Event>
+  <Event Name="StartVacuumTimer" Comment="">
+  </Event>
+  <Event Name="InjectRunning" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="EmergencyStop" Type="BOOL" Comment="" />
+  <VarDeclaration Name="CanisterPressure" Type="BYTE" Comment="" />
+  <VarDeclaration Name="FillContentsAvailable" Type="BYTE" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="InjectorPosition" Type="BYTE" Comment="" />
+  <VarDeclaration Name="InjectorContentsValveOpen" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectorVacuumRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectorPressurePumpRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="FillContents" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="Arm" Type="InjectorMotorController" x="1830.20833333333" y="725.520833333333" />
+  <FB Name="Pumps" Type="InjectorPumpsController" x="1750" y="1750" />
+  <EventConnections><Connection Source="InjectorArmFinishedMovement" Destination="Arm.InjectorArmFinishedMovement" />
+<Connection Source="EmergencyStopChanged" Destination="Arm.EmergencyStopChanged" />
+<Connection Source="EmergencyStopChanged" Destination="Pumps.EmergencyStopChanged" />
+<Connection Source="CanisterPressureChanged" Destination="Pumps.CanisterPressureChanged" />
+<Connection Source="FillContentsAvailableChanged" Destination="Pumps.FillContentsAvailableChanged" />
+<Connection Source="ConveyorStoppedForInject" Destination="Arm.ConveyorStoppedForInject" />
+<Connection Source="VacuumTimerElapsed" Destination="Pumps.VacuumTimerElapsed" />
+<Connection Source="Arm.InjectDone" Destination="InjectDone" />
+<Connection Source="Arm.InjectorPositionChanged" Destination="InjectorPositionChanged" />
+<Connection Source="Pumps.InjectorControlsChanged" Destination="InjectorControlsChanged" />
+<Connection Source="Pumps.RejectCanister" Destination="RejectCanister" />
+<Connection Source="Pumps.FillContentsChanged" Destination="FillContentsChanged" />
+<Connection Source="Pumps.StartVacuumTimer" Destination="StartVacuumTimer" />
+<Connection Source="Arm.InjectRunning" Destination="InjectRunning" />
+<Connection Source="Arm.StartPump" Destination="Pumps.StartPump" />
+<Connection Source="Pumps.PumpFinished" Destination="Arm.PumpFinished" /></EventConnections>
+  <DataConnections><Connection Source="EmergencyStop" Destination="Arm.EmergencyStop" />
+<Connection Source="EmergencyStop" Destination="Pumps.EmergencyStop" />
+<Connection Source="CanisterPressure" Destination="Pumps.CanisterPressure" />
+<Connection Source="FillContentsAvailable" Destination="Pumps.FillContentsAvailable" />
+<Connection Source="Arm.InjectorPosition" Destination="InjectorPosition" />
+<Connection Source="Pumps.InjectorContentsValveOpen" Destination="InjectorContentsValveOpen" />
+<Connection Source="Pumps.InjectorVacuumRun" Destination="InjectorVacuumRun" />
+<Connection Source="Pumps.InjectorPressurePumpRun" Destination="InjectorPressurePumpRun" />
+<Connection Source="Pumps.FillContents" Destination="FillContents" /></DataConnections>
+</FBNetwork>
+</FBType>

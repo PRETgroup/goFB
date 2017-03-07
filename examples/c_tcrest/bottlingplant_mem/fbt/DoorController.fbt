@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="DoorController" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="ReleaseDoorOverride" Comment="">
+  </Event>
+  <Event Name="BottlingDone" Comment="">
+  </Event>
+  <Event Name="EmergencyStopChanged" Comment="">
+    <With Var="EmergencyStop" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="DoorReleaseCanister" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="EmergencyStop" Type="BOOL" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="E_Stop" Comment="" x="1531.25" y="1356.25">
+  </ECState>
+  <ECState Name="Run" Comment="" x="1181.25" y="656.25">
+    <ECAction Output="DoorReleaseCanister" />
+  </ECState>
+  <ECState Name="Await" Comment="" x="2625" y="1181.25">
+  </ECState>
+  <ECTransition Source="Run" Destination="E_Stop" Condition="EmergencyStopChanged AND (EmergencyStop)" x="1338.84375" y="967.21875" />
+  <ECTransition Source="Run" Destination="Run" Condition="ReleaseDoorOverride OR BottlingDone" x="1171.25" y="670.25" />
+  <ECTransition Source="E_Stop" Destination="Await" Condition="EmergencyStopChanged AND (!EmergencyStop)" x="2080.47913885117" y="1120.8125" />
+  <ECTransition Source="Await" Destination="Run" Condition="ReleaseDoorOverride OR BottlingDone" x="2023.125" y="903.75" />
+</ECC></BasicFB>
+</FBType>

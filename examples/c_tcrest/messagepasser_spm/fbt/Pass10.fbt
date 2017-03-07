@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Pass10" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-01" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="CountChanged" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="OutCountChanged" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Count" Type="LINT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="OutCount" Type="LINT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="p1" Type="Pass" x="262.5" y="1268.75" />
+  <FB Name="p2" Type="Pass" x="1268.75" y="1268.75" />
+  <FB Name="p3" Type="Pass" x="2275" y="1268.75" />
+  <FB Name="p4" Type="Pass" x="3281.25" y="1268.75" />
+  <FB Name="p5" Type="Pass" x="4287.5" y="1268.75" />
+  <FB Name="p9" Type="Pass" x="3281.25" y="2143.75" />
+  <FB Name="p6" Type="Pass" x="262.5" y="2143.75" />
+  <FB Name="p10" Type="Pass" x="4287.5" y="2143.75" />
+  <FB Name="p7" Type="Pass" x="1268.75" y="2143.75" />
+  <FB Name="p8" Type="Pass" x="2275" y="2143.75" />
+  <EventConnections><Connection Source="CountChanged" Destination="p1.CountChanged" />
+<Connection Source="p10.OutCountChanged" Destination="OutCountChanged" />
+<Connection Source="p1.OutCountChanged" Destination="p2.CountChanged" />
+<Connection Source="p2.OutCountChanged" Destination="p3.CountChanged" />
+<Connection Source="p3.OutCountChanged" Destination="p4.CountChanged" />
+<Connection Source="p4.OutCountChanged" Destination="p5.CountChanged" />
+<Connection Source="p5.OutCountChanged" Destination="p6.CountChanged" />
+<Connection Source="p9.OutCountChanged" Destination="p10.CountChanged" />
+<Connection Source="p6.OutCountChanged" Destination="p7.CountChanged" />
+<Connection Source="p7.OutCountChanged" Destination="p8.CountChanged" />
+<Connection Source="p8.OutCountChanged" Destination="p9.CountChanged" /></EventConnections>
+  <DataConnections><Connection Source="Count" Destination="p1.Count" />
+<Connection Source="p10.OutCount" Destination="OutCount" />
+<Connection Source="p1.OutCount" Destination="p2.Count" />
+<Connection Source="p2.OutCount" Destination="p3.Count" />
+<Connection Source="p3.OutCount" Destination="p4.Count" />
+<Connection Source="p4.OutCount" Destination="p5.Count" />
+<Connection Source="p5.OutCount" Destination="p6.Count" />
+<Connection Source="p9.OutCount" Destination="p10.Count" />
+<Connection Source="p6.OutCount" Destination="p7.Count" />
+<Connection Source="p7.OutCount" Destination="p8.Count" />
+<Connection Source="p8.OutCount" Destination="p9.Count" /></DataConnections>
+</FBNetwork>
+</FBType>
