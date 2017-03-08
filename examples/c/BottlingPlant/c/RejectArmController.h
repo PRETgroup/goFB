@@ -13,18 +13,18 @@ enum RejectArmController_states { STATE_RejectArmController_Clear, STATE_RejectA
 
 union RejectArmControllerInputEvents {
 	struct {
-		UDINT RejectCanister : 1;
-		UDINT LasersChanged : 1;
+		UDINT RejectCanister;
+		UDINT LasersChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union RejectArmControllerOutputEvents {
 	struct {
-		UDINT GoRejectArm : 1;
+		UDINT GoRejectArm;
 	} event;
-	UDINT events[1];
+	
 };
 
 

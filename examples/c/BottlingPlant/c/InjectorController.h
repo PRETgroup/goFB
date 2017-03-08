@@ -14,28 +14,28 @@
 
 union InjectorControllerInputEvents {
 	struct {
-		UDINT InjectorArmFinishedMovement : 1;
-		UDINT EmergencyStopChanged : 1;
-		UDINT CanisterPressureChanged : 1;
-		UDINT FillContentsAvailableChanged : 1;
-		UDINT ConveyorStoppedForInject : 1;
-		UDINT VacuumTimerElapsed : 1;
+		UDINT InjectorArmFinishedMovement;
+		UDINT EmergencyStopChanged;
+		UDINT CanisterPressureChanged;
+		UDINT FillContentsAvailableChanged;
+		UDINT ConveyorStoppedForInject;
+		UDINT VacuumTimerElapsed;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union InjectorControllerOutputEvents {
 	struct {
-		UDINT InjectDone : 1;
-		UDINT InjectorPositionChanged : 1;
-		UDINT InjectorControlsChanged : 1;
-		UDINT RejectCanister : 1;
-		UDINT FillContentsChanged : 1;
-		UDINT StartVacuumTimer : 1;
-		UDINT InjectRunning : 1;
+		UDINT InjectDone;
+		UDINT InjectorPositionChanged;
+		UDINT InjectorControlsChanged;
+		UDINT RejectCanister;
+		UDINT FillContentsChanged;
+		UDINT StartVacuumTimer;
+		UDINT InjectRunning;
 	} event;
-	UDINT events[1];
+	
 };
 
 

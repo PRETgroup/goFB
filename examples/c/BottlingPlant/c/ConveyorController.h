@@ -13,20 +13,20 @@ enum ConveyorController_states { STATE_ConveyorController_E_Stop, STATE_Conveyor
 
 union ConveyorControllerInputEvents {
 	struct {
-		UDINT InjectDone : 1;
-		UDINT EmergencyStopChanged : 1;
-		UDINT LasersChanged : 1;
+		UDINT InjectDone;
+		UDINT EmergencyStopChanged;
+		UDINT LasersChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union ConveyorControllerOutputEvents {
 	struct {
-		UDINT ConveyorChanged : 1;
-		UDINT ConveyorStoppedForInject : 1;
+		UDINT ConveyorChanged;
+		UDINT ConveyorStoppedForInject;
 	} event;
-	UDINT events[1];
+	
 };
 
 
@@ -68,15 +68,6 @@ int ConveyorController_init(ConveyorController_t  *me);
 //all FBs get a run function
 void ConveyorController_run(ConveyorController_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void ConveyorController_ConveyorStart(ConveyorController_t  *me);
-
-void ConveyorController_ConveyorStop(ConveyorController_t  *me);
-
-void ConveyorController_ConveyorRunning(ConveyorController_t  *me);
-
-void ConveyorController_ConveyorEStop(ConveyorController_t  *me);
 
 
 #endif

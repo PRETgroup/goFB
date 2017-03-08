@@ -11,10 +11,11 @@
  */
 int RejectArmController_preinit(RejectArmController_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.RejectCanister = 0;
+	me->inputEvents.event.LasersChanged = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.GoRejectArm = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -59,6 +60,9 @@ int RejectArmController_init(RejectArmController_t  *me) {
 
 
 
+//no algorithms were present for this function block
+
+
 /* RejectArmController_run() executes a single tick of an
  * instance of RejectArmController according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -68,8 +72,10 @@ int RejectArmController_init(RejectArmController_t  *me) {
  */
 void RejectArmController_run(RejectArmController_t  *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.GoRejectArm = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -77,18 +83,21 @@ void RejectArmController_run(RejectArmController_t  *me) {
 			if(me->inputEvents.event.RejectCanister) {
 				me->_state = STATE_RejectArmController_AwaitCanister;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_RejectArmController_AwaitCanister:
 			if(me->inputEvents.event.LasersChanged && (me->RejectSiteLaser)) {
 				me->_state = STATE_RejectArmController_GoReject;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_RejectArmController_GoReject:
 			if(me->inputEvents.event.RejectCanister) {
 				me->_state = STATE_RejectArmController_AwaitCanister;
 				me->_trigger = true;
+				
 			};
 			break;
 		
@@ -114,6 +123,5 @@ void RejectArmController_run(RejectArmController_t  *me) {
 
 	me->_trigger = false;
 }
-//no algorithms were present for this function block
 
 

@@ -22,10 +22,21 @@
  */
 int InjectorController_preinit(InjectorController_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.InjectorArmFinishedMovement = 0;
+	me->inputEvents.event.EmergencyStopChanged = 0;
+	me->inputEvents.event.CanisterPressureChanged = 0;
+	me->inputEvents.event.FillContentsAvailableChanged = 0;
+	me->inputEvents.event.ConveyorStoppedForInject = 0;
+	me->inputEvents.event.VacuumTimerElapsed = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.InjectDone = 0;
+	me->outputEvents.event.InjectorPositionChanged = 0;
+	me->outputEvents.event.InjectorControlsChanged = 0;
+	me->outputEvents.event.RejectCanister = 0;
+	me->outputEvents.event.FillContentsChanged = 0;
+	me->outputEvents.event.StartVacuumTimer = 0;
+	me->outputEvents.event.InjectRunning = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -158,7 +169,7 @@ void InjectorController_syncOutputData(InjectorController_t  *me) {
 	//for all composite function block children, call this same function
 	
 	
-	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
 	me->InjectorPosition = me->Arm.InjectorPosition;
 	me->InjectorContentsValveOpen = me->Pumps.InjectorContentsValveOpen;
 	me->InjectorVacuumRun = me->Pumps.InjectorVacuumRun;

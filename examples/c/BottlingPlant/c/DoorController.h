@@ -13,19 +13,19 @@ enum DoorController_states { STATE_DoorController_E_Stop, STATE_DoorController_R
 
 union DoorControllerInputEvents {
 	struct {
-		UDINT ReleaseDoorOverride : 1;
-		UDINT BottlingDone : 1;
-		UDINT EmergencyStopChanged : 1;
+		UDINT ReleaseDoorOverride;
+		UDINT BottlingDone;
+		UDINT EmergencyStopChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union DoorControllerOutputEvents {
 	struct {
-		UDINT DoorReleaseCanister : 1;
+		UDINT DoorReleaseCanister;
 	} event;
-	UDINT events[1];
+	
 };
 
 

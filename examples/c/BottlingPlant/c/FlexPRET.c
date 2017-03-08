@@ -209,7 +209,7 @@ void FlexPRET_syncOutputData(FlexPRET_t  *me) {
 	//sync for Injector (of type InjectorController) which is a CFB
 	InjectorController_syncOutputData(&me->Injector);
 	
-	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up)
+	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
 	
 	
 }
@@ -257,7 +257,16 @@ void FlexPRET_syncInputData(FlexPRET_t  *me) {
 	if(me->Door.inputEvents.event.EmergencyStopChanged == 1) { 
 		me->Door.EmergencyStop = me->IO.EmergencyStop;
 	} 
+	//sync for Injector (of Type InjectorController) which is a CFB
 	
+	
+		me->Injector.EmergencyStop = me->IO.EmergencyStop;
+	
+	
+		me->Injector.CanisterPressure = me->IO.CanisterPressure;
+	
+	
+		me->Injector.FillContentsAvailable = me->IO.FillContentsAvailable;
 	
 	//sync for Conveyor (of type ConveyorController) which is a BFB
 	

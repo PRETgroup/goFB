@@ -13,23 +13,23 @@ enum InjectorMotorController_states { STATE_InjectorMotorController_MoveArmUp, S
 
 union InjectorMotorControllerInputEvents {
 	struct {
-		UDINT InjectorArmFinishedMovement : 1;
-		UDINT EmergencyStopChanged : 1;
-		UDINT ConveyorStoppedForInject : 1;
-		UDINT PumpFinished : 1;
+		UDINT InjectorArmFinishedMovement;
+		UDINT EmergencyStopChanged;
+		UDINT ConveyorStoppedForInject;
+		UDINT PumpFinished;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union InjectorMotorControllerOutputEvents {
 	struct {
-		UDINT StartPump : 1;
-		UDINT InjectDone : 1;
-		UDINT InjectorPositionChanged : 1;
-		UDINT InjectRunning : 1;
+		UDINT StartPump;
+		UDINT InjectDone;
+		UDINT InjectorPositionChanged;
+		UDINT InjectRunning;
 	} event;
-	UDINT events[1];
+	
 };
 
 
@@ -69,13 +69,6 @@ int InjectorMotorController_init(InjectorMotorController_t  *me);
 //all FBs get a run function
 void InjectorMotorController_run(InjectorMotorController_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void InjectorMotorController_SetArmDownPosition(InjectorMotorController_t  *me);
-
-void InjectorMotorController_SetArmUpPosition(InjectorMotorController_t  *me);
-
-void InjectorMotorController_Algorithm1(InjectorMotorController_t  *me);
 
 
 #endif

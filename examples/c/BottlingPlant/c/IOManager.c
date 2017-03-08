@@ -11,10 +11,24 @@
  */
 int IOManager_preinit(IOManager_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.DoorReleaseCanister = 0;
+	me->inputEvents.event.ConveyorChanged = 0;
+	me->inputEvents.event.InjectorPositionChanged = 0;
+	me->inputEvents.event.InjectorControlsChanged = 0;
+	me->inputEvents.event.FillContentsChanged = 0;
+	me->inputEvents.event.StartVacuumTimer = 0;
+	me->inputEvents.event.GoRejectArm = 0;
+	me->inputEvents.event.CanisterCountChanged = 0;
+	me->inputEvents.event.InjectDone = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.InjectorArmFinishMovement = 0;
+	me->outputEvents.event.EmergencyStopChanged = 0;
+	me->outputEvents.event.CanisterPressureChanged = 0;
+	me->outputEvents.event.FillContentsAvailableChanged = 0;
+	me->outputEvents.event.LasersChanged = 0;
+	me->outputEvents.event.DoorOverride = 0;
+	me->outputEvents.event.VacuumTimerElapsed = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -59,44 +73,6 @@ int IOManager_init(IOManager_t  *me) {
 
 
 
-/* IOManager_run() executes a single tick of an
- * instance of IOManager according to synchronous semantics.
- * Notice that it does NOT perform any I/O - synchronisation
- * will need to be done in the parent.
- * Also note that on the first run of this function, trigger will be set
- * to true, meaning that on the very first run no next state logic will occur.
- */
-void IOManager_run(IOManager_t  *me) {
-	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
-	
-	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_IOManager_Start:
-			if(true) {
-				me->_state = STATE_IOManager_Start;
-				me->_trigger = true;
-			};
-			break;
-		
-		}
-	}
-
-	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_IOManager_Start:
-			IOManager_IOAlgorithm(me);
-			me->outputEvents.event.EmergencyStopChanged = 1;
-			break;
-
-		
-		}
-	}
-
-	me->_trigger = false;
-}
 //algorithms
 
 void IOManager_IOAlgorithm(IOManager_t  *me) {
@@ -253,5 +229,54 @@ if(emergencyStopped == 1) {
 
 }
 
+
+
+/* IOManager_run() executes a single tick of an
+ * instance of IOManager according to synchronous semantics.
+ * Notice that it does NOT perform any I/O - synchronisation
+ * will need to be done in the parent.
+ * Also note that on the first run of this function, trigger will be set
+ * to true, meaning that on the very first run no next state logic will occur.
+ */
+void IOManager_run(IOManager_t  *me) {
+	//if there are output events, reset them
+	
+	me->outputEvents.event.InjectorArmFinishMovement = 0;
+	me->outputEvents.event.EmergencyStopChanged = 0;
+	me->outputEvents.event.CanisterPressureChanged = 0;
+	me->outputEvents.event.FillContentsAvailableChanged = 0;
+	me->outputEvents.event.LasersChanged = 0;
+	me->outputEvents.event.DoorOverride = 0;
+	me->outputEvents.event.VacuumTimerElapsed = 0;
+	
+
+	//next state logic
+	if(me->_trigger == false) {
+		switch(me->_state) {
+		case STATE_IOManager_Start:
+			if(true) {
+				me->_state = STATE_IOManager_Start;
+				me->_trigger = true;
+				
+			};
+			break;
+		
+		}
+	}
+
+	//state output logic
+	if(me->_trigger == true) {
+		switch(me->_state) {
+		case STATE_IOManager_Start:
+			IOManager_IOAlgorithm(me);
+			me->outputEvents.event.EmergencyStopChanged = 1;
+			break;
+
+		
+		}
+	}
+
+	me->_trigger = false;
+}
 
 

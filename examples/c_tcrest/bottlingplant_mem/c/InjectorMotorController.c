@@ -73,13 +73,13 @@ me->InjectorPosition = 255;
 }
 
 void InjectorMotorController_SetArmUpPosition(InjectorMotorController_t  *me) {
-printf("Injector: Set injector arm to up position\n");
+//printf("Injector: Set injector arm to up position\n");
 me->InjectorPosition = 0;
 
 }
 
 void InjectorMotorController_Algorithm1(InjectorMotorController_t  *me) {
-printf("lalalala\n");
+//printf("lalalala\n");
 }
 
 

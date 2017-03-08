@@ -11,10 +11,18 @@
  */
 int InjectorPumpsController_preinit(InjectorPumpsController_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.StartPump = 0;
+	me->inputEvents.event.EmergencyStopChanged = 0;
+	me->inputEvents.event.CanisterPressureChanged = 0;
+	me->inputEvents.event.FillContentsAvailableChanged = 0;
+	me->inputEvents.event.VacuumTimerElapsed = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.PumpFinished = 0;
+	me->outputEvents.event.RejectCanister = 0;
+	me->outputEvents.event.InjectorControlsChanged = 0;
+	me->outputEvents.event.FillContentsChanged = 0;
+	me->outputEvents.event.StartVacuumTimer = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -59,6 +67,32 @@ int InjectorPumpsController_init(InjectorPumpsController_t  *me) {
 
 
 
+//algorithms
+
+void InjectorPumpsController_StartVacuum(InjectorPumpsController_t  *me) {
+me->InjectorVacuumRun = 1;
+//printf("Injector: Start vacuum\n");
+}
+
+void InjectorPumpsController_ClearControls(InjectorPumpsController_t  *me) {
+me->InjectorContentsValveOpen = 0;
+me->InjectorPressurePumpRun = 0;
+me->InjectorVacuumRun = 0;
+//printf("Injector: Clear controls\n");
+}
+
+void InjectorPumpsController_OpenValve(InjectorPumpsController_t  *me) {
+me->InjectorContentsValveOpen = 1;
+//printf("Injector: Open valve\n");
+}
+
+void InjectorPumpsController_StartPump(InjectorPumpsController_t  *me) {
+me->InjectorPressurePumpRun = 1;
+//printf("Injector: Start pump\n");
+}
+
+
+
 /* InjectorPumpsController_run() executes a single tick of an
  * instance of InjectorPumpsController according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -68,8 +102,14 @@ int InjectorPumpsController_init(InjectorPumpsController_t  *me) {
  */
 void InjectorPumpsController_run(InjectorPumpsController_t  *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.PumpFinished = 0;
+	me->outputEvents.event.RejectCanister = 0;
+	me->outputEvents.event.InjectorControlsChanged = 0;
+	me->outputEvents.event.FillContentsChanged = 0;
+	me->outputEvents.event.StartVacuumTimer = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -77,45 +117,53 @@ void InjectorPumpsController_run(InjectorPumpsController_t  *me) {
 			if(true) {
 				me->_state = STATE_InjectorPumpsController_AwaitPump;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorPumpsController_AwaitPump:
 			if(me->inputEvents.event.StartPump) {
 				me->_state = STATE_InjectorPumpsController_VacuumPump;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorPumpsController_VacuumPump:
 			if(me->inputEvents.event.VacuumTimerElapsed) {
 				me->_state = STATE_InjectorPumpsController_RejectCanister;
 				me->_trigger = true;
+				
 			} else if(me->inputEvents.event.CanisterPressureChanged && (me->CanisterPressure <= 10)) {
 				me->_state = STATE_InjectorPumpsController_StopVacuum;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorPumpsController_FinishPump:
 			if(true) {
 				me->_state = STATE_InjectorPumpsController_AwaitPump;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorPumpsController_StartPump:
 			if(me->inputEvents.event.CanisterPressureChanged && (me->CanisterPressure >= 245)) {
 				me->_state = STATE_InjectorPumpsController_FinishPump;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorPumpsController_OpenValve:
 			if(true) {
 				me->_state = STATE_InjectorPumpsController_StartPump;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorPumpsController_StopVacuum:
 			if(true) {
 				me->_state = STATE_InjectorPumpsController_OpenValve;
 				me->_trigger = true;
+				
 			};
 			break;
 		
@@ -167,29 +215,5 @@ void InjectorPumpsController_run(InjectorPumpsController_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void InjectorPumpsController_StartVacuum(InjectorPumpsController_t  *me) {
-me->InjectorVacuumRun = 1;
-//printf("Injector: Start vacuum\n");
-}
-
-void InjectorPumpsController_ClearControls(InjectorPumpsController_t  *me) {
-me->InjectorContentsValveOpen = 0;
-me->InjectorPressurePumpRun = 0;
-me->InjectorVacuumRun = 0;
-//printf("Injector: Clear controls\n");
-}
-
-void InjectorPumpsController_OpenValve(InjectorPumpsController_t  *me) {
-me->InjectorContentsValveOpen = 1;
-//printf("Injector: Open valve\n");
-}
-
-void InjectorPumpsController_StartPump(InjectorPumpsController_t  *me) {
-me->InjectorPressurePumpRun = 1;
-//printf("Injector: Start pump\n");
-}
-
 
 

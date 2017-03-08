@@ -11,10 +11,13 @@
  */
 int ConveyorController_preinit(ConveyorController_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.InjectDone = 0;
+	me->inputEvents.event.EmergencyStopChanged = 0;
+	me->inputEvents.event.LasersChanged = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.ConveyorChanged = 0;
+	me->outputEvents.event.ConveyorStoppedForInject = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -59,6 +62,28 @@ int ConveyorController_init(ConveyorController_t  *me) {
 
 
 
+//algorithms
+
+void ConveyorController_ConveyorStart(ConveyorController_t  *me) {
+me->ConveyorSpeed = 1;
+printf("Conveyor: Start\n");
+}
+
+void ConveyorController_ConveyorStop(ConveyorController_t  *me) {
+me->ConveyorSpeed = 0;
+printf("Conveyor: Stop\n");
+}
+
+void ConveyorController_ConveyorRunning(ConveyorController_t  *me) {
+printf("Conveyor running region\n");
+}
+
+void ConveyorController_ConveyorEStop(ConveyorController_t  *me) {
+printf("Conveyor Emergency Stopped\n");
+}
+
+
+
 /* ConveyorController_run() executes a single tick of an
  * instance of ConveyorController according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -68,8 +93,11 @@ int ConveyorController_init(ConveyorController_t  *me) {
  */
 void ConveyorController_run(ConveyorController_t  *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.ConveyorChanged = 0;
+	me->outputEvents.event.ConveyorStoppedForInject = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -77,21 +105,25 @@ void ConveyorController_run(ConveyorController_t  *me) {
 			if(me->inputEvents.event.EmergencyStopChanged && ( ! me->EmergencyStop)) {
 				me->_state = STATE_ConveyorController_Running;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_ConveyorController_Running:
 			if(me->inputEvents.event.LasersChanged && (me->InjectSiteLaser)) {
 				me->_state = STATE_ConveyorController_Pause;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_ConveyorController_Pause:
 			if(me->inputEvents.event.InjectDone) {
 				me->_state = STATE_ConveyorController_Running;
 				me->_trigger = true;
+				
 			} else if(me->inputEvents.event.EmergencyStopChanged && (me->EmergencyStop)) {
 				me->_state = STATE_ConveyorController_E_Stop;
 				me->_trigger = true;
+				
 			};
 			break;
 		
@@ -121,25 +153,5 @@ void ConveyorController_run(ConveyorController_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void ConveyorController_ConveyorStart(ConveyorController_t  *me) {
-me->ConveyorSpeed = 1;
-printf("Conveyor: Start\n");
-}
-
-void ConveyorController_ConveyorStop(ConveyorController_t  *me) {
-me->ConveyorSpeed = 0;
-printf("Conveyor: Stop\n");
-}
-
-void ConveyorController_ConveyorRunning(ConveyorController_t  *me) {
-printf("Conveyor running region\n");
-}
-
-void ConveyorController_ConveyorEStop(ConveyorController_t  *me) {
-printf("Conveyor Emergency Stopped\n");
-}
-
 
 

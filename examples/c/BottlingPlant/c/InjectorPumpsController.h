@@ -13,25 +13,25 @@ enum InjectorPumpsController_states { STATE_InjectorPumpsController_RejectCanist
 
 union InjectorPumpsControllerInputEvents {
 	struct {
-		UDINT StartPump : 1;
-		UDINT EmergencyStopChanged : 1;
-		UDINT CanisterPressureChanged : 1;
-		UDINT FillContentsAvailableChanged : 1;
-		UDINT VacuumTimerElapsed : 1;
+		UDINT StartPump;
+		UDINT EmergencyStopChanged;
+		UDINT CanisterPressureChanged;
+		UDINT FillContentsAvailableChanged;
+		UDINT VacuumTimerElapsed;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union InjectorPumpsControllerOutputEvents {
 	struct {
-		UDINT PumpFinished : 1;
-		UDINT RejectCanister : 1;
-		UDINT InjectorControlsChanged : 1;
-		UDINT FillContentsChanged : 1;
-		UDINT StartVacuumTimer : 1;
+		UDINT PumpFinished;
+		UDINT RejectCanister;
+		UDINT InjectorControlsChanged;
+		UDINT FillContentsChanged;
+		UDINT StartVacuumTimer;
 	} event;
-	UDINT events[1];
+	
 };
 
 
@@ -76,15 +76,6 @@ int InjectorPumpsController_init(InjectorPumpsController_t  *me);
 //all FBs get a run function
 void InjectorPumpsController_run(InjectorPumpsController_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void InjectorPumpsController_StartVacuum(InjectorPumpsController_t  *me);
-
-void InjectorPumpsController_ClearControls(InjectorPumpsController_t  *me);
-
-void InjectorPumpsController_OpenValve(InjectorPumpsController_t  *me);
-
-void InjectorPumpsController_StartPump(InjectorPumpsController_t  *me);
 
 
 #endif

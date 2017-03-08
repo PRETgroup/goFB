@@ -18,7 +18,11 @@ int main() {
 		return 1;
 	}
 
+	printf("Top: %20s   Size: %lu\n", "FlexPRET", sizeof(myFlexPRET));
+
+	int tickNum = 0;
 	do {
+		printf("=====TICK %i=====\n",tickNum);
 		FlexPRET_syncOutputEvents(&myFlexPRET);
 		FlexPRET_syncInputEvents(&myFlexPRET);
 
@@ -26,7 +30,7 @@ int main() {
 		FlexPRET_syncInputData(&myFlexPRET);
 		
 		FlexPRET_run(&myFlexPRET);
-	} while(true);
+	} while(tickNum++ < 10);
 
 	return 0;
 }

@@ -66,20 +66,20 @@ int ConveyorController_init(ConveyorController_t  *me) {
 
 void ConveyorController_ConveyorStart(ConveyorController_t  *me) {
 me->ConveyorSpeed = 1;
-printf("Conveyor: Start\n");
+//printf("Conveyor: Start\n");
 }
 
 void ConveyorController_ConveyorStop(ConveyorController_t  *me) {
 me->ConveyorSpeed = 0;
-printf("Conveyor: Stop\n");
+//printf("Conveyor: Stop\n");
 }
 
 void ConveyorController_ConveyorRunning(ConveyorController_t  *me) {
-printf("Conveyor running region\n");
+//printf("Conveyor running region\n");
 }
 
 void ConveyorController_ConveyorEStop(ConveyorController_t  *me) {
-printf("Conveyor Emergency Stopped\n");
+//printf("Conveyor Emergency Stopped\n");
 }
 
 

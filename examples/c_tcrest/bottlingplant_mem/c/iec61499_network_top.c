@@ -30,7 +30,7 @@ int main() {
 		FlexPRET_syncInputData(&myFlexPRET);
 		
 		FlexPRET_run(&myFlexPRET);
-	} while(tickNum++ < 10);
+	} while(tickNum++ < 40);
 
 	return 0;
 }

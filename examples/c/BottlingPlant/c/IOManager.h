@@ -13,31 +13,31 @@ enum IOManager_states { STATE_IOManager_Start };
 
 union IOManagerInputEvents {
 	struct {
-		UDINT DoorReleaseCanister : 1;
-		UDINT ConveyorChanged : 1;
-		UDINT InjectorPositionChanged : 1;
-		UDINT InjectorControlsChanged : 1;
-		UDINT FillContentsChanged : 1;
-		UDINT StartVacuumTimer : 1;
-		UDINT GoRejectArm : 1;
-		UDINT CanisterCountChanged : 1;
-		UDINT InjectDone : 1;
+		UDINT DoorReleaseCanister;
+		UDINT ConveyorChanged;
+		UDINT InjectorPositionChanged;
+		UDINT InjectorControlsChanged;
+		UDINT FillContentsChanged;
+		UDINT StartVacuumTimer;
+		UDINT GoRejectArm;
+		UDINT CanisterCountChanged;
+		UDINT InjectDone;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union IOManagerOutputEvents {
 	struct {
-		UDINT InjectorArmFinishMovement : 1;
-		UDINT EmergencyStopChanged : 1;
-		UDINT CanisterPressureChanged : 1;
-		UDINT FillContentsAvailableChanged : 1;
-		UDINT LasersChanged : 1;
-		UDINT DoorOverride : 1;
-		UDINT VacuumTimerElapsed : 1;
+		UDINT InjectorArmFinishMovement;
+		UDINT EmergencyStopChanged;
+		UDINT CanisterPressureChanged;
+		UDINT FillContentsAvailableChanged;
+		UDINT LasersChanged;
+		UDINT DoorOverride;
+		UDINT VacuumTimerElapsed;
 	} event;
-	UDINT events[1];
+	
 };
 
 
@@ -91,9 +91,6 @@ int IOManager_init(IOManager_t  *me);
 //all FBs get a run function
 void IOManager_run(IOManager_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void IOManager_IOAlgorithm(IOManager_t  *me);
 
 
 #endif

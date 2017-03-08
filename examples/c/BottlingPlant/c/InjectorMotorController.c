@@ -11,10 +11,16 @@
  */
 int InjectorMotorController_preinit(InjectorMotorController_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.InjectorArmFinishedMovement = 0;
+	me->inputEvents.event.EmergencyStopChanged = 0;
+	me->inputEvents.event.ConveyorStoppedForInject = 0;
+	me->inputEvents.event.PumpFinished = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.StartPump = 0;
+	me->outputEvents.event.InjectDone = 0;
+	me->outputEvents.event.InjectorPositionChanged = 0;
+	me->outputEvents.event.InjectRunning = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -59,6 +65,25 @@ int InjectorMotorController_init(InjectorMotorController_t  *me) {
 
 
 
+//algorithms
+
+void InjectorMotorController_SetArmDownPosition(InjectorMotorController_t  *me) {
+me->InjectorPosition = 255;
+//printf("Injector: Set Injector Arm to Down position\n");
+}
+
+void InjectorMotorController_SetArmUpPosition(InjectorMotorController_t  *me) {
+printf("Injector: Set injector arm to up position\n");
+me->InjectorPosition = 0;
+
+}
+
+void InjectorMotorController_Algorithm1(InjectorMotorController_t  *me) {
+printf("lalalala\n");
+}
+
+
+
 /* InjectorMotorController_run() executes a single tick of an
  * instance of InjectorMotorController according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -68,8 +93,13 @@ int InjectorMotorController_init(InjectorMotorController_t  *me) {
  */
 void InjectorMotorController_run(InjectorMotorController_t  *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.StartPump = 0;
+	me->outputEvents.event.InjectDone = 0;
+	me->outputEvents.event.InjectorPositionChanged = 0;
+	me->outputEvents.event.InjectRunning = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -77,24 +107,28 @@ void InjectorMotorController_run(InjectorMotorController_t  *me) {
 			if(me->inputEvents.event.InjectorArmFinishedMovement) {
 				me->_state = STATE_InjectorMotorController_Await_Bottle;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorMotorController_Await_Bottle:
 			if(me->inputEvents.event.ConveyorStoppedForInject) {
 				me->_state = STATE_InjectorMotorController_MoveArmDown;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorMotorController_MoveArmDown:
 			if(me->inputEvents.event.InjectorArmFinishedMovement) {
 				me->_state = STATE_InjectorMotorController_Await_Pumping;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_InjectorMotorController_Await_Pumping:
 			if(me->inputEvents.event.PumpFinished) {
 				me->_state = STATE_InjectorMotorController_MoveArmUp;
 				me->_trigger = true;
+				
 			};
 			break;
 		
@@ -129,22 +163,5 @@ void InjectorMotorController_run(InjectorMotorController_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void InjectorMotorController_SetArmDownPosition(InjectorMotorController_t  *me) {
-me->InjectorPosition = 255;
-//printf("Injector: Set Injector Arm to Down position\n");
-}
-
-void InjectorMotorController_SetArmUpPosition(InjectorMotorController_t  *me) {
-printf("Injector: Set injector arm to up position\n");
-me->InjectorPosition = 0;
-
-}
-
-void InjectorMotorController_Algorithm1(InjectorMotorController_t  *me) {
-printf("lalalala\n");
-}
-
 
 

@@ -13,17 +13,17 @@ enum CanisterCounter_states { STATE_CanisterCounter_Start };
 
 union CanisterCounterInputEvents {
 	struct {
-		UDINT LasersChanged : 1;
+		UDINT LasersChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 
 union CanisterCounterOutputEvents {
 	struct {
-		UDINT CanisterCountChanged : 1;
+		UDINT CanisterCountChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 
@@ -65,9 +65,6 @@ int CanisterCounter_init(CanisterCounter_t  *me);
 //all FBs get a run function
 void CanisterCounter_run(CanisterCounter_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void CanisterCounter_ChangeCount(CanisterCounter_t  *me);
 
 
 #endif

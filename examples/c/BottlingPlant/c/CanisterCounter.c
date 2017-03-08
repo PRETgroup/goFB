@@ -11,10 +11,10 @@
  */
 int CanisterCounter_preinit(CanisterCounter_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.LasersChanged = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.CanisterCountChanged = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -59,6 +59,23 @@ int CanisterCounter_init(CanisterCounter_t  *me) {
 
 
 
+//algorithms
+
+void CanisterCounter_ChangeCount(CanisterCounter_t  *me) {
+if(me->DoorSiteLaser) {
+	me->CanisterCount++;
+}
+if(me->RejectBinLaser) {
+	me->CanisterCount--;
+}
+if(me->AcceptBinLaser) {
+	me->CanisterCount--;
+}
+//printf("Canister count:%i\n", me->CanisterCount);
+}
+
+
+
 /* CanisterCounter_run() executes a single tick of an
  * instance of CanisterCounter according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -68,8 +85,10 @@ int CanisterCounter_init(CanisterCounter_t  *me) {
  */
 void CanisterCounter_run(CanisterCounter_t  *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.CanisterCountChanged = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -77,6 +96,7 @@ void CanisterCounter_run(CanisterCounter_t  *me) {
 			if(me->inputEvents.event.LasersChanged) {
 				me->_state = STATE_CanisterCounter_Start;
 				me->_trigger = true;
+				
 			};
 			break;
 		
@@ -97,20 +117,5 @@ void CanisterCounter_run(CanisterCounter_t  *me) {
 
 	me->_trigger = false;
 }
-//algorithms
-
-void CanisterCounter_ChangeCount(CanisterCounter_t  *me) {
-if(me->DoorSiteLaser) {
-	me->CanisterCount++;
-}
-if(me->RejectBinLaser) {
-	me->CanisterCount--;
-}
-if(me->AcceptBinLaser) {
-	me->CanisterCount--;
-}
-//printf("Canister count:%i\n", me->CanisterCount);
-}
-
 
 

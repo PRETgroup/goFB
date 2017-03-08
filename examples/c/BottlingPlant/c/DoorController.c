@@ -11,10 +11,12 @@
  */
 int DoorController_preinit(DoorController_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.events[0] = 0;
+	me->inputEvents.event.ReleaseDoorOverride = 0;
+	me->inputEvents.event.BottlingDone = 0;
+	me->inputEvents.event.EmergencyStopChanged = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.DoorReleaseCanister = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -59,6 +61,9 @@ int DoorController_init(DoorController_t  *me) {
 
 
 
+//no algorithms were present for this function block
+
+
 /* DoorController_run() executes a single tick of an
  * instance of DoorController according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
@@ -68,8 +73,10 @@ int DoorController_init(DoorController_t  *me) {
  */
 void DoorController_run(DoorController_t  *me) {
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
 	
+	me->outputEvents.event.DoorReleaseCanister = 0;
+	
+
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -77,21 +84,25 @@ void DoorController_run(DoorController_t  *me) {
 			if(me->inputEvents.event.EmergencyStopChanged && ( ! me->EmergencyStop)) {
 				me->_state = STATE_DoorController_Await;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_DoorController_Run:
 			if(me->inputEvents.event.EmergencyStopChanged && (me->EmergencyStop)) {
 				me->_state = STATE_DoorController_E_Stop;
 				me->_trigger = true;
+				
 			} else if(me->inputEvents.event.ReleaseDoorOverride || me->inputEvents.event.BottlingDone) {
 				me->_state = STATE_DoorController_Run;
 				me->_trigger = true;
+				
 			};
 			break;
 		case STATE_DoorController_Await:
 			if(me->inputEvents.event.ReleaseDoorOverride || me->inputEvents.event.BottlingDone) {
 				me->_state = STATE_DoorController_Run;
 				me->_trigger = true;
+				
 			};
 			break;
 		
@@ -117,6 +128,5 @@ void DoorController_run(DoorController_t  *me) {
 
 	me->_trigger = false;
 }
-//no algorithms were present for this function block
 
 
