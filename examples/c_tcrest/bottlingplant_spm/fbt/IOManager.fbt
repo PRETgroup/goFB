@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="IOManager" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="DoorReleaseCanister" Comment="">
+  </Event>
+  <Event Name="ConveyorChanged" Comment="">
+    <With Var="ConveyorSpeed" />
+  </Event>
+  <Event Name="InjectorPositionChanged" Comment="">
+    <With Var="InjectorPosition" />
+  </Event>
+  <Event Name="InjectorControlsChanged" Comment="">
+    <With Var="InjectorContentsValveOpen" />
+    <With Var="InjectorVacuumRun" />
+    <With Var="InjectorPressurePumpRun" />
+  </Event>
+  <Event Name="FillContentsChanged" Comment="">
+    <With Var="FillContents" />
+  </Event>
+  <Event Name="StartVacuumTimer" Comment="">
+  </Event>
+  <Event Name="GoRejectArm" Comment="">
+  </Event>
+  <Event Name="CanisterCountChanged" Comment="">
+    <With Var="CanisterCount" />
+  </Event>
+  <Event Name="InjectDone" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="InjectorArmFinishMovement" Comment="">
+  </Event>
+  <Event Name="EmergencyStopChanged" Comment="">
+    <With Var="EmergencyStop" />
+  </Event>
+  <Event Name="CanisterPressureChanged" Comment="">
+    <With Var="CanisterPressure" />
+  </Event>
+  <Event Name="FillContentsAvailableChanged" Comment="">
+    <With Var="FillContentsAvailable" />
+  </Event>
+  <Event Name="LasersChanged" Comment="">
+    <With Var="DoorSiteLaser" />
+    <With Var="InjectSiteLaser" />
+    <With Var="RejectSiteLaser" />
+    <With Var="RejectBinLaser" />
+    <With Var="AcceptBinLaser" />
+  </Event>
+  <Event Name="DoorOverride" Comment="">
+  </Event>
+  <Event Name="VacuumTimerElapsed" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="ConveyorSpeed" Type="BYTE" Comment="" />
+  <VarDeclaration Name="InjectorPosition" Type="BYTE" Comment="" />
+  <VarDeclaration Name="InjectorContentsValveOpen" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectorVacuumRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectorPressurePumpRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="FillContents" Type="BOOL" Comment="" />
+  <VarDeclaration Name="CanisterCount" Type="BYTE" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="EmergencyStop" Type="BOOL" Comment="" />
+  <VarDeclaration Name="CanisterPressure" Type="BYTE" Comment="" />
+  <VarDeclaration Name="FillContentsAvailable" Type="BYTE" Comment="" />
+  <VarDeclaration Name="DoorSiteLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectSiteLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="RejectSiteLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="RejectBinLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="AcceptBinLaser" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="EmergencyStopped" Type="INT" InitialValue="1" Comment="" />
+  <VarDeclaration Name="BottlePositions" Type="INT" InitialValue="[0,0,0,0]" ArraySize="4" Comment="" />
+  <VarDeclaration Name="BottlesActive" Type="BOOL" InitialValue="[0,0,0,0]" ArraySize="4" Comment="" />
+  <VarDeclaration Name="NextBottle" Type="INT" InitialValue="0" Comment="" />
+  <VarDeclaration Name="InternalConveyorSpeed" Type="INT" InitialValue="0" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="656.25" y="481.25">
+    <ECAction Algorithm="IOAlgorithm" Output="EmergencyStopChanged" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Start" Condition="true" x="656.25" y="1006.25" />
+</ECC><Algorithm Name="IOAlgorithm" Comment="">
+  <Other Language="C" Prototype="" Text="#define NUM_BOTTLES 4&#xD;&#xA;&#xD;&#xA;int i;&#xD;&#xA;&#xD;&#xA;//reset all the things&#xD;&#xA;me-&gt;EmergencyStop = 0;&#xD;&#xA;me-&gt;CanisterPressure = 255;&#xD;&#xA;me-&gt;FillContentsAvailable = 255;&#xD;&#xA;me-&gt;DoorSiteLaser = 0;&#xD;&#xA;me-&gt;InjectSiteLaser = 0;&#xD;&#xA;me-&gt;RejectSiteLaser = 0;&#xD;&#xA;me-&gt;RejectBinLaser = 0;&#xD;&#xA;me-&gt;AcceptBinLaser = 0;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;//printf(&quot;=====new tick\n&quot;);&#xD;&#xA;&#xD;&#xA;//continue progress&#xD;&#xA;if(me-&gt;ConveyorSpeed) {&#xD;&#xA;	for(i = 0; i &lt; 4; i++) {&#xD;&#xA;		if(me-&gt;BottlesActive[i]) {&#xD;&#xA;			me-&gt;BottlePositions[i] += me-&gt;InternalConveyorSpeed;&#xD;&#xA;			printf(&quot;IO: Canister %i moves to %i\n&quot;, i, me-&gt;BottlePositions[i]);&#xD;&#xA;			&#xD;&#xA;			if(me-&gt;BottlePositions[i] == 5) {&#xD;&#xA;				printf(&quot;IO: Canister %i at 5, triggering InjectSiteLaser\n&quot;, i);&#xD;&#xA;				me-&gt;outputEvents.event.LasersChanged = 1;&#xD;&#xA;				me-&gt;InjectSiteLaser = 1;&#xD;&#xA;			} else if(me-&gt;BottlePositions[i] == 10) {&#xD;&#xA;				printf(&quot;IO: Canister %i at 10, triggering RejectSiteLaser\n&quot;, i);&#xD;&#xA;				me-&gt;outputEvents.event.LasersChanged = 1;&#xD;&#xA;				me-&gt;RejectSiteLaser = 1;&#xD;&#xA;			} else if(me-&gt;BottlePositions[i] == 20) {&#xD;&#xA;				printf(&quot;IO: Canister %i at 20, falls off conveyor, triggering AcceptBinLaser\n&quot;, i);&#xD;&#xA;				me-&gt;outputEvents.event.LasersChanged = 1;&#xD;&#xA;				me-&gt;AcceptBinLaser = 1;&#xD;&#xA;				me-&gt;BottlesActive[i] = 0;&#xD;&#xA;				me-&gt;BottlePositions[i] = 0;&#xD;&#xA;			} &#xD;&#xA;			&#xD;&#xA;			if(me-&gt;inputEvents.event.GoRejectArm &amp;&amp; (me-&gt;BottlePositions[i] == 10 || me-&gt;BottlePositions[i] == 11 || me-&gt;BottlePositions[i] == 12)) {&#xD;&#xA;				printf(&quot;IO: Go Reject Arm. Canister %i knocked from conveyor.\n&quot;, i);&#xD;&#xA;				//progress = 0;&#xD;&#xA;				me-&gt;outputEvents.event.LasersChanged = 1;&#xD;&#xA;				me-&gt;RejectBinLaser = 1;&#xD;&#xA;				me-&gt;BottlesActive[i] = 0;&#xD;&#xA;				me-&gt;BottlePositions[i] = 0;&#xD;&#xA;			}&#xD;&#xA;		}&#xD;&#xA;	}&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;//if(canisterProgress == 25) {&#xD;&#xA;//	printf(&quot;Progress at 25, halting\n&quot;);&#xD;&#xA;//	while(1);&#xD;&#xA;//}&#xD;&#xA;&#xD;&#xA;if(me-&gt;inputEvents.event.InjectDone) {&#xD;&#xA;	printf(&quot;IO: Inject done\n&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;if(me-&gt;EmergencyStopped == 1) {&#xD;&#xA;	printf(&quot;IO: Releasing emergency stop\n&quot;);&#xD;&#xA;	me-&gt;outputEvents.event.EmergencyStopChanged = 1;&#xD;&#xA;	me-&gt;EmergencyStop = 0;&#xD;&#xA;	me-&gt;EmergencyStopped++;&#xD;&#xA;} else {&#xD;&#xA;	&#xD;&#xA;	if(me-&gt;inputEvents.event.DoorReleaseCanister) {&#xD;&#xA;		printf(&quot;IO: Door released. Adding canister %i\n&quot;, me-&gt;NextBottle);&#xD;&#xA;&#xD;&#xA;		me-&gt;outputEvents.event.LasersChanged = 1;&#xD;&#xA;		me-&gt;DoorSiteLaser = 1;&#xD;&#xA;			&#xD;&#xA;		me-&gt;BottlesActive[me-&gt;NextBottle] = 1;&#xD;&#xA;&#xD;&#xA;		me-&gt;NextBottle++;&#xD;&#xA;		me-&gt;NextBottle = me-&gt;NextBottle % 4;&#xD;&#xA;		&#xD;&#xA;	}&#xD;&#xA;	if(me-&gt;inputEvents.event.InjectorPositionChanged) {&#xD;&#xA;		printf(&quot;IO: Injector position changed. Setting move finished.\n&quot;);&#xD;&#xA;		me-&gt;outputEvents.event.InjectorArmFinishMovement = 1;&#xD;&#xA;	}&#xD;&#xA;&#xD;&#xA;	if(me-&gt;inputEvents.event.ConveyorChanged) {&#xD;&#xA;		me-&gt;InternalConveyorSpeed = me-&gt;ConveyorSpeed;&#xD;&#xA;		printf(&quot;IO: Setting conveyor movement to %i\n&quot;, me-&gt;InternalConveyorSpeed);&#xD;&#xA;	}&#xD;&#xA;&#xD;&#xA;	&#xD;&#xA;&#xD;&#xA;	if(me-&gt;inputEvents.event.InjectorControlsChanged) {&#xD;&#xA;		printf(&quot;IO: Injector controls changed. Now they are Vac: %1i Val: %1i Pmp: %1i\n&quot;, me-&gt;InjectorVacuumRun, me-&gt;InjectorContentsValveOpen, me-&gt;InjectorPressurePumpRun);&#xD;&#xA;		if(me-&gt;InjectorVacuumRun) {&#xD;&#xA;			printf(&quot;IO: Due to vacuum, changing canister pressure to 5.\n&quot;);&#xD;&#xA;			me-&gt;CanisterPressure = 5;&#xD;&#xA;			me-&gt;outputEvents.event.CanisterPressureChanged = 1;&#xD;&#xA;		}&#xD;&#xA;		if(me-&gt;InjectorContentsValveOpen) {&#xD;&#xA;			printf(&quot;IO: Contents valve now open. Pressure changes slightly, sucking in contents.\n&quot;);&#xD;&#xA;			me-&gt;CanisterPressure = 20;&#xD;&#xA;			me-&gt;outputEvents.event.CanisterPressureChanged = 1;&#xD;&#xA;		}&#xD;&#xA;		if(me-&gt;InjectorPressurePumpRun) {&#xD;&#xA;			printf(&quot;IO: Due to pressure pump, changing canister pressure to 250.\n&quot;);&#xD;&#xA;			me-&gt;CanisterPressure = 250;&#xD;&#xA;			me-&gt;outputEvents.event.CanisterPressureChanged = 1;&#xD;&#xA;		}&#xD;&#xA;	}&#xD;&#xA;	&#xD;&#xA;	if(me-&gt;inputEvents.event.FillContentsChanged) {&#xD;&#xA;		printf(&quot;IO: Fill contents changed.\n&quot;);&#xD;&#xA;	}&#xD;&#xA;&#xD;&#xA;	if(me-&gt;inputEvents.event.StartVacuumTimer) {&#xD;&#xA;		printf(&quot;IO: Start vacuum timer.\n&quot;);//Elapsing timer.\n&quot;);&#xD;&#xA;		//me-&gt;outputEvents.event.VacuumTimerElapsed = 1;&#xD;&#xA;	}&#xD;&#xA;&#xD;&#xA;	&#xD;&#xA;&#xD;&#xA;	if(me-&gt;inputEvents.event.CanisterCountChanged) {&#xD;&#xA;		printf(&quot;IO: Canister count changed. New value: %i\n&quot;, me-&gt;CanisterCount);&#xD;&#xA;	}&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;" />
+</Algorithm></BasicFB>
+</FBType>

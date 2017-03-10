@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="RejectArmController" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="RejectCanister" Comment="">
+  </Event>
+  <Event Name="LasersChanged" Comment="">
+    <With Var="RejectSiteLaser" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="GoRejectArm" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="RejectSiteLaser" Type="BOOL" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Clear" Comment="" x="568.75" y="393.75">
+  </ECState>
+  <ECState Name="AwaitCanister" Comment="" x="809.375" y="984.375">
+  </ECState>
+  <ECState Name="GoReject" Comment="" x="1367.1875" y="667.1875">
+    <ECAction Output="GoRejectArm" />
+  </ECState>
+  <ECTransition Source="Clear" Destination="AwaitCanister" Condition="RejectCanister" x="682.0625" y="735.0625" />
+  <ECTransition Source="AwaitCanister" Destination="GoReject" Condition="LasersChanged AND (RejectSiteLaser)" x="1041.28125" y="819.78125" />
+  <ECTransition Source="GoReject" Destination="AwaitCanister" Condition="RejectCanister" x="1097.28125" y="841.78125" />
+</ECC></BasicFB>
+</FBType>

@@ -9,7 +9,7 @@
  * initialise an instance of IOManager. 
  * It sets all I/O values to zero.
  */
-int IOManager_preinit(IOManager_t  *me) {
+int IOManager_preinit(IOManager_t _SPM *me) {
 	//if there are input events, reset them
 	me->inputEvents.event.DoorReleaseCanister = 0;
 	me->inputEvents.event.ConveyorChanged = 0;
@@ -66,7 +66,7 @@ int IOManager_preinit(IOManager_t  *me) {
  * set up an instance of IOManager. 
  * It passes around configuration data.
  */
-int IOManager_init(IOManager_t  *me) {
+int IOManager_init(IOManager_t _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -86,7 +86,7 @@ int IOManager_init(IOManager_t  *me) {
 
 //algorithms
 
-void IOManager_IOAlgorithm(IOManager_t  *me) {
+void IOManager_IOAlgorithm(IOManager_t _SPM *me) {
 #define NUM_BOTTLES 4
 
 
@@ -350,7 +350,6 @@ if(me->EmergencyStopped == 1) {
 }
 
 
-
 }
 
 
@@ -362,7 +361,7 @@ if(me->EmergencyStopped == 1) {
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void IOManager_run(IOManager_t  *me) {
+void IOManager_run(IOManager_t _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.InjectorArmFinishMovement = 0;
