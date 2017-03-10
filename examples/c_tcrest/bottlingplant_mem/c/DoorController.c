@@ -118,7 +118,7 @@ void DoorController_run(DoorController_t  *me) {
 		case STATE_DoorController_Run:
 			me->outputEvents.event.DoorReleaseCanister = 1;
 			break;
-
+bottlingplant_mem
 		case STATE_DoorController_Await:
 			break;
 

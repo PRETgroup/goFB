@@ -113,7 +113,21 @@ void SawmillSpeed_run(SawmillSpeed_t _SPM *me) {
 
 void SawmillSpeed_speedChange_service(SawmillSpeed_t _SPM *me) {
 if(me->LastPos != 0) {
-	if(me->Pos - me->LastPos > 2 || me->LastPos - me->Pos > 2) {
+	REAL diff = 0;
+	diff = me->Pos - me->LastPos;
+	if(diff < 0) { //make diff positive if it is negative
+		diff = diff * -1; 
+	}
+
+	//do some math to emulate a computationally difficult task
+	int x = (int)diff;
+	#pragma loopbound min 1 max 1000
+	for(int y = 0; y<1000; y++) {
+		x = x * 2;
+		x = x + 1;
+	} 
+
+	if(diff > 2 && x != 0) {
 		me->outputEvents.event.BadSpeedChange = 1;
 		me->BadSpeed = true;
 	} else {

@@ -135,8 +135,8 @@ void SawmillPosGen_run(SawmillPosGen_t _SPM *me) {
 //algorithms
 
 void SawmillPosGen_posgen_service(SawmillPosGen_t _SPM *me) {
-#pragma loopbound min 0 max 2000
-for(me->BusyWork = 0; me->BusyWork < 2000; me->BusyWork++);
+//#pragma loopbound min 0 max 2000
+//for(me->BusyWork = 0; me->BusyWork < 2000; me->BusyWork++);
 if(me->SawRun) {
 	me->outputEvents.event.NewPosChange = 1;
 	me->NewPos = me->PosArray[me->PosArrayPos];

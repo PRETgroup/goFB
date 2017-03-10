@@ -260,13 +260,13 @@ void SawmillModule_syncInputData(SawmillModule_t _SPM *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void SawmillModule_run(SawmillModule_t _SPM *me) {
-	Led_run(&me->saw);
-	SawmillControl_run(&me->control);
-	MaskedSwitch_run(&me->runswitch);
+	Led_run(&me->saw); //<500
+	SawmillControl_run(&me->control); //<3000
+	MaskedSwitch_run(&me->runswitch); //<500
 	MaskedSwitch_run(&me->scale);
 	MaskedSwitch_run(&me->laser);
-	SawmillSpeed_run(&me->speedmon);
-	SawmillPosGen_run(&me->posgen);
+	SawmillSpeed_run(&me->speedmon); //40000!
+	SawmillPosGen_run(&me->posgen); //3000
 	MaskedSwitch_run(&me->stall);
 	
 }

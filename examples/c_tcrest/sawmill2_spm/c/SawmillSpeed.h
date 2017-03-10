@@ -35,13 +35,13 @@ typedef struct {
 	union SawmillSpeedOutputEvents outputEvents;
 
     //input vars
-	LREAL Pos;
+	REAL Pos;
     
     //output vars
 	BOOL BadSpeed;
     
 	//any internal vars (BFBs only)
-    LREAL LastPos;
+    REAL LastPos;
     
 	//any child FBs (CFBs only)
 	

@@ -17,14 +17,14 @@
   </Event>
 </EventOutputs>
 <InputVars>
-  <VarDeclaration Name="Pos" Type="LREAL" Comment="" />
+  <VarDeclaration Name="Pos" Type="REAL" Comment="" />
 </InputVars>
 <OutputVars>
   <VarDeclaration Name="BadSpeed" Type="BOOL" Comment="" />
 </OutputVars>
 </InterfaceList>
 <BasicFB><InternalVars>
-  <VarDeclaration Name="LastPos" Type="LREAL" Comment="" />
+  <VarDeclaration Name="LastPos" Type="REAL" Comment="" />
 </InternalVars><ECC>
   <ECState Name="Start" Comment="" x="131.25" y="262.5">
   </ECState>

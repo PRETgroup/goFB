@@ -38,12 +38,12 @@ typedef struct {
 	BOOL SawRun;
     
     //output vars
-	LREAL NewPos;
+	REAL NewPos;
     
 	//any internal vars (BFBs only)
     INT PosArrayLen;
     INT PosArrayPos;
-    LREAL PosArray[20];
+    REAL PosArray[20];
     volatile UDINT BusyWork;
     
 	//any child FBs (CFBs only)
