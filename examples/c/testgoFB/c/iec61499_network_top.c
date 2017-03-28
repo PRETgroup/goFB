@@ -18,7 +18,7 @@ int main() {
 		return 1;
 	}
 
-	printf("Top: %20s   Size: %i\n", "topMANY", sizeof(mytopMANY));
+	printf("Top: %20s   Size: %lu\n", "topMANY", sizeof(mytopMANY));
 
 	int tickNum = 0;
 	do {

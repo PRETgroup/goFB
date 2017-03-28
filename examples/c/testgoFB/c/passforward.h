@@ -13,16 +13,17 @@ enum passforward_states { STATE_passforward_Start, STATE_passforward_emit_data, 
 
 union passforwardInputEvents {
 	struct {
-		INT DataInChanged;
+		UDINT DataInChanged;
 	} event;
+	
 };
 
 
 union passforwardOutputEvents {
 	struct {
-		UDINT DataOutChanged : 1;
+		UDINT DataOutChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 
@@ -63,9 +64,6 @@ int passforward_init(passforward_t  *me);
 //all FBs get a run function
 void passforward_run(passforward_t  *me);
 
-//basic FBs have a number of algorithm functions
-
-void passforward_upcount(passforward_t  *me);
 
 
 #endif

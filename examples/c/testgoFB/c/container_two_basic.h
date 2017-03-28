@@ -14,16 +14,17 @@
 
 union container_two_basicInputEvents {
 	struct {
-		INT DataInChanged;
+		UDINT DataInChanged;
 	} event;
+	
 };
 
 
 union container_two_basicOutputEvents {
 	struct {
-		UDINT DataOutChanged : 1;
+		UDINT DataOutChanged;
 	} event;
-	UDINT events[1];
+	
 };
 
 

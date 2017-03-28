@@ -25,7 +25,7 @@ int container_two_basic_preinit(container_two_basic_t  *me) {
 	me->inputEvents.event.DataInChanged = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.DataOutChanged = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -108,9 +108,9 @@ void container_two_basic_syncOutputEvents(container_two_basic_t  *me) {
 void container_two_basic_syncInputEvents(container_two_basic_t  *me) {
 	//first, we explicitly synchronise the children
 	
-	me->pf1.inputEvents.event.DataInChanged += me->inputEvents.event.DataInChanged; 
+	me->pf1.inputEvents.event.DataInChanged = me->inputEvents.event.DataInChanged; 
 	
-	me->pf2.inputEvents.event.DataInChanged += me->pf1.outputEvents.event.DataOutChanged; 
+	me->pf2.inputEvents.event.DataInChanged = me->pf1.outputEvents.event.DataOutChanged; 
 	
 
 	//then, call this same function on all cfb children

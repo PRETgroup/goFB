@@ -25,7 +25,7 @@ int container_one_preinit(container_one_t  *me) {
 	me->inputEvents.event.DataInChanged = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.events[0] = 0;
+	me->outputEvents.event.DataOutChanged = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -100,7 +100,7 @@ void container_one_syncOutputEvents(container_one_t  *me) {
 void container_one_syncInputEvents(container_one_t  *me) {
 	//first, we explicitly synchronise the children
 	
-	me->inside.inputEvents.event.DataInChanged += me->inputEvents.event.DataInChanged; 
+	me->inside.inputEvents.event.DataInChanged = me->inputEvents.event.DataInChanged; 
 	
 
 	//then, call this same function on all cfb children
