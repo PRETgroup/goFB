@@ -45,12 +45,6 @@ func (c *Converter) SetTcrestUsingSPM() {
 	c.TcrestUsingSPM = true
 }
 
-//SetIncrementEventsMode sets that the output should use different semantics for events, counting/queuing them rather
-// than set and forget
-func (c *Converter) SetIncrementEventsMode() {
-	c.IncrementEventsMode = true
-}
-
 //SetTcrestIncludes sets that the output fbtypes.h should include the TCREST headers
 // than set and forget
 func (c *Converter) SetTcrestIncludes() {
@@ -91,7 +85,6 @@ type ConverterSettings struct {
 	TcrestUsingSPM           bool
 	TcrestSmartSPM           bool
 	TcrestIncludes           bool
-	IncrementEventsMode      bool
 	IgnoreAlgorithmLanguages bool
 	CvodeEnabled             bool
 }

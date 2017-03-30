@@ -43,6 +43,9 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 	me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};
 	{{end}}
 
+	{{if .CvodeEnabled}}{{if blockNeedsCvode $block}}
+	me->cvode_mem = NULL;{{end}}{{end}}
+	
 	return 0;
 }
 
@@ -72,9 +75,7 @@ int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 	}
 	{{end}}{{end}}
 
-	{{if $block.ExtraStartupCode}}//Extra startup code is present for this block
-	{{$block.ExtraStartupCode}}
-	{{end}}return 0;
+	return 0;
 }
 
 {{end}}

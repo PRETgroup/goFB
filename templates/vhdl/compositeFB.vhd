@@ -55,7 +55,7 @@ begin
 		{{end}}{{end}}
 
 		{{$special := $child.GetSpecialIO $blocks}}{{if $special.InternalVars}}--specials
-		{{range $curSpecialIndex, $sInternal := $special.InternalVars}}{{$sInternal.Name}} => {{$sInternal.Name}}, --{{if $sInternal.IsTOPIO_IN}}input{{else}}output{{end}}
+		{{range $curSpecialIndex, $sInternal := $special.InternalVars}}{{$sInternal.Name}} => {{$sInternal.Name}}, --{{if variableIsTOPIO_IN $sInternal}}input{{else}}output{{end}}
 		{{end}}{{end}}
 		done => {{$child.Name}}_done
 	);

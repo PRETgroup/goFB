@@ -35,7 +35,7 @@ func main() {
 	*outLocation = strings.TrimSuffix(*outLocation, "\\")
 
 	if *inFileName == "" {
-		fmt.Println("You need to specify a file or directory name to transpile! Check out -help for options")
+		fmt.Println("You need to specify a file or directory name to compile! Check out -help for options")
 		return
 	}
 

@@ -93,6 +93,8 @@ var (
 		"connIsOnParent":                  connIsOnParent,
 		"blockNeedsCvode":                 blockNeedsCvode,
 		"algorithmNeedsCvode":             algorithmNeedsCvode,
+		"algorithmNeedsCvodeInit":         algorithmNeedsCvodeInit,
+		"parseOdeInitAlgo":                parseOdeInitAlgo,
 
 		"div":   div,
 		"add":   add,

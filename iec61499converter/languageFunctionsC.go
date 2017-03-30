@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"strings"
 
+	"strconv"
+
 	"github.com/kiwih/goFB/iec61499converter/iec61499"
 )
 
@@ -149,7 +151,7 @@ func blockNeedsCvode(b iec61499.FB) bool {
 	}
 
 	for i := 0; i < len(b.BasicFB.Algorithms); i++ {
-		if algorithmNeedsCvode(b.BasicFB.Algorithms[i]) {
+		if algorithmNeedsCvode(b.BasicFB.Algorithms[i]) || algorithmNeedsCvodeInit(b.BasicFB.Algorithms[i]) {
 			return true
 		}
 	}
@@ -157,9 +159,47 @@ func blockNeedsCvode(b iec61499.FB) bool {
 	return false
 }
 
-//algorithmNeedsCvode will return true if comment is ODE or ODE_init
+//algorithmNeedsCvode/Init will return true if comment is ODE or ODE_init
 //ODE is used to tick an ODE
 //ODE_init is used to set ODE to some value at some time
 func algorithmNeedsCvode(a iec61499.Algorithm) bool {
-	return a.Comment == "ODE" || a.Comment == "ODE_init"
+	return a.Comment == "ODE"
+}
+func algorithmNeedsCvodeInit(a iec61499.Algorithm) bool {
+	return a.Comment == "ODE_init"
+}
+
+//CvodeInit is used in templates when generating code from Cvode_init algorithms
+type CvodeInit struct {
+	OdeFName string
+	Initial  string
+}
+
+func (c CvodeInit) GetInitialValue() string {
+	//check to see if it's just a number
+	_, err := strconv.ParseFloat(c.Initial, 64)
+	if err != nil {
+		return c.Initial
+	}
+	//if not, add me-> to it
+	return "me->" + c.Initial
+}
+
+func parseOdeInitAlgo(s string) CvodeInit {
+
+	c := CvodeInit{}
+
+	nameRegex := regexp.MustCompile(`ode[\s]+\=[\s]+([a-zA-Z0-9\_]+);`)
+
+	lines := strings.Split(s, "\n")
+	for _, line := range lines {
+		nameMatch := nameRegex.FindStringSubmatch(line)
+		if len(nameMatch) == 2 {
+			c.OdeFName = nameMatch[1]
+		}
+	}
+
+	c.Initial = "x"
+
+	return c
 }
