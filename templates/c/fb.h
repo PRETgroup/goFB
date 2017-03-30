@@ -7,6 +7,14 @@
 
 #include "fbtypes.h"
 
+{{if .CvodeEnabled}}{{if blockNeedsCvode $block}}
+#include "cvode/cvode.h"
+#include "nvector/nvector_serial.h"
+#include "cvode/cvode_dense.h"
+#include "sundials/sundials_dense.h"
+#include "sundials/sundials_types.h"
+{{end}}{{end}}
+
 {{if $block.CompositeFB}}//This is a CFB, so we need the #includes for the child blocks embedded here
 {{range $currChildIndex, $child := $block.CompositeFB.FBs}}#include "{{$child.Type}}.h"
 {{end}}{{end}}{{if $block.BasicFB}}//This is a BFB, so we need an enum type for the state machine

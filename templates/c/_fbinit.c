@@ -72,7 +72,9 @@ int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 	}
 	{{end}}{{end}}
 
-	return 0;
+	{{if $block.ExtraStartupCode}}//Extra startup code is present for this block
+	{{$block.ExtraStartupCode}}
+	{{end}}return 0;
 }
 
 {{end}}

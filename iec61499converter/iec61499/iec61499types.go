@@ -7,11 +7,6 @@ import (
 	"strings"
 )
 
-const (
-	TOPIO_IN  = "TOPIO_IN" //if either of the TOPIO_ strings are in an event, var, or internal variable comment, it means these should be passed up to the top level file and used as global IO (used in VHDL only)
-	TOPIO_OUT = "TOPIO_OUT"
-)
-
 //FB is the overall type for function blocks
 type FB struct {
 	Name           string `xml:"Name,attr"`
@@ -199,26 +194,6 @@ func (e *Event) IsLoadFor(v *Variable) bool {
 	return false
 }
 
-//IsTOPIO_OUT used in templates
-func (v *Variable) IsTOPIO_OUT() bool {
-	return v.Comment == TOPIO_OUT
-}
-
-//IsTOPIO_IN used in templates
-func (v *Variable) IsTOPIO_IN() bool {
-	return v.Comment == TOPIO_IN
-}
-
-//IsTOPIO_OUT used in templates
-func (e *Event) IsTOPIO_OUT() bool {
-	return e.Comment == TOPIO_OUT
-}
-
-//IsTOPIO_IN used in templates
-func (e *Event) IsTOPIO_IN() bool {
-	return e.Comment == TOPIO_IN
-}
-
 //GetUniqueEventConnSources is used to list all unique sources for event connections (useful when templating as we don't want duplicate signal wires)
 func (c *CompositeFB) GetUniqueEventConnSources() []string {
 	sources := make([]string, 0, len(c.EventConnections)) //preallocate for speed
@@ -358,49 +333,4 @@ conns:
 	}
 
 	return connAndTypes, nil
-}
-
-//SpecialIO is used to store internal variables that are "special" (i.e. exported because they are for debugging or service interfaces)
-type SpecialIO struct {
-	//Perhaps in future we will have special []Event and []Variable for normal event and data API
-	InternalVars []Variable
-}
-
-//GetSpecialIO returns all SpecialIO for a given FBReference
-func (fr FBReference) GetSpecialIO(otherBlocks []FB) SpecialIO {
-	for j := 0; j < len(otherBlocks); j++ {
-		if otherBlocks[j].Name == fr.Type {
-			return otherBlocks[j].GetSpecialIO(otherBlocks)
-		}
-	}
-	return SpecialIO{}
-}
-
-//GetSpecialIO is used for service interface blocks and those blocks that contain service interface blocks
-func (f FB) GetSpecialIO(otherBlocks []FB) SpecialIO {
-	s := SpecialIO{
-		InternalVars: make([]Variable, 0),
-	}
-
-	if f.BasicFB != nil {
-		if f.BasicFB.InternalVars != nil {
-			for i := 0; i < len(f.BasicFB.InternalVars.Variables); i++ {
-				if f.BasicFB.InternalVars.Variables[i].IsTOPIO_IN() || f.BasicFB.InternalVars.Variables[i].IsTOPIO_OUT() {
-					s.InternalVars = append(s.InternalVars, f.BasicFB.InternalVars.Variables[i])
-				}
-			}
-		}
-	} else if f.CompositeFB != nil {
-		for i := 0; i < len(f.CompositeFB.FBs); i++ {
-			for j := 0; j < len(otherBlocks); j++ {
-				if otherBlocks[j].Name == f.CompositeFB.FBs[i].Type {
-					os := otherBlocks[j].GetSpecialIO(otherBlocks)
-					s.InternalVars = append(s.InternalVars, os.InternalVars...)
-					continue
-				}
-			}
-		}
-	}
-
-	return s
 }

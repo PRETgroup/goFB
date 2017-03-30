@@ -38,7 +38,7 @@ architecture rtl of {{$block.Name}} is
 	signal AlgorithmsStart : std_logic := '0';
 	signal AlgorithmsDone : std_logic;
 
-	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}{{if not (or $var.IsTOPIO_IN $var.IsTOPIO_OUT)}}{{/*ignore the special IO cos they are in the port list*/}}
+	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}{{if not (or (variableIsTOPIO_IN $var) (variableIsTOPIO_OUT $var))}}{{/*ignore the special IO cos they are in the port list*/}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}}; --type was {{$var.Type}} {{end}}{{end}}{{end}}
 begin
 	{{if $block.EventInputs}}{{if $block.InputVars}}-- Registers for data variables (only updated on relevant events)

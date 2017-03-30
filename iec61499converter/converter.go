@@ -62,6 +62,15 @@ func (c *Converter) SetTcrestSmartSPM() {
 	c.TcrestSmartSPM = true
 }
 
+//CvodeEnable enables using C CVODE library from SUNDIALS to solve algorithms with 'ODE' and 'ODE_init' in comment fields
+func (c *Converter) CvodeEnable() error {
+	if c.outputLanguage != languageC {
+		return errors.New("Can't enable cvode unless output language is C")
+	}
+	c.CvodeEnabled = true
+	return nil
+}
+
 //AddBlock should be called for each block in the network
 func (c *Converter) AddBlock(iec61499bytes []byte) error {
 	FB := iec61499.FB{}
@@ -84,6 +93,7 @@ type ConverterSettings struct {
 	TcrestIncludes           bool
 	IncrementEventsMode      bool
 	IgnoreAlgorithmLanguages bool
+	CvodeEnabled             bool
 }
 
 //OutputFile is used when returning the converted data from the iec61499

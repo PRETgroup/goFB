@@ -64,6 +64,12 @@ var (
 		"renameConnSignal":              renameConnSignal,
 		"connChildSourceOnly":           connChildSourceOnly,
 		"connChildNameMatches":          connChildNameMatches,
+		"variableIsTOPIO_OUT":           variableIsTOPIO_OUT,
+		"variableIsTOPIO_IN":            variableIsTOPIO_IN,
+		"eventIsTOPIO_OUT":              eventIsTOPIO_OUT,
+		"eventIsTOPIO_IN":               eventIsTOPIO_IN,
+		"getSpecialIO":                  getSpecialIO,
+		"getSpecialIOForRef":            getSpecialIOForRef,
 
 		"div":   div,
 		"add":   add,
@@ -85,6 +91,8 @@ var (
 		"strToUpper":                      strToUpper,
 		"findVarDefinitionForName":        findVarDefinitionForName,
 		"connIsOnParent":                  connIsOnParent,
+		"blockNeedsCvode":                 blockNeedsCvode,
+		"algorithmNeedsCvode":             algorithmNeedsCvode,
 
 		"div":   div,
 		"add":   add,

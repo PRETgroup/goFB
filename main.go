@@ -21,6 +21,7 @@ var (
 	tcrestSmartSPM         = flag.Bool("tsspm", false, "(Experimental flag) When building for T-CREST processor, will put BFBs onto SPM before running/evicting them. Also includes -ti.")
 	tcrestIncludes         = flag.Bool("ti", false, "(Experimental flag) Include the T-CREST header files in fbtypes.h")
 	autoFlatten            = flag.Bool("af", false, "Automatically flatten out CFBs to save memory")
+	cvodeEnable            = flag.Bool("cvode", false, "Enable cvode for solving algorithms with 'ODE' and 'ODE_init' in comment field")
 	//incrementEventsMode    = flag.Bool("iem", false, "Use Increment-Events Mode instead of the default Set-Events Mode, meaning events won't be missed")
 )
 
@@ -91,6 +92,13 @@ func main() {
 
 	if *tcrestIncludes == true {
 		conv.SetTcrestIncludes()
+	}
+
+	if *cvodeEnable == true {
+		if err := conv.CvodeEnable(); err != nil {
+			fmt.Println("Error: " + err.Error())
+			return
+		}
 	}
 
 	// if *incrementEventsMode == true {

@@ -1,5 +1,5 @@
 {{define "_entityFB"}}
-{{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}{{$specialIO := $block.GetSpecialIO .Blocks}}
+{{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}{{$specialIO := getSpecialIO $block .Blocks}}
 entity {{$block.Name}} is
 
 	port(
@@ -26,10 +26,10 @@ entity {{$block.Name}} is
 		{{end}}{{end}}
 		{{if $block.BasicFB}}{{if $specialIO.InternalVars}}
 		--special emitted internal vars for I/O
-		{{range $index, $var := $specialIO.InternalVars}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}}
+		{{range $index, $var := $specialIO.InternalVars}}{{$var.Name}} : {{if variableIsTOPIO_IN $var}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}}
 		{{end}}{{end}}{{else if $block.CompositeFB}}{{if $specialIO.InternalVars}}
 		--special emitted internal variables for child I/O
-		{{range $index, $var := $specialIO.InternalVars}}{{$var.Name}} : {{if $var.IsTOPIO_IN}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}} 
+		{{range $index, $var := $specialIO.InternalVars}}{{$var.Name}} : {{if variableIsTOPIO_IN $var}}in{{else}}out{{end}} {{getVhdlType $var.Type}}; --type was {{$var.Type}} 
 		{{end}}{{end}}{{end}}
 		--for done signal
 		done : out std_logic
