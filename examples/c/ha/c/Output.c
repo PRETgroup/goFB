@@ -63,6 +63,12 @@ int Output_init(Output_t  *me) {
 //algorithms
 
 
+
+
+
+
+
+
 void Output_print(Output_t  *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 printf("New value: %f\n", me->var);

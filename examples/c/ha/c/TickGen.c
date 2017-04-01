@@ -63,6 +63,12 @@ int TickGen_init(TickGen_t  *me) {
 //algorithms
 
 
+
+
+
+
+
+
 void TickGen_setDelta(TickGen_t  *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 me->Delta = 0.01;

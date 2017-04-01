@@ -177,8 +177,7 @@ type CvodeInit struct {
 
 func (c CvodeInit) GetInitialValue() string {
 	//check to see if it's just a number
-	_, err := strconv.ParseFloat(c.Initial, 64)
-	if err != nil {
+	if _, err := strconv.ParseFloat(c.Initial, 64); err == nil {
 		return c.Initial
 	}
 	//if not, add me-> to it
