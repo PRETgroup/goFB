@@ -173,8 +173,8 @@ type CvodeInit struct {
 	Initials []InitialVar
 }
 
-type InitialVar struct {
-	VarName  string
+type InitialVar struct { //InitialVar is a bit weird because in the C it will be templated...
+	VarName  string //...not using VarName, but instead a numerical index based on the position
 	VarValue string
 }
 
@@ -202,7 +202,7 @@ func parseOdeInitAlgo(s string) CvodeInit {
 		}
 	}
 
-	c.Initials = []InitialVar{{VarName: "ode_solution", VarValue: "x"}}
+	c.Initials = []InitialVar{{VarName: "x", VarValue: "x"}}
 
 	return c
 }
