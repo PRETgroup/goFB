@@ -21,7 +21,7 @@ void {{$block.Name}}_{{$alg.Name}}_cvode_init({{$block.Name}}_t *me) {
 	}
 
 	//create solver
-	me->ode_solution = N_VNewSerial(1);
+	me->ode_solution = N_VNewSerial({{len $odeInit.GetInitialValues}}); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
@@ -29,7 +29,10 @@ void {{$block.Name}}_{{$alg.Name}}_cvode_init({{$block.Name}}_t *me) {
 	}
 
 	//specify initial values
-	NV_Ith_S(me->ode_solution, {{$odeInit.GetInitialValue}});
+	{{range $initVarIndex, $initVar := $odeInit.GetInitialValues}}
+	NV_Ith_S(me->ode_solution, {{$initVarIndex}}) = {{$initVar.VarValue}};
+	{{end}}
+		
 	me->T0 = 0; //???? should this always be 0 ????
 
 	//initialize solver with pointer to values

@@ -4,8 +4,6 @@ import (
 	"regexp"
 	"strings"
 
-	"strconv"
-
 	"github.com/kiwih/goFB/iec61499converter/iec61499"
 )
 
@@ -172,16 +170,22 @@ func algorithmNeedsCvodeInit(a iec61499.Algorithm) bool {
 //CvodeInit is used in templates when generating code from Cvode_init algorithms
 type CvodeInit struct {
 	OdeFName string
-	Initial  string
+	Initials []InitialVar
 }
 
-func (c CvodeInit) GetInitialValue() string {
-	//check to see if it's just a number
-	if _, err := strconv.ParseFloat(c.Initial, 64); err == nil {
-		return c.Initial
-	}
-	//if not, add me-> to it
-	return "me->" + c.Initial
+type InitialVar struct {
+	VarName  string
+	VarValue string
+}
+
+func (c CvodeInit) GetInitialValues() []InitialVar {
+	return c.Initials
+	// //check to see if it's just a number
+	// if _, err := strconv.ParseFloat(c.Initial, 64); err == nil {
+	// 	return c.Initial
+	// }
+	// //if not, add me-> to it
+	// return "me->" + c.Initial
 }
 
 func parseOdeInitAlgo(s string) CvodeInit {
@@ -198,7 +202,7 @@ func parseOdeInitAlgo(s string) CvodeInit {
 		}
 	}
 
-	c.Initial = "x"
+	c.Initials = []InitialVar{{VarName: "ode_solution", VarValue: "x"}}
 
 	return c
 }
