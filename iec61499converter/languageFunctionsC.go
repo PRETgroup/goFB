@@ -170,15 +170,19 @@ func algorithmNeedsCvodeInit(a iec61499.Algorithm) bool {
 //CvodeInit is used in templates when generating code from Cvode_init algorithms
 type CvodeInit struct {
 	OdeFName string
-	Initials []InitialVar
+	Initials []OdeVar
 }
 
-type InitialVar struct { //InitialVar is a bit weird because in the C it will be templated...
+type CvodeTick struct {
+	Vars []OdeVar
+}
+
+type OdeVar struct { //InitialVar is a bit weird because in the C it will be templated...
 	VarName  string //...not using VarName, but instead a numerical index based on the position
 	VarValue string
 }
 
-func (c CvodeInit) GetInitialValues() []InitialVar {
+func (c CvodeInit) GetInitialValues() []OdeVar {
 	return c.Initials
 	// //check to see if it's just a number
 	// if _, err := strconv.ParseFloat(c.Initial, 64); err == nil {
@@ -205,7 +209,23 @@ func parseOdeInitAlgo(s string) CvodeInit {
 	for _, line := range lines {
 		nameMatch := primeRegex.FindStringSubmatch(line)
 		if len(nameMatch) == 3 {
-			c.Initials = append(c.Initials, InitialVar{VarName: nameMatch[1], VarValue: nameMatch[2]})
+			c.Initials = append(c.Initials, OdeVar{VarName: nameMatch[1], VarValue: nameMatch[2]})
+		}
+	}
+
+	return c
+}
+
+func parseOdeRunAlgo(s string) CvodeTick {
+	lines := strings.Split(s, "\n")
+
+	c := CvodeTick{}
+
+	dotRegex := regexp.MustCompile(`([a-zA-Z]+)_dot\s+=\s+([^;]+);`)
+	for _, line := range lines {
+		nameMatch := dotRegex.FindStringSubmatch(line)
+		if len(nameMatch) == 3 {
+			c.Vars = append(c.Vars, OdeVar{VarName: nameMatch[1], VarValue: nameMatch[2]})
 		}
 	}
 

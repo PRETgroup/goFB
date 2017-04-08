@@ -67,22 +67,31 @@ int TrainHA_init(TrainHA_t  *me) {
 
 
 
-void TrainHA_fast_mode_algo_f(realtype t, N_Vector x, N_Vector x_dot, void *f_data) {
-	NV_Ith_S(x_dot, 0) = 1; //TODO ????
+void TrainHA_fast_mode_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
+	TrainHA_t *me = (TrainHA_t*)f_data;
+	
+	NV_Ith_S(me->ode_solution_dot, 0) = me->Vf;
+	
 }
 
 
 
 
-void TrainHA_slow_mode_1_algo_f(realtype t, N_Vector x, N_Vector x_dot, void *f_data) {
-	NV_Ith_S(x_dot, 0) = 1; //TODO ????
+void TrainHA_slow_mode_1_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
+	TrainHA_t *me = (TrainHA_t*)f_data;
+	
+	NV_Ith_S(me->ode_solution_dot, 0) = me->Vs;
+	
 }
 
 
 
 
-void TrainHA_slow_mode_2_algo_f(realtype t, N_Vector x, N_Vector x_dot, void *f_data) {
-	NV_Ith_S(x_dot, 0) = 1; //TODO ????
+void TrainHA_slow_mode_2_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
+	TrainHA_t *me = (TrainHA_t*)f_data;
+	
+	NV_Ith_S(me->ode_solution_dot, 0) = me->Vs;
+	
 }
 
 
@@ -123,6 +132,13 @@ void TrainHA_fast_mode_setup_0_algo_cvode_init(TrainHA_t *me) {
 		fprintf(stderr, "Error in CVodeMalloc: %d\n", flag);
 		while(1);
     }
+
+	flag = CVodeSetUserData(me->cvode_mem, me);
+	if (flag < 0) {
+		fprintf(stderr, "Error in CVodeSetUserData: %d\n", flag);
+		while(1);
+    }
+
 
 	//set solver tolerances
 	flag = CVodeSStolerances(me->cvode_mem, reltol, abstol);
@@ -171,6 +187,13 @@ void TrainHA_slow_mode_2_setup_0_algo_cvode_init(TrainHA_t *me) {
 		while(1);
     }
 
+	flag = CVodeSetUserData(me->cvode_mem, me);
+	if (flag < 0) {
+		fprintf(stderr, "Error in CVodeSetUserData: %d\n", flag);
+		while(1);
+    }
+
+
 	//set solver tolerances
 	flag = CVodeSStolerances(me->cvode_mem, reltol, abstol);
 	if (flag < 0) {
@@ -217,6 +240,13 @@ void TrainHA_slow_mode_1_setup_0_algo_cvode_init(TrainHA_t *me) {
 		fprintf(stderr, "Error in CVodeMalloc: %d\n", flag);
 		while(1);
     }
+
+	flag = CVodeSetUserData(me->cvode_mem, me);
+	if (flag < 0) {
+		fprintf(stderr, "Error in CVodeSetUserData: %d\n", flag);
+		while(1);
+    }
+
 
 	//set solver tolerances
 	flag = CVodeSStolerances(me->cvode_mem, reltol, abstol);

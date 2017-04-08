@@ -2,8 +2,11 @@
 
 {{range $algIndex, $alg := $basicFB.Algorithms}}
 {{if algorithmNeedsCvode $alg}}
-void {{$block.Name}}_{{$alg.Name}}_f(realtype t, N_Vector x, N_Vector x_dot, void *f_data) {
-	NV_Ith_S(x_dot, 0) = 1; //TODO ????
+void {{$block.Name}}_{{$alg.Name}}_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
+	{{$block.Name}}_t *me = ({{$block.Name}}_t*)f_data;
+	{{$odeTick := parseOdeRunAlgo .Other.Text}}{{range $varIndex, $var := $odeTick.Vars}}
+	NV_Ith_S(me->ode_solution_dot, {{$varIndex}}) = {{$trans := getCECCTransitionCondition $block $var.VarValue}}{{$trans.IfCond}};
+	{{end}}
 }
 {{else if algorithmNeedsCvodeInit $alg}}
 void {{$block.Name}}_{{$alg.Name}}_cvode_init({{$block.Name}}_t *me) {
@@ -41,6 +44,13 @@ void {{$block.Name}}_{{$alg.Name}}_cvode_init({{$block.Name}}_t *me) {
 		fprintf(stderr, "Error in CVodeMalloc: %d\n", flag);
 		while(1);
     }
+
+	flag = CVodeSetUserData(me->cvode_mem, me);
+	if (flag < 0) {
+		fprintf(stderr, "Error in CVodeSetUserData: %d\n", flag);
+		while(1);
+    }
+
 
 	//set solver tolerances
 	flag = CVodeSStolerances(me->cvode_mem, reltol, abstol);

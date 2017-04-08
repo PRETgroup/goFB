@@ -95,6 +95,7 @@ var (
 		"algorithmNeedsCvode":             algorithmNeedsCvode,
 		"algorithmNeedsCvodeInit":         algorithmNeedsCvodeInit,
 		"parseOdeInitAlgo":                parseOdeInitAlgo,
+		"parseOdeRunAlgo":                 parseOdeRunAlgo,
 
 		"div":   div,
 		"add":   add,
