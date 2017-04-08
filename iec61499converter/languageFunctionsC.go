@@ -189,12 +189,11 @@ func (c CvodeInit) GetInitialValues() []InitialVar {
 }
 
 func parseOdeInitAlgo(s string) CvodeInit {
+	lines := strings.Split(s, "\n")
 
 	c := CvodeInit{}
 
 	nameRegex := regexp.MustCompile(`ode[\s]+\=[\s]+([a-zA-Z0-9\_]+);`)
-
-	lines := strings.Split(s, "\n")
 	for _, line := range lines {
 		nameMatch := nameRegex.FindStringSubmatch(line)
 		if len(nameMatch) == 2 {
@@ -202,7 +201,13 @@ func parseOdeInitAlgo(s string) CvodeInit {
 		}
 	}
 
-	c.Initials = []InitialVar{{VarName: "x", VarValue: "x"}}
+	primeRegex := regexp.MustCompile(`([a-zA-Z]+)_prime\s+=\s+([^;]+);`)
+	for _, line := range lines {
+		nameMatch := primeRegex.FindStringSubmatch(line)
+		if len(nameMatch) == 3 {
+			c.Initials = append(c.Initials, InitialVar{VarName: nameMatch[1], VarValue: nameMatch[2]})
+		}
+	}
 
 	return c
 }

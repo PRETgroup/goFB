@@ -30,7 +30,7 @@ void {{$block.Name}}_{{$alg.Name}}_cvode_init({{$block.Name}}_t *me) {
 
 	//specify initial values
 	{{range $initVarIndex, $initVar := $odeInit.GetInitialValues}}
-	NV_Ith_S(me->ode_solution, {{$initVarIndex}}) = {{$initVar.VarValue}};
+	NV_Ith_S(me->ode_solution, {{$initVarIndex}}) = {{$trans := getCECCTransitionCondition $block $initVar.VarValue}}{{$trans.IfCond}};
 	{{end}}
 		
 	me->T0 = 0; //???? should this always be 0 ????

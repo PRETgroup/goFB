@@ -103,7 +103,7 @@ void TrainHA_fast_mode_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//create solver
-	me->ode_solution = N_VNewSerial(1);
+	me->ode_solution = N_VNewSerial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
@@ -111,7 +111,10 @@ void TrainHA_fast_mode_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//specify initial values
-	NV_Ith_S(me->ode_solution, me->x);
+	
+	NV_Ith_S(me->ode_solution, 0) = me->x;
+	
+		
 	me->T0 = 0; //???? should this always be 0 ????
 
 	//initialize solver with pointer to values
@@ -147,7 +150,7 @@ void TrainHA_slow_mode_2_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//create solver
-	me->ode_solution = N_VNewSerial(1);
+	me->ode_solution = N_VNewSerial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
@@ -155,7 +158,10 @@ void TrainHA_slow_mode_2_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//specify initial values
-	NV_Ith_S(me->ode_solution, me->x);
+	
+	NV_Ith_S(me->ode_solution, 0) = me->x;
+	
+		
 	me->T0 = 0; //???? should this always be 0 ????
 
 	//initialize solver with pointer to values
@@ -191,7 +197,7 @@ void TrainHA_slow_mode_1_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//create solver
-	me->ode_solution = N_VNewSerial(1);
+	me->ode_solution = N_VNewSerial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
@@ -199,7 +205,10 @@ void TrainHA_slow_mode_1_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//specify initial values
-	NV_Ith_S(me->ode_solution, me->x);
+	
+	NV_Ith_S(me->ode_solution, 0) = 0;
+	
+		
 	me->T0 = 0; //???? should this always be 0 ????
 
 	//initialize solver with pointer to values
