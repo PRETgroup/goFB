@@ -26,6 +26,6 @@
   <ECTransition Source="Start" Destination="wait" Condition="true" x="973.020819425583" y="577.5625" />
   <ECTransition Source="wait" Destination="Start" Condition="true" x="970.020819425583" y="611.5625" />
 </ECC><Algorithm Name="setDelta" Comment="">
-  <Other Language="C" Prototype="" Text="me-&gt;Delta = 0.01;" />
+  <Other Language="C" Prototype="" Text="me-&gt;delta = 0.01;" />
 </Algorithm></BasicFB>
 </FBType>

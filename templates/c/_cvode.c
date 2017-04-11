@@ -2,11 +2,12 @@
 
 {{range $algIndex, $alg := $basicFB.Algorithms}}
 {{if algorithmNeedsCvode $alg}}
-void {{$block.Name}}_{{$alg.Name}}_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
+static int {{$block.Name}}_{{$alg.Name}}_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
 	{{$block.Name}}_t *me = ({{$block.Name}}_t*)f_data;
 	{{$odeTick := parseOdeRunAlgo .Other.Text}}{{range $varIndex, $var := $odeTick.Vars}}
-	NV_Ith_S(me->ode_solution_dot, {{$varIndex}}) = {{$trans := getCECCTransitionCondition $block $var.VarValue}}{{$trans.IfCond}};
+	NV_Ith_S(ode_solution_dot, {{$varIndex}}) = {{$trans := getCECCTransitionCondition $block $var.VarValue}}{{$trans.IfCond}};
 	{{end}}
+	return 0;
 }
 {{else if algorithmNeedsCvodeInit $alg}}
 void {{$block.Name}}_{{$alg.Name}}_cvode_init({{$block.Name}}_t *me) {
@@ -24,7 +25,7 @@ void {{$block.Name}}_{{$alg.Name}}_cvode_init({{$block.Name}}_t *me) {
 	}
 
 	//create solver
-	me->ode_solution = N_VNewSerial({{len $odeInit.GetInitialValues}}); //length of initial values
+	me->ode_solution = N_VNew_Serial({{len $odeInit.GetInitialValues}}); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");

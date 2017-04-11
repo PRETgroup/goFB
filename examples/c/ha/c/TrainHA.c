@@ -67,31 +67,34 @@ int TrainHA_init(TrainHA_t  *me) {
 
 
 
-void TrainHA_fast_mode_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
+static int TrainHA_fast_mode_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
 	TrainHA_t *me = (TrainHA_t*)f_data;
 	
-	NV_Ith_S(me->ode_solution_dot, 0) = me->Vf;
+	NV_Ith_S(ode_solution_dot, 0) = me->Vf;
 	
+	return 0;
 }
 
 
 
 
-void TrainHA_slow_mode_1_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
+static int TrainHA_slow_mode_1_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
 	TrainHA_t *me = (TrainHA_t*)f_data;
 	
-	NV_Ith_S(me->ode_solution_dot, 0) = me->Vs;
+	NV_Ith_S(ode_solution_dot, 0) = me->Vs;
 	
+	return 0;
 }
 
 
 
 
-void TrainHA_slow_mode_2_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
+static int TrainHA_slow_mode_2_algo_f(realtype t, N_Vector ode_solution, N_Vector ode_solution_dot, void *f_data) {
 	TrainHA_t *me = (TrainHA_t*)f_data;
 	
-	NV_Ith_S(me->ode_solution_dot, 0) = me->Vs;
+	NV_Ith_S(ode_solution_dot, 0) = me->Vs;
 	
+	return 0;
 }
 
 
@@ -112,7 +115,7 @@ void TrainHA_fast_mode_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//create solver
-	me->ode_solution = N_VNewSerial(1); //length of initial values
+	me->ode_solution = N_VNew_Serial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
@@ -166,7 +169,7 @@ void TrainHA_slow_mode_2_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//create solver
-	me->ode_solution = N_VNewSerial(1); //length of initial values
+	me->ode_solution = N_VNew_Serial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
@@ -220,7 +223,7 @@ void TrainHA_slow_mode_1_setup_0_algo_cvode_init(TrainHA_t *me) {
 	}
 
 	//create solver
-	me->ode_solution = N_VNewSerial(1); //length of initial values
+	me->ode_solution = N_VNew_Serial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
@@ -261,20 +264,20 @@ void TrainHA_slow_mode_1_setup_0_algo_cvode_init(TrainHA_t *me) {
 
 
 void TrainHA_fast_mode_algo(TrainHA_t  *me) {
-//PROVIDED CODE: this algorithm was provided in an algorithm's text field
-x_dot = Vf;
+
+//NO CODE: this is a cvode algorithm, so is defined elsewhere
 
 }
 
 void TrainHA_slow_mode_1_algo(TrainHA_t  *me) {
-//PROVIDED CODE: this algorithm was provided in an algorithm's text field
-x_dot = Vs;
+
+//NO CODE: this is a cvode algorithm, so is defined elsewhere
 
 }
 
 void TrainHA_slow_mode_2_algo(TrainHA_t  *me) {
-//PROVIDED CODE: this algorithm was provided in an algorithm's text field
-x_dot = Vs;
+
+//NO CODE: this is a cvode algorithm, so is defined elsewhere
 
 }
 
