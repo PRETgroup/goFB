@@ -73,6 +73,8 @@ typedef struct {
 	void *cvode_mem;
 	N_Vector ode_solution;
 	realtype T0;
+	realtype Tnext;
+	realtype Tcurr;
 	{{end}}{{end}}
 
 	{{end}}

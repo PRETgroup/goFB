@@ -22,7 +22,7 @@ int main() {
 
 	int tickNum = 0;
 	do {
-		printf("=====TICK %i=====\n",tickNum);
+		//printf("=====TICK %i=====\n",tickNum);
 		top_syncOutputEvents(&mytop);
 		top_syncInputEvents(&mytop);
 
@@ -30,7 +30,7 @@ int main() {
 		top_syncInputData(&mytop);
 		
 		top_run(&mytop);
-	} while(tickNum++ < 10);
+	} while(tickNum++ < 100);
 
 	return 0;
 }
