@@ -30,7 +30,7 @@ int main() {
 		top_syncInputData(&mytop);
 		
 		top_run(&mytop);
-	} while(tickNum++ < 100);
+	} while(tickNum++ < 500);
 
 	return 0;
 }

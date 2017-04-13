@@ -31,6 +31,7 @@ int TrainHA_preinit(TrainHA_t  *me) {
 	
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	me->_state = STATE_TrainHA_start;
+	me->_trigger = true;
 	
 	me->cvode_mem = NULL;
 	
@@ -325,143 +326,160 @@ void TrainHA_run(TrainHA_t *me) {
 
 	repeat: //ode FBs can take multiple transitions in a single tick (as they pass through init states)
 
-	//state output logic always occurs in ODE FBs and needs to occur before we consider state changes
-	switch(me->_state) {
-	case STATE_TrainHA_start:
-		
-		
-		break;
-
-	case STATE_TrainHA_slow_mode_1_setup_0:
-		TrainHA_slow_mode_1_setup_0_algo(me);
-		
-		
-		break;
-
-	case STATE_TrainHA_slow_mode_1:
-		TrainHA_slow_mode_1_algo(me);
-		me->outputEvents.event.update = 1;
-		
-		//state invariants and saturation management
-		
-		if(me->x <= 0 ) {
-			me->x = 0 ;
-		}
-		
-		if( me->x >= 5) {
-			 me->x = 5;
-		}
-		
-		break;
-
-	case STATE_TrainHA_fast_mode:
-		TrainHA_fast_mode_algo(me);
-		me->outputEvents.event.update = 1;
-		
-		//state invariants and saturation management
-		
-		if(me->x <= 5 ) {
-			me->x = 5 ;
-		}
-		
-		if( me->x >= 15) {
-			 me->x = 15;
-		}
-		
-		break;
-
-	case STATE_TrainHA_slow_mode_2:
-		TrainHA_slow_mode_2_algo(me);
-		me->outputEvents.event.update = 1;
-		
-		//state invariants and saturation management
-		
-		if(me->x <= 15 ) {
-			me->x = 15 ;
-		}
-		
-		if( me->x >= 25) {
-			 me->x = 25;
-		}
-		
-		break;
-
-	case STATE_TrainHA_fast_mode_setup_0:
-		TrainHA_fast_mode_setup_0_algo(me);
-		
-		
-		break;
-
-	case STATE_TrainHA_slow_mode_2_setup_0:
-		TrainHA_slow_mode_2_setup_0_algo(me);
-		
-		
-		break;
-
-	
-	}
+	me->_trigger = false;
 
 	//next state logic
-	switch(me->_state) {
-	case STATE_TrainHA_start:
-		if(me->inputEvents.event.tick) {
-			me->_state = STATE_TrainHA_slow_mode_1_setup_0;
-		};
+	if(me->_trigger == false) {
+		switch(me->_state) {
+		case STATE_TrainHA_start:
+			if(me->inputEvents.event.tick) {
+				me->_state = STATE_TrainHA_slow_mode_1_setup_0;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_TrainHA_slow_mode_1_setup_0:
+			if(true) {
+				me->_state = STATE_TrainHA_slow_mode_1;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_TrainHA_slow_mode_1:
+			if(me->inputEvents.event.tick && (me->x >= 0 && me->x < 5)) {
+				me->_state = STATE_TrainHA_slow_mode_1;
+				me->_trigger = true;
+			} else if(me->inputEvents.event.tick && (me->x == 5)) {
+				me->_state = STATE_TrainHA_fast_mode_setup_0;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_TrainHA_fast_mode:
+			if(me->inputEvents.event.tick && (me->x >= 5 && me->x < 15)) {
+				me->_state = STATE_TrainHA_fast_mode;
+				me->_trigger = true;
+			} else if(me->inputEvents.event.tick && (me->x == 15)) {
+				me->_state = STATE_TrainHA_slow_mode_2_setup_0;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_TrainHA_slow_mode_2:
+			if(me->inputEvents.event.tick && (me->x >= 15 && me->x < 25)) {
+				me->_state = STATE_TrainHA_slow_mode_2;
+				me->_trigger = true;
+			} else if(me->inputEvents.event.tick && (me->x == 25)) {
+				me->_state = STATE_TrainHA_slow_mode_1_setup_0;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_TrainHA_fast_mode_setup_0:
+			if(true) {
+				me->_state = STATE_TrainHA_fast_mode;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_TrainHA_slow_mode_2_setup_0:
+			if(true) {
+				me->_state = STATE_TrainHA_slow_mode_2;
+				me->_trigger = true;
+			};
+			break;
 		
-		break;
-	case STATE_TrainHA_slow_mode_1_setup_0:
-		if(true) {
-			me->_state = STATE_TrainHA_slow_mode_1;
-		};
-		
-		//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
-		goto repeat;
-		
-		break;
-	case STATE_TrainHA_slow_mode_1:
-		if(me->inputEvents.event.tick && (me->x >= 0 && me->x < 5)) {
-			me->_state = STATE_TrainHA_slow_mode_1;
-		} else if(me->inputEvents.event.tick && (me->x = 5)) {
-			me->_state = STATE_TrainHA_fast_mode_setup_0;
-		};
-		
-		break;
-	case STATE_TrainHA_fast_mode:
-		if(me->inputEvents.event.tick && (me->x >= 5 && me->x < 15)) {
-			me->_state = STATE_TrainHA_fast_mode;
-		} else if(me->inputEvents.event.tick && (me->x = 15)) {
-			me->_state = STATE_TrainHA_slow_mode_2_setup_0;
-		};
-		
-		break;
-	case STATE_TrainHA_slow_mode_2:
-		if(me->inputEvents.event.tick && (me->x >= 15 && me->x < 25)) {
-			me->_state = STATE_TrainHA_slow_mode_2;
-		} else if(me->inputEvents.event.tick && (me->x = 25)) {
-			me->_state = STATE_TrainHA_slow_mode_1_setup_0;
-		};
-		
-		break;
-	case STATE_TrainHA_fast_mode_setup_0:
-		if(true) {
-			me->_state = STATE_TrainHA_fast_mode;
-		};
-		
-		//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
-		goto repeat;
-		
-		break;
-	case STATE_TrainHA_slow_mode_2_setup_0:
-		if(true) {
-			me->_state = STATE_TrainHA_slow_mode_2;
-		};
-		
-		//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
-		goto repeat;
-		
-		break;
-	
+		}
 	}
+	
+	if(me->_trigger == true) {
+		switch(me->_state) {
+		case STATE_TrainHA_start:
+			
+			
+			
+			break;
+
+		case STATE_TrainHA_slow_mode_1_setup_0:
+			TrainHA_slow_mode_1_setup_0_algo(me);
+			
+			
+			
+			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
+			goto repeat;
+			
+			break;
+
+		case STATE_TrainHA_slow_mode_1:
+			TrainHA_slow_mode_1_algo(me);
+			me->outputEvents.event.update = 1;
+			
+			//state invariants and saturation management
+			
+			if(me->x <= 0 ) {
+				me->x = 0 ;
+			}
+			
+			if( me->x >= 5) {
+				 me->x = 5;
+			}
+			
+			
+			break;
+
+		case STATE_TrainHA_fast_mode:
+			TrainHA_fast_mode_algo(me);
+			me->outputEvents.event.update = 1;
+			
+			//state invariants and saturation management
+			
+			if(me->x <= 5 ) {
+				me->x = 5 ;
+			}
+			
+			if( me->x >= 15) {
+				 me->x = 15;
+			}
+			
+			
+			break;
+
+		case STATE_TrainHA_slow_mode_2:
+			TrainHA_slow_mode_2_algo(me);
+			me->outputEvents.event.update = 1;
+			
+			//state invariants and saturation management
+			
+			if(me->x <= 15 ) {
+				me->x = 15 ;
+			}
+			
+			if( me->x >= 25) {
+				 me->x = 25;
+			}
+			
+			
+			break;
+
+		case STATE_TrainHA_fast_mode_setup_0:
+			TrainHA_fast_mode_setup_0_algo(me);
+			
+			
+			
+			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
+			goto repeat;
+			
+			break;
+
+		case STATE_TrainHA_slow_mode_2_setup_0:
+			TrainHA_slow_mode_2_setup_0_algo(me);
+			
+			
+			
+			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
+			goto repeat;
+			
+			break;
+
+		
+		}
+	}
+	
+
 
 }
 

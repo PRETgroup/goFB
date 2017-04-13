@@ -112,36 +112,44 @@ void {{$block.Name}}_run({{$block.Name}}_t *me) {
 
 	repeat: //ode FBs can take multiple transitions in a single tick (as they pass through init states)
 
-	//state output logic always occurs in ODE FBs and needs to occur before we consider state changes
-	switch(me->_state) {
-	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$block.Name}}_{{$curState.Name}}:
-		{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
-		{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
-		{{end}}{{end}}
-		{{$invs := stateCvodeInvariants $block $curState}}{{if $invs}}//state invariants and saturation management
-		{{range $invIndex, $inv := $invs}}
-		if({{$inv.Condition}}) {
-			{{$inv.Saturation}};
-		}
-		{{end}}{{end}}
-		break;
-
-	{{end}}
-	}
+	me->_trigger = false;
 
 	//next state logic
-	switch(me->_state) {
-	{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$block.Name}}_{{$curState.Name}}:
-		{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{$cond := getCECCTransitionCondition $block $trans.Condition}}{{$cond.IfCond}}) {
-			me->_state = STATE_{{$block.Name}}_{{$trans.Destination}};
-		{{end}}{{if $basicFB.GetTransitionsForState $curState.Name}}};{{end}}
-		{{if stateIsCvodeSetup $curState}}
-		//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
-		goto repeat;
+	if(me->_trigger == false) {
+		switch(me->_state) {
+		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$block.Name}}_{{$curState.Name}}:
+			{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}} else {{end}}if({{$cond := getCECCTransitionCondition $block $trans.Condition}}{{$cond.IfCond}}) {
+				me->_state = STATE_{{$block.Name}}_{{$trans.Destination}};
+				me->_trigger = true;
+			{{end}}{{if $basicFB.GetTransitionsForState $curState.Name}}};{{end}}
+			break;
 		{{end}}
-		break;
-	{{end}}
+		}
 	}
+	
+	if(me->_trigger == true) {
+		switch(me->_state) {
+		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$block.Name}}_{{$curState.Name}}:
+			{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
+			{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
+			{{end}}{{end}}
+			{{$invs := stateCvodeInvariants $block $curState}}{{if $invs}}//state invariants and saturation management
+			{{range $invIndex, $inv := $invs}}
+			if({{$inv.Condition}}) {
+				{{$inv.Saturation}};
+			}
+			{{end}}{{end}}
+			{{if stateIsCvodeSetup $curState}}
+			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
+			goto repeat;
+			{{end}}
+			break;
+
+		{{end}}
+		}
+	}
+	
+
 
 }
 

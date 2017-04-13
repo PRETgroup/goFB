@@ -61,6 +61,7 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	enum TrainHA_states _state; //stores current state
+	BOOL _trigger; //indicates if a state transition has occured this tick
 	//this block uses cvode
 	void *cvode_mem;
 	N_Vector ode_solution;

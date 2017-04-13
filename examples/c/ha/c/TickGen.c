@@ -30,8 +30,9 @@ int TickGen_preinit(TickGen_t  *me) {
 	
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	me->_state = STATE_TickGen_Start;
-	
 	me->_trigger = true;
+	
+	
 	
 	
 	return 0;
