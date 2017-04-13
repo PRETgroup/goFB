@@ -38,13 +38,12 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 		return 1;
 	}
 	{{end}}{{end}}
-	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
-	{{if $block.BasicFB}}me->_trigger = true;
-	me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};
+	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
+	{{if $block.BasicFB}}me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};
+	{{if and .CvodeEnabled (blockNeedsCvode $block)}}
+	me->cvode_mem = NULL;{{else}}
+	me->_trigger = true;{{end}}
 	{{end}}
-
-	{{if .CvodeEnabled}}{{if blockNeedsCvode $block}}
-	me->cvode_mem = NULL;{{end}}{{end}}
 	
 	return 0;
 }

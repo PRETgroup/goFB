@@ -167,6 +167,52 @@ func algorithmNeedsCvodeInit(a iec61499.Algorithm) bool {
 	return a.Comment == "ODE_init"
 }
 
+func stateIsCvodeSetup(s iec61499.ECState) bool {
+	return s.Comment == "ODE_init"
+}
+
+type CvodeInvariant struct {
+	Condition  string
+	Saturation string
+}
+
+func stateCvodeInvariants(block iec61499.FB, s iec61499.ECState) []CvodeInvariant {
+	//TODO: This check should be a bit more robust...
+	if s.Comment == "" ||
+		s.Comment == "ODE_init" {
+		return nil
+	}
+
+	condStr := strings.Replace(s.Comment, "AND", "&&", -1)
+	//TODO: a better way to turn invariants into conditions for saturation (at the moment we just reverse the gt/lt check)
+	condStr = strings.Replace(condStr, "=<", "<=", -1) //make sure all conditions are the same way around
+	condStr = strings.Replace(condStr, "=>", ">=", -1)
+
+	condStr = strings.Replace(condStr, "<=", "_LTOE_", -1) //reversing the >= and <= without overwriting the reversed values requires an intermediary
+	condStr = strings.Replace(condStr, ">=", "_GTOE_", -1)
+
+	condStr = strings.Replace(condStr, "_LTOE_", ">=", -1) //reversing the >= and <= without overwriting the reversed values requires an intermediary
+	condStr = strings.Replace(condStr, "_GTOE_", "<=", -1)
+
+	conds := strings.Split(condStr, "&&")
+
+	invs := make([]CvodeInvariant, 0, len(conds))
+
+	for _, cond := range conds {
+		fcond := getCECCTransitionCondition(block, cond).IfCond
+		//TODO: A better way to convert invariants to saturation would be good (at the moment we just assume we have x <= 5 means x == 5)
+		sat := strings.Replace(fcond, "<=", "=", -1)
+		sat = strings.Replace(sat, ">=", "=", -1)
+
+		invs = append(invs, CvodeInvariant{
+			Condition:  fcond,
+			Saturation: sat,
+		})
+	}
+
+	return invs
+}
+
 //CvodeInit is used in templates when generating code from Cvode_init algorithms
 type CvodeInit struct {
 	OdeFName string

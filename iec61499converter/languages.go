@@ -91,11 +91,15 @@ var (
 		"strToUpper":                      strToUpper,
 		"findVarDefinitionForName":        findVarDefinitionForName,
 		"connIsOnParent":                  connIsOnParent,
-		"blockNeedsCvode":                 blockNeedsCvode,
-		"algorithmNeedsCvode":             algorithmNeedsCvode,
-		"algorithmNeedsCvodeInit":         algorithmNeedsCvodeInit,
-		"parseOdeInitAlgo":                parseOdeInitAlgo,
-		"parseOdeRunAlgo":                 parseOdeRunAlgo,
+
+		//cvode functions
+		"blockNeedsCvode":         blockNeedsCvode,
+		"algorithmNeedsCvode":     algorithmNeedsCvode,
+		"algorithmNeedsCvodeInit": algorithmNeedsCvodeInit,
+		"stateIsCvodeSetup":       stateIsCvodeSetup,
+		"stateCvodeInvariants":    stateCvodeInvariants,
+		"parseOdeInitAlgo":        parseOdeInitAlgo,
+		"parseOdeRunAlgo":         parseOdeRunAlgo,
 
 		"div":   div,
 		"add":   add,

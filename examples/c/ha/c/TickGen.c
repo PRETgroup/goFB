@@ -28,11 +28,10 @@ int TickGen_preinit(TickGen_t  *me) {
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
-	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
-	me->_trigger = true;
+	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	me->_state = STATE_TickGen_Start;
 	
-
+	me->_trigger = true;
 	
 	
 	return 0;
@@ -62,17 +61,9 @@ int TickGen_init(TickGen_t  *me) {
 
 //algorithms
 
-
-
-
-
-
-
-
 void TickGen_setDelta(TickGen_t  *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
-me->delta = 0.01;
-
+me->delta = 0.10;
 }
 
 

@@ -28,11 +28,10 @@ int Output_preinit(Output_t  *me) {
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
-	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
-	me->_trigger = true;
+	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	me->_state = STATE_Output_Start;
 	
-
+	me->_trigger = true;
 	
 	
 	return 0;
@@ -62,17 +61,9 @@ int Output_init(Output_t  *me) {
 
 //algorithms
 
-
-
-
-
-
-
-
 void Output_print(Output_t  *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 printf("New value: %f\n", me->var);
-
 }
 
 

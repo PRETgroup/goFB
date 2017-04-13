@@ -68,13 +68,13 @@ typedef struct {
 	{{end}}{{end}}
 	//state and trigger (BFBs only)
 	{{if $block.BasicFB}}enum {{$block.Name}}_states _state; //stores current state
-	BOOL _trigger; //indicates if a state transition has occured this tick
 	{{if .CvodeEnabled}}{{if blockNeedsCvode $block}}//this block uses cvode
 	void *cvode_mem;
 	N_Vector ode_solution;
 	realtype T0;
 	realtype Tnext;
 	realtype Tcurr;
+	{{else}}{{/*ODE FBs don't need the _trigger variable*/}}BOOL _trigger; //indicates if a state transition has occured this tick
 	{{end}}{{end}}
 
 	{{end}}

@@ -364,6 +364,10 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			templateName = "compositeFB"
 		} else if c.Blocks[i].BasicFB != nil {
 			templateName = "basicFB"
+			//there is a possibility that this BFB is infact an odeFB (which have different semantics)
+			if c.ConverterSettings.CvodeEnabled && blockNeedsCvode(c.Blocks[i]) {
+				templateName = "odeFB"
+			}
 		} else if c.Blocks[i].Resources != nil {
 			templateName = "deviceFB"
 		} else {

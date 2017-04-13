@@ -47,9 +47,7 @@ int top_preinit(top_t  *me) {
 	}
 	
 	
-	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
-	
-
+	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	
 	
 	return 0;

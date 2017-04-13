@@ -28,24 +28,27 @@
 <BasicFB><InternalVars>
   <VarDeclaration Name="Variable1" Type="BOOL" Comment="" />
 </InternalVars><ECC>
-  <ECState Name="slow_mode_1_setup_0" Comment="" x="732.8125" y="1039.0625">
+  <ECState Name="start" Comment="" x="0" y="0">
+  </ECState>
+  <ECState Name="slow_mode_1_setup_0" Comment="ODE_init" x="732.8125" y="1039.0625">
     <ECAction Algorithm="slow_mode_1_setup_0_algo" />
   </ECState>
-  <ECState Name="slow_mode_1" Comment="" x="1225" y="700">
+  <ECState Name="slow_mode_1" Comment="x &gt;= 0 AND x &lt;= 5" x="1225" y="700">
     <ECAction Algorithm="slow_mode_1_algo" Output="update" />
   </ECState>
-  <ECState Name="fast_mode" Comment="" x="2038.02077770233" y="1476.5625">
+  <ECState Name="fast_mode" Comment="x &gt;= 5 AND x &lt;= 15" x="2038.02077770233" y="1476.5625">
     <ECAction Algorithm="fast_mode_algo" Output="update" />
   </ECState>
-  <ECState Name="slow_mode_2" Comment="" x="831.25" y="1582.29172229767">
+  <ECState Name="slow_mode_2" Comment="x &gt;= 15 AND x &lt;= 25" x="831.25" y="1582.29172229767">
     <ECAction Algorithm="slow_mode_2_algo" Output="update" />
   </ECState>
-  <ECState Name="fast_mode_setup_0" Comment="" x="2832.8125" y="1246.875">
+  <ECState Name="fast_mode_setup_0" Comment="ODE_init" x="2832.8125" y="1246.875">
     <ECAction Algorithm="fast_mode_setup_0_algo" />
   </ECState>
-  <ECState Name="slow_mode_2_setup_0" Comment="" x="1443.75" y="2187.5">
+  <ECState Name="slow_mode_2_setup_0" Comment="ODE_init" x="1443.75" y="2187.5">
     <ECAction Algorithm="slow_mode_2_setup_0_algo" />
   </ECState>
+  <ECTransition Source="start" Destination="slow_mode_1_setup_0" Condition="tick" x="1" y="1" />
   <ECTransition Source="slow_mode_1" Destination="slow_mode_1" Condition="tick AND (x &gt;= 0 AND x &lt; 5)" x="1283" y="688" />
   <ECTransition Source="slow_mode_1" Destination="fast_mode_setup_0" Condition="tick AND (x = 5)" x="2007.90625" y="953.4375" />
   <ECTransition Source="fast_mode" Destination="fast_mode" Condition="tick AND (x&gt;=5 AND x &lt; 15)" x="2081.02077770233" y="1560.5625" />
