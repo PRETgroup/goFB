@@ -8,8 +8,9 @@ import (
 type language string
 
 const (
-	languageVHDL language = "vhdl"
-	languageC    language = "c"
+	languageVHDL   language = "vhdl"
+	languageC      language = "c"
+	languageEventC language = "eventC"
 )
 
 //hasHeaders returns info on whether or not header files will be generated for the selected language
@@ -23,6 +24,9 @@ func (l language) getExtension() string {
 		return "vhd"
 	}
 	if l == languageC {
+		return "c"
+	}
+	if l == languageEventC {
 		return "c"
 	}
 	return "file"
@@ -108,4 +112,8 @@ var (
 	}
 
 	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob("./templates/c/*"))
+
+	eventCTemplateFuncMap = cTemplateFuncMap
+
+	eventCTemplates = template.Must(template.New("").Funcs(eventCTemplateFuncMap).ParseGlob("./templates/eventc/*"))
 )
