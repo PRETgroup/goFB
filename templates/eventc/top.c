@@ -22,7 +22,7 @@ int main() {
 
 	int tickNum = 0;
 	do {
-		printf("=====TICK %i=====\n",tickNum);
+		//printf("=====TICK %i=====\n",tickNum);
 		{{$block.Name}}_syncOutputEvents(&my{{$block.Name}});
 		{{$block.Name}}_syncInputEvents(&my{{$block.Name}});
 
@@ -30,7 +30,7 @@ int main() {
 		{{$block.Name}}_syncInputData(&my{{$block.Name}});
 		
 		{{$block.Name}}_run(&my{{$block.Name}});
-	} while(tickNum++ < 10);
+	} while(tickNum++ < 500);
 
 	return 0;
 }

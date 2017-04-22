@@ -7,6 +7,8 @@
 
 #include "fbtypes.h"
 
+
+
 //This is a BFB, so we need an enum type for the state machine
 enum passforward_states { STATE_passforward_Start, STATE_passforward_emit_data, STATE_passforward_count };
 
@@ -52,6 +54,8 @@ typedef struct {
 	//state and trigger (BFBs only)
 	enum passforward_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
+	
+
 	
 } passforward_t;
 

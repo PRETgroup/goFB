@@ -29,11 +29,13 @@ int passforward_preinit(passforward_t  *me) {
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
-	//if this is a BFB, set _trigger to be true and start state so that the start state is properly executed
-	me->_trigger = true;
+	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	me->_state = STATE_passforward_Start;
+	me->_trigger = true;
 	
-
+	
+	
+	
 	return 0;
 }
 
@@ -62,6 +64,7 @@ int passforward_init(passforward_t  *me) {
 //algorithms
 
 void passforward_upcount(passforward_t  *me) {
+//PROVIDED CODE: this algorithm was provided in an algorithm's text field
 printf("PF[%2i]: Received %i\n", me->printf_id, me->DataIn);
 me->DataOut = me->DataIn + 1;
 }
@@ -88,21 +91,18 @@ void passforward_run(passforward_t  *me) {
 			if(true) {
 				me->_state = STATE_passforward_emit_data;
 				me->_trigger = true;
-				
 			};
 			break;
 		case STATE_passforward_emit_data:
 			if(me->inputEvents.event.DataInChanged) {
 				me->_state = STATE_passforward_count;
 				me->_trigger = true;
-				
 			};
 			break;
 		case STATE_passforward_count:
 			if(true) {
 				me->_state = STATE_passforward_emit_data;
 				me->_trigger = true;
-				
 			};
 			break;
 		
