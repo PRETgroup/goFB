@@ -10,3 +10,5 @@ cd $WD
 gcc -Wall c/*.c /home/hammond/cvode/inst/lib/libsundials_cvode.a /home/hammond/cvode/inst/lib/libsundials_nvecserial.a -I/home/hammond/cvode/inst/include -lm -o ha.out -Wfatal-errors
 #run
 #./top.out
+
+

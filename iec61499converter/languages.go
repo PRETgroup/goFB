@@ -95,15 +95,17 @@ var (
 		"strToUpper":                      strToUpper,
 		"findVarDefinitionForName":        findVarDefinitionForName,
 		"connIsOnParent":                  connIsOnParent,
+		"nextPossibleECCStates":           nextPossibleECCStates,
+		"findAlgorithmFromName":           findAlgorithmFromName,
 
 		//cvode functions
 		"blockNeedsCvode":         blockNeedsCvode,
 		"algorithmNeedsCvode":     algorithmNeedsCvode,
 		"algorithmNeedsCvodeInit": algorithmNeedsCvodeInit,
 		"stateIsCvodeSetup":       stateIsCvodeSetup,
-		"stateCvodeInvariants":    stateCvodeInvariants,
 		"parseOdeInitAlgo":        parseOdeInitAlgo,
 		"parseOdeRunAlgo":         parseOdeRunAlgo,
+		"fixOdeVarNameInF":        fixOdeVarNameInF,
 
 		"div":   div,
 		"add":   add,

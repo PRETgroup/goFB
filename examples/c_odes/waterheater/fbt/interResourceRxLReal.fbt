@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="interResourceRxLReal" Comment="goFB_ignore" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="Rx" Comment="">
+    <With Var="Data" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Channel" Type="INT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="Data" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="update" Comment="" x="747.395861148834" y="652.604180574417">
+    <ECAction Algorithm="gen" />
+  </ECState>
+  <ECTransition Source="Start" Destination="update" Condition="true" x="488.322930574417" y="442.552090287209" />
+  <ECTransition Source="update" Destination="update" Condition="true" x="740.395861148834" y="655.604180574417" />
+</ECC><Algorithm Name="gen" Comment="">
+  <Other Language="C" Prototype="" Text="if(something) {&#xD;&#xA;	something;&#xD;&#xA;	something;&#xD;&#xA;	me-&gt;outputEvents.Rx = 1;&#xD;&#xA;}" />
+</Algorithm></BasicFB>
+</FBType>

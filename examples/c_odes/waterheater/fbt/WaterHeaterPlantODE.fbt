@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="WaterHeaterPlantODE" Comment="ODE_fb" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="HeatChange" Comment="">
+    <With Var="Heat" />
+  </Event>
+  <Event Name="Tick" Comment="">
+    <With Var="DeltaTime" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="Ychange" Comment="">
+    <With Var="Y" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Heat" Type="BOOL" Comment="" />
+  <VarDeclaration Name="DeltaTime" Type="LREAL" Comment="" />
+  <VarDeclaration Name="K" Type="LREAL" Comment="" />
+  <VarDeclaration Name="H" Type="LREAL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="Y" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+	<VarDeclaration Name="X" Type="LREAL" Comment="" />
+  </InternalVars>
+  <ECC>
+  <ECState Name="Start" Comment="" x="306.25" y="437.5">
+  </ECState>
+  <ECState Name="t1_enter_0" Comment="" x="743.75" y="776.5625">
+    <ECAction Algorithm="t1_setup_0" />
+  </ECState>
+  <ECState Name="t1" Comment="" x="1443.75" y="1006.25">
+    <ECAction Algorithm="t1_ode" Output="Ychange" />
+  </ECState>
+  <ECState Name="t2_enter_0" Comment="" x="1356.25" y="656.25">
+    <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
+  </ECState>
+  <ECState Name="t2" Comment="" x="1400" y="306.25">
+    <ECAction Algorithm="t2_ode" Output="Ychange" />
+  </ECState>
+  <ECState Name="t1_enter_1" Comment="" x="1968.75" y="1093.75">
+    <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
+  </ECState>
+  <ECState Name="t4" Comment="" x="2712.5" y="1093.75">
+    <ECAction Algorithm="t4_ode" Output="Ychange" />
+  </ECState>
+  <ECState Name="t3_enter_0" Comment="" x="1968.75" y="306.25">
+    <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
+  </ECState>
+  <ECState Name="t3" Comment="" x="2712.5" y="306.25">
+    <ECAction Algorithm="t3_ode" Output="Ychange" />
+  </ECState>
+  <ECState Name="t4_enter_0" Comment="" x="2668.75" y="656.25">
+    <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
+  </ECState>
+  <ECState Name="t2_enter_1" Comment="" x="1881.25" y="743.75">
+    <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
+  </ECState>
+  <ECState Name="t4_enter_1" Comment="" x="2067.1875" y="590.625">
+    <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
+  </ECState>
+  <ECTransition Source="Start" Destination="t1_enter_0" Condition="Tick" x="527" y="609.03125" />
+  <ECTransition Source="t1_enter_0" Destination="t1" Condition="true" x="1028.70831942558" y="863" />
+  <ECTransition Source="t1" Destination="t2_enter_0" Condition="Tick AND HeatChange AND (Heat)" x="1424.34375" y="817.604159712791" />
+  <ECTransition Source="t2_enter_0" Destination="t2" Condition="true" x="1377.30206942558" y="512.53125" />
+  <ECTransition Source="t2" Destination="t3_enter_0" Condition="Tick AND X==100" x="1663.4375" y="350" />
+  <ECTransition Source="t2" Destination="t4_enter_1" Condition="Tick AND HeatChange AND (!Heat)" x="1750.59375" y="468.4375" />
+  <ECTransition Source="t1_enter_1" Destination="t1" Condition="true" x="1719.25" y="1045" />
+  <ECTransition Source="t4" Destination="t1_enter_1" Condition="Tick AND X==20" x="2361.39586114883" y="1101.86456942558" />
+  <ECTransition Source="t4" Destination="t2_enter_1" Condition="Tick AND HeatChange AND (Heat)" x="2227.875" y="886.75" />
+  <ECTransition Source="t3_enter_0" Destination="t3" Condition="true" x="2347.625" y="350" />
+  <ECTransition Source="t3" Destination="t4_enter_0" Condition="Tick AND HeatChange AND (!Heat)" x="2692.625" y="492.25" />
+  <ECTransition Source="t4_enter_0" Destination="t4" Condition="true" x="2692.625" y="893" />
+  <ECTransition Source="t2_enter_1" Destination="t2" Condition="true" x="1685.625" y="520" />
+  <ECTransition Source="t4_enter_1" Destination="t4" Condition="true" x="2363.84375" y="887.1875" />
+</ECC><Algorithm Name="t1_ode" Comment="ODE">
+  <Other Language="C" Prototype="" Text="X_dot = 0;&#xD;&#xA;Y = X;" />
+</Algorithm>
+<Algorithm Name="t1_setup_0" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="X_prime = 20;&#xD;&#xA;Y = 20;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="t2_ode" Comment="ODE">
+  <Other Language="C" Prototype="" Text="X_dot = K * (H - X);&#xD;&#xA;Y = X;&#xD;&#xA;X_trigger = 100;" />
+</Algorithm>
+<Algorithm Name="x_prime_eq_x___y_eq_x" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="X_prime = X;&#xD;&#xA;Y = X;" />
+</Algorithm>
+<Algorithm Name="t3_ode" Comment="ODE">
+  <Other Language="C" Prototype="" Text="X_dot = 0;&#xD;&#xA;Y = X;" />
+</Algorithm>
+<Algorithm Name="t4_ode" Comment="ODE">
+  <Other Language="C" Prototype="" Text="X_dot = -K * X;&#xD;&#xA;Y = X;&#xD;&#xA;X_trigger = 20;" />
+</Algorithm></BasicFB>
+</FBType>
