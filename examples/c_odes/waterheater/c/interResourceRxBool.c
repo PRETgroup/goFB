@@ -63,13 +63,21 @@ int interResourceRxBool_init(interResourceRxBool_t  *me) {
 //algorithms
 
 void interResourceRxBool_gen(interResourceRxBool_t  *me) {
+	static int tickCount = 0;
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 // if(something) {
 // 	something;
 // 	something;
 // 	me->outputEvents.Rx = 1;
 // }
-me->Data = 1;
+
+if(tickCount == 0) {
+	me->Data = !me->Data;
+}
+tickCount++;
+if(tickCount == 50) {
+	tickCount = 0;
+}
 me->outputEvents.event.Rx = 1;
 }
 

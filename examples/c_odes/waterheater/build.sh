@@ -3,9 +3,9 @@
 WD=$(pwd)
 #compile fbt to c
 
-cd ../../..
-./goFB -i=$WD/fbt -o=$WD/c -l=c -t=_WaterHeaterPlant -cvode
-cd $WD
+# cd ../../..
+# ./goFB -i=$WD/fbt -o=$WD/c -l=c -t=_WaterHeaterPlant -cvode
+# cd $WD
 
 #compile
 #clang c/*.c -o top.out

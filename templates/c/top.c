@@ -9,6 +9,8 @@
 {{$block.Name}}_t my{{$block.Name}};
 
 int main() {
+	printf("\n\n\n");
+
 	if({{$block.Name}}_preinit(&my{{$block.Name}}) != 0) {
 		printf("Failed to preinitialize.");
 		return 1;
@@ -22,7 +24,7 @@ int main() {
 
 	int tickNum = 0;
 	do {
-		//printf("=====TICK %i=====\n",tickNum);
+		//printf("\n--TICK %i--\n",tickNum);
 		{{$block.Name}}_syncOutputEvents(&my{{$block.Name}});
 		{{$block.Name}}_syncInputEvents(&my{{$block.Name}});
 
@@ -30,7 +32,7 @@ int main() {
 		{{$block.Name}}_syncInputData(&my{{$block.Name}});
 		
 		{{$block.Name}}_run(&my{{$block.Name}});
-	} while(tickNum++ < 500);
+	} while(tickNum++ < 200);
 
 	return 0;
 }

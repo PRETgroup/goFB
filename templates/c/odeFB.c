@@ -73,9 +73,8 @@ void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t *me, CVRhsFn ode_f, CVRootF
 	NV_Ith_S(me->ode_solution, {{$initVarIndex}}) = {{$trans := getCECCTransitionCondition $block $initVar.VarValue}}{{$trans.IfCond}};
 	{{end}}
 		
-	me->T0 = 0; //???? should this always be 0 ????
-	me->Tnext = 0; //this will always be 0, it represents the value of t we've counted to.
-	me->Tcurr = 0; //the value of T the solver got to.
+	me->T0 = me->Tcurr; //set T0 to whatever real time we were counting from before
+	me->Tnext = me->Tcurr; //this will always be T0 + some time, but the increment happens inside the _f function
 
 	//initialize solver with pointer to values
 	flag = CVodeInit(me->cvode_mem, ode_f, me->T0, me->ode_solution);

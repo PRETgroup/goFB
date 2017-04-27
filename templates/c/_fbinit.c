@@ -42,7 +42,10 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 	{{if $block.BasicFB}}me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};
 	me->_trigger = true;
 	{{if and .CvodeEnabled (blockNeedsCvode $block)}}
-	me->cvode_mem = NULL;{{else}}
+	me->cvode_mem = NULL;
+	me->Tcurr = 0;
+	me->Tnext = 0;
+	me->T0 = 0;{{else}}
 	{{end}}
 	{{end}}
 	

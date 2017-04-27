@@ -35,6 +35,9 @@ int WaterHeaterPlantODE_preinit(WaterHeaterPlantODE_t  *me) {
 	me->_trigger = true;
 	
 	me->cvode_mem = NULL;
+	me->Tcurr = 0;
+	me->Tnext = 0;
+	me->T0 = 0;
 	
 	
 	return 0;
@@ -131,9 +134,8 @@ void WaterHeaterPlantODE_t1_setup_0(WaterHeaterPlantODE_t *me, CVRhsFn ode_f, CV
 	NV_Ith_S(me->ode_solution, 0) = 20;
 	
 		
-	me->T0 = 0; //???? should this always be 0 ????
-	me->Tnext = 0; //this will always be 0, it represents the value of t we've counted to.
-	me->Tcurr = 0; //the value of T the solver got to.
+	me->T0 = me->Tcurr; //set T0 to whatever real time we were counting from before
+	me->Tnext = me->Tcurr; //this will always be T0 + some time, but the increment happens inside the _f function
 
 	//initialize solver with pointer to values
 	flag = CVodeInit(me->cvode_mem, ode_f, me->T0, me->ode_solution);
@@ -194,7 +196,7 @@ void WaterHeaterPlantODE_t2_ode(WaterHeaterPlantODE_t *me) {
 		fprintf(stderr, "Error in CVode: %d\n", flag);
 		while(1);
 	}
-	
+
 	me->X = NV_Ith_S(me->ode_solution, 0);
 	
 	me->Y = me->X;
@@ -231,9 +233,8 @@ void WaterHeaterPlantODE_x_prime_eq_x___y_eq_x(WaterHeaterPlantODE_t *me, CVRhsF
 	NV_Ith_S(me->ode_solution, 0) = me->X;
 	
 		
-	me->T0 = 0; //???? should this always be 0 ????
-	me->Tnext = 0; //this will always be 0, it represents the value of t we've counted to.
-	me->Tcurr = 0; //the value of T the solver got to.
+	me->T0 = me->Tcurr; //set T0 to whatever real time we were counting from before
+	me->Tnext = me->Tcurr; //this will always be T0 + some time, but the increment happens inside the _f function
 
 	//initialize solver with pointer to values
 	flag = CVodeInit(me->cvode_mem, ode_f, me->T0, me->ode_solution);
@@ -548,6 +549,8 @@ void WaterHeaterPlantODE_run(WaterHeaterPlantODE_t *me) {
 		}
 	}
 	
+	
+	printf("T: %f\tY: %f\n", me->Tcurr, me->Y);
 
 
 }

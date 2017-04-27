@@ -9,6 +9,8 @@
 _WaterHeaterPlant_t my_WaterHeaterPlant;
 
 int main() {
+	printf("\n\n\n");
+
 	if(_WaterHeaterPlant_preinit(&my_WaterHeaterPlant) != 0) {
 		printf("Failed to preinitialize.");
 		return 1;
@@ -22,7 +24,7 @@ int main() {
 
 	int tickNum = 0;
 	do {
-		//printf("=====TICK %i=====\n",tickNum);
+		//printf("\n--TICK %i--\n",tickNum);
 		_WaterHeaterPlant_syncOutputEvents(&my_WaterHeaterPlant);
 		_WaterHeaterPlant_syncInputEvents(&my_WaterHeaterPlant);
 
@@ -30,7 +32,7 @@ int main() {
 		_WaterHeaterPlant_syncInputData(&my_WaterHeaterPlant);
 		
 		_WaterHeaterPlant_run(&my_WaterHeaterPlant);
-	} while(tickNum++ < 500);
+	} while(tickNum++ < 200);
 
 	return 0;
 }

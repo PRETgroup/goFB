@@ -66,7 +66,7 @@ void interResourceTxLReal_send(interResourceTxLReal_t  *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 // something;
 // something;
-printf("Received data:%f\n", me->Data);
+//printf("Received data:%f\n", me->Data);
 
 }
 
