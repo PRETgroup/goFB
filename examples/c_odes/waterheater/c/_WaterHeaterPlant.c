@@ -66,7 +66,7 @@ int _WaterHeaterPlant_init(_WaterHeaterPlant_t  *me) {
 	me->waterHeaterPlantODE.H = 150;
 	me->t_tx.Channel = 1;
 	me->heat_rx.Channel = 0;
-	me->tickgen.SetDeltaTime = 2.5;
+	me->tickgen.SetDeltaTime = 0.5;
 	
 	
 	

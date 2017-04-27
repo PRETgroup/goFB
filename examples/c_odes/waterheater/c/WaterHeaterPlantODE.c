@@ -381,6 +381,9 @@ void WaterHeaterPlantODE_run(WaterHeaterPlantODE_t *me) {
 			if(me->inputEvents.event.Tick && me->inputEvents.event.HeatChange && (me->Heat)) {
 				me->_state = STATE_WaterHeaterPlantODE_t2_enter_0;
 				me->_trigger = true;
+			} else if(me->inputEvents.event.Tick) {
+				me->_state = STATE_WaterHeaterPlantODE_t1;
+				me->_trigger = true;
 			};
 			break;
 		case STATE_WaterHeaterPlantODE_t2_enter_0:
@@ -395,6 +398,9 @@ void WaterHeaterPlantODE_run(WaterHeaterPlantODE_t *me) {
 				me->_trigger = true;
 			} else if(me->inputEvents.event.Tick && me->inputEvents.event.HeatChange && ( ! me->Heat)) {
 				me->_state = STATE_WaterHeaterPlantODE_t4_enter_1;
+				me->_trigger = true;
+			} else if(me->inputEvents.event.Tick) {
+				me->_state = STATE_WaterHeaterPlantODE_t2;
 				me->_trigger = true;
 			};
 			break;
@@ -411,6 +417,9 @@ void WaterHeaterPlantODE_run(WaterHeaterPlantODE_t *me) {
 			} else if(me->inputEvents.event.Tick && me->inputEvents.event.HeatChange && (me->Heat)) {
 				me->_state = STATE_WaterHeaterPlantODE_t2_enter_1;
 				me->_trigger = true;
+			} else if(me->inputEvents.event.Tick) {
+				me->_state = STATE_WaterHeaterPlantODE_t4;
+				me->_trigger = true;
 			};
 			break;
 		case STATE_WaterHeaterPlantODE_t3_enter_0:
@@ -422,6 +431,9 @@ void WaterHeaterPlantODE_run(WaterHeaterPlantODE_t *me) {
 		case STATE_WaterHeaterPlantODE_t3:
 			if(me->inputEvents.event.Tick && me->inputEvents.event.HeatChange && ( ! me->Heat)) {
 				me->_state = STATE_WaterHeaterPlantODE_t4_enter_0;
+				me->_trigger = true;
+			} else if(me->inputEvents.event.Tick) {
+				me->_state = STATE_WaterHeaterPlantODE_t3;
 				me->_trigger = true;
 			};
 			break;

@@ -18,7 +18,7 @@
     <Parameter Name="Channel" Value="0" />
   </FB>
   <FB Name="tickgen" Type="TickGen" x="743.75" y="218.75">
-    <Parameter Name="SetDeltaTime" Value="2.5" />
+    <Parameter Name="SetDeltaTime" Value="0.5" />
   </FB>
   <EventConnections><Connection Source="waterHeaterPlantODE.Ychange" Destination="t_tx.Tx" />
 <Connection Source="heat_rx.Rx" Destination="waterHeaterPlantODE.HeatChange" />
