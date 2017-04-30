@@ -417,8 +417,7 @@ void WaterHeaterPlantODE_run(WaterHeaterPlantODE_t *me) {
 restart:	//ode ECCs have ode setup states that aren't maintained for a tick, 
 			//so they are passed through, so they need a place to goto 
 
-
-repeat: 	//when we have had a mid-tick transition, we want to start the run again but we don't want to increment Tnext
+repeat: 	//when we have had a mid-tick transition, we want to start the run again 
 			
 	me->_trigger = false;
 
@@ -567,9 +566,6 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			goto restart;
-			if(odeRootFound == 1) {
-				goto repeat;
-			}
 			break;
 		case STATE_WaterHeaterPlantODE_t1:
 			
@@ -587,9 +583,6 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			goto restart;
-			if(odeRootFound == 1) {
-				goto repeat;
-			}
 			break;
 		case STATE_WaterHeaterPlantODE_t2:
 			
@@ -607,9 +600,6 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			goto restart;
-			if(odeRootFound == 1) {
-				goto repeat;
-			}
 			break;
 		case STATE_WaterHeaterPlantODE_t4:
 			
@@ -627,9 +617,6 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			goto restart;
-			if(odeRootFound == 1) {
-				goto repeat;
-			}
 			break;
 		case STATE_WaterHeaterPlantODE_t3:
 			
@@ -647,9 +634,6 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			goto restart;
-			if(odeRootFound == 1) {
-				goto repeat;
-			}
 			break;
 		case STATE_WaterHeaterPlantODE_t2_enter_1:
 			
@@ -658,9 +642,6 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			goto restart;
-			if(odeRootFound == 1) {
-				goto repeat;
-			}
 			break;
 		case STATE_WaterHeaterPlantODE_t4_enter_1:
 			
@@ -669,9 +650,6 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			goto restart;
-			if(odeRootFound == 1) {
-				goto repeat;
-			}
 			break;
 		
 		}

@@ -187,10 +187,10 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
 			{{end}}{{end}}{{if stateIsCvodeSetup $basicFB $curState}}
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
-			goto restart;{{end}}
+			goto restart;{{else}}
 			if(odeRootFound == 1) {
 				goto repeat;
-			}
+			}{{end}}
 			break;
 		{{end}}
 		}
