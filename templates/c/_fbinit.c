@@ -45,7 +45,8 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 	me->cvode_mem = NULL;
 	me->Tcurr = 0;
 	me->Tnext = 0;
-	me->T0 = 0;{{else}}
+	me->T0 = 0;
+	me->solveInProgress = 0;{{else}}
 	{{end}}
 	{{end}}
 	

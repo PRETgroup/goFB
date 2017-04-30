@@ -68,21 +68,21 @@
   <ECState Name="t4_enter_1" Comment="" x="2067.1875" y="590.625">
     <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
   </ECState>
-  <ECTransition Source="Start" Destination="t1_enter_0" Condition="Tick" x="527" y="609.03125" />
+  <ECTransition Source="Start" Destination="t1_enter_0" Condition="DeltaTime != 0" x="527" y="609.03125" />
   <ECTransition Source="t1_enter_0" Destination="t1" Condition="true" x="1028.70831942558" y="863" />
-  <ECTransition Source="t1" Destination="t2_enter_0" Condition="Tick AND HeatChange AND (Heat)" x="1424.34375" y="817.604159712791" />
-  <ECTransition Source="t1" Destination="t1" Condition="Tick" x="1424.34375" y="817.604159712791" />
+  <ECTransition Source="t1" Destination="t2_enter_0" Condition="DeltaTime != 0 AND HeatChange AND (Heat)" x="1424.34375" y="817.604159712791" />
+  <ECTransition Source="t1" Destination="t1" Condition="DeltaTime != 0" x="1424.34375" y="817.604159712791" />
   <ECTransition Source="t2_enter_0" Destination="t2" Condition="true" x="1377.30206942558" y="512.53125" />
-  <ECTransition Source="t2" Destination="t3_enter_0" Condition="Tick AND X==100" x="1663.4375" y="350" />
-  <ECTransition Source="t2" Destination="t4_enter_1" Condition="Tick AND HeatChange AND (!Heat)" x="1750.59375" y="468.4375" />
-  <ECTransition Source="t2" Destination="t2" Condition="Tick" x="1424.34375" y="817.604159712791" />
+  <ECTransition Source="t2" Destination="t3_enter_0" Condition="DeltaTime != 0 AND X==100" x="1663.4375" y="350" />
+  <ECTransition Source="t2" Destination="t4_enter_1" Condition="DeltaTime != 0 AND HeatChange AND (!Heat)" x="1750.59375" y="468.4375" />
+  <ECTransition Source="t2" Destination="t2" Condition="DeltaTime != 0" x="1424.34375" y="817.604159712791" />
   <ECTransition Source="t1_enter_1" Destination="t1" Condition="true" x="1719.25" y="1045" />
-  <ECTransition Source="t4" Destination="t1_enter_1" Condition="Tick AND X==20" x="2361.39586114883" y="1101.86456942558" />
-  <ECTransition Source="t4" Destination="t2_enter_1" Condition="Tick AND HeatChange AND (Heat)" x="2227.875" y="886.75" />
-  <ECTransition Source="t4" Destination="t4" Condition="Tick" x="1424.34375" y="817.604159712791" />
+  <ECTransition Source="t4" Destination="t1_enter_1" Condition="DeltaTime != 0 AND X==20" x="2361.39586114883" y="1101.86456942558" />
+  <ECTransition Source="t4" Destination="t2_enter_1" Condition="DeltaTime != 0 AND HeatChange AND (Heat)" x="2227.875" y="886.75" />
+  <ECTransition Source="t4" Destination="t4" Condition="DeltaTime != 0" x="1424.34375" y="817.604159712791" />
   <ECTransition Source="t3_enter_0" Destination="t3" Condition="true" x="2347.625" y="350" />
-  <ECTransition Source="t3" Destination="t4_enter_0" Condition="Tick AND HeatChange AND (!Heat)" x="2692.625" y="492.25" />
-  <ECTransition Source="t3" Destination="t3" Condition="Tick" x="1424.34375" y="817.604159712791" />
+  <ECTransition Source="t3" Destination="t4_enter_0" Condition="DeltaTime != 0 AND HeatChange AND (!Heat)" x="2692.625" y="492.25" />
+  <ECTransition Source="t3" Destination="t3" Condition="DeltaTime != 0" x="1424.34375" y="817.604159712791" />
   <ECTransition Source="t4_enter_0" Destination="t4" Condition="true" x="2692.625" y="893" />
   <ECTransition Source="t2_enter_1" Destination="t2" Condition="true" x="1685.625" y="520" />
   <ECTransition Source="t4_enter_1" Destination="t4" Condition="true" x="2363.84375" y="887.1875" />

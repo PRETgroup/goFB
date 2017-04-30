@@ -32,7 +32,7 @@ int main() {
 		{{$block.Name}}_syncInputData(&my{{$block.Name}});
 		
 		{{$block.Name}}_run(&my{{$block.Name}});
-	} while(tickNum++ < 200);
+	} while(tickNum++ < 100);
 
 	return 0;
 }

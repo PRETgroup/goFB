@@ -32,7 +32,7 @@ int main() {
 		_WaterHeaterPlant_syncInputData(&my_WaterHeaterPlant);
 		
 		_WaterHeaterPlant_run(&my_WaterHeaterPlant);
-	} while(tickNum++ < 200);
+	} while(tickNum++ < 100);
 
 	return 0;
 }

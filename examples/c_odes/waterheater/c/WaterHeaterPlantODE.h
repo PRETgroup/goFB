@@ -70,6 +70,7 @@ typedef struct {
 	realtype T0;
 	realtype Tnext;
 	realtype Tcurr;
+	int solveInProgress;
 	
 
 	
