@@ -6,6 +6,7 @@
 #define _WATERHEATER_H_
 
 #include "fbtypes.h"
+#include "util.h"
 
 
 
@@ -13,8 +14,8 @@
 
 //this block had no input events
 //This block is a device and probably contains resources
-#include "_WaterHeaterController.h"
-#include "_WaterHeaterPlant.h"
+#include "FB__WaterHeaterController.h"
+#include "FB__WaterHeaterPlant.h"
 
 
 //this block had no output events

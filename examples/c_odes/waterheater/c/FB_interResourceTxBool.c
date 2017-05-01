@@ -2,7 +2,7 @@
 // Compiler written by Hammond Pearce and available at github.com/kiwih/goFB
 
 // This file represents the implementation of the Basic Function Block for interResourceTxBool
-#include "interResourceTxBool.h"
+#include "FB_interResourceTxBool.h"
 
 
 /* interResourceTxBool_preinit() is required to be called to 

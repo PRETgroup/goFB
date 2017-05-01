@@ -379,7 +379,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			return nil, errors.New("Couldn't format template (fb) of" + c.Blocks[i].Name + ": " + err.Error())
 		}
 
-		finishedConversions = append(finishedConversions, OutputFile{Name: c.Blocks[i].Name, Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
+		finishedConversions = append(finishedConversions, OutputFile{Name: "FB_" + c.Blocks[i].Name, Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
 
 		if c.outputLanguage.hasHeaders() {
 			output := &bytes.Buffer{}
@@ -389,7 +389,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 				return nil, errors.New("Couldn't format template (fb header) of" + c.Blocks[i].Name + ": " + err.Error())
 			}
 
-			finishedConversions = append(finishedConversions, OutputFile{Name: c.Blocks[i].Name, Extension: c.outputLanguage.getHeaderExtension(), Contents: output.Bytes()})
+			finishedConversions = append(finishedConversions, OutputFile{Name: "FB_" + c.Blocks[i].Name, Extension: c.outputLanguage.getHeaderExtension(), Contents: output.Bytes()})
 		}
 	}
 
@@ -401,7 +401,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			return nil, errors.New("Couldn't format template (top) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 
-		finishedConversions = append(finishedConversions, OutputFile{Name: "iec61499_network_top", Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
+		finishedConversions = append(finishedConversions, OutputFile{Name: "top", Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
 
 	}
 

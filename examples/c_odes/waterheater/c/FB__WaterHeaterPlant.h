@@ -6,17 +6,18 @@
 #define _WATERHEATERPLANT_H_
 
 #include "fbtypes.h"
+#include "util.h"
 
 
 
 //This is a CFB, so we need the #includes for the child blocks embedded here
-#include "WaterHeaterPlantODE.h"
-#include "interResourceTxLReal.h"
-#include "interResourceRxBool.h"
-#include "StartGen.h"
-#include "WaterHeaterPlantODE.h"
-#include "interResourceTxLReal.h"
-#include "interResourceRxBool.h"
+#include "FB_WaterHeaterPlantODE.h"
+#include "FB_interResourceTxLReal.h"
+#include "FB_interResourceRxBool.h"
+#include "FB_StartGen.h"
+#include "FB_WaterHeaterPlantODE.h"
+#include "FB_interResourceTxLReal.h"
+#include "FB_interResourceRxBool.h"
 
 
 //this block had no input events

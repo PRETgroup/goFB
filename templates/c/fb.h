@@ -6,6 +6,7 @@
 #define {{strToUpper $block.Name}}_H_
 
 #include "fbtypes.h"
+#include "util.h"
 
 {{if .CvodeEnabled}}{{if blockNeedsCvode $block}}
 #include "cvode/cvode.h"
@@ -16,7 +17,7 @@
 {{end}}{{end}}
 
 {{if $block.CompositeFB}}//This is a CFB, so we need the #includes for the child blocks embedded here
-{{range $currChildIndex, $child := $block.CompositeFB.FBs}}#include "{{$child.Type}}.h"
+{{range $currChildIndex, $child := $block.CompositeFB.FBs}}#include "FB_{{$child.Type}}.h"
 {{end}}{{end}}{{if $block.BasicFB}}//This is a BFB, so we need an enum type for the state machine
 enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{{if $index}}, {{end}}STATE_{{$block.Name}}_{{$state.Name}}{{end}} };
 {{end}}
@@ -29,7 +30,7 @@ enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{
 };
 {{else}}//this block had no input events
 {{end}}{{if $block.Resources}}//This block is a device and probably contains resources
-{{range $index, $res := $block.Resources}}#include "{{$res.Type}}.h"
+{{range $index, $res := $block.Resources}}#include "FB_{{$res.Type}}.h"
 {{end}}{{end}}
 
 {{if $block.EventOutputs}}union {{$block.Name}}OutputEvents {

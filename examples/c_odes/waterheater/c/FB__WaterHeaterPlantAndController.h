@@ -6,14 +6,15 @@
 #define _WATERHEATERPLANTANDCONTROLLER_H_
 
 #include "fbtypes.h"
+#include "util.h"
 
 
 
 //This is a CFB, so we need the #includes for the child blocks embedded here
-#include "WaterHeaterPlantODE.h"
-#include "WaterHeaterPlantODE.h"
-#include "Controller.h"
-#include "StartGen.h"
+#include "FB_WaterHeaterPlantODE.h"
+#include "FB_WaterHeaterPlantODE.h"
+#include "FB_Controller.h"
+#include "FB_StartGen.h"
 
 
 //this block had no input events

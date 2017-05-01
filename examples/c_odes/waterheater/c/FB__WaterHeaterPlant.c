@@ -2,7 +2,7 @@
 // Compiler written by Hammond Pearce and available at github.com/kiwih/goFB
 
 // This file represents the implementation of the Composite Function Block for _WaterHeaterPlant
-#include "_WaterHeaterPlant.h"
+#include "FB__WaterHeaterPlant.h"
 
 //When running a composite block, note that you would call the functions in this order (and this is very important)
 //_preinit(); 

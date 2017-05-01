@@ -3,7 +3,7 @@
 {{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}
 //This is the main file for the iec61499 network with {{$block.Name}} as the top level block
 
-#include "{{$block.Name}}.h"
+#include "FB_{{$block.Name}}.h"
 
 //put a copy of the top level block into global memory
 {{$block.Name}}_t my{{$block.Name}};

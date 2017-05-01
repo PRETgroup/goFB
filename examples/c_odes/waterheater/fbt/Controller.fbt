@@ -41,8 +41,8 @@
     <ECAction Algorithm="heat2" />
   </ECState>
   <ECTransition Source="Start" Destination="h1" Condition="true" x="435.541680574417" y="546.166680574417" />
-  <ECTransition Source="h1" Destination="h2" Condition="TChange1 AND (T1 == 100)" x="1599.64581942558" y="854.770861148834" />
-  <ECTransition Source="h2" Destination="h1" Condition="TChange2 AND (T2 == 100)" x="1914.64581942558" y="854.770861148834" />
+  <ECTransition Source="h1" Destination="h2" Condition="TChange1 AND LREALEqual(T1,100)" x="1599.64581942558" y="854.770861148834" />
+  <ECTransition Source="h2" Destination="h1" Condition="TChange2 AND LREALEqual(T2,100)" x="1914.64581942558" y="854.770861148834" />
 </ECC><Algorithm Name="clearheat" Comment="">
   <Other Language="C" Prototype="" Text="me-&gt;Heat1 = 0;&#xD;&#xA;me-&gt;Heat2 = 0;&#xD;&#xA;//printf(&quot;Setting HEAT commands to OFF\n&quot;);" />
 </Algorithm>

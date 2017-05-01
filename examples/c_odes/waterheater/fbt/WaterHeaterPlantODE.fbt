@@ -101,6 +101,6 @@
   <Other Language="C" Prototype="" Text="X_dot = 0;&#xD;&#xA;Y = X;" />
 </Algorithm>
 <Algorithm Name="t4_ode" Comment="ODE">
-  <Other Language="C" Prototype="" Text="X_dot = -K * X;&#xD;&#xA;Y = X;&#xD;&#xA;X_trigger = 20;" />
+  <Other Language="C" Prototype="" Text="X_dot = -2 * K * X;&#xD;&#xA;Y = X;&#xD;&#xA;X_trigger = 20;" />
 </Algorithm></BasicFB>
 </FBType>

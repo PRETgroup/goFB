@@ -6,6 +6,7 @@
 #define _WATERHEATERCONTROLLER_H_
 
 #include "fbtypes.h"
+#include "util.h"
 
 
 

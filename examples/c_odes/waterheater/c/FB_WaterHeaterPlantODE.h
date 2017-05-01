@@ -6,6 +6,7 @@
 #define WATERHEATERPLANTODE_H_
 
 #include "fbtypes.h"
+#include "util.h"
 
 
 #include "cvode/cvode.h"

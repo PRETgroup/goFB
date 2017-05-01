@@ -2,7 +2,7 @@
 // Compiler written by Hammond Pearce and available at github.com/kiwih/goFB
 {{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}{{$basicFB := $block.BasicFB}}{{$tcrestUsingSPM := .TcrestUsingSPM}}{{$tcrestSmartSPM := .TcrestSmartSPM}}
 // This file represents the implementation of the Basic Function Block for {{$block.Name}}
-#include "{{$block.Name}}.h"
+#include "FB_{{$block.Name}}.h"
 
 {{template "_fbinit" .}}
 

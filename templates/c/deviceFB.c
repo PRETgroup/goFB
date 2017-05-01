@@ -2,7 +2,7 @@
 // Compiler written by Hammond Pearce and available at github.com/kiwih/goFB
 {{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}{{$deviceFB := $block}}
 // This file represents the implementation of the Device Function Block for {{$block.Name}}
-#include "{{$block.Name}}.h"
+#include "FB_{{$block.Name}}.h"
 
 //When running a composite block, note that you would call the functions in this order (and this is very important)
 //_preinit(); 

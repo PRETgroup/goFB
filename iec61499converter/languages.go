@@ -55,7 +55,7 @@ func (l language) supportFileTemplates() []supportFileTemplate {
 		return nil
 	}
 	if l == languageC {
-		return []supportFileTemplate{{"fbtypes", "fbtypes", "h"}}
+		return []supportFileTemplate{{"fbtypes", "fbtypes", "h"}, {"utilheader", "util", "h"}, {"util", "util", "c"}}
 	}
 	return nil
 }

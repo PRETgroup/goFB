@@ -3,7 +3,7 @@
 
 //This is the main file for the iec61499 network with _WaterHeaterPlantAndController as the top level block
 
-#include "_WaterHeaterPlantAndController.h"
+#include "FB__WaterHeaterPlantAndController.h"
 
 //put a copy of the top level block into global memory
 _WaterHeaterPlantAndController_t my_WaterHeaterPlantAndController;
