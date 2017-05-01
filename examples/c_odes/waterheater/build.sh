@@ -4,7 +4,7 @@ WD=$(pwd)
 #compile fbt to c
 
 cd ../../..
-./goFB -i=$WD/fbt -o=$WD/c -l=c -t=_WaterHeaterPlant -cvode
+./goFB -i=$WD/fbt -o=$WD/c -l=c -t=_WaterHeaterPlantAndController -cvode
 cd $WD
 
 #compile

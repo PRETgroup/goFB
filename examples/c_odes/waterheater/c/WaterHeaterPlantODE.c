@@ -12,7 +12,7 @@
 int WaterHeaterPlantODE_preinit(WaterHeaterPlantODE_t  *me) {
 	//if there are input events, reset them
 	me->inputEvents.event.HeatChange = 0;
-	me->inputEvents.event.Tick = 0;
+	me->inputEvents.event.Start = 0;
 	
 	//if there are output events, reset them
 	me->outputEvents.event.Ychange = 0;
@@ -66,6 +66,12 @@ int WaterHeaterPlantODE_init(WaterHeaterPlantODE_t  *me) {
 
 
 
+int LREALEqual(LREAL a, LREAL b) {
+	if(a > b) {
+		return (a-b) < 1e-8;
+	}
+	return (b-a) < 1e-8;
+}
 
 //algorithms
 
@@ -426,8 +432,11 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 	if(me->_trigger == false) {
 		switch(me->_state) {
 		case STATE_WaterHeaterPlantODE_Start:
-			if(me->DeltaTime != 0) {
+			if(me->inputEvents.event.Start) {
 				
+				if(me->inputEvents.event.Start) { //events should cause no more than one transition, so due to possible mid-tick transitions in odeFBs we should consume events after we read them
+					me->inputEvents.event.Start = 0;
+				}
 				me->_state = STATE_WaterHeaterPlantODE_t1_enter_0;
 				me->_trigger = true;
 			};
@@ -440,14 +449,11 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			};
 			break;
 		case STATE_WaterHeaterPlantODE_t1:
-			if(me->DeltaTime != 0 && me->inputEvents.event.HeatChange && (me->Heat)) {
+			if(me->Heat && me->DeltaTime > 0) {
 				
-				if(me->inputEvents.event.HeatChange) { //events should cause no more than one transition, so due to possible mid-tick transitions in odeFBs we should consume events after we read them
-					me->inputEvents.event.HeatChange = 0;
-				}
 				me->_state = STATE_WaterHeaterPlantODE_t2_enter_0;
 				me->_trigger = true;
-			} else if(me->DeltaTime != 0) {
+			} else if(me->DeltaTime > 0) {
 				
 				me->_state = STATE_WaterHeaterPlantODE_t1;
 				me->_trigger = true;
@@ -461,18 +467,15 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			};
 			break;
 		case STATE_WaterHeaterPlantODE_t2:
-			if(me->DeltaTime != 0 && me->X == 100) {
+			if(LREALEqual(me->X, 100) && me->DeltaTime > 0) {
 				
 				me->_state = STATE_WaterHeaterPlantODE_t3_enter_0;
 				me->_trigger = true;
-			} else if(me->DeltaTime != 0 && me->inputEvents.event.HeatChange && ( ! me->Heat)) {
+			} else if( ! me->Heat && me->DeltaTime > 0) {
 				
-				if(me->inputEvents.event.HeatChange) { //events should cause no more than one transition, so due to possible mid-tick transitions in odeFBs we should consume events after we read them
-					me->inputEvents.event.HeatChange = 0;
-				}
 				me->_state = STATE_WaterHeaterPlantODE_t4_enter_1;
 				me->_trigger = true;
-			} else if(me->DeltaTime != 0) {
+			} else if(me->DeltaTime > 0) {
 				
 				me->_state = STATE_WaterHeaterPlantODE_t2;
 				me->_trigger = true;
@@ -486,18 +489,15 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			};
 			break;
 		case STATE_WaterHeaterPlantODE_t4:
-			if(me->DeltaTime != 0 && me->X == 20) {
+			if(LREALEqual(me->X, 20) && me->DeltaTime > 0) {
 				
 				me->_state = STATE_WaterHeaterPlantODE_t1_enter_1;
 				me->_trigger = true;
-			} else if(me->DeltaTime != 0 && me->inputEvents.event.HeatChange && (me->Heat)) {
+			} else if(me->Heat && me->DeltaTime > 0) {
 				
-				if(me->inputEvents.event.HeatChange) { //events should cause no more than one transition, so due to possible mid-tick transitions in odeFBs we should consume events after we read them
-					me->inputEvents.event.HeatChange = 0;
-				}
 				me->_state = STATE_WaterHeaterPlantODE_t2_enter_1;
 				me->_trigger = true;
-			} else if(me->DeltaTime != 0) {
+			} else if(me->DeltaTime > 0) {
 				
 				me->_state = STATE_WaterHeaterPlantODE_t4;
 				me->_trigger = true;
@@ -511,14 +511,11 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			};
 			break;
 		case STATE_WaterHeaterPlantODE_t3:
-			if(me->DeltaTime != 0 && me->inputEvents.event.HeatChange && ( ! me->Heat)) {
+			if( ! me->Heat && me->DeltaTime > 0) {
 				
-				if(me->inputEvents.event.HeatChange) { //events should cause no more than one transition, so due to possible mid-tick transitions in odeFBs we should consume events after we read them
-					me->inputEvents.event.HeatChange = 0;
-				}
 				me->_state = STATE_WaterHeaterPlantODE_t4_enter_0;
 				me->_trigger = true;
-			} else if(me->DeltaTime != 0) {
+			} else if(me->DeltaTime > 0) {
 				
 				me->_state = STATE_WaterHeaterPlantODE_t3;
 				me->_trigger = true;
@@ -655,7 +652,7 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 		}
 	}
 	
-	printf("T: %f, Y: %f\n", me->Tcurr, me->Y);
+	printf("%f,%f,", me->Tcurr, me->Y);
 
 }
 

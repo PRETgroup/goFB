@@ -19,8 +19,9 @@ type CECCTransition struct {
 func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTransition {
 	var events []string
 
-	re1 := regexp.MustCompile("([<>=!]+)")
-	re2 := regexp.MustCompile("([a-zA-Z_<>=]+)")
+	re1 := regexp.MustCompile("([<>=!]+)")          //for capturing operators
+	re2 := regexp.MustCompile("([a-zA-Z0-9_<>=]+)") //for capturing variable and event names and operators
+	isNum := regexp.MustCompile("^[0-9.]+$")
 
 	retVal := iec61499trans
 
@@ -39,6 +40,12 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 			//no need to make changes, these aren't variables or events
 			return in
 		}
+
+		if isNum.MatchString(in) {
+			//no need to make changes, it is a numerical value of some sort
+			return in
+		}
+
 		//check to see if it is an input event
 		if block.EventInputs != nil {
 			for _, event := range block.EventInputs.Events {
@@ -48,8 +55,45 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 				}
 			}
 		}
-		//else, return it assuming input data
-		return "me->" + in
+
+		//check to see if it is an output event
+		if block.EventOutputs != nil {
+			for _, event := range block.EventOutputs.Events {
+				if event.Name == in {
+					return "me->outputEvents.event." + event.Name
+				}
+			}
+		}
+
+		//check to see if it is input data
+		if block.InputVars != nil {
+			for _, Var := range block.InputVars.Variables {
+				if Var.Name == in {
+					return "me->" + in
+				}
+			}
+		}
+
+		//check to see if it is output data
+		if block.OutputVars != nil {
+			for _, Var := range block.OutputVars.Variables {
+				if Var.Name == in {
+					return "me->" + in
+				}
+			}
+		}
+
+		//check to see if it is internal var
+		if block.BasicFB != nil && block.BasicFB.InternalVars != nil {
+			for _, Var := range block.BasicFB.InternalVars.Variables {
+				if Var.Name == in {
+					return "me->" + in
+				}
+			}
+		}
+
+		//else, return it (no idea what else to do!) - it might be a function call or strange text constant
+		return in
 	})
 
 	//tidy the whitespace

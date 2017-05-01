@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Controller" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-01" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="TChange1" Comment="">
+    <With Var="T1" />
+  </Event>
+  <Event Name="TChange2" Comment="">
+    <With Var="T2" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="HeatChange" Comment="">
+    <With Var="Heat1" />
+    <With Var="Heat2" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="T1" Type="LREAL" Comment="" />
+  <VarDeclaration Name="T2" Type="LREAL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="Heat1" Type="BOOL" Comment="" />
+  <VarDeclaration Name="Heat2" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="h1" Comment="" x="845.833361148834" y="845.833361148834">
+    <ECAction Algorithm="clearheat" Output="HeatChange" />
+    <ECAction Algorithm="heat1" />
+  </ECState>
+  <ECState Name="h2" Comment="" x="2661.45827770233" y="867.708361148834">
+    <ECAction Algorithm="clearheat" Output="HeatChange" />
+    <ECAction Algorithm="heat2" />
+  </ECState>
+  <ECTransition Source="Start" Destination="h1" Condition="true" x="435.541680574417" y="546.166680574417" />
+  <ECTransition Source="h1" Destination="h2" Condition="TChange1 AND (T1 == 100)" x="1599.64581942558" y="854.770861148834" />
+  <ECTransition Source="h2" Destination="h1" Condition="TChange2 AND (T2 == 100)" x="1914.64581942558" y="854.770861148834" />
+</ECC><Algorithm Name="clearheat" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Heat1 = 0;&#xD;&#xA;me-&gt;Heat2 = 0;&#xD;&#xA;//printf(&quot;Setting HEAT commands to OFF\n&quot;);" />
+</Algorithm>
+<Algorithm Name="heat1" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Heat1 = 1;&#xD;&#xA;printf(&quot;HEAT1=ON, HEAT2=OFF&quot;);" />
+</Algorithm>
+<Algorithm Name="heat2" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;Heat2 = 1;&#xD;&#xA;printf(&quot;HEAT1=OFF, HEAT1=ON&quot;);" />
+</Algorithm></BasicFB>
+</FBType>

@@ -10,7 +10,7 @@
   <Event Name="HeatChange" Comment="">
     <With Var="Heat" />
   </Event>
-  <Event Name="Tick" Comment="">
+  <Event Name="Start" Comment="">
     <With Var="DeltaTime" />
   </Event>
 </EventInputs>
@@ -30,62 +30,61 @@
 </OutputVars>
 </InterfaceList>
 <BasicFB><InternalVars>
-	<VarDeclaration Name="X" Type="LREAL" Comment="" />
-  </InternalVars>
-  <ECC>
-  <ECState Name="Start" Comment="" x="306.25" y="437.5">
+  <VarDeclaration Name="X" Type="LREAL" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="306.25" y="525">
   </ECState>
-  <ECState Name="t1_enter_0" Comment="" x="743.75" y="776.5625">
+  <ECState Name="t1_enter_0" Comment="" x="787.5" y="1531.25">
     <ECAction Algorithm="t1_setup_0" />
   </ECState>
-  <ECState Name="t1" Comment="" x="1443.75" y="1006.25">
+  <ECState Name="t1" Comment="" x="1400" y="1531.25">
     <ECAction Algorithm="t1_ode" Output="Ychange" />
   </ECState>
-  <ECState Name="t2_enter_0" Comment="" x="1356.25" y="656.25">
+  <ECState Name="t2_enter_0" Comment="" x="1312.5" y="656.25">
     <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
   </ECState>
-  <ECState Name="t2" Comment="" x="1400" y="306.25">
+  <ECState Name="t2" Comment="" x="1400" y="393.75">
     <ECAction Algorithm="t2_ode" Output="Ychange" />
   </ECState>
-  <ECState Name="t1_enter_1" Comment="" x="1968.75" y="1093.75">
+  <ECState Name="t1_enter_1" Comment="" x="1837.5" y="1531.25">
     <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
   </ECState>
-  <ECState Name="t4" Comment="" x="2712.5" y="1093.75">
+  <ECState Name="t4" Comment="" x="3106.25" y="1531.25">
     <ECAction Algorithm="t4_ode" Output="Ychange" />
   </ECState>
-  <ECState Name="t3_enter_0" Comment="" x="1968.75" y="306.25">
+  <ECState Name="t3_enter_0" Comment="" x="2493.75" y="393.75">
     <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
   </ECState>
-  <ECState Name="t3" Comment="" x="2712.5" y="306.25">
+  <ECState Name="t3" Comment="" x="3062.5" y="393.75">
     <ECAction Algorithm="t3_ode" Output="Ychange" />
   </ECState>
-  <ECState Name="t4_enter_0" Comment="" x="2668.75" y="656.25">
+  <ECState Name="t4_enter_0" Comment="" x="3018.75" y="1268.75">
     <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
   </ECState>
-  <ECState Name="t2_enter_1" Comment="" x="1881.25" y="743.75">
+  <ECState Name="t2_enter_1" Comment="" x="1662.5" y="656.25">
     <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
   </ECState>
-  <ECState Name="t4_enter_1" Comment="" x="2067.1875" y="590.625">
+  <ECState Name="t4_enter_1" Comment="" x="2668.75" y="1268.75">
     <ECAction Algorithm="x_prime_eq_x___y_eq_x" />
   </ECState>
-  <ECTransition Source="Start" Destination="t1_enter_0" Condition="DeltaTime != 0" x="527" y="609.03125" />
-  <ECTransition Source="t1_enter_0" Destination="t1" Condition="true" x="1028.70831942558" y="863" />
-  <ECTransition Source="t1" Destination="t2_enter_0" Condition="DeltaTime != 0 AND HeatChange AND (Heat)" x="1424.34375" y="817.604159712791" />
-  <ECTransition Source="t1" Destination="t1" Condition="DeltaTime != 0" x="1424.34375" y="817.604159712791" />
-  <ECTransition Source="t2_enter_0" Destination="t2" Condition="true" x="1377.30206942558" y="512.53125" />
-  <ECTransition Source="t2" Destination="t3_enter_0" Condition="DeltaTime != 0 AND X==100" x="1663.4375" y="350" />
-  <ECTransition Source="t2" Destination="t4_enter_1" Condition="DeltaTime != 0 AND HeatChange AND (!Heat)" x="1750.59375" y="468.4375" />
-  <ECTransition Source="t2" Destination="t2" Condition="DeltaTime != 0" x="1424.34375" y="817.604159712791" />
-  <ECTransition Source="t1_enter_1" Destination="t1" Condition="true" x="1719.25" y="1045" />
-  <ECTransition Source="t4" Destination="t1_enter_1" Condition="DeltaTime != 0 AND X==20" x="2361.39586114883" y="1101.86456942558" />
-  <ECTransition Source="t4" Destination="t2_enter_1" Condition="DeltaTime != 0 AND HeatChange AND (Heat)" x="2227.875" y="886.75" />
-  <ECTransition Source="t4" Destination="t4" Condition="DeltaTime != 0" x="1424.34375" y="817.604159712791" />
-  <ECTransition Source="t3_enter_0" Destination="t3" Condition="true" x="2347.625" y="350" />
-  <ECTransition Source="t3" Destination="t4_enter_0" Condition="DeltaTime != 0 AND HeatChange AND (!Heat)" x="2692.625" y="492.25" />
-  <ECTransition Source="t3" Destination="t3" Condition="DeltaTime != 0" x="1424.34375" y="817.604159712791" />
-  <ECTransition Source="t4_enter_0" Destination="t4" Condition="true" x="2692.625" y="893" />
-  <ECTransition Source="t2_enter_1" Destination="t2" Condition="true" x="1685.625" y="520" />
-  <ECTransition Source="t4_enter_1" Destination="t4" Condition="true" x="2363.84375" y="887.1875" />
+  <ECTransition Source="Start" Destination="t1_enter_0" Condition="Start" x="527" y="696.53125" />
+  <ECTransition Source="t1_enter_0" Destination="t1" Condition="true" x="1137.5" y="1531.25" />
+  <ECTransition Source="t1" Destination="t2_enter_0" Condition="Heat AND DeltaTime&gt;0" x="1225" y="1050" />
+  <ECTransition Source="t1" Destination="t1" Condition="DeltaTime &gt; 0" x="1487.5" y="1356.25" />
+  <ECTransition Source="t2_enter_0" Destination="t2" Condition="true" x="1356.25" y="525" />
+  <ECTransition Source="t2" Destination="t3_enter_0" Condition="LREALEqual(X, 100) AND DeltaTime &gt; 0" x="1925" y="393.75" />
+  <ECTransition Source="t2" Destination="t4_enter_1" Condition="!Heat AND DeltaTime &gt; 0" x="2143.75" y="612.5" />
+  <ECTransition Source="t2" Destination="t2" Condition="DeltaTime &gt; 0" x="1268.75" y="218.75" />
+  <ECTransition Source="t1_enter_1" Destination="t1" Condition="true" x="1618.75" y="1531.25" />
+  <ECTransition Source="t4" Destination="t1_enter_1" Condition="LREALEqual(X, 20) AND DeltaTime &gt; 0" x="2450" y="1531.25" />
+  <ECTransition Source="t4" Destination="t2_enter_1" Condition="Heat AND DeltaTime &gt; 0" x="1837.5" y="1181.25" />
+  <ECTransition Source="t4" Destination="t4" Condition="DeltaTime &gt; 0" x="3106.25" y="1706.25" />
+  <ECTransition Source="t3_enter_0" Destination="t3" Condition="true" x="2843.75" y="393.75" />
+  <ECTransition Source="t3" Destination="t4_enter_0" Condition="!Heat AND DeltaTime &gt; 0" x="2931.25" y="743.75" />
+  <ECTransition Source="t3" Destination="t3" Condition="DeltaTime &gt; 0" x="3062.5" y="218.75" />
+  <ECTransition Source="t4_enter_0" Destination="t4" Condition="true" x="3150" y="1400" />
+  <ECTransition Source="t2_enter_1" Destination="t2" Condition="true" x="1575" y="525" />
+  <ECTransition Source="t4_enter_1" Destination="t4" Condition="true" x="2931.25" y="1400" />
 </ECC><Algorithm Name="t1_ode" Comment="ODE">
   <Other Language="C" Prototype="" Text="X_dot = 0;&#xD;&#xA;Y = X;" />
 </Algorithm>
@@ -93,10 +92,10 @@
   <Other Language="C" Prototype="" Text="X_prime = 20;&#xD;&#xA;Y = 20;&#xD;&#xA;" />
 </Algorithm>
 <Algorithm Name="t2_ode" Comment="ODE">
-  <Other Language="C" Prototype="" Text="X_dot = K * (H - X);&#xD;&#xA;Y = X;&#xD;&#xA;X_trigger = 100;" />
+  <Other Language="C" Prototype="" Text="X_dot = K * (H - X);&#xD;&#xA;Y = X;&#xD;&#xA;X_trigger = 100;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;" />
 </Algorithm>
 <Algorithm Name="x_prime_eq_x___y_eq_x" Comment="ODE_init">
-  <Other Language="C" Prototype="" Text="X_prime = X;&#xD;&#xA;Y = X;" />
+  <Other Language="C" Prototype="" Text="X_prime = X;&#xD;&#xA;Y = X;&#xD;&#xA;&#xD;&#xA;" />
 </Algorithm>
 <Algorithm Name="t3_ode" Comment="ODE">
   <Other Language="C" Prototype="" Text="X_dot = 0;&#xD;&#xA;Y = X;" />

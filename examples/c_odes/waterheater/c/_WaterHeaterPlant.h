@@ -13,7 +13,10 @@
 #include "WaterHeaterPlantODE.h"
 #include "interResourceTxLReal.h"
 #include "interResourceRxBool.h"
-#include "TickGen.h"
+#include "StartGen.h"
+#include "WaterHeaterPlantODE.h"
+#include "interResourceTxLReal.h"
+#include "interResourceRxBool.h"
 
 
 //this block had no input events
@@ -36,10 +39,13 @@ typedef struct {
 	//any internal vars (BFBs only)
     
 	//any child FBs (CFBs only)
-	WaterHeaterPlantODE_t waterHeaterPlantODE;
-	interResourceTxLReal_t t_tx;
-	interResourceRxBool_t heat_rx;
-	TickGen_t tickgen;
+	WaterHeaterPlantODE_t waterHeaterPlantODE1;
+	interResourceTxLReal_t t_tx1;
+	interResourceRxBool_t heat_rx1;
+	StartGen_t StartGen;
+	WaterHeaterPlantODE_t waterHeaterPlandODE2;
+	interResourceTxLReal_t t_tx2;
+	interResourceRxBool_t heat_rx2;
 	
 	//resource vars
 	

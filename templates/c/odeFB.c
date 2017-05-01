@@ -6,6 +6,12 @@
 
 {{template "_fbinit" .}}
 
+int LREALEqual(LREAL a, LREAL b) {
+	if(a > b) {
+		return (a-b) < 1e-8;
+	}
+	return (b-a) < 1e-8;
+}
 
 {{if $basicFB.Algorithms}}//algorithms
 {{range $algIndex, $alg := $basicFB.Algorithms}}
@@ -196,7 +202,7 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 		}
 	}
 	
-	printf("T: %f, Y: %f\n", me->Tcurr, me->Y);
+	printf("%f,%f,", me->Tcurr, me->Y);
 
 }
 

@@ -22,7 +22,7 @@ enum WaterHeaterPlantODE_states { STATE_WaterHeaterPlantODE_Start, STATE_WaterHe
 union WaterHeaterPlantODEInputEvents {
 	struct {
 		UDINT HeatChange;
-		UDINT Tick;
+		UDINT Start;
 	} event;
 	
 };

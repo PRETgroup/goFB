@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
-<FBType Name="TickGen" Comment="" >
+<FBType Name="StartGen" Comment="" >
 <Identification Standard="61499-2" />
 <VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
 <CompilerInfo header="" classdef="">
@@ -8,7 +8,7 @@
 <InterfaceList>
 
 <EventOutputs>
-  <Event Name="Tick" Comment="">
+  <Event Name="Start" Comment="">
     <With Var="DeltaTime" />
   </Event>
 </EventOutputs>
@@ -26,7 +26,7 @@
     <ECAction Algorithm="setup_algo" />
   </ECState>
   <ECState Name="emit" Comment="" x="1848.4375" y="714.583333333333">
-    <ECAction Output="Tick" />
+    <ECAction Output="Start" />
   </ECState>
   <ECTransition Source="Start" Destination="setup" Condition="true" x="627.59375" y="397.395833333333" />
   <ECTransition Source="setup" Destination="emit" Condition="true" x="1545.1875" y="605.4375" />

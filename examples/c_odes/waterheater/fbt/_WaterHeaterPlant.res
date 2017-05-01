@@ -7,24 +7,40 @@
 </CompilerInfo>
 
 <FBNetwork>
-  <FB Name="waterHeaterPlantODE" Type="WaterHeaterPlantODE" x="1793.75" y="1071.875">
+  <FB Name="waterHeaterPlantODE1" Type="WaterHeaterPlantODE" x="1837.5" y="1050">
     <Parameter Name="K" Value="0.075" />
     <Parameter Name="H" Value="150" />
   </FB>
-  <FB Name="t_tx" Type="interResourceTxLReal" x="3193.75" y="1093.75">
-    <Parameter Name="Channel" Value="1" />
+  <FB Name="t_tx1" Type="interResourceTxLReal" x="2800" y="1093.75">
+    <Parameter Name="Channel" Value="2" />
   </FB>
-  <FB Name="heat_rx" Type="interResourceRxBool" x="612.5" y="1050">
+  <FB Name="heat_rx1" Type="interResourceRxBool" x="918.75" y="1093.75">
     <Parameter Name="Channel" Value="0" />
   </FB>
-  <FB Name="tickgen" Type="TickGen" x="743.75" y="218.75">
+  <FB Name="StartGen" Type="StartGen" x="743.75" y="481.25">
     <Parameter Name="SetDeltaTime" Value="0.5" />
   </FB>
-  <EventConnections><Connection Source="waterHeaterPlantODE.Ychange" Destination="t_tx.Tx" />
-<Connection Source="heat_rx.Rx" Destination="waterHeaterPlantODE.HeatChange" />
-<Connection Source="tickgen.Tick" Destination="waterHeaterPlantODE.Tick" /></EventConnections>
-  <DataConnections><Connection Source="waterHeaterPlantODE.Y" Destination="t_tx.Data" />
-<Connection Source="heat_rx.Data" Destination="waterHeaterPlantODE.Heat" />
-<Connection Source="tickgen.DeltaTime" Destination="waterHeaterPlantODE.DeltaTime" /></DataConnections>
+  <FB Name="waterHeaterPlandODE2" Type="WaterHeaterPlantODE" x="1837.5" y="2012.5">
+    <Parameter Name="K" Value="0.075" />
+    <Parameter Name="H" Value="150" />
+  </FB>
+  <FB Name="t_tx2" Type="interResourceTxLReal" x="2800" y="2143.75">
+    <Parameter Name="Channel" Value="3" />
+  </FB>
+  <FB Name="heat_rx2" Type="interResourceRxBool" x="875" y="2231.25">
+    <Parameter Name="Channel" Value="1" />
+  </FB>
+  <EventConnections><Connection Source="waterHeaterPlantODE1.Ychange" Destination="t_tx1.Tx" />
+<Connection Source="heat_rx1.Rx" Destination="waterHeaterPlantODE1.HeatChange" />
+<Connection Source="StartGen.Tick" Destination="waterHeaterPlantODE1.Tick" />
+<Connection Source="StartGen.Tick" Destination="waterHeaterPlandODE2.Tick" />
+<Connection Source="waterHeaterPlandODE2.Ychange" Destination="t_tx2.Tx" />
+<Connection Source="heat_rx2.Rx" Destination="waterHeaterPlandODE2.HeatChange" /></EventConnections>
+  <DataConnections><Connection Source="waterHeaterPlantODE1.Y" Destination="t_tx1.Data" />
+<Connection Source="heat_rx1.Data" Destination="waterHeaterPlantODE1.Heat" />
+<Connection Source="StartGen.DeltaTime" Destination="waterHeaterPlantODE1.DeltaTime" />
+<Connection Source="StartGen.DeltaTime" Destination="waterHeaterPlandODE2.DeltaTime" />
+<Connection Source="waterHeaterPlandODE2.Y" Destination="t_tx2.Data" />
+<Connection Source="heat_rx2.Data" Destination="waterHeaterPlandODE2.Heat" /></DataConnections>
 </FBNetwork>
 </ResourceType>

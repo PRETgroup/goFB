@@ -36,16 +36,25 @@ int _WaterHeaterPlant_preinit(_WaterHeaterPlant_t  *me) {
 	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	if(WaterHeaterPlantODE_preinit(&me->waterHeaterPlantODE) != 0) {
+	if(WaterHeaterPlantODE_preinit(&me->waterHeaterPlantODE1) != 0) {
 		return 1;
 	}
-	if(interResourceTxLReal_preinit(&me->t_tx) != 0) {
+	if(interResourceTxLReal_preinit(&me->t_tx1) != 0) {
 		return 1;
 	}
-	if(interResourceRxBool_preinit(&me->heat_rx) != 0) {
+	if(interResourceRxBool_preinit(&me->heat_rx1) != 0) {
 		return 1;
 	}
-	if(TickGen_preinit(&me->tickgen) != 0) {
+	if(StartGen_preinit(&me->StartGen) != 0) {
+		return 1;
+	}
+	if(WaterHeaterPlantODE_preinit(&me->waterHeaterPlandODE2) != 0) {
+		return 1;
+	}
+	if(interResourceTxLReal_preinit(&me->t_tx2) != 0) {
+		return 1;
+	}
+	if(interResourceRxBool_preinit(&me->heat_rx2) != 0) {
 		return 1;
 	}
 	
@@ -62,32 +71,48 @@ int _WaterHeaterPlant_preinit(_WaterHeaterPlant_t  *me) {
  */
 int _WaterHeaterPlant_init(_WaterHeaterPlant_t  *me) {
 	//pass in any parameters on this level
-	me->waterHeaterPlantODE.K = 0.075;
-	me->waterHeaterPlantODE.H = 150;
-	me->t_tx.Channel = 1;
-	me->heat_rx.Channel = 0;
-	me->tickgen.SetDeltaTime = 0.5;
+	me->waterHeaterPlantODE1.K = 0.075;
+	me->waterHeaterPlantODE1.H = 150;
+	me->t_tx1.Channel = 2;
+	me->heat_rx1.Channel = 0;
+	me->StartGen.SetDeltaTime = 0.5;
+	me->waterHeaterPlandODE2.K = 0.075;
+	me->waterHeaterPlandODE2.H = 150;
+	me->t_tx2.Channel = 3;
+	me->heat_rx2.Channel = 1;
 	
 	
 	
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
-	me->t_tx.Data = me->waterHeaterPlantODE.Y;
-	me->waterHeaterPlantODE.Heat = me->heat_rx.Data;
-	me->waterHeaterPlantODE.DeltaTime = me->tickgen.DeltaTime;
+	me->t_tx1.Data = me->waterHeaterPlantODE1.Y;
+	me->waterHeaterPlantODE1.Heat = me->heat_rx1.Data;
+	me->waterHeaterPlantODE1.DeltaTime = me->StartGen.DeltaTime;
+	me->waterHeaterPlandODE2.DeltaTime = me->StartGen.DeltaTime;
+	me->t_tx2.Data = me->waterHeaterPlandODE2.Y;
+	me->waterHeaterPlandODE2.Heat = me->heat_rx2.Data;
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	if(WaterHeaterPlantODE_init(&me->waterHeaterPlantODE) != 0) {
+	if(WaterHeaterPlantODE_init(&me->waterHeaterPlantODE1) != 0) {
 		return 1;
 	}
-	if(interResourceTxLReal_init(&me->t_tx) != 0) {
+	if(interResourceTxLReal_init(&me->t_tx1) != 0) {
 		return 1;
 	}
-	if(interResourceRxBool_init(&me->heat_rx) != 0) {
+	if(interResourceRxBool_init(&me->heat_rx1) != 0) {
 		return 1;
 	}
-	if(TickGen_init(&me->tickgen) != 0) {
+	if(StartGen_init(&me->StartGen) != 0) {
+		return 1;
+	}
+	if(WaterHeaterPlantODE_init(&me->waterHeaterPlandODE2) != 0) {
+		return 1;
+	}
+	if(interResourceTxLReal_init(&me->t_tx2) != 0) {
+		return 1;
+	}
+	if(interResourceRxBool_init(&me->heat_rx2) != 0) {
 		return 1;
 	}
 	
@@ -119,11 +144,17 @@ void _WaterHeaterPlant_syncOutputEvents(_WaterHeaterPlant_t  *me) {
 void _WaterHeaterPlant_syncInputEvents(_WaterHeaterPlant_t  *me) {
 	//first, we explicitly synchronise the children
 	
-	me->waterHeaterPlantODE.inputEvents.event.HeatChange = me->heat_rx.outputEvents.event.Rx; 
+	me->waterHeaterPlantODE1.inputEvents.event.HeatChange = me->heat_rx1.outputEvents.event.Rx; 
 	
-	me->waterHeaterPlantODE.inputEvents.event.Tick = me->tickgen.outputEvents.event.Tick; 
+	me->waterHeaterPlantODE1.inputEvents.event.Start = 0; 
 	
-	me->t_tx.inputEvents.event.Tx = me->waterHeaterPlantODE.outputEvents.event.Ychange; 
+	me->t_tx1.inputEvents.event.Tx = me->waterHeaterPlantODE1.outputEvents.event.Ychange; 
+	
+	me->waterHeaterPlandODE2.inputEvents.event.HeatChange = me->heat_rx2.outputEvents.event.Rx; 
+	
+	me->waterHeaterPlandODE2.inputEvents.event.Start = 0; 
+	
+	me->t_tx2.inputEvents.event.Tx = me->waterHeaterPlandODE2.outputEvents.event.Ychange; 
 	
 
 	//then, call this same function on all cfb children
@@ -156,25 +187,43 @@ void _WaterHeaterPlant_syncOutputData(_WaterHeaterPlant_t  *me) {
 void _WaterHeaterPlant_syncInputData(_WaterHeaterPlant_t  *me) {
 	//for all basic function block children, perform their synchronisations explicitly
 	
-	//sync for waterHeaterPlantODE (of type WaterHeaterPlantODE) which is a BFB
+	//sync for waterHeaterPlantODE1 (of type WaterHeaterPlantODE) which is a BFB
 	
-	if(me->waterHeaterPlantODE.inputEvents.event.HeatChange == 1) { 
-		me->waterHeaterPlantODE.Heat = me->heat_rx.Data;
+	if(me->waterHeaterPlantODE1.inputEvents.event.HeatChange == 1) { 
+		me->waterHeaterPlantODE1.Heat = me->heat_rx1.Data;
 	} 
-	if(me->waterHeaterPlantODE.inputEvents.event.Tick == 1) { 
-		me->waterHeaterPlantODE.DeltaTime = me->tickgen.DeltaTime;
-	} 
-	
-	//sync for t_tx (of type interResourceTxLReal) which is a BFB
-	
-	if(me->t_tx.inputEvents.event.Tx == 1) { 
-		me->t_tx.Data = me->waterHeaterPlantODE.Y;
+	if(me->waterHeaterPlantODE1.inputEvents.event.Start == 1) { 
+		me->waterHeaterPlantODE1.DeltaTime = me->StartGen.DeltaTime;
 	} 
 	
-	//sync for heat_rx (of type interResourceRxBool) which is a BFB
+	//sync for t_tx1 (of type interResourceTxLReal) which is a BFB
+	
+	if(me->t_tx1.inputEvents.event.Tx == 1) { 
+		me->t_tx1.Data = me->waterHeaterPlantODE1.Y;
+	} 
+	
+	//sync for heat_rx1 (of type interResourceRxBool) which is a BFB
 	
 	
-	//sync for tickgen (of type TickGen) which is a BFB
+	//sync for StartGen (of type StartGen) which is a BFB
+	
+	
+	//sync for waterHeaterPlandODE2 (of type WaterHeaterPlantODE) which is a BFB
+	
+	if(me->waterHeaterPlandODE2.inputEvents.event.HeatChange == 1) { 
+		me->waterHeaterPlandODE2.Heat = me->heat_rx2.Data;
+	} 
+	if(me->waterHeaterPlandODE2.inputEvents.event.Start == 1) { 
+		me->waterHeaterPlandODE2.DeltaTime = me->StartGen.DeltaTime;
+	} 
+	
+	//sync for t_tx2 (of type interResourceTxLReal) which is a BFB
+	
+	if(me->t_tx2.inputEvents.event.Tx == 1) { 
+		me->t_tx2.Data = me->waterHeaterPlandODE2.Y;
+	} 
+	
+	//sync for heat_rx2 (of type interResourceRxBool) which is a BFB
 	
 	
 	
@@ -190,10 +239,13 @@ void _WaterHeaterPlant_syncInputData(_WaterHeaterPlant_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void _WaterHeaterPlant_run(_WaterHeaterPlant_t  *me) {
-	WaterHeaterPlantODE_run(&me->waterHeaterPlantODE);
-	interResourceTxLReal_run(&me->t_tx);
-	interResourceRxBool_run(&me->heat_rx);
-	TickGen_run(&me->tickgen);
+	WaterHeaterPlantODE_run(&me->waterHeaterPlantODE1);
+	interResourceTxLReal_run(&me->t_tx1);
+	interResourceRxBool_run(&me->heat_rx1);
+	StartGen_run(&me->StartGen);
+	WaterHeaterPlantODE_run(&me->waterHeaterPlandODE2);
+	interResourceTxLReal_run(&me->t_tx2);
+	interResourceRxBool_run(&me->heat_rx2);
 	
 }
 
