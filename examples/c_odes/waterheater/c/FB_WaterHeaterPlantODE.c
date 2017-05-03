@@ -74,7 +74,7 @@ static int WaterHeaterPlantODE_t1_ode_ode_f(realtype t, N_Vector ode_solution, N
 	//it is in a format that CVODE can process.
 	WaterHeaterPlantODE_t *me = (WaterHeaterPlantODE_t*)user_data;
 	
-	NV_Ith_S(ode_solution_dot, 0) = 0;
+	NV_Ith_S(ode_solution_dot, 0) = -0.25;
 	
 	return 0;
 }
@@ -296,7 +296,7 @@ static int WaterHeaterPlantODE_t3_ode_ode_f(realtype t, N_Vector ode_solution, N
 	//it is in a format that CVODE can process.
 	WaterHeaterPlantODE_t *me = (WaterHeaterPlantODE_t*)user_data;
 	
-	NV_Ith_S(ode_solution_dot, 0) = 0;
+	NV_Ith_S(ode_solution_dot, 0) = 0.5;
 	
 	return 0;
 }
@@ -346,7 +346,7 @@ static int WaterHeaterPlantODE_t4_ode_ode_f(realtype t, N_Vector ode_solution, N
 	//it is in a format that CVODE can process.
 	WaterHeaterPlantODE_t *me = (WaterHeaterPlantODE_t*)user_data;
 	
-	NV_Ith_S(ode_solution_dot, 0) = -2 * me->K * NV_Ith_S(ode_solution, 0);
+	NV_Ith_S(ode_solution_dot, 0) = -me->K * NV_Ith_S(ode_solution, 0);
 	
 	return 0;
 }

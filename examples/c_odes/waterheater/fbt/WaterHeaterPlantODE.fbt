@@ -86,7 +86,7 @@
   <ECTransition Source="t2_enter_1" Destination="t2" Condition="true" x="1575" y="525" />
   <ECTransition Source="t4_enter_1" Destination="t4" Condition="true" x="2931.25" y="1400" />
 </ECC><Algorithm Name="t1_ode" Comment="ODE">
-  <Other Language="C" Prototype="" Text="X_dot = 0;&#xD;&#xA;Y = X;" />
+  <Other Language="C" Prototype="" Text="X_dot = -0.25;&#xD;&#xA;Y = X;" />
 </Algorithm>
 <Algorithm Name="t1_setup_0" Comment="ODE_init">
   <Other Language="C" Prototype="" Text="X_prime = 20;&#xD;&#xA;Y = 20;&#xD;&#xA;" />
@@ -98,9 +98,9 @@
   <Other Language="C" Prototype="" Text="X_prime = X;&#xD;&#xA;Y = X;&#xD;&#xA;&#xD;&#xA;" />
 </Algorithm>
 <Algorithm Name="t3_ode" Comment="ODE">
-  <Other Language="C" Prototype="" Text="X_dot = 0;&#xD;&#xA;Y = X;" />
+  <Other Language="C" Prototype="" Text="X_dot = 0.5;&#xD;&#xA;Y = X;" />
 </Algorithm>
 <Algorithm Name="t4_ode" Comment="ODE">
-  <Other Language="C" Prototype="" Text="X_dot = -2 * K * X;&#xD;&#xA;Y = X;&#xD;&#xA;X_trigger = 20;" />
+  <Other Language="C" Prototype="" Text="X_dot = -K * X;&#xD;&#xA;Y = X;&#xD;&#xA;X_trigger = 20;" />
 </Algorithm></BasicFB>
 </FBType>

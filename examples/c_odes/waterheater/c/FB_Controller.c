@@ -108,13 +108,13 @@ void Controller_run(Controller_t  *me) {
 			};
 			break;
 		case STATE_Controller_h1:
-			if(me->inputEvents.event.TChange1 && LREALEqual(me->T1,100)) {
+			if(me->inputEvents.event.TChange1 && (LREALEqual(me->T1,100) || me->T1 >= 100)) {
 				me->_state = STATE_Controller_h2;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_Controller_h2:
-			if(me->inputEvents.event.TChange2 && LREALEqual(me->T2,100)) {
+			if(me->inputEvents.event.TChange2 && (LREALEqual(me->T2,100) || me->T2 >= 100)) {
 				me->_state = STATE_Controller_h1;
 				me->_trigger = true;
 			};

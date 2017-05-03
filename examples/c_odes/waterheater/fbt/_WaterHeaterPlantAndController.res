@@ -17,7 +17,7 @@
   </FB>
   <FB Name="c" Type="Controller" x="1006.25" y="1531.25" />
   <FB Name="gen" Type="StartGen" x="962.5" y="656.25">
-    <Parameter Name="SetDeltaTime" Value="0.5" />
+    <Parameter Name="SetDeltaTime" Value="0.65" />
   </FB>
   <EventConnections><Connection Source="p1.Ychange" Destination="c.TChange1" />
 <Connection Source="p2.Ychange" Destination="c.TChange2" />

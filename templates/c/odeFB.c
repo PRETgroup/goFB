@@ -185,7 +185,7 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			goto restart;{{else}}
 			if(odeRootFound == 1) {
-				goto repeat;
+				goto repeat;{{/*me->solveInProgress=0;me->Tcurr = me->Tnext;*/}}{{/*We can easily switch this between a saturation and non-saturation approach*/}}
 			}{{end}}
 			break;
 		{{end}}

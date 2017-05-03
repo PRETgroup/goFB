@@ -66,7 +66,7 @@ int _WaterHeaterPlantAndController_init(_WaterHeaterPlantAndController_t  *me) {
 	me->p1.H = 150;
 	me->p2.K = 0.075;
 	me->p2.H = 150;
-	me->gen.SetDeltaTime = 0.5;
+	me->gen.SetDeltaTime = 0.65;
 	
 	
 	
