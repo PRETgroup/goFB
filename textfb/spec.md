@@ -3,9 +3,9 @@
 ## BFB example
 
 ```
-BasicFB myExampleController;
+BasicFB InjectorMotorController;
 
-interface of myExampleBlock {
+interface of InjectorMotorController {
 	in event EmergencyStopChanged;
 	in event ConveyorStoppedForInject;
 	in event PumpFinished;
@@ -20,59 +20,119 @@ interface of myExampleBlock {
 	out byte InjectorPosition on InjectorPositionChanged;
 }
 
-architecture of myExampleBlock {
-	//internal type Name
+architecture of InjectorMotorController {
+	internal bool exampleVariableNotActuallyUsed;
 
-	ecc {
-		state MoveArmUp {
+	states {
+		MoveArmUp {
 			run SetArmUpPosition; 
 			emit InjectorPositionChanged;
 			emit InjectRunning;
 		}
-
-		state AwaitBottle {
+		
+		AwaitBottle {
 			emit InjectDone;
 		}
 
-		state MoveArmDown {
+		MoveArmDown {
 			run SetArmDown;
 			emit InjectorPositionChanged;
 			emit InjectRunning;
 		}
 
-		state AwaitPumping {
+		AwaitPumping {
 			emit StartPump;
 		}
+	} 
 
-		transition from AwaitBottle to MoveArmDown needs {
-			ConveyorStoppedForInject;
-		}
-
-		transition from MoveArmDown to AwaitPumping needs {
-			InjectorArmFinishedMovement;
-		}
-
-		transition from AwaitPumping to MoveArmUp needs {
-			PumpFinished;
-		}
-
-		transition from MoveArmUp to AwaitBottle needs {
-			InjectorArmFinishedMovement;
-		}
+	transitions {
+		AwaitBottle -> MoveArmDown on ConveyorStoppedForInject;
+		MoveArmDown -> AwaitPumping on InjectorArmFinishedMovement;
+		AwaitPumping -> MoveArmUp on PumpFinished;
+		MoveArmUp -> AwaitBottle on InjectorArmFinishedMovement;
 	}
+	
+	algorithms {
+		SetArmDownPosition in 'C' {
+			me->InjectorPosition = 255;
+			printf("Injector: Set Injector Arm to Down Position");
+		}
 
-	algorithm SetArmDownPosition in 'C' {
-		me->InjectorPosition = 255;
-		printf("Injector: Set Injector Arm to Down Position");
-	}
-
-	algorithm SetArmUpPosition in 'C' {
-		me->InjectorPosition = 0;
-		printf("Injector: Set Injector Arm to Up Position");
-	}
+		SetArmUpPosition in 'C' {
+			me->InjectorPosition = 0;
+			printf("Injector: Set Injector Arm to Up Position");
+		}
+	} 
 
 }
 
 ```
 
 ## CFB example
+
+```
+CompositeFB InjectorController;
+
+interface of myExampleBlock {
+	in event InjectorArmFinishedMovement;
+	in event EmergencyStopChanged;
+	in event CanisterPressureChanged;
+	in event FillContentsAvailableChanged;
+	in event VacuumTimerElapsed;
+
+	in bool EmergencyStop;
+	in byte CanisterPressure;
+	in byte FillContentsAvailable;
+
+	out event InjectDone;
+	out event InjectorPositionChanged;
+	out event InjectorControlsChanged;
+	out event RejectCanister;
+	out event FillContentsChanged;
+	out event StartVacuumTimer;
+	out event InjectRunning;
+
+	out byte InjectorPosition;
+	out bool InjectorContentsValveOpen;
+	out bool InjectorVacuumRun;
+	out bool InjectorPressurePumpRun;
+	out bool FillContents;
+}
+
+architecture of InjectorController {
+	internal InjectorMotorController Arm;
+	internal InjectorPumpsController Pumps;
+
+	events {
+		InjectorArmFinishedMovement -> Arm.InjectorArmFinishedMovement;
+		EmergencyStopChanged -> Arm.EmergencyStopChanged;
+		EmergencyStopChanged -> Pumps.EmergencyStopChanged;
+		CanisterPressureChanged -> Pumps.CanisterPressureChanged;
+		FillContentsAvailableChanged -> Pumps.FillContentsAvailableChanged;
+		ConveyorStoppedForInject -> Arm.ConveyorStoppedForInject;
+		VacuumTimerElapsed -> Pumps.VacuumTimerElapsed;
+		Arm.InjectDone -> InjectDone;
+		Arm.InjectorPositionChanged -> InjectorPositionChanged;
+		Pumps.InjectorControlsChanged -> InjectorControlsChanged;
+		Pumps.RejectCanister -> RejectCanister;
+		Pumps.FillContentsChanged -> FillContentsChanged;
+		Pumps.StartVacuumTimer -> StartVacuumTimer;
+		Arm.InjectRunning -> InjectRunning;
+		Arm.StartPump -> Pumps.StartPump;
+		Pumps.PumpFinished -> Arm.PumpFinished;
+	}
+
+	data {
+		EmergencyStop -> Arm.EmergencyStop;
+		EmergencyStop -> Pumps.EmergencyStop;
+		CanisterPressure -> Pumps.CanisterPressure;
+		FillContentsAvailable -> Pumps.FillContentsAvailable;
+		Arm.InjectorPosition -> InjectorPosition;
+		Pumps.InjectorContentsValveOpen -> InjectorContentsValveOpen;
+		Pumps.InjectorVacuumRun -> InjectorVacuumRun;
+		Pumps.InjectorPressurePumpRun -> InjectorPressurePumpRun;
+		Pumps.FillContents -> FillContents;
+	}
+}
+
+```
