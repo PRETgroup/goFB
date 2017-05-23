@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="controller" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-12" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="XChange" Comment="">
+  <With Var="X" />
+  </Event>
+  <Event Name="DChange" Comment="">
+  <With Var="D" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="Start" Comment="">
+  </Event>
+  <Event Name="Off" Comment="">
+  </Event>
+  <Event Name="On" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="X" Type="LREAL" Comment="" />
+  <VarDeclaration Name="D" Type="LREAL" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="568.75" y="525">
+  </ECState>
+  <ECState Name="run" Comment="" x="1556.77077770233" y="1170.3125">
+    <ECAction Algorithm="print" Output="Start" />
+  </ECState>
+  <ECTransition Source="Start" Destination="run" Condition="true" x="1003.76038885117" y="861.65625" />
+  <ECTransition Source="run" Destination="run" Condition="true" x="1561.77077770233" y="1216.3125" />
+</ECC><Algorithm Name="print" Comment="">
+  <Other Language="C" Prototype="" Text="static int count = 0;&#xD;&#xA;&#xD;&#xA;printf(&quot;X: %f, D: %f\n&quot;, me-&gt;X, me-&gt;D);&#xD;&#xA;&#xD;&#xA;count++;&#xD;&#xA;if(count == 25) {&#xD;&#xA;	me-&gt;outputEvents.event.On = 1;&#xD;&#xA;}&#xD;&#xA;if(count == 50) {&#xD;&#xA;	me-&gt;outputEvents.event.Off = 1;&#xD;&#xA;	count = 0;&#xD;&#xA;} " />
+</Algorithm></BasicFB>
+</FBType>

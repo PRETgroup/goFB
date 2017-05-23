@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Plant" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-23" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="UP" Comment="">
+  </Event>
+  <Event Name="DOWN" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="update_t" Comment="">
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="y" Type="LREAL" Comment="" />
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="g" Type="Gate" x="2362.5" y="1268.75" />
+  <FB Name="t" Type="Train1" x="2373.4375" y="565.104166666667" />
+  <EventConnections><Connection Source="UP" Destination="g.UP" />
+<Connection Source="DOWN" Destination="g.DOWN" />
+<Connection Source="t.update_t" Destination="update_t" />
+<Connection Source="g.update_g" Destination="update_t" />
+<Connection Source="g.update_g" Destination="t.update" /></EventConnections>
+  <DataConnections><Connection Source="t.y" Destination="y" />
+<Connection Source="g.x" Destination="x" />
+<Connection Source="g.x" Destination="t.x" /></DataConnections>
+</FBNetwork>
+</FBType>

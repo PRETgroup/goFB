@@ -178,21 +178,23 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 																ode initialisation algorithm we also need 
 																pointers to the other ode, which means we need to know what state 
 																this state goes to*/}}//init all ode algorithms that this state feeds into
-			{{range $nextStateIndex, $nextState := nextPossibleECCStates $basicFB $curState}}{{range $nextActionIndex, $nextAction := $nextState.ECActions}}{{$nextAlg := findAlgorithmFromName $basicFB $nextAction.Algorithm}}{{if algorithmNeedsCvode $nextAlg}}{{$block.Name}}_{{$action.Algorithm}}(me, {{$block.Name}}_{{$nextAlg.Name}}_ode_f, {{$block.Name}}_{{$nextAlg.Name}}_ode_g);
-			{{end}}{{end}}{{end}}{{else if $action.Algorithm}}{{/*this is normal algo call*/}}odeRootFound = {{$block.Name}}_{{$action.Algorithm}}(me);
+			{{range $nextStateIndex, $nextState := nextPossibleECCStates $basicFB $curState}}{{if not (stateIsCvodeSetup $basicFB $nextState)}}{{range $nextActionIndex, $nextAction := $nextState.ECActions}}{{$nextAlg := findAlgorithmFromName $basicFB $nextAction.Algorithm}}{{if algorithmNeedsCvode $nextAlg}}{{$block.Name}}_{{$action.Algorithm}}(me, {{$block.Name}}_{{$nextAlg.Name}}_ode_f, {{$block.Name}}_{{$nextAlg.Name}}_ode_g);
+			{{end}}{{end}}{{end}}{{end}}{{else if $action.Algorithm}}{{/*this is normal algo call*/}}odeRootFound = {{$block.Name}}_{{$action.Algorithm}}(me);
 			{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
 			{{end}}{{end}}{{if stateIsCvodeSetup $basicFB $curState}}
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
-			goto restart;{{else}}
+			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/{{else}}
 			if(odeRootFound == 1) {
-				goto repeat;{{/*me->solveInProgress=0;me->Tcurr = me->Tnext;*/}}{{/*We can easily switch this between a saturation and non-saturation approach*/}}
+				me->solveInProgress=0;me->Tcurr = me->Tnext;{{/*goto repeat;*/}}{{/*We can easily switch this between a saturation and non-saturation approach*/}}
 			}{{end}}
 			break;
 		{{end}}
 		}
 	}
 	
-	printf("%f,%f,", me->Tcurr, me->Y);
+	{{if $block.OutputVars}}{{range $ind, $outputVar := $block.OutputVars.Variables}}
+		printf("{{$block.Name}}\t [State %i]\tT:%f\t{{$outputVar.Name}}:%f\n", me->_state, me->Tcurr, me->{{$outputVar.Name}});
+	{{end}}{{end}} 
 
 }
 

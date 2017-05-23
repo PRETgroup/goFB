@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="conveyorHFB" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-12" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="Start" Comment="">
+    <With Var="DeltaTime" />
+  </Event>
+  <Event Name="Off" Comment="">
+  </Event>
+  <Event Name="On" Comment="">
+  </Event>
+  <Event Name="MChange" Comment="">
+    <With Var="M" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="XChange" Comment="">
+  </Event>
+  <Event Name="DChange" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" Comment="" />
+  <VarDeclaration Name="M" Type="LREAL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="X" Type="LREAL" Comment="" />
+  <VarDeclaration Name="D" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="1093.75" y="350">
+  </ECState>
+  <ECState Name="Qoff" Comment="" x="1093.75" y="1093.75">
+    <ECAction Algorithm="QoffAlg" Output="XChange" />
+    <ECAction Output="DChange" />
+  </ECState>
+  <ECState Name="Qon" Comment="" x="1093.75" y="2318.75">
+    <ECAction Algorithm="QonAlg" Output="XChange" />
+    <ECAction Output="DChange" />
+  </ECState>
+  <ECState Name="enterQon0" Comment="" x="787.5" y="1968.75">
+    <ECAction Algorithm="xPrimeEqXAlg" Output="XChange" />
+    <ECAction Algorithm="QonAlg" Output="DChange" />
+  </ECState>
+  <ECState Name="enterQoff0" Comment="" x="787.5" y="787.5">
+    <ECAction Algorithm="xPrimeEqZeroAlg" Output="XChange" />
+    <ECAction Algorithm="QoffAlg" Output="DChange" />
+  </ECState>
+  <ECState Name="enterQoff1" Comment="" x="1400" y="1356.25">
+    <ECAction Algorithm="xPrimeEqXAlg" Output="XChange" />
+    <ECAction Algorithm="QoffAlg" Output="DChange" />
+  </ECState>
+  <ECTransition Source="Start" Destination="enterQoff0" Condition="Start" x="944.625" y="602.75" />
+  <ECTransition Source="Qoff" Destination="enterQon0" Condition="On" x="921.625" y="1598.25" />
+  <ECTransition Source="Qoff" Destination="Qoff" Condition="0 &lt;= X AND X &lt;= M" x="1120.75" y="1177.75" />
+  <ECTransition Source="Qon" Destination="enterQoff1" Condition="Off" x="1254.875" y="1924.5" />
+  <ECTransition Source="Qon" Destination="Qon" Condition="0 &lt;= X AND X &lt;= M" x="1085.75" y="2238.75" />
+  <ECTransition Source="enterQon0" Destination="enterQoff1" Condition="Off" x="1047.75" y="1709.5" />
+  <ECTransition Source="enterQon0" Destination="Qon" Condition="0 &lt;= X AND X &lt;= M" x="949.625" y="2142.75" />
+  <ECTransition Source="enterQoff0" Destination="enterQon0" Condition="On" x="787.5" y="1361.125" />
+  <ECTransition Source="enterQoff0" Destination="Qoff" Condition="0 &lt;= X AND X &lt;= M" x="967.625" y="955.625" />
+  <ECTransition Source="enterQoff1" Destination="enterQon0" Condition="On" x="1110.75" y="1601.5" />
+  <ECTransition Source="enterQoff1" Destination="Qoff" Condition="0 &lt;= X AND X &lt;= M" x="1234.875" y="1242" />
+</ECC><Algorithm Name="QoffAlg" Comment="ODE">
+  <Other Language="C" Prototype="" Text="X_dot = -2 * X;&#xD;&#xA;D = D + X;" />
+</Algorithm>
+<Algorithm Name="QonAlg" Comment="ODE">
+  <Other Language="C" Prototype="" Text="X_dot = (1 - X);&#xD;&#xA;D = D + X;" />
+</Algorithm>
+<Algorithm Name="xPrimeEqZeroAlg" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="X_prime = 0;&#xD;&#xA;D = 0;" />
+</Algorithm>
+<Algorithm Name="xPrimeEqXAlg" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="X_prime = X;&#xD;&#xA;D = D;" />
+</Algorithm></BasicFB>
+</FBType>

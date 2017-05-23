@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Gate" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-23" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="UP" Comment="">
+  </Event>
+  <Event Name="DOWN" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="update_g" Comment="">
+    <With Var="x" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="1" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="State1E0" Comment="" x="1006.25" y="262.5">
+    <ECAction Algorithm="xPrimeEq10" Output="update_g" />
+    <ECAction Algorithm="xDotInDown" />
+  </ECState>
+  <ECState Name="State1" Comment="" x="1914.0625" y="320.833340287209">
+    <ECAction Algorithm="xDotInDown" Output="update_g" />
+  </ECState>
+  <ECState Name="State2E0" Comment="" x="1939.58327770233" y="2169.27077770233">
+    <ECAction Algorithm="xPrimeEqX" Output="update_g" />
+    <ECAction Algorithm="xDotInUp" />
+  </ECState>
+  <ECState Name="State2" Comment="" x="1750" y="2581.25">
+    <ECAction Algorithm="xDotInUp" Output="update_g" />
+  </ECState>
+  <ECState Name="State1E1" Comment="" x="1618.75" y="700">
+    <ECAction Algorithm="xPrimeEqX" Output="update_g" />
+    <ECAction Algorithm="xDotInDown" />
+  </ECState>
+  <ECTransition Source="Start" Destination="State1E0" Condition="true" x="505.75" y="350" />
+  <ECTransition Source="State1E0" Destination="State1" Condition="true" x="1459.15625" y="350" />
+  <ECTransition Source="State1E0" Destination="State2E0" Condition="UP" x="1458.91663885117" y="1206.88538885117" />
+  <ECTransition Source="State1" Destination="State2E0" Condition="UP" x="1926.82288885117" y="1427.05205899477" />
+  <ECTransition Source="State1" Destination="State1" Condition="true" x="1967.0625" y="350" />
+  <ECTransition Source="State2E0" Destination="State2" Condition="true" x="1953.16663885117" y="2415.26038885117" />
+  <ECTransition Source="State2E0" Destination="State1E1" Condition="DOWN" x="1787.16663885117" y="1539.63538885117" />
+  <ECTransition Source="State2" Destination="State1E1" Condition="DOWN" x="1675.375" y="1637.625" />
+  <ECTransition Source="State2" Destination="State2" Condition="true" x="1811" y="2664.25" />
+  <ECTransition Source="State1E1" Destination="State1" Condition="true" x="1794.40625" y="501.416670143604" />
+  <ECTransition Source="State1E1" Destination="State2E0" Condition="UP" x="1776.16663885117" y="1444.63538885117" />
+</ECC><Algorithm Name="xPrimeEqX" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = x;" />
+</Algorithm>
+<Algorithm Name="xPrimeEq10" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = 10;" />
+</Algorithm>
+<Algorithm Name="xDotInDown" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = (1 - x) / 2;" />
+</Algorithm>
+<Algorithm Name="xDotInUp" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = (10 - x) / 2;" />
+</Algorithm></BasicFB>
+</FBType>

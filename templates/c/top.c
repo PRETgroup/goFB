@@ -24,7 +24,7 @@ int main() {
 
 	int tickNum = 0;
 	do {
-		printf("%i,",tickNum);
+		printf("\nTick %i\n",tickNum);
 		{{$block.Name}}_syncOutputEvents(&my{{$block.Name}});
 		{{$block.Name}}_syncInputEvents(&my{{$block.Name}});
 
