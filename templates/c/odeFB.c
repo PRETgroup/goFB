@@ -36,7 +36,7 @@ int {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t *me) {
 		me->Tnext += me->DeltaTime;
 		me->solveInProgress = 1; //solveInProgress is used to mark if we are currently solving
 	}
-	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL);
+	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL); //CV_NORMAL
 	if (flag < 0) {
 		fprintf(stderr, "Error in CVode: %d\n", flag);
 		while(1);
@@ -71,6 +71,7 @@ void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t *me, CVRhsFn ode_f, CVRootF
 	//create solver
 	me->ode_solution = N_VNew_Serial({{len $odeInit.GetInitialValues}}); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
+	//me->cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
 		while(1);
@@ -183,7 +184,10 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			{{end}}{{if $action.Output}}me->outputEvents.event.{{$action.Output}} = 1;
 			{{end}}{{end}}{{if stateIsCvodeSetup $basicFB $curState}}
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
-			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/{{else}}
+			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/
+			if(odeRootFound == 1) {
+				me->solveInProgress=0;me->Tcurr = me->Tnext;{{/*goto repeat;*/}}{{/*We can easily switch this between a saturation and non-saturation approach*/}}
+			}{{else}}
 			if(odeRootFound == 1) {
 				me->solveInProgress=0;me->Tcurr = me->Tnext;{{/*goto repeat;*/}}{{/*We can easily switch this between a saturation and non-saturation approach*/}}
 			}{{end}}
@@ -191,10 +195,12 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 		{{end}}
 		}
 	}
-	
+
+	#ifdef PRINT_VALS
 	{{if $block.OutputVars}}{{range $ind, $outputVar := $block.OutputVars.Variables}}
-		printf("{{$block.Name}}\t [State %i]\tT:%f\t{{$outputVar.Name}}:%f\n", me->_state, me->Tcurr, me->{{$outputVar.Name}});
+		printf("%f,", me->{{$outputVar.Name}});
 	{{end}}{{end}} 
+	#endif
 
 }
 

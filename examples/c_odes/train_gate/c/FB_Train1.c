@@ -17,7 +17,7 @@ int Train1_preinit(Train1_t  *me) {
 	me->outputEvents.event.update_t = 0;
 	
 	//if there are input vars with default values, set them
-	me->DeltaTime = 1;
+	me->DeltaTime = 0.01;
 	
 	//if there are output vars with default values, set them
 	
@@ -39,8 +39,11 @@ int Train1_preinit(Train1_t  *me) {
 	me->Tnext = 0;
 	me->T0 = 0;
 	me->solveInProgress = 0;
+	#ifdef PRINT_VALS
+	printf("Train1,");
+	#endif
 	
-	
+
 	return 0;
 }
 
@@ -96,7 +99,7 @@ int Train1_yDotEq1(Train1_t *me) {
 		me->Tnext += me->DeltaTime;
 		me->solveInProgress = 1; //solveInProgress is used to mark if we are currently solving
 	}
-	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL);
+	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL); //CV_NORMAL
 	if (flag < 0) {
 		fprintf(stderr, "Error in CVode: %d\n", flag);
 		while(1);
@@ -144,7 +147,7 @@ int Train1_yDotEq2(Train1_t *me) {
 		me->Tnext += me->DeltaTime;
 		me->solveInProgress = 1; //solveInProgress is used to mark if we are currently solving
 	}
-	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL);
+	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL); //CV_NORMAL
 	if (flag < 0) {
 		fprintf(stderr, "Error in CVode: %d\n", flag);
 		while(1);
@@ -179,6 +182,7 @@ void Train1_yPrimeEq0(Train1_t *me, CVRhsFn ode_f, CVRootFn ode_g) {
 	//create solver
 	me->ode_solution = N_VNew_Serial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
+	//me->cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
 		while(1);
@@ -240,6 +244,7 @@ void Train1_yPrimeEqy(Train1_t *me, CVRhsFn ode_f, CVRootFn ode_g) {
 	//create solver
 	me->ode_solution = N_VNew_Serial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
+	//me->cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
 		while(1);
@@ -329,66 +334,66 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			};
 			break;
 		case STATE_Train1_State1:
-			if(me->y >= 5) {
+			if(LREAL_GTE(me->y, 5)) {
 				
 				me->_state = STATE_Train1_State2E0;
 				me->_trigger = true;
-			} else if(me->y < 5) {
+			} else if(LREAL_LT(me->y, 5)) {
 				
 				me->_state = STATE_Train1_State1;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_Train1_State2E0:
-			if(me->y < 15) {
+			if(LREAL_LT(me->y,15)) {
 				
 				me->_state = STATE_Train1_State2;
 				me->_trigger = true;
-			} else if(me->y >= 15) {
+			} else if(LREAL_GTE(me->y, 15)) {
 				
 				me->_state = STATE_Train1_State3E0;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_Train1_State2:
-			if(me->y >= 15) {
+			if(LREAL_GTE(me->y, 15)) {
 				
 				me->_state = STATE_Train1_State3E0;
 				me->_trigger = true;
-			} else if(me->y < 15) {
+			} else if(LREAL_LT(me->y, 15)) {
 				
 				me->_state = STATE_Train1_State2;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_Train1_State3E0:
-			if(me->y < 25) {
+			if(LREAL_LT(me->y, 25)) {
 				
 				me->_state = STATE_Train1_State3;
 				me->_trigger = true;
-			} else if(me->y >= 25) {
+			} else if(LREAL_GTE(me->y, 25)) {
 				
 				me->_state = STATE_Train1_State1E1;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_Train1_State3:
-			if(me->y >= 25) {
+			if(LREAL_GTE(me->y, 25)) {
 				
 				me->_state = STATE_Train1_State1E1;
 				me->_trigger = true;
-			} else if(me->y < 25) {
+			} else if(LREAL_LT(me->y, 25)) {
 				
 				me->_state = STATE_Train1_State3;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_Train1_State1E1:
-			if(me->y < 5) {
+			if(LREAL_LT(me->y, 5)) {
 				
 				me->_state = STATE_Train1_State1;
 				me->_trigger = true;
-			} else if(me->y >= 5) {
+			} else if(LREAL_GTE(me->y, 5)) {
 				
 				me->_state = STATE_Train1_State2E0;
 				me->_trigger = true;
@@ -418,6 +423,9 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/
+			if(odeRootFound == 1) {
+				me->solveInProgress=0;me->Tcurr = me->Tnext;
+			}
 			break;
 		case STATE_Train1_State1:
 			
@@ -438,6 +446,9 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/
+			if(odeRootFound == 1) {
+				me->solveInProgress=0;me->Tcurr = me->Tnext;
+			}
 			break;
 		case STATE_Train1_State2:
 			
@@ -458,6 +469,9 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/
+			if(odeRootFound == 1) {
+				me->solveInProgress=0;me->Tcurr = me->Tnext;
+			}
 			break;
 		case STATE_Train1_State3:
 			
@@ -478,14 +492,19 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/
+			if(odeRootFound == 1) {
+				me->solveInProgress=0;me->Tcurr = me->Tnext;
+			}
 			break;
 		
 		}
 	}
+
+	#ifdef PRINT_VALS
 	
-	
-		printf("Train1\t [State %i]\tT:%f\ty:%f\n", me->_state, me->Tcurr, me->y);
+		printf("%f,", me->y);
 	 
+	#endif
 
 }
 

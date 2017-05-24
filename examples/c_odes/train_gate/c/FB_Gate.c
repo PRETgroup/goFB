@@ -18,7 +18,7 @@ int Gate_preinit(Gate_t  *me) {
 	me->outputEvents.event.update_g = 0;
 	
 	//if there are input vars with default values, set them
-	me->DeltaTime = 1;
+	me->DeltaTime = 0.01;
 	
 	//if there are output vars with default values, set them
 	
@@ -40,8 +40,11 @@ int Gate_preinit(Gate_t  *me) {
 	me->Tnext = 0;
 	me->T0 = 0;
 	me->solveInProgress = 0;
+	#ifdef PRINT_VALS
+	printf("Gate,");
+	#endif
 	
-	
+
 	return 0;
 }
 
@@ -84,6 +87,7 @@ void Gate_xPrimeEqX(Gate_t *me, CVRhsFn ode_f, CVRootFn ode_g) {
 	//create solver
 	me->ode_solution = N_VNew_Serial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
+	//me->cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
 		while(1);
@@ -145,6 +149,7 @@ void Gate_xPrimeEq10(Gate_t *me, CVRhsFn ode_f, CVRootFn ode_g) {
 	//create solver
 	me->ode_solution = N_VNew_Serial(1); //length of initial values
 	me->cvode_mem = CVodeCreate(CV_ADAMS, CV_FUNCTIONAL);
+	//me->cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
 	if (me->cvode_mem == 0) {
 		fprintf(stderr, "Error in CVodeMalloc: could not allocate\n");
 		while(1);
@@ -219,7 +224,7 @@ int Gate_xDotInDown(Gate_t *me) {
 		me->Tnext += me->DeltaTime;
 		me->solveInProgress = 1; //solveInProgress is used to mark if we are currently solving
 	}
-	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL);
+	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL); //CV_NORMAL
 	if (flag < 0) {
 		fprintf(stderr, "Error in CVode: %d\n", flag);
 		while(1);
@@ -267,7 +272,7 @@ int Gate_xDotInUp(Gate_t *me) {
 		me->Tnext += me->DeltaTime;
 		me->solveInProgress = 1; //solveInProgress is used to mark if we are currently solving
 	}
-	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL);
+	int flag = CVode(me->cvode_mem, me->Tnext, me->ode_solution, &me->Tcurr, CV_NORMAL); //CV_NORMAL
 	if (flag < 0) {
 		fprintf(stderr, "Error in CVode: %d\n", flag);
 		while(1);
@@ -318,21 +323,14 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 		case STATE_Gate_Start:
 			if(true) {
 				
-				me->_state = STATE_Gate_State1E0;
+				me->_state = STATE_Gate_State2E2;
 				me->_trigger = true;
 			};
 			break;
-		case STATE_Gate_State1E0:
+		case STATE_Gate_State2E2:
 			if(true) {
 				
-				me->_state = STATE_Gate_State1;
-				me->_trigger = true;
-			} else if(me->inputEvents.event.UP) {
-				
-				if(me->inputEvents.event.UP) { //events should cause no more than one transition, so due to possible mid-tick transitions in odeFBs we should consume events after we read them
-					me->inputEvents.event.UP = 0;
-				}
-				me->_state = STATE_Gate_State2E0;
+				me->_state = STATE_Gate_State2;
 				me->_trigger = true;
 			};
 			break;
@@ -351,7 +349,14 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			};
 			break;
 		case STATE_Gate_State2E0:
-			if(true) {
+			if(me->inputEvents.event.DOWN) {
+				
+				if(me->inputEvents.event.DOWN) { //events should cause no more than one transition, so due to possible mid-tick transitions in odeFBs we should consume events after we read them
+					me->inputEvents.event.DOWN = 0;
+				}
+				me->_state = STATE_Gate_State1E1;
+				me->_trigger = true;
+			} else if(true) {
 				
 				me->_state = STATE_Gate_State2;
 				me->_trigger = true;
@@ -406,16 +411,19 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 				me->solveInProgress=0;me->Tcurr = me->Tnext;
 			}
 			break;
-		case STATE_Gate_State1E0:
+		case STATE_Gate_State2E2:
 			
 			//init all ode algorithms that this state feeds into
-			Gate_xPrimeEq10(me, Gate_xDotInDown_ode_f, Gate_xDotInDown_ode_g);
+			Gate_xPrimeEq10(me, Gate_xDotInUp_ode_f, Gate_xDotInUp_ode_g);
 			me->outputEvents.event.update_g = 1;
 			
-			odeRootFound = Gate_xDotInDown(me);
+			odeRootFound = Gate_xDotInUp(me);
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/
+			if(odeRootFound == 1) {
+				me->solveInProgress=0;me->Tcurr = me->Tnext;
+			}
 			break;
 		case STATE_Gate_State1:
 			
@@ -436,6 +444,9 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/
+			if(odeRootFound == 1) {
+				me->solveInProgress=0;me->Tcurr = me->Tnext;
+			}
 			break;
 		case STATE_Gate_State2:
 			
@@ -456,14 +467,19 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 			
 			//this is an ODE setup state (ODE_init) so we need to repeat this whole function body
 			/*goto restart; this is currently disabled because we don't need it when running non-optimised versions of code*/
+			if(odeRootFound == 1) {
+				me->solveInProgress=0;me->Tcurr = me->Tnext;
+			}
 			break;
 		
 		}
 	}
+
+	#ifdef PRINT_VALS
 	
-	
-		printf("Gate\t [State %i]\tT:%f\tx:%f\n", me->_state, me->Tcurr, me->x);
+		printf("%f,", me->x);
 	 
+	#endif
 
 }
 

@@ -46,10 +46,13 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 	me->Tcurr = 0;
 	me->Tnext = 0;
 	me->T0 = 0;
-	me->solveInProgress = 0;{{else}}
+	me->solveInProgress = 0;
+	#ifdef PRINT_VALS
+	printf("{{$block.Name}},");
+	#endif{{else}}
 	{{end}}
 	{{end}}
-	
+
 	return 0;
 }
 

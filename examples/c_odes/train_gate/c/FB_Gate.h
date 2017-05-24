@@ -17,7 +17,7 @@
 
 
 //This is a BFB, so we need an enum type for the state machine
-enum Gate_states { STATE_Gate_Start, STATE_Gate_State1E0, STATE_Gate_State1, STATE_Gate_State2E0, STATE_Gate_State2, STATE_Gate_State1E1 };
+enum Gate_states { STATE_Gate_Start, STATE_Gate_State2E2, STATE_Gate_State1, STATE_Gate_State2E0, STATE_Gate_State2, STATE_Gate_State1E1 };
 
 
 union GateInputEvents {

@@ -18,7 +18,7 @@
   </Event>
 </EventOutputs>
 <InputVars>
-  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="1" />
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" />
 </InputVars>
 <OutputVars>
   <VarDeclaration Name="x" Type="LREAL" Comment="" />
@@ -27,9 +27,9 @@
 <BasicFB><ECC>
   <ECState Name="Start" Comment="" x="131.25" y="262.5">
   </ECState>
-  <ECState Name="State1E0" Comment="" x="1006.25" y="262.5">
+  <ECState Name="State2E2" Comment="" x="1006.25" y="262.5">
     <ECAction Algorithm="xPrimeEq10" Output="update_g" />
-    <ECAction Algorithm="xDotInDown" />
+    <ECAction Algorithm="xDotInUp" />
   </ECState>
   <ECState Name="State1" Comment="" x="1914.0625" y="320.833340287209">
     <ECAction Algorithm="xDotInDown" Output="update_g" />
@@ -45,9 +45,9 @@
     <ECAction Algorithm="xPrimeEqX" Output="update_g" />
     <ECAction Algorithm="xDotInDown" />
   </ECState>
-  <ECTransition Source="Start" Destination="State1E0" Condition="true" x="505.75" y="350" />
-  <ECTransition Source="State1E0" Destination="State1" Condition="true" x="1459.15625" y="350" />
-  <ECTransition Source="State1E0" Destination="State2E0" Condition="UP" x="1458.91663885117" y="1206.88538885117" />
+  <ECTransition Source="Start" Destination="State2E2" Condition="true" x="505.75" y="350" />
+  <ECTransition Source="State2E2" Destination="State2" Condition="true" x="1459.15625" y="350" />
+  <ECTransition Source="State2E0" Destination="State1E1" Condition="DOWN" x="1458.91663885117" y="1206.88538885117" />
   <ECTransition Source="State1" Destination="State2E0" Condition="UP" x="1926.82288885117" y="1427.05205899477" />
   <ECTransition Source="State1" Destination="State1" Condition="true" x="1967.0625" y="350" />
   <ECTransition Source="State2E0" Destination="State2" Condition="true" x="1953.16663885117" y="2415.26038885117" />

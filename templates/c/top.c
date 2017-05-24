@@ -4,12 +4,18 @@
 //This is the main file for the iec61499 network with {{$block.Name}} as the top level block
 
 #include "FB_{{$block.Name}}.h"
+#include <sys/time.h>
 
 //put a copy of the top level block into global memory
 {{$block.Name}}_t my{{$block.Name}};
 
 int main() {
-	printf("\n\n\n");
+	//printf("\n\n\n");
+	//printf("\nTop: %20s   Size: %lu\n", "{{$block.Name}}", sizeof(my{{$block.Name}}));
+
+	#ifdef PRINT_VALS
+	printf("Simulation time,");
+	#endif
 
 	if({{$block.Name}}_preinit(&my{{$block.Name}}) != 0) {
 		printf("Failed to preinitialize.");
@@ -19,12 +25,16 @@ int main() {
 		printf("Failed to initialize.");
 		return 1;
 	}
+	printf("\n");
+	
+	struct timeval tv1, tv2;
+	gettimeofday(&tv1, NULL);
 
-	printf("Top: %20s   Size: %lu\n", "{{$block.Name}}", sizeof(my{{$block.Name}}));
-
-	int tickNum = 0;
+	int tickNum = 1;
 	do {
-		printf("\nTick %i\n",tickNum);
+		#ifdef PRINT_VALS
+			printf("%f,",(double)tickNum*0.01);
+		#endif
 		{{$block.Name}}_syncOutputEvents(&my{{$block.Name}});
 		{{$block.Name}}_syncInputEvents(&my{{$block.Name}});
 
@@ -32,9 +42,16 @@ int main() {
 		{{$block.Name}}_syncInputData(&my{{$block.Name}});
 		
 		{{$block.Name}}_run(&my{{$block.Name}});
-		printf("\n");
-	} while(tickNum++ < 200);
-
+		#ifdef PRINT_VALS
+			printf("\n");
+		#endif
+	} while(tickNum++ < MAX_TICKS);
+	gettimeofday(&tv2, NULL);
+	#ifdef PRINT_TIME
+	printf ("Total time = %f seconds\n",
+         (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 +
+         (double) (tv2.tv_sec - tv1.tv_sec));
+	#endif
 	return 0;
 }
 
