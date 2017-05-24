@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="controller" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="update" Comment="">
+    <With Var="x" />
+    <With Var="y" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="TURNON" Comment="">
+  </Event>
+  <Event Name="TURNOFF" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+  <VarDeclaration Name="y" Type="LREAL" Comment="" />
+  <VarDeclaration Name="maxTime" Type="UDINT" InitialValue="999" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="timer" Type="UDINT" InitialValue="0" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="525" y="568.75">
+  </ECState>
+  <ECState Name="on" Comment="" x="1225" y="962.5">
+    <ECAction Algorithm="upcount" Output="TURNON" />
+  </ECState>
+  <ECState Name="off" Comment="" x="1986.97922229767" y="1148.4375">
+    <ECAction Algorithm="downcount" Output="TURNOFF" />
+  </ECState>
+  <ECTransition Source="Start" Destination="on" Condition="true" x="835" y="744.625" />
+  <ECTransition Source="on" Destination="off" Condition="timer==maxTime" x="1674.98961114883" y="1040.46875" />
+  <ECTransition Source="on" Destination="on" Condition="timer &lt; maxTime" x="1240" y="941.5" />
+  <ECTransition Source="off" Destination="on" Condition="timer==0" x="1625.98961114883" y="1037.46875" />
+  <ECTransition Source="off" Destination="off" Condition="timer &gt; 0" x="1966.97922229767" y="1190.4375" />
+</ECC><Algorithm Name="upcount" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;timer++;&#xD;&#xA;if(me-&gt;timer &gt; me-&gt;maxTime) {&#xD;&#xA;	me-&gt;timer = me-&gt;maxTime;&#xD;&#xA;}" />
+</Algorithm>
+<Algorithm Name="downcount" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;timer--;&#xD;&#xA;if(me-&gt;timer &lt; 0) {&#xD;&#xA;	me-&gt;timer = 0;&#xD;&#xA;}" />
+</Algorithm></BasicFB>
+</FBType>

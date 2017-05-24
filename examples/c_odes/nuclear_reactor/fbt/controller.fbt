@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="controller" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="update" Comment="">
+    <With Var="x" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="add1" Comment="">
+  </Event>
+  <Event Name="add2" Comment="">
+  </Event>
+  <Event Name="remove1" Comment="">
+  </Event>
+  <Event Name="remove2" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="ctime" Type="LREAL" InitialValue="0" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="State1" Comment="" x="1006.25" y="350">
+    <ECAction Algorithm="addtime" />
+  </ECState>
+  <ECState Name="State2" Comment="" x="1914.0625" y="306.25">
+    <ECAction Output="add1" />
+  </ECState>
+  <ECState Name="State3" Comment="" x="2635.9375" y="878.645861148834">
+    <ECAction Algorithm="resettime" Output="remove1" />
+  </ECState>
+  <ECState Name="State4" Comment="" x="2537.5" y="1356.25">
+    <ECAction Algorithm="addtime" />
+  </ECState>
+  <ECState Name="State5" Comment="" x="1669.79172229767" y="1400">
+    <ECAction Output="add2" />
+  </ECState>
+  <ECState Name="State6" Comment="" x="743.75" y="1225">
+    <ECAction Algorithm="resettime" Output="remove2" />
+  </ECState>
+  <ECTransition Source="Start" Destination="State1" Condition="true" x="541.875" y="362.875" />
+  <ECTransition Source="State1" Destination="State2" Condition="ctime &gt;= 20" x="1375.15625" y="350" />
+  <ECTransition Source="State1" Destination="State1" Condition="true" x="938.25" y="350" />
+  <ECTransition Source="State2" Destination="State3" Condition="LREAL_LTE(x, 510)" x="2234" y="582.447930574417" />
+  <ECTransition Source="State3" Destination="State4" Condition="true" x="2592.71875" y="1122.44793057442" />
+  <ECTransition Source="State4" Destination="State5" Condition="ctime &gt;= 20" x="2166.64586114883" y="1374.125" />
+  <ECTransition Source="State4" Destination="State4" Condition="true" x="2482.5" y="1381.25" />
+  <ECTransition Source="State5" Destination="State6" Condition="LREAL_LTE(x, 510)" x="1325.03129172325" y="1362.36456942558" />
+  <ECTransition Source="State6" Destination="State1" Condition="true" x="874" y="740.5" />
+</ECC><Algorithm Name="resettime" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;ctime = 0;" />
+</Algorithm>
+<Algorithm Name="addtime" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;ctime += me-&gt;DeltaTime;" />
+</Algorithm></BasicFB>
+</FBType>

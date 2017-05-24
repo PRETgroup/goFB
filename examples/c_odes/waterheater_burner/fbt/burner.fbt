@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="burner" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="TURNON" Comment="">
+  </Event>
+  <Event Name="TURNOFF" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="update" Comment="">
+    <With Var="y" />
+  </Event>
+  <Event Name="ON" Comment="">
+  </Event>
+  <Event Name="OFF" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="y" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="175" y="568.75">
+  </ECState>
+  <ECState Name="State1E0" Comment="" x="1137.5" y="568.75">
+    <ECAction Algorithm="yPrimeEq0" Output="update" />
+    <ECAction Algorithm="yDotEq0" />
+  </ECState>
+  <ECState Name="State1" Comment="" x="1706.25" y="350">
+    <ECAction Algorithm="yDotEq0" Output="update" />
+  </ECState>
+  <ECState Name="State2E0" Comment="" x="3062.5" y="568.75">
+    <ECAction Algorithm="yPrimeEq0" Output="update" />
+    <ECAction Algorithm="yDotEq1" />
+  </ECState>
+  <ECState Name="State2" Comment="" x="3543.75" y="875">
+    <ECAction Algorithm="yDotEq1" Output="update" />
+  </ECState>
+  <ECState Name="State3E0" Comment="" x="3361.45844459534" y="1844.79172229767">
+    <ECAction Algorithm="yPrimeEq0" Output="update" />
+    <ECAction Algorithm="yDotEq0" Output="ON" />
+  </ECState>
+  <ECState Name="State3" Comment="" x="3051.5625" y="2110.9375">
+    <ECAction Algorithm="yDotEq0" Output="update" />
+  </ECState>
+  <ECState Name="State4E0" Comment="" x="1735.41672229767" y="2205.72922229767">
+    <ECAction Algorithm="yPrimeEq0" Output="update" />
+    <ECAction Algorithm="yDotEq1" />
+  </ECState>
+  <ECState Name="State4" Comment="" x="1093.75" y="1881.25">
+    <ECAction Algorithm="yDotEq1" Output="update" />
+  </ECState>
+  <ECState Name="State1E1" Comment="" x="1137.5" y="918.75">
+    <ECAction Algorithm="yPrimeEq0" Output="update" />
+    <ECAction Algorithm="yDotEq0" Output="OFF" />
+  </ECState>
+  <ECTransition Source="Start" Destination="State1E0" Condition="true" x="727.25" y="568.75" />
+  <ECTransition Source="State1E0" Destination="State2E0" Condition="TURNON" x="2195" y="568.75" />
+  <ECTransition Source="State1E0" Destination="State1" Condition="true" x="1444.875" y="457.375" />
+  <ECTransition Source="State1" Destination="State2E0" Condition="TURNON" x="2269.375" y="455.375" />
+  <ECTransition Source="State1" Destination="State1" Condition="true" x="1738.25" y="350" />
+  <ECTransition Source="State2E0" Destination="State3E0" Condition="LREAL_GTE(y, 0.1)" x="3238.97922229767" y="1267.77086114883" />
+  <ECTransition Source="State2E0" Destination="State2" Condition="LREAL_LT(y, 0.1)" x="3314.125" y="714.875" />
+  <ECTransition Source="State2" Destination="State3E0" Condition="LREAL_GTE(y, 0.1)" x="3451.60422229767" y="1404.89586114883" />
+  <ECTransition Source="State2" Destination="State2" Condition="LREAL_LT(y, 0.1)" x="3460.75" y="784" />
+  <ECTransition Source="State3E0" Destination="State4E0" Condition="TURNOFF" x="2448.4375834465" y="2004.26047229767" />
+  <ECTransition Source="State3E0" Destination="State3" Condition="true" x="3199.51047229767" y="1982.86461114883" />
+  <ECTransition Source="State3" Destination="State4E0" Condition="TURNOFF" x="2335.48961114883" y="2163.33336114883" />
+  <ECTransition Source="State3" Destination="State3" Condition="true" x="3089.5625" y="2082.9375" />
+  <ECTransition Source="State4E0" Destination="State1E1" Condition="LREAL_GTE(y, 0.1)" x="1435.45836114883" y="1619.23961114883" />
+  <ECTransition Source="State4E0" Destination="State4" Condition="LREAL_LT(y, 0.1)" x="1467.58336114883" y="2023.48961114883" />
+  <ECTransition Source="State4" Destination="State1E1" Condition="LREAL_GTE(y,0.1)" x="1312.5" y="1368.625" />
+  <ECTransition Source="State4" Destination="State4" Condition="LREAL_LT(y, 0.1)" x="1121.75" y="1802.25" />
+  <ECTransition Source="State1E1" Destination="State2E0" Condition="TURNON" x="2268" y="736.75" />
+  <ECTransition Source="State1E1" Destination="State1" Condition="true" x="1402.875" y="600.375" />
+</ECC><Algorithm Name="yPrimeEq0" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="y_prime = 0;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="yDotEq0" Comment="ODE">
+  <Other Language="C" Prototype="" Text="y_dot = 0;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="yDotEq1" Comment="ODE">
+  <Other Language="C" Prototype="" Text="y_dot = 1;&#xD;&#xA;y_trigger = 0.1;" />
+</Algorithm></BasicFB>
+</FBType>

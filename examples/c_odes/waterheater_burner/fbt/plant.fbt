@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="plant" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="TURNON" Comment="">
+  </Event>
+  <Event Name="TURNOFF" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="update" Comment="">
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="y" Type="LREAL" Comment="" />
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="b" Type="burner" x="1268.75" y="1334.375" />
+  <FB Name="w" Type="watertank" x="2887.5" y="1400" />
+  <EventConnections><Connection Source="TURNON" Destination="b.TURNON" />
+<Connection Source="TURNOFF" Destination="b.TURNOFF" />
+<Connection Source="b.update" Destination="update" />
+<Connection Source="w.update" Destination="update" />
+<Connection Source="b.ON" Destination="w.ON" />
+<Connection Source="b.OFF" Destination="w.OFF" /></EventConnections>
+  <DataConnections><Connection Source="b.y" Destination="y" />
+<Connection Source="w.x" Destination="x" /></DataConnections>
+</FBNetwork>
+</FBType>

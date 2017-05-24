@@ -101,6 +101,7 @@ void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t *me, CVRhsFn ode_f, CVRootF
 		while(1);
     }
 
+	CVodeSetNoInactiveRootWarn(me->cvode_mem); //make it so we don't get the annoying "root functino still identically zero" warnings
 
 	//set solver tolerances
 	flag = CVodeSStolerances(me->cvode_mem, REL_TOL, ABS_TOL);

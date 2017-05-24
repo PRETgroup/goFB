@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="watertank" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="ON" Comment="">
+  </Event>
+  <Event Name="OFF" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="update" Comment="">
+    <With Var="x" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="K" Type="LREAL" InitialValue="0.075" Comment="" />
+  <VarDeclaration Name="h" Type="LREAL" InitialValue="150" Comment="" />
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="175" y="437.5">
+  </ECState>
+  <ECState Name="State1E0" Comment="" x="1093.75" y="350">
+    <ECAction Algorithm="xPrimeEq20" Output="update" />
+    <ECAction Algorithm="xDotEq0" />
+  </ECState>
+  <ECState Name="State1" Comment="" x="1618.75" y="481.25">
+    <ECAction Algorithm="xDotEq0" Output="update" />
+  </ECState>
+  <ECState Name="State2E0" Comment="" x="3120.83344459534" y="411.979180574417">
+    <ECAction Algorithm="xPrimeEqX" Output="update" />
+    <ECAction Algorithm="xDotEqKhMinusX" />
+  </ECState>
+  <ECState Name="State2" Comment="" x="3587.5" y="568.75">
+    <ECAction Algorithm="xDotEqKhMinusX" Output="update" />
+  </ECState>
+  <ECState Name="State3E0" Comment="" x="3467.1875" y="1866.66672229767">
+    <ECAction Algorithm="xPrimeEq100" Output="update" />
+    <ECAction Algorithm="xDotEq0" />
+  </ECState>
+  <ECState Name="State3" Comment="" x="3500" y="2143.75">
+    <ECAction Algorithm="xDotEq0" Output="update" />
+  </ECState>
+  <ECState Name="State4E0" Comment="" x="1881.25" y="2231.25">
+    <ECAction Algorithm="xPrimeEqX" Output="update" />
+    <ECAction Algorithm="xDotEqMinusKx" />
+  </ECState>
+  <ECState Name="State4" Comment="" x="1330.72913885117" y="2296.875">
+    <ECAction Algorithm="xDotEqMinusKx" Output="update" />
+  </ECState>
+  <ECState Name="State2E1" Comment="" x="3106.25" y="962.5">
+    <ECAction Algorithm="xPrimeEqX" Output="update" />
+    <ECAction Algorithm="xDotEqKhMinusX" />
+  </ECState>
+  <ECState Name="State4E1" Comment="" x="1381.77086114883" y="1903.125">
+    <ECAction Algorithm="xPrimeEqX" Output="update" />
+    <ECAction Algorithm="xDotEqMinusKx" />
+  </ECState>
+  <ECState Name="State1E1" Comment="" x="1093.75" y="659.895819425583">
+    <ECAction Algorithm="xPrimeEq20" Output="update" />
+    <ECAction Algorithm="xDotEq0" />
+  </ECState>
+  <ECTransition Source="Start" Destination="State1E0" Condition="true" x="676.375" y="395.75" />
+  <ECTransition Source="State1E0" Destination="State2E0" Condition="ON" x="1951.29172229767" y="384.989590287209" />
+  <ECTransition Source="State1E0" Destination="State1" Condition="true" x="1343.25" y="422.625" />
+  <ECTransition Source="State1" Destination="State2E0" Condition="ON" x="2505.79172229767" y="451.614590287209" />
+  <ECTransition Source="State1" Destination="State1" Condition="true" x="1557.75" y="392.25" />
+  <ECTransition Source="State2E0" Destination="State3E0" Condition="LREAL_GTE(x, 100)" x="3300.01047229767" y="1056.32295143604" />
+  <ECTransition Source="State2E0" Destination="State4E1" Condition="OFF AND (LREAL_LT(x, 100))" x="2225.30215287209" y="1248.55209028721" />
+  <ECTransition Source="State2E0" Destination="State2" Condition="LREAL_LT(x, 100)" x="3372.16672229767" y="494.364590287209" />
+  <ECTransition Source="State2" Destination="State3E0" Condition="LREAL_GTE(x, 100)" x="3472.65625" y="1340.82295143604" />
+  <ECTransition Source="State2" Destination="State4E1" Condition="OFF AND (LREAL_LT(x, 100))" x="2475.63543057442" y="1228.9375" />
+  <ECTransition Source="State2" Destination="State2" Condition="LREAL_LT(x, 100)" x="3538.5" y="653.75" />
+  <ECTransition Source="State3E0" Destination="State4E0" Condition="OFF" x="2451.78125" y="1991.6875" />
+  <ECTransition Source="State3E0" Destination="State3" Condition="true" x="3485.59375" y="2000.20836114883" />
+  <ECTransition Source="State3" Destination="State4E0" Condition="OFF" x="2420.1875" y="2121.22913885117" />
+  <ECTransition Source="State3" Destination="State3" Condition="true" x="3532" y="2207.75" />
+  <ECTransition Source="State4E0" Destination="State1E1" Condition="LREAL_LTE(x, 20)" x="1343.0625" y="1287.30204856396" />
+  <ECTransition Source="State4E0" Destination="State2E1" Condition="ON AND (LREAL_GT(x, 20))" x="2477.75" y="1486.875" />
+  <ECTransition Source="State4E0" Destination="State4" Condition="LREAL_GT(x, 20)" x="1635.98956942558" y="2261.0625" />
+  <ECTransition Source="State4" Destination="State1E1" Condition="LREAL_LTE(x, 20)" x="1207.23956942558" y="1451.38540971279" />
+  <ECTransition Source="State4" Destination="State2E1" Condition="ON AND (LREAL_GT(x, 20))" x="2189.48956942558" y="1625.6875" />
+  <ECTransition Source="State4" Destination="State4" Condition="LREAL_GT(x, 20)" x="1296.72913885117" y="2371.875" />
+  <ECTransition Source="State2E1" Destination="State3E0" Condition="LREAL_GTE(x, 100)" x="3316.65625" y="1269.36461114883" />
+  <ECTransition Source="State2E1" Destination="State4E1" Condition="OFF AND (LREAL_LT(x, 100))" x="2177.94793057442" y="1370.59375" />
+  <ECTransition Source="State2E1" Destination="State2" Condition="LREAL_LT(x, 100)" x="3353.875" y="759.625" />
+  <ECTransition Source="State4E1" Destination="State1E1" Condition="LREAL_LTE(x, 20)" x="1238.76043057442" y="1196.51040971279" />
+  <ECTransition Source="State4E1" Destination="State2E1" Condition="ON AND (LREAL_GT(x, 20))" x="2084.01043057442" y="1440.8125" />
+  <ECTransition Source="State4E1" Destination="State4" Condition="LREAL_GT(x, 20)" x="1356.25" y="2121" />
+  <ECTransition Source="State1E1" Destination="State2E0" Condition="ON" x="1954.29172229767" y="535.9375" />
+  <ECTransition Source="State1E1" Destination="State1" Condition="true" x="1331.25" y="582.572909712791" />
+</ECC><Algorithm Name="xPrimeEq20" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = 20;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xPrimeEqX" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = x;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xDotEq0" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = 0;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xDotEqMinusKx" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = -K * x;x_trigger = 20;" />
+</Algorithm>
+<Algorithm Name="xDotEqKhMinusX" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = K * (h - x);&#xD;&#xA;x_trigger = 100;" />
+</Algorithm>
+<Algorithm Name="xPrimeEq100" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = 100;&#xD;&#xA;" />
+</Algorithm></BasicFB>
+</FBType>
