@@ -6,3 +6,4 @@ go-iec61499-vhdl.exe
 *.exe
 *.out
 *.wca
+*.csv
