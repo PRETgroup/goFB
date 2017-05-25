@@ -106,7 +106,7 @@ void controller_run(controller_t  *me) {
 			};
 			break;
 		case STATE_controller_State1:
-			if(me->ctime >= 20) {
+			if(LREAL_GTE(me->x, 550) || me->ctime >= 20) {
 				me->_state = STATE_controller_State2;
 				me->_trigger = true;
 			} else if(true) {
@@ -127,7 +127,7 @@ void controller_run(controller_t  *me) {
 			};
 			break;
 		case STATE_controller_State4:
-			if(me->ctime >= 20) {
+			if(LREAL_GTE(me->x, 550) || me->ctime >= 20) {
 				me->_state = STATE_controller_State5;
 				me->_trigger = true;
 			} else if(true) {

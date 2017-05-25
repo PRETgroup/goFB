@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="plant" Comment="ODE" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="update" Comment="">
+    <With Var="x0" />
+    <With Var="x1" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+  <VarDeclaration Name="v1" Type="LREAL" InitialValue="0.5" Comment="" />
+  <VarDeclaration Name="v2" Type="LREAL" InitialValue="0.5" Comment="" />
+  <VarDeclaration Name="r1" Type="LREAL" InitialValue="0.25" Comment="" />
+  <VarDeclaration Name="r2" Type="LREAL" InitialValue="0.25" Comment="" />
+  <VarDeclaration Name="w" Type="LREAL" InitialValue="1" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="x1" Type="LREAL" Comment="" />
+  <VarDeclaration Name="x2" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="175" y="918.75">
+  </ECState>
+  <ECState Name="State1E0" Comment="" x="875" y="700">
+    <ECAction Algorithm="x1x2PrimeEqHalf" Output="update" />
+    <ECAction Algorithm="x1DotEqWMv1x2DotEqMv2" />
+  </ECState>
+  <ECState Name="State1" Comment="" x="1312.5" y="1050">
+    <ECAction Algorithm="x1DotEqWMv1x2DotEqMv2" Output="update" />
+  </ECState>
+  <ECState Name="State2E0" Comment="" x="3350.52094459534" y="703.645861148834">
+    <ECAction Algorithm="x1x2PrimeEqx1x2" Output="update" />
+    <ECAction Algorithm="x1DotEqMv1x2DotEqWMv2" />
+  </ECState>
+  <ECState Name="State2" Comment="" x="4025" y="1006.25">
+    <ECAction Algorithm="x1DotEqMv1x2DotEqWMv2" Output="update" />
+  </ECState>
+  <ECState Name="State1E1" Comment="" x="1575" y="1400">
+    <ECAction Algorithm="x1x2PrimeEqx1x2" Output="update" />
+    <ECAction Algorithm="x1DotEqWMv1x2DotEqMv2" />
+  </ECState>
+  <ECTransition Source="Start" Destination="State1E0" Condition="true" x="509" y="804.375" />
+  <ECTransition Source="State1E0" Destination="State2E0" Condition="LREAL_LT(x2, r2)" x="2128.76047229767" y="701.822930574417" />
+  <ECTransition Source="State1E0" Destination="State1" Condition="LREAL_GTE(x2, r2)" x="1132.75" y="805.25" />
+  <ECTransition Source="State1" Destination="State2E0" Condition="LREAL_LT(x2, r2)" x="2413.51047229767" y="843.072930574417" />
+  <ECTransition Source="State1" Destination="State1" Condition="LREAL_GTE(x2, r2)" x="1261.5" y="964" />
+  <ECTransition Source="State2E0" Destination="State1E1" Condition="LREAL_LT(x1, r1)" x="2451.63547229767" y="951.197930574417" />
+  <ECTransition Source="State2E0" Destination="State2" Condition="LREAL_GTE(x1, r1)" x="3704.76047229767" y="866.947930574417" />
+  <ECTransition Source="State2" Destination="State1E1" Condition="LREAL_LT(x1, r1)" x="3027.875" y="1161.5" />
+  <ECTransition Source="State2" Destination="State2" Condition="LREAL_GTE(x1, r1)" x="4026" y="1100.25" />
+  <ECTransition Source="State1E1" Destination="State2E0" Condition="LREAL_LT(x2, r2)" x="2666.26047229767" y="1126.44793057442" />
+  <ECTransition Source="State1E1" Destination="State1" Condition="LREAL_GTE(x2, r2)" x="1460.75" y="1196" />
+</ECC><Algorithm Name="x1x2PrimeEqHalf" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x1_prime = 0.5;&#xD;&#xA;x2_prime = 0.5;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="x1x2PrimeEqx1x2" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x1_prime = x1;&#xD;&#xA;x2_prime = x2;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="x1DotEqWMv1x2DotEqMv2" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x1_dot = w - v1;&#xD;&#xA;x2_dot = -v2;" />
+</Algorithm>
+<Algorithm Name="x1DotEqMv1x2DotEqWMv2" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x1_dot = -v1;&#xD;&#xA;x2_dot = w - v2;" />
+</Algorithm></BasicFB>
+</FBType>

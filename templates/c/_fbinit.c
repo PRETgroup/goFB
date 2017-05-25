@@ -47,8 +47,10 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 	me->Tnext = 0;
 	me->T0 = 0;
 	me->solveInProgress = 0;
+	
 	#ifdef PRINT_VALS
-	printf("{{$block.Name}},");
+	{{if $block.OutputVars}}{{range $ind, $outputVar := $block.OutputVars.Variables}}	printf("{{$block.Name}}-{{$outputVar.Name}},");
+	{{end}}{{end}}
 	#endif{{else}}
 	{{end}}
 	{{end}}

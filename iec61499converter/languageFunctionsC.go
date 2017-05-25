@@ -293,7 +293,7 @@ func parseOdeInitAlgo(initAlgo string) CvodeInit {
 		}
 	}
 
-	primeRegex := regexp.MustCompile(`([a-zA-Z]+)_prime\s+=\s+([^;]+);`)
+	primeRegex := regexp.MustCompile(`([a-zA-Z0-9]+)_prime\s+=\s+([^;]+);`)
 	for _, line := range lines {
 		nameMatch := primeRegex.FindStringSubmatch(line)
 		if len(nameMatch) == 3 {
@@ -311,7 +311,7 @@ func parseOdeRunAlgo(s string) CvodeTick {
 
 	c := CvodeTick{}
 
-	dotRegex := regexp.MustCompile(`([a-zA-Z]+)_dot\s+=\s+([^;]+);`)
+	dotRegex := regexp.MustCompile(`([a-zA-Z0-9]+)_dot\s+=\s+([^;]+);`)
 	for _, line := range lines {
 		nameMatch := dotRegex.FindStringSubmatch(line)
 		if len(nameMatch) == 3 {
@@ -319,7 +319,7 @@ func parseOdeRunAlgo(s string) CvodeTick {
 		}
 	}
 
-	emitRegex := regexp.MustCompile(`([a-zA-Z\_]+)\s+=\s+([^;]+);`)
+	emitRegex := regexp.MustCompile(`([a-zA-Z0-9\_]+)\s+=\s+([^;]+);`)
 	for _, line := range lines {
 		nameMatch := emitRegex.FindStringSubmatch(line)
 		if len(nameMatch) == 3 {
@@ -331,7 +331,7 @@ func parseOdeRunAlgo(s string) CvodeTick {
 		}
 	}
 
-	triggerRegex := regexp.MustCompile(`([a-zA-Z]+)_trigger\s+=\s+([^;]+);`)
+	triggerRegex := regexp.MustCompile(`([a-zA-Z0-9]+)_trigger\s+=\s+([^;]+);`)
 	for _, line := range lines {
 		nameMatch := triggerRegex.FindStringSubmatch(line)
 		if len(nameMatch) == 3 {
