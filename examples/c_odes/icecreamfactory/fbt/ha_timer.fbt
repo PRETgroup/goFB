@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="ha_timer" Comment="ODE_init" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="update" Comment="">
+    <With Var="x" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="Variable1" Type="BOOL" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="State1E0" Comment="" x="714.583361148834" y="269.791659712791">
+    <ECAction Algorithm="xPrimeEq0" Output="update" />
+    <ECAction Algorithm="xDotEq1" />
+  </ECState>
+  <ECState Name="State1" Comment="" x="1356.25" y="831.25">
+    <ECAction Algorithm="xDotEq1" Output="update" />
+  </ECState>
+  <ECState Name="State1E1" Comment="" x="1618.75" y="229.6875">
+    <ECAction Algorithm="xPrimeEq0" Output="update" />
+    <ECAction Algorithm="xDotEq1" />
+  </ECState>
+  <ECTransition Source="Start" Destination="State1E0" Condition="true" x="376.916680574417" y="350" />
+  <ECTransition Source="State1E0" Destination="State1" Condition="LREAL_LT(x, 10)" x="1004.01043057442" y="465.260420143604" />
+  <ECTransition Source="State1" Destination="State1E1" Condition="LREAL_EQ(x, 10)" x="1467.09375" y="445.208340287209" />
+  <ECTransition Source="State1" Destination="State1" Condition="LREAL_LT(x, 10)" x="1343.25" y="743.25" />
+  <ECTransition Source="State1E1" Destination="State1" Condition="LREAL_LT(x, 10)" x="1451.09375" y="466.208340287209" />
+</ECC><Algorithm Name="xDotEq1" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = 1;" />
+</Algorithm>
+<Algorithm Name="xPrimeEq0" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = 0;" />
+</Algorithm></BasicFB>
+</FBType>

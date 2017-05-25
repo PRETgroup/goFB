@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="controller" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="update" Comment="">
+    <With Var="x" />
+    <With Var="y" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="S2" Comment="">
+  </Event>
+  <Event Name="S3" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+  <VarDeclaration Name="y" Type="LREAL" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="525" y="437.5">
+  </ECState>
+  <ECState Name="State1" Comment="" x="1487.5" y="1093.75">
+    <ECAction Output="S2" />
+  </ECState>
+  <ECState Name="State2" Comment="" x="1443.75" y="218.75">
+    <ECAction Output="S3" />
+  </ECState>
+  <ECTransition Source="Start" Destination="State1" Condition="LREAL_EQ(x, 3) AND LREAL_GTE(y, 6)" x="968.875" y="581.5" />
+  <ECTransition Source="Start" Destination="State2" Condition="LREAL_EQ(x, 3) AND LREAL_LTE(y, 0)" x="986.8125" y="388.28125" />
+  <ECTransition Source="State1" Destination="Start" Condition="true" x="978.25" y="782.625" />
+  <ECTransition Source="State2" Destination="Start" Condition="true" x="1052.375" y="350" />
+</ECC></BasicFB>
+</FBType>
