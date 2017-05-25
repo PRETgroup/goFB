@@ -10,11 +10,11 @@ The goal of the goFB project is to create a complete toolchain for IEC61499 cons
 ## Support
 
 goFB currently supports the following aspects of the IEC61499 standard
-[x] Basic Function Blocks
-[x] Composite Function Blocks
-[x] Resources
-[x] Devices
-[] Systems
+- [x] Basic Function Blocks
+- [x] Composite Function Blocks
+- [x] Resources
+- [x] Devices
+- [ ] Systems
 
 ### Special Extensions
 
