@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="conveyor" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="off" Comment="">
+  </Event>
+  <Event Name="on" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="xdchange" Comment="">
+    <With Var="x" />
+    <With Var="d" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+  <VarDeclaration Name="d" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="1618.75" y="350">
+  </ECState>
+  <ECState Name="offE0" Comment="" x="1881.25" y="656.25">
+    <ECAction Algorithm="xPrimeEq0_dEq0" Output="xdchange" />
+    <ECAction Algorithm="xDotEqXBy5_dEqdPlusx" />
+  </ECState>
+  <ECState Name="off" Comment="" x="1662.5" y="991.666638851166">
+    <ECAction Algorithm="xDotEqXBy5_dEqdPlusx" Output="xdchange" />
+  </ECState>
+  <ECState Name="onE0" Comment="" x="1881.25" y="2231.25">
+    <ECAction Algorithm="xPrimeEqx_dEqd" Output="xdchange" />
+    <ECAction Algorithm="xDotEqMminusxBy5_dEqdPlusx" />
+  </ECState>
+  <ECState Name="on" Comment="" x="1618.75" y="2450">
+    <ECAction Algorithm="xDotEqMminusxBy5_dEqdPlusx" Output="xdchange" />
+  </ECState>
+  <ECState Name="offE1" Comment="" x="1356.25" y="1225">
+    <ECAction Algorithm="xPrimeEqx_dEqd" Output="xdchange" />
+    <ECAction Algorithm="xDotEqXBy5_dEqdPlusx" />
+  </ECState>
+  <ECTransition Source="Start" Destination="offE0" Condition="true" x="1746" y="526.125" />
+  <ECTransition Source="offE0" Destination="onE0" Condition="on" x="1881.25" y="1445.75" />
+  <ECTransition Source="offE0" Destination="off" Condition="true" x="1781.875" y="806.958319425583" />
+  <ECTransition Source="off" Destination="onE0" Condition="on" x="1779.875" y="1598.45831942558" />
+  <ECTransition Source="off" Destination="off" Condition="true" x="1693.5" y="1012.66663885117" />
+  <ECTransition Source="onE0" Destination="offE1" Condition="off" x="1585.75" y="1683.125" />
+  <ECTransition Source="onE0" Destination="on" Condition="true" x="1773" y="2325.625" />
+  <ECTransition Source="on" Destination="offE1" Condition="off" x="1480.5" y="1865.5" />
+  <ECTransition Source="on" Destination="on" Condition="true" x="1632.75" y="2522" />
+  <ECTransition Source="offE1" Destination="onE0" Condition="on" x="1575.75" y="1667.125" />
+  <ECTransition Source="offE1" Destination="off" Condition="true" x="1482.375" y="1098.33331942558" />
+</ECC><Algorithm Name="xPrimeEq0_dEq0" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = 0;&#xD;&#xA;d = 0;" />
+</Algorithm>
+<Algorithm Name="xPrimeEqx_dEqd" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = x;&#xD;&#xA;d = d;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xDotEqXBy5_dEqdPlusx" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = x / 5;&#xD;&#xA;d = d + x;" />
+</Algorithm>
+<Algorithm Name="xDotEqMminusxBy5_dEqdPlusx" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = (0.02 - x) / 5;&#xD;&#xA;d = d + x;&#xD;&#xA;" />
+</Algorithm></BasicFB>
+</FBType>

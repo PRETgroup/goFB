@@ -4,7 +4,7 @@ WD=$(pwd)
 #compile fbt to c
 
 cd ../../..
-./goFB -i=$WD/fbt -o=$WD/c -l=c -t=_pizza -cvode
+./goFB -i=$WD/fbt -o=$WD/c -l=c -t=top -cvode
 cd $WD
 
 #compile

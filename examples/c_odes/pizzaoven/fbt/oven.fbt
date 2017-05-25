@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="oven" Comment="ODE" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="start" Comment="">
+  </Event>
+  <Event Name="remove" Comment="">
+  </Event>
+  <Event Name="done" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="xChange" Comment="">
+    <With Var="x" />
+  </Event>
+  <Event Name="Smoke" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="218.75" y="656.25">
+  </ECState>
+  <ECState Name="frozenE0" Comment="" x="791.145861148834" y="751.041680574417">
+    <ECAction Algorithm="xPrimeEq0" Output="xChange" />
+    <ECAction Algorithm="xDotEq0" />
+  </ECState>
+  <ECState Name="frozen" Comment="" x="1487.5" y="860.416680574417">
+    <ECAction Algorithm="xDotEq0" Output="xChange" />
+  </ECState>
+  <ECState Name="cookE0" Comment="" x="3237.5" y="700">
+    <ECAction Algorithm="xPrimeEqx" Output="xChange" />
+    <ECAction Algorithm="xDotEqP1300MxT265" />
+  </ECState>
+  <ECState Name="cook" Comment="" x="3609.375" y="907.8125">
+    <ECAction Algorithm="xDotEqP1300MxT265" Output="xChange" />
+  </ECState>
+  <ECState Name="burnE0" Comment="" x="3295.83344459534" y="2395.3125">
+    <ECAction Algorithm="xPrimeEqx" Output="xChange" />
+    <ECAction Algorithm="xDotEqP1300MxNT" Output="Smoke" />
+  </ECState>
+  <ECState Name="burn" Comment="" x="3580.20844459534" y="2701.5625">
+    <ECAction Algorithm="xDotEqP1300MxNT" Output="xChange" />
+    <ECAction Output="Smoke" />
+  </ECState>
+  <ECState Name="coolE0" Comment="" x="1050" y="2275">
+    <ECAction Algorithm="xPrimeEqx" Output="xChange" />
+    <ECAction Algorithm="xDotEqP118Mx" />
+  </ECState>
+  <ECState Name="coolE1" Comment="" x="1443.75" y="2843.75">
+    <ECAction Algorithm="xPrimeEqx" Output="xChange" />
+    <ECAction Algorithm="xDotEqP118Mx" />
+  </ECState>
+  <ECState Name="cool" Comment="" x="670.833319425583" y="2665.10422229767">
+    <ECAction Algorithm="xDotEqP118Mx" Output="xChange" />
+  </ECState>
+  <ECState Name="frozenE1" Comment="" x="1268.75" y="1152.08336114883">
+    <ECAction Algorithm="xPrimeEq0" Output="xChange" />
+    <ECAction Algorithm="xDotEq0" />
+  </ECState>
+  <ECTransition Source="Start" Destination="frozenE0" Condition="true" x="528.947930574417" y="697.645840287209" />
+  <ECTransition Source="frozenE0" Destination="cookE0" Condition="start" x="2183.32293057442" y="721.520840287209" />
+  <ECTransition Source="frozenE0" Destination="frozen" Condition="true" x="1166.32293057442" y="807.729180574417" />
+  <ECTransition Source="frozen" Destination="cookE0" Condition="start" x="2338.5" y="777.208340287209" />
+  <ECTransition Source="frozen" Destination="frozen" Condition="true" x="1559.5" y="833.416680574417" />
+  <ECTransition Source="cookE0" Destination="coolE0" Condition="remove" x="2016.75" y="1506.5" />
+  <ECTransition Source="cookE0" Destination="burnE0" Condition="LREAL_EQ(x, 265)" x="3270.66672229767" y="1558.65625" />
+  <ECTransition Source="cookE0" Destination="cook" Condition="LREAL_LTE(x, 265)" x="3391.4375" y="784.90625" />
+  <ECTransition Source="cook" Destination="coolE0" Condition="remove" x="2487.6875" y="1571.40625" />
+  <ECTransition Source="cook" Destination="burnE0" Condition="LREAL_EQ(x, 265)" x="3463.60422229767" y="1738.5625" />
+  <ECTransition Source="cook" Destination="cook" Condition="LREAL_LTE(x, 265)" x="3659.375" y="817.8125" />
+  <ECTransition Source="burnE0" Destination="coolE1" Condition="remove" x="2481.79172229767" y="2642.53125" />
+  <ECTransition Source="burnE0" Destination="burn" Condition="LREAL_LTE(x, 300)" x="3463.02094459534" y="2540.4375" />
+  <ECTransition Source="burn" Destination="coolE1" Condition="remove" x="2547.97922229767" y="2763.65625" />
+  <ECTransition Source="burn" Destination="burn" Condition="LREAL_LTE(x, 300)" x="3620.20844459534" y="2792.5625" />
+  <ECTransition Source="coolE0" Destination="frozenE1" Condition="done" x="1163.375" y="1820.54168057442" />
+  <ECTransition Source="coolE0" Destination="cool" Condition="true" x="855.416659712791" y="2473.05211114883" />
+  <ECTransition Source="coolE1" Destination="frozenE1" Condition="done" x="1364.25" y="1983.91668057442" />
+  <ECTransition Source="coolE1" Destination="cool" Condition="true" x="1130.29165971279" y="2761.42711114883" />
+  <ECTransition Source="cool" Destination="frozenE1" Condition="done" x="949.791659712792" y="1915.59379172325" />
+  <ECTransition Source="cool" Destination="cool" Condition="true" x="695.833319425583" y="2703.10422229767" />
+  <ECTransition Source="frozenE1" Destination="cookE0" Condition="start" x="2388.125" y="909.041680574417" />
+  <ECTransition Source="frozenE1" Destination="frozen" Condition="true" x="1381.125" y="998.250020861626" />
+</ECC><Algorithm Name="xPrimeEq0" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = 0;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xPrimeEqx" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = x;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xDotEq0" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = 0;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xDotEqP1300MxT265" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = 0.1 * (300 - x);&#xD;&#xA;x_trigger = 265;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xDotEqP118Mx" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = 0.1 * (18 - x);&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="xDotEqP1300MxNT" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = 0.1 * (300 - x);&#xD;&#xA;" />
+</Algorithm></BasicFB>
+</FBType>

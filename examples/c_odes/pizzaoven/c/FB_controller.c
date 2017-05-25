@@ -11,13 +11,14 @@
  */
 int controller_preinit(controller_t  *me) {
 	//if there are input events, reset them
-	me->inputEvents.event.XChange = 0;
-	me->inputEvents.event.DChange = 0;
+	me->inputEvents.event.update = 0;
 	
 	//if there are output events, reset them
-	me->outputEvents.event.Start = 0;
-	me->outputEvents.event.Off = 0;
-	me->outputEvents.event.On = 0;
+	me->outputEvents.event.Conveyor_On = 0;
+	me->outputEvents.event.Conveyor_Off = 0;
+	me->outputEvents.event.Oven_Start = 0;
+	me->outputEvents.event.Oven_Remove = 0;
+	me->outputEvents.event.Oven_Done = 0;
 	
 	//if there are input vars with default values, set them
 	
@@ -38,7 +39,7 @@ int controller_preinit(controller_t  *me) {
 	
 	
 	
-	
+
 	return 0;
 }
 
@@ -66,20 +67,14 @@ int controller_init(controller_t  *me) {
 
 //algorithms
 
-void controller_print(controller_t  *me) {
+void controller_markStart(controller_t  *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
-static int count = 0;
-
-printf("X: %f, D: %f\n", me->X, me->D);
-
-count++;
-if(count == 25) {
-	me->outputEvents.event.On = 1;
+me->Dstart = me->Conveyor_D;
 }
-if(count == 50) {
-	me->outputEvents.event.Off = 1;
-	count = 0;
-} 
+
+void controller_beDone(controller_t  *me) {
+//PROVIDED CODE: this algorithm was provided in an algorithm's text field
+//printf("Pizza cooked, temperature is %f yum yum\n", me->Oven_Vo);
 }
 
 
@@ -94,9 +89,11 @@ if(count == 50) {
 void controller_run(controller_t  *me) {
 	//if there are output events, reset them
 	
-	me->outputEvents.event.Start = 0;
-	me->outputEvents.event.Off = 0;
-	me->outputEvents.event.On = 0;
+	me->outputEvents.event.Conveyor_On = 0;
+	me->outputEvents.event.Conveyor_Off = 0;
+	me->outputEvents.event.Oven_Start = 0;
+	me->outputEvents.event.Oven_Remove = 0;
+	me->outputEvents.event.Oven_Done = 0;
 	
 
 	//next state logic
@@ -104,13 +101,25 @@ void controller_run(controller_t  *me) {
 		switch(me->_state) {
 		case STATE_controller_Start:
 			if(true) {
-				me->_state = STATE_controller_run;
+				me->_state = STATE_controller_do;
 				me->_trigger = true;
 			};
 			break;
-		case STATE_controller_run:
+		case STATE_controller_do:
+			if(me->Conveyor_D > (me->Dstart + 10)) {
+				me->_state = STATE_controller_done;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_controller_done:
 			if(true) {
-				me->_state = STATE_controller_run;
+				me->_state = STATE_controller_clear;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_controller_clear:
+			if(true) {
+				me->_state = STATE_controller_do;
 				me->_trigger = true;
 			};
 			break;
@@ -124,9 +133,20 @@ void controller_run(controller_t  *me) {
 		case STATE_controller_Start:
 			break;
 
-		case STATE_controller_run:
-			controller_print(me);
-			me->outputEvents.event.Start = 1;
+		case STATE_controller_do:
+			controller_markStart(me);
+			me->outputEvents.event.Conveyor_On = 1;
+			me->outputEvents.event.Oven_Start = 1;
+			break;
+
+		case STATE_controller_done:
+			controller_beDone(me);
+			me->outputEvents.event.Oven_Remove = 1;
+			me->outputEvents.event.Conveyor_Off = 1;
+			break;
+
+		case STATE_controller_clear:
+			me->outputEvents.event.Oven_Done = 1;
 			break;
 
 		

@@ -51,11 +51,11 @@
     <ECAction Algorithm="resettime" Output="remove2" />
   </ECState>
   <ECTransition Source="Start" Destination="State1" Condition="true" x="541.875" y="362.875" />
-  <ECTransition Source="State1" Destination="State2" Condition="LREAL_GTE(x, 550) || ctime &gt;= 20" x="1375.15625" y="350" />
+  <ECTransition Source="State1" Destination="State2" Condition="LREAL_GTE(x, 550)" x="1375.15625" y="350" />
   <ECTransition Source="State1" Destination="State1" Condition="true" x="938.25" y="350" />
   <ECTransition Source="State2" Destination="State3" Condition="LREAL_LTE(x, 510)" x="2234" y="582.447930574417" />
   <ECTransition Source="State3" Destination="State4" Condition="true" x="2592.71875" y="1122.44793057442" />
-  <ECTransition Source="State4" Destination="State5" Condition="LREAL_GTE(x, 550) || ctime &gt;= 20" x="2166.64586114883" y="1374.125" />
+  <ECTransition Source="State4" Destination="State5" Condition="LREAL_GTE(x, 550)" x="2166.64586114883" y="1374.125" />
   <ECTransition Source="State4" Destination="State4" Condition="true" x="2482.5" y="1381.25" />
   <ECTransition Source="State5" Destination="State6" Condition="LREAL_LTE(x, 510)" x="1325.03129172325" y="1362.36456942558" />
   <ECTransition Source="State6" Destination="State1" Condition="true" x="874" y="740.5" />

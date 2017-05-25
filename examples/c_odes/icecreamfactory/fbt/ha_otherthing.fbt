@@ -27,9 +27,9 @@
 <BasicFB><ECC>
   <ECState Name="Start" Comment="" x="175" y="568.75">
   </ECState>
-  <ECState Name="State1E0" Comment="" x="831.25" y="481.25">
+  <ECState Name="StartEntryState" Comment="This is different to the one in the HA pdf as it's supposed to go to zero state initially" x="831.25" y="481.25">
     <ECAction Algorithm="yPrimeEq0" Output="update" />
-    <ECAction Algorithm="yDotEq2Trig6" />
+    <ECAction Algorithm="yDotEq0" />
   </ECState>
   <ECState Name="State1" Comment="" x="1487.5" y="700">
     <ECAction Algorithm="yDotEq2Trig6" Output="update" />
@@ -60,10 +60,10 @@
     <ECAction Algorithm="yPrimeEqY" Output="update" />
     <ECAction Algorithm="yDotEq2Trig6" />
   </ECState>
-  <ECTransition Source="Start" Destination="State1E0" Condition="true" x="542.125" y="532" />
-  <ECTransition Source="State1E0" Destination="State2E0" Condition="S2" x="1959.5" y="504.125" />
-  <ECTransition Source="State1E0" Destination="State3E1" Condition="LREAL_EQ(y, 6)" x="851.125" y="1376.5" />
-  <ECTransition Source="State1E0" Destination="State1" Condition="LREAL_LT(y, 6)" x="1140.375" y="580.625" />
+  <ECTransition Source="Start" Destination="StartEntryState" Condition="true" x="542.125" y="532" />
+  <ECTransition Source="StartEntryState" Destination="State2E1" Condition="S2" x="1959.5" y="504.125" />
+  <ECTransition Source="StartEntryState" Destination="State1E1" Condition="S3" x="851.125" y="1376.5" />
+  <ECTransition Source="StartEntryState" Destination="State3" Condition="true" x="1140.375" y="580.625" />
   <ECTransition Source="State1" Destination="State2E0" Condition="S2" x="2167" y="641.375" />
   <ECTransition Source="State1" Destination="State3E1" Condition="LREAL_EQ(y, 6)" x="1230.25" y="1453.875" />
   <ECTransition Source="State1" Destination="State1" Condition="LREAL_LT(y, 6)" x="1448.5" y="653" />

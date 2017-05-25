@@ -11,13 +11,12 @@
 
 
 //This is a BFB, so we need an enum type for the state machine
-enum controller_states { STATE_controller_Start, STATE_controller_run };
+enum controller_states { STATE_controller_Start, STATE_controller_do, STATE_controller_done, STATE_controller_clear };
 
 
 union controllerInputEvents {
 	struct {
-		UDINT XChange;
-		UDINT DChange;
+		UDINT update;
 	} event;
 	
 };
@@ -25,9 +24,11 @@ union controllerInputEvents {
 
 union controllerOutputEvents {
 	struct {
-		UDINT Start;
-		UDINT Off;
-		UDINT On;
+		UDINT Conveyor_On;
+		UDINT Conveyor_Off;
+		UDINT Oven_Start;
+		UDINT Oven_Remove;
+		UDINT Oven_Done;
 	} event;
 	
 };
@@ -41,12 +42,13 @@ typedef struct {
 	union controllerOutputEvents outputEvents;
 
     //input vars
-	LREAL X;
-    LREAL D;
+	LREAL Conveyor_D;
+    LREAL Oven_Vo;
     
     //output vars
 	
 	//any internal vars (BFBs only)
+    LREAL Dstart;
     
 	//any child FBs (CFBs only)
 	
