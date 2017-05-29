@@ -6,7 +6,7 @@
 
 //#define PRINT_VALS
 #define PRINT_TIME
-#define MAX_TICKS 1000000
+//#define MAX_TICKS 1000000
 
 int LREAL_EQ(LREAL a, LREAL b);
 
