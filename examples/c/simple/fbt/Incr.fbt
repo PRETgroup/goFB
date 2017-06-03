@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Incr" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="rx" Comment=""></Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="tx" Comment="">
+				<With Var="txdat"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars>
+			<VarDeclaration Name="txdat" Type="int" InitialValue="1" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="start" Comment="" x="" y=""></ECState>
+			<ECState Name="run" Comment="" x="" y="">
+				<ECAction Output="tx"></ECAction>
+				<ECAction Algorithm="tx_incr"></ECAction>
+			</ECState>
+			<ECTransition Source="start" Destination="run" Condition="&#34;rx&#34;" x="" y=""></ECTransition>
+			<ECTransition Source="run" Destination="run" Condition="&#34;rx&#34;" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="tx_incr" Comment="">
+			<Other Language="C" Text="me-&gt;txdat = me-&gt;txdat + 1;"></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

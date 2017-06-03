@@ -7,3 +7,5 @@ go-iec61499-vhdl.exe
 *.out
 *.wca
 *.csv
+*.tfb
+gotfb-build.bat

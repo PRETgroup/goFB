@@ -3,7 +3,7 @@ SET WD=%cd%
 REM compile fbt to c and compile the different versions
 cd ..\..\..
 
-goFB -i=%WD%\fbt -o=%WD%\c -l=eventC -t=topFLAT 
+goFB -i=%WD%\fbt -o=%WD%\c -l=c -t=topFLAT 
 gcc ./examples/c/testgoFB/c/*.c -o "./examples/c/testgoFB/testgoFB_topFLAT.exe" -O1
 
 REM goFB -i=%WD%\fbt -o=%WD%\c -l=c -t=topFLAT -af 

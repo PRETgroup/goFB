@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Netw" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs></EventInputs>
+		<EventOutputs></EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<FBNetwork>
+		<FB Name="incrr" Type="Incr" x="" y=""></FB>
+		<FB Name="emitrr" Type="Emitr" x="" y=""></FB>
+		<FB Name="printrr" Type="Printr" x="" y=""></FB>
+		<EventConnections>
+			<Connection Source="emitrr.e" Destination="incrr.rx" dx1=""></Connection>
+			<Connection Source="incrr.tx" Destination="printrr.p" dx1=""></Connection>
+		</EventConnections>
+		<DataConnections>
+			<Connection Source="incrr.txdat" Destination="printrr.pDat" dx1=""></Connection>
+		</DataConnections>
+	</FBNetwork>
+</FBType>
