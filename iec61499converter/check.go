@@ -3,7 +3,7 @@ package iec61499converter
 import (
 	"errors"
 
-	"github.com/kiwih/goFB/iec61499converter/iec61499"
+	"github.com/kiwih/goTFB/iec61499"
 )
 
 //checkFB is used internally to ensure that a given inputted function block is amenable to this conversion tool

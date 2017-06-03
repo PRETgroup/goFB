@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kiwih/goFB/iec61499converter/iec61499"
+	"github.com/kiwih/goTFB/iec61499"
 )
 
 const (
@@ -114,9 +114,9 @@ func getSpecialIO(f iec61499.FB, otherBlocks []iec61499.FB) SpecialIO {
 
 	if f.BasicFB != nil {
 		if f.BasicFB.InternalVars != nil {
-			for i := 0; i < len(f.BasicFB.InternalVars.Variables); i++ {
-				if variableIsTOPIO_IN(f.BasicFB.InternalVars.Variables[i]) || variableIsTOPIO_OUT(f.BasicFB.InternalVars.Variables[i]) {
-					s.InternalVars = append(s.InternalVars, f.BasicFB.InternalVars.Variables[i])
+			for i := 0; i < len(f.BasicFB.InternalVars); i++ {
+				if variableIsTOPIO_IN(f.BasicFB.InternalVars[i]) || variableIsTOPIO_OUT(f.BasicFB.InternalVars[i]) {
+					s.InternalVars = append(s.InternalVars, f.BasicFB.InternalVars[i])
 				}
 			}
 		}

@@ -64,7 +64,13 @@ int Netw_init(Netw_t  *me) {
 	
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
-	me->printrr.pDat = me->incrr.txdat;
+	
+	//sync config for incrr (of Type Incr) 
+	//sync config for emitrr (of Type Emitr) 
+	//sync config for printrr (of Type Printr) 
+	
+	
+		me->printrr.pDat = me->incrr.txdat;
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them

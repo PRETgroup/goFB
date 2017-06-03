@@ -22,11 +22,7 @@ union PrintrInputEvents {
 };
 
 
-union PrintrOutputEvents {
-	struct {
-	} event;
-	
-};
+//this block had no output events
 
 
 typedef struct {
@@ -34,7 +30,7 @@ typedef struct {
 	union PrintrInputEvents inputEvents;
 
     //output events
-	union PrintrOutputEvents outputEvents;
+	
 
     //input vars
 	int pDat;

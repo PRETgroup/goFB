@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kiwih/goFB/iec61499converter/iec61499"
+	"github.com/kiwih/goTFB/iec61499"
 )
 
 //CECCTransition is used with getCECCTransitionCondition to return results to the template
@@ -48,7 +48,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 
 		//check to see if it is an input event
 		if block.EventInputs != nil {
-			for _, event := range block.EventInputs.Events {
+			for _, event := range block.EventInputs {
 				if event.Name == in {
 					events = append(events, "me->inputEvents.event."+event.Name)
 					return "me->inputEvents.event." + event.Name //FUTURE WORK: Consider use of pointers and offsets to minimise memory footprint for events? i.e. "*(me->inputEvents." + in + " + ev_offset)"
@@ -58,7 +58,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 
 		//check to see if it is an output event
 		if block.EventOutputs != nil {
-			for _, event := range block.EventOutputs.Events {
+			for _, event := range block.EventOutputs {
 				if event.Name == in {
 					return "me->outputEvents.event." + event.Name
 				}
@@ -67,7 +67,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 
 		//check to see if it is input data
 		if block.InputVars != nil {
-			for _, Var := range block.InputVars.Variables {
+			for _, Var := range block.InputVars {
 				if Var.Name == in {
 					return "me->" + in
 				}
@@ -76,7 +76,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 
 		//check to see if it is output data
 		if block.OutputVars != nil {
-			for _, Var := range block.OutputVars.Variables {
+			for _, Var := range block.OutputVars {
 				if Var.Name == in {
 					return "me->" + in
 				}
@@ -85,7 +85,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 
 		//check to see if it is internal var
 		if block.BasicFB != nil && block.BasicFB.InternalVars != nil {
-			for _, Var := range block.BasicFB.InternalVars.Variables {
+			for _, Var := range block.BasicFB.InternalVars {
 				if Var.Name == in {
 					return "me->" + in
 				}
@@ -192,7 +192,7 @@ func nextPossibleECCStates(basicFB iec61499.BasicFB, curState iec61499.ECState) 
 	var nextStates []iec61499.ECState
 
 out:
-	for _, conn := range basicFB.Transistions {
+	for _, conn := range basicFB.Transitions {
 		if conn.Source == curState.Name {
 			for _, state := range basicFB.States {
 				if state.Name == conn.Destination {

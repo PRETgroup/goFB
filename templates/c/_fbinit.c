@@ -5,21 +5,21 @@
  */
 int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//if there are input events, reset them
-	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}me->inputEvents.event.{{$event.Name}} = 0;
-	{{end}}{{end}}
+	{{range $index, $event := $block.EventInputs}}me->inputEvents.event.{{$event.Name}} = 0;
+	{{end}}
 	//if there are output events, reset them
-	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.event.{{$event.Name}} = 0;
-	{{end}}{{end}}
+	{{range $index, $event := $block.EventOutputs}}me->outputEvents.event.{{$event.Name}} = 0;
+	{{end}}
 	//if there are input vars with default values, set them
-	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
+	{{range $index, $var := $block.InputVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
 	{{end}}{{else}}me->{{$var.Name}} = {{$var.InitialValue}};
-	{{end}}{{end}}{{end}}{{end}}
+	{{end}}{{end}}{{end}}
 	//if there are output vars with default values, set them
-	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
+	{{range $index, $var := $block.OutputVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
 	{{end}}{{else}}me->{{$var.Name}} = {{$var.InitialValue}};
-	{{end}}{{end}}{{end}}{{end}}
+	{{end}}{{end}}{{end}}
 	//if there are internal vars with default values, set them (BFBs only)
-	{{if $block.BasicFB}}{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
+	{{if $block.BasicFB}}{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
 	{{end}}{{else}}me->{{$var.Name}} = {{$var.InitialValue}};
 	{{end}}{{end}}{{end}}{{end}}{{end}}
 	//if there are resource vars with default values, set them
@@ -74,7 +74,7 @@ int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 	{{/*{{if $block.CompositeFB}}{{range $currLinkIndex, $link := $block.CompositeFB.DataConnections}}me->{{$link.Destination}} = me->{{$link.Source}};
 	{{end}}{{end}}*/}}
 	{{if $block.CompositeFB}}{{$compositeFB := $block.CompositeFB}}{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}//sync config for {{$child.Name}} (of Type {{$childType.Name}}) 
-	{{if $childType.InputVars}}{{range $inputVarIndex, $inputVar := $childType.InputVars.Variables}}{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $inputVar.Name}}
+	{{if $childType.InputVars}}{{range $inputVarIndex, $inputVar := $childType.InputVars}}{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $inputVar.Name}}
 	{{if $source}}{{if $inputVar.GetArraySize}}
 		{{range $index, $count := count $inputVar.GetArraySize}}
 		me->{{$child.Name}}.{{$inputVar.Name}}[{{$count}}] = me->{{$source}}[{{$count}}];{{end}}

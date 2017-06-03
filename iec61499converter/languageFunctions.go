@@ -3,7 +3,7 @@ package iec61499converter
 import (
 	"strings"
 
-	"github.com/kiwih/goFB/iec61499converter/iec61499"
+	"github.com/kiwih/goTFB/iec61499"
 )
 
 //connChildSourceOnly is used in templates for getting rid of prefix stuff on connections
@@ -66,7 +66,7 @@ func strToUpper(s string) string {
 
 func findVarDefinitionForName(b iec61499.FB, n string) *iec61499.Variable {
 	if b.InputVars != nil {
-		for _, varD := range b.InputVars.Variables {
+		for _, varD := range b.InputVars {
 			if varD.Name == n {
 				return &varD
 			}
@@ -74,7 +74,7 @@ func findVarDefinitionForName(b iec61499.FB, n string) *iec61499.Variable {
 	}
 
 	if b.OutputVars != nil {
-		for _, varD := range b.OutputVars.Variables {
+		for _, varD := range b.OutputVars {
 			if varD.Name == n {
 				return &varD
 			}

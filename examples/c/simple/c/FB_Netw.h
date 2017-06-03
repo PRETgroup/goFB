@@ -16,26 +16,18 @@
 #include "FB_Printr.h"
 
 
-union NetwInputEvents {
-	struct {
-	} event;
-	
-};
+//this block had no input events
 
 
-union NetwOutputEvents {
-	struct {
-	} event;
-	
-};
+//this block had no output events
 
 
 typedef struct {
     //input events
-	union NetwInputEvents inputEvents;
+	
 
     //output events
-	union NetwOutputEvents outputEvents;
+	
 
     //input vars
 	

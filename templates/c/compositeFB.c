@@ -29,7 +29,7 @@ void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_S
 	{{end}}{{end}}
 	
 	//then, for all connections that are connected to an output on the parent, run their run their copy
-	{{if $block.EventOutputs}}{{range $eventIndex, $event := $block.EventOutputs.Events}}
+	{{if $block.EventOutputs}}{{range $eventIndex, $event := $block.EventOutputs}}
 	me->outputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections "" $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}me->{{$eventSource}}{{end}}{{else}}0{{end}}; 
 	{{end}}{{end}}
 }
@@ -41,7 +41,7 @@ void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_S
  */
 void {{$block.Name}}_syncInputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//first, we explicitly synchronise the children
-	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs.Events}}
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs}}
 	me->{{$child.Name}}.inputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections $child.Name $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}me->{{$eventSource}}{{end}}{{else}}0{{end}}; 
 	{{end}}{{end}}{{end}}
 
@@ -80,7 +80,7 @@ void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{
 	//for all basic function block children, perform their synchronisations explicitly
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.BasicFB}}
 	//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a BFB
-	{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs.Events}}{{if $event.With}}
+	{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs}}{{if $event.With}}
 	if(me->{{$child.Name}}.inputEvents.event.{{$event.Name}} == 1) { {{range $withIndex, $with := $event.With}}{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}}{{$varDef := findVarDefinitionForName $childType $with.Var}}{{if and $source $varDef}}{{if $varDef.GetArraySize}}
 		{{range $index, $count := count $varDef.GetArraySize}}
 		me->{{$child.Name}}.{{$with.Var}}[{{$count}}] = me->{{$source}}[{{$count}}];{{end}}
@@ -88,7 +88,7 @@ void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{
 		me->{{$child.Name}}.{{$with.Var}} = me->{{$source}};{{end}}{{end}}{{end}}
 	} {{end}}{{end}}{{end}}
 	{{else}}{{/*it's a composite function block*/}}//sync for {{$child.Name}} (of Type {{$childType.Name}}) which is a CFB
-	{{if $childType.InputVars}}{{range $inputVarIndex, $inputVar := $childType.InputVars.Variables}}{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $inputVar.Name}}
+	{{if $childType.InputVars}}{{range $inputVarIndex, $inputVar := $childType.InputVars}}{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $inputVar.Name}}
 	{{if $source}}{{if $inputVar.GetArraySize}}
 		{{range $index, $count := count $inputVar.GetArraySize}}
 		me->{{$child.Name}}.{{$inputVar.Name}}[{{$count}}] = me->{{$source}}[{{$count}}];{{end}}

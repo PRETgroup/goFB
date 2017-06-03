@@ -24,7 +24,7 @@ enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{
 
 {{if $block.EventInputs}}union {{$block.Name}}InputEvents {
 	struct {
-	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs.Events}}	UDINT {{$event.Name}};
+	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs}}	UDINT {{$event.Name}};
 	{{end}}{{end}}} event;
 	{{/*UDINT events[{{if $block.EventInputs}}{{add (div (len $block.EventInputs.Events) 32) 1}}{{else}}1{{end}}]; //this has been known to cause issues*/}}
 };
@@ -35,7 +35,7 @@ enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{
 
 {{if $block.EventOutputs}}union {{$block.Name}}OutputEvents {
 	struct {
-	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}	UDINT {{$event.Name}};
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs}}	UDINT {{$event.Name}};
 	{{end}}{{end}}} event;
 	{{/*UDINT events[{{if $block.EventOutputs}}{{add (div (len $block.EventOutputs.Events) 32) 1}}{{else}}1{{end}}]; //this has been known to cause issues*/}}
 };
@@ -50,13 +50,13 @@ typedef struct {
 	{{if $block.EventOutputs}}union {{$block.Name}}OutputEvents outputEvents;{{end}}
 
     //input vars
-	{{if $block.InputVars}}{{range $index, $var := $block.InputVars.Variables}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
+	{{if $block.InputVars}}{{range $index, $var := $block.InputVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
     {{end}}{{end}}
     //output vars
-	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars.Variables}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
+	{{if $block.OutputVars}}{{range $index, $var := $block.OutputVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
     {{end}}{{end}}
 	//any internal vars (BFBs only)
-    {{if $block.BasicFB}}{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars.Variables}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
+    {{if $block.BasicFB}}{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
     {{end}}{{end}}{{end}}
 	//any child FBs (CFBs only)
 	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$child.Type}}_t {{$child.Name}};

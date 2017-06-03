@@ -14,11 +14,7 @@
 enum Emitr_states { STATE_Emitr_start };
 
 
-union EmitrInputEvents {
-	struct {
-	} event;
-	
-};
+//this block had no input events
 
 
 union EmitrOutputEvents {
@@ -31,7 +27,7 @@ union EmitrOutputEvents {
 
 typedef struct {
     //input events
-	union EmitrInputEvents inputEvents;
+	
 
     //output events
 	union EmitrOutputEvents outputEvents;
