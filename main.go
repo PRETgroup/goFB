@@ -45,7 +45,14 @@ func main() {
 		return
 	}
 
-	var fileNames []string
+	conv, err := iec61499converter.New(*outputLanguage)
+	if err != nil {
+		fmt.Println("Error creating converter:", err.Error())
+		return
+	}
+
+	var fbtFileNames []string
+	var otherFileNames []string
 
 	if fileInfo.IsDir() {
 		fmt.Println("Running in Dir mode")
@@ -60,20 +67,14 @@ func main() {
 			nameComponents := strings.Split(name, ".")
 			extension := nameComponents[len(nameComponents)-1]
 			if extension == "fbt" || extension == "res" || extension == "dev" {
-				fileNames = append(fileNames, name)
+				fbtFileNames = append(fbtFileNames, name)
 			} else {
-				fmt.Println("Didn't add, the extn was", extension)
+				otherFileNames = append(otherFileNames, name)
 			}
 		}
 	} else {
 		fmt.Println("Running in Single mode")
-		fileNames = append(fileNames, *inFileName)
-	}
-
-	conv, err := iec61499converter.New(*outputLanguage)
-	if err != nil {
-		fmt.Println("Error creating converter:", err.Error())
-		return
+		fbtFileNames = append(fbtFileNames, *inFileName)
 	}
 
 	if *algorithmLanguageCheck == false {
@@ -105,7 +106,7 @@ func main() {
 	// 	conv.SetIncrementEventsMode()
 	// }
 
-	for _, name := range fileNames {
+	for _, name := range fbtFileNames {
 		sourceFile, err := ioutil.ReadFile(fmt.Sprintf("%s%c%s", *inFileName, os.PathSeparator, name))
 		if err != nil {
 			fmt.Printf("Error reading file '%s' for conversion: %s\n", name, err.Error())
@@ -146,6 +147,22 @@ func main() {
 		err = ioutil.WriteFile(fmt.Sprintf("%s%c%s.%s", *outLocation, os.PathSeparator, output.Name, output.Extension), output.Contents, 0644)
 		if err != nil {
 			fmt.Println("Error during file write:", err.Error())
+			return
+		}
+	}
+
+	for _, otherFileName := range otherFileNames {
+		fmt.Printf("Duplicating %s\n", otherFileName)
+
+		sourceFile, err := ioutil.ReadFile(fmt.Sprintf("%s%c%s", *inFileName, os.PathSeparator, otherFileName))
+		if err != nil {
+			fmt.Printf("Error reading file '%s' for duplication: %s\n", otherFileName, err.Error())
+			return
+		}
+
+		err = ioutil.WriteFile(fmt.Sprintf("%s%c%s", *outLocation, os.PathSeparator, otherFileName), sourceFile, 0644)
+		if err != nil {
+			fmt.Println("Error during file copy:", err.Error())
 			return
 		}
 	}

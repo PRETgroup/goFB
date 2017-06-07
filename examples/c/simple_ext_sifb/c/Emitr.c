@@ -2,7 +2,7 @@
 // Compiler written by Hammond Pearce and available at github.com/kiwih/goFB
 
 // This file represents the implementation of the Basic Function Block for Emitr
-#include "FB_Emitr.h"
+#include "Emitr.h"
 
 
 /* Emitr_preinit() is required to be called to 
