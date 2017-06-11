@@ -8,4 +8,4 @@ go-iec61499-vhdl.exe
 *.wca
 *.csv
 *.tfb
-gotfb-build.bat
+*.out.json
