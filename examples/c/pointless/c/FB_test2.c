@@ -52,6 +52,9 @@ int test2_preinit(test2_t  *me) {
 	}
 	
 	
+
+	
+
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	
 
@@ -101,6 +104,8 @@ int test2_init(test2_t  *me) {
 		me->ac2.default_var[2] = me->ac2_default_var[2];
 		me->ac2.default_var[3] = me->ac2_default_var[3];
 		
+
+	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(ArrayCopier_init(&me->ac1) != 0) {

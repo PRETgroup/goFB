@@ -37,6 +37,9 @@ int InjectorPumpsController_preinit(InjectorPumpsController_t  *me) {
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
+
+	
+
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	me->_state = STATE_InjectorPumpsController_RejectCanister;
 	me->_trigger = true;
@@ -59,6 +62,8 @@ int InjectorPumpsController_init(InjectorPumpsController_t  *me) {
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	
+	
+
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them

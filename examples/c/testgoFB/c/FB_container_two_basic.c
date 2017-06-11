@@ -46,6 +46,9 @@ int container_two_basic_preinit(container_two_basic_t  *me) {
 	}
 	
 	
+
+	
+
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	
 
@@ -78,6 +81,8 @@ int container_two_basic_init(container_two_basic_t  *me) {
 	
 	
 		me->pf2.printf_id = me->printf_id2;
+	
+
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them

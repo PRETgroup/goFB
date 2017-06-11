@@ -55,7 +55,6 @@ typedef struct {
 	enum RejectArmController_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
-
 	
 } RejectArmController_t;
 

@@ -1,10 +1,9 @@
 #!/bin/bash
-#save current working directory
-WD=$(pwd)
+
 #compile fbt to c
-cd ../../..
-./goFB -i=$WD/fbt -o=$WD/c -l=c -t=topFLAT
-gcc $WD/c/*.c -o "$WD/testgoFB_topFLAT.exe" -O1
+
+goFB -i=./fbt -o=./c -l=c -t=topFLAT
+gcc ./c/*.c -o "./testgoFB_topFLAT.exe" -O1
 
 # goFB -i=%WD%\fbt -o=%WD%\c -l=c -t=topFLAT -af 
 # gcc ./examples/c/testgoFB/c/*.c -o ./examples/c/testgoFB/testgoFB_topFLAT_F.exe -O1
@@ -20,8 +19,3 @@ gcc $WD/c/*.c -o "$WD/testgoFB_topFLAT.exe" -O1
 
 # goFB -i=%WD%\fbt -o=%WD%\c -l=c -t=topMANY -af 
 # gcc ./examples/c/testgoFB/c/*.c -o ./examples/c/testgoFB/testgoFB_topMANY_F.exe -O1
-cd $WD
-#compile
-clang c/*.c -o pointless.out
-#run
-./pointless.out

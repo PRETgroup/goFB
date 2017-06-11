@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ResourceType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
-<ResourceType Name="FlexPRET" Comment="" >
+<ResourceType Name="flatFlexPRET" Comment="" >
 <Identification Standard="61499-2" />
 <VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
 <CompilerInfo header="" classdef="">

@@ -57,6 +57,9 @@ int InjectorController_preinit(InjectorController_t  *me) {
 	}
 	
 	
+
+	
+
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	
 
@@ -89,6 +92,8 @@ int InjectorController_init(InjectorController_t  *me) {
 	
 	
 		me->Pumps.FillContentsAvailable = me->FillContentsAvailable;
+	
+
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them

@@ -50,6 +50,9 @@ int topCFB1_preinit(topCFB1_t  *me) {
 	}
 	
 	
+
+	
+
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	
 
@@ -92,6 +95,8 @@ int topCFB1_init(topCFB1_t  *me) {
 	
 		me->cf4.DataIn = me->cf3.DataOut;
 	
+	
+
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
