@@ -17,7 +17,7 @@
 {{end}}{{end}}
 
 {{if $block.CompositeFB}}//This is a CFB, so we need the #includes for the child blocks embedded here
-{{range $currChildIndex, $child := $block.CompositeFB.FBs}}#include "FB_{{$child.Type}}.h"
+{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}#include "{{if $childType.CompilerInfo.Header}}{{$childType.CompilerInfo.Header}}{{else}}FB_{{$child.Type}}.h{{end}}"
 {{end}}{{end}}{{if $block.BasicFB}}//This is a BFB, so we need an enum type for the state machine
 enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{{if $index}}, {{end}}STATE_{{$block.Name}}_{{$state.Name}}{{end}} };
 {{end}}
@@ -30,7 +30,7 @@ enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{
 };
 {{else}}//this block had no input events
 {{end}}{{if $block.Resources}}//This block is a device and probably contains resources
-{{range $index, $res := $block.Resources}}#include "FB_{{$res.Type}}.h"
+{{range $index, $res := $block.Resources}}{{$childType := findBlockDefinitionForType $blocks $res.Type}}#include "{{if $childType.CompilerInfo.Header}}{{$childType.CompilerInfo.Header}}{{else}}FB_{{$res.Type}}.h{{end}}"
 {{end}}{{end}}
 
 {{if $block.EventOutputs}}union {{$block.Name}}OutputEvents {
@@ -78,8 +78,8 @@ typedef struct {
 	realtype Tcurr;
 	int solveInProgress;
 	{{end}}{{end}}
-
-	{{end}}
+	{{end}}{{if $block.ServiceFB}}{{if $block.ServiceFB.Autogenerate}}//Code provided in SIFB
+	{{$block.ServiceFB.Autogenerate.InStructText}}{{end}}{{end}}
 } {{$block.Name}}_t;
 
 //all FBs get a preinit function
@@ -91,7 +91,7 @@ int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 //all FBs get a run function
 void {{$block.Name}}_run({{$block.Name}}_t {{if or .TcrestUsingSPM (and $block.BasicFB .TcrestSmartSPM)}}_SPM{{end}} *me);
 
-{{if not $block.BasicFB}}//composite/resource/device FBs get sync functions
+{{if or (or $block.CompositeFB $block.Resources) $block.ResourceVars}}//composite/resource/device FBs get sync functions
 void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 void {{$block.Name}}_syncInputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 

@@ -371,6 +371,11 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			}
 		} else if c.Blocks[i].Resources != nil {
 			templateName = "deviceFB"
+		} else if c.Blocks[i].ServiceFB != nil {
+			templateName = "serviceFB"
+			if c.Blocks[i].ServiceFB.Autogenerate == nil { //don't generate sifb file if we don't have an autogenerate
+				continue
+			}
 		} else {
 			return nil, errors.New("Can't determine type of FB of " + c.Blocks[i].Name)
 		}

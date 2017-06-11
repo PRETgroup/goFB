@@ -38,6 +38,10 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 		return 1;
 	}
 	{{end}}{{end}}
+
+	{{if $block.ServiceFB}}{{if $block.ServiceFB.Autogenerate}}//Code provided in SIFB
+	{{$block.ServiceFB.Autogenerate.PreInitText}}{{end}}{{end}}
+
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	{{if $block.BasicFB}}me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};
 	me->_trigger = true;
@@ -81,6 +85,9 @@ int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 		{{else}}
 		me->{{$child.Name}}.{{$inputVar.Name}} = me->{{$source}};
 	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+
+	{{if $block.ServiceFB}}{{if $block.ServiceFB.Autogenerate}}//Code provided in SIFB
+	{{$block.ServiceFB.Autogenerate.InitText}}{{end}}{{end}}
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}if({{$child.Type}}_init(&me->{{$child.Name}}) != 0) {
