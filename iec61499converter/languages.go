@@ -1,6 +1,8 @@
 package iec61499converter
 
 import (
+	"os"
+	"path"
 	"strings"
 	"text/template"
 )
@@ -60,6 +62,18 @@ func (l language) supportFileTemplates() []supportFileTemplate {
 	return nil
 }
 
+func getExecLoc() string {
+	loc, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	return path.Dir(loc)
+}
+
+var (
+	execLoc = getExecLoc()
+)
+
 var (
 	vhdlTemplateFuncMap = template.FuncMap{
 		"getVhdlType":                   getVhdlType,
@@ -81,7 +95,7 @@ var (
 		"count": count,
 	}
 
-	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob("./templates/vhdl/*"))
+	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob(execLoc + "/../templates/vhdl/*"))
 
 	cTemplateFuncMap = template.FuncMap{
 		"getCECCTransitionCondition":      getCECCTransitionCondition,
@@ -113,9 +127,9 @@ var (
 		"count": count,
 	}
 
-	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob("./templates/c/*"))
+	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob(execLoc + "/../templates/c/*"))
 
 	eventCTemplateFuncMap = cTemplateFuncMap
 
-	eventCTemplates = template.Must(template.New("").Funcs(eventCTemplateFuncMap).ParseGlob("./templates/eventc/*"))
+	eventCTemplates = template.Must(template.New("").Funcs(eventCTemplateFuncMap).ParseGlob(execLoc + "/../templates/eventc/*"))
 )

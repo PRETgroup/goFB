@@ -1,10 +1,8 @@
 #!/bin/bash
-#save current working directory
-WD=$(pwd)
+
 #compile fbt to c
-cd ../../..
-./goFB -i=$WD/fbt -o=$WD/c -l=c -t=FlexPRET
-cd $WD
+goFB -i=./fbt -o=./c -l=c -t=FlexPRET
+
 #compile
 clang c/*.c -o BottlingPlant.out
 #run

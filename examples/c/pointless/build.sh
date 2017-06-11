@@ -1,10 +1,8 @@
 #!/bin/bash
-#save current working directory
-WD=$(pwd)
+
 #compile fbt to c
-cd ../../..
-./goFB -i=$WD/fbt -o=$WD/c -l=c -t=test2
-cd $WD
+goFB -i=./fbt -o=./c -l=c -t=test2
+
 #compile
 clang c/*.c -o pointless.out
 #run
