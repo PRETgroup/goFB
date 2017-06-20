@@ -10,8 +10,8 @@ IEC61499 is the newest Industrial Automation standard for Programmable Logic Con
 
 Programming in IEC61499 consists of describing Function Blocks (FBs). FBs are individual units of behaviour and state, much like a `class` is in an object-oriented programming language such as C++. 
 
-In C++, we could define a class `dog`. The `dog` might have methods to call on it, such as `feed()` and `walk()`, and then we could invoke those methods from an external controller. 
-In IEC61499, we could define a Function Block `dog`, and give it input events `feed` and `walk`.
+In C++, we could define a class `Dog`. The `Dog` might have methods to call on it, such as `feed()` and `walk()`, and then we could invoke those methods from an external controller. 
+In IEC61499, we could define a Function Block `Dog`, and give it input events `feed` and `walk`.
 
 In short, Function Blocks are designed to encapsulate models, allowing for the creation of reusuable components. 
 There are three main kinds:
@@ -21,9 +21,9 @@ There are three main kinds:
 
 Between these two types of block, very complex systems can be realised.
 
-In the dog example, in C++, we might define a class `dog`, and a class `house` that contains an instance of the class `dog`. Our top level file would be some `main.cpp` which instantiated a `house` and then ran the program.
+In the Dog example, in C++, we might define a class `Dog`, and a class `house` that contains an instance of the class `Dog`. Our top level file would be some `main.cpp` which instantiated a `house` and then ran the program.
 
-In IEC61499, we can define a basic FB `dog`, and a composite FB `house` that contains an instance of the basic FB `dog`. Our top level file could simply be an instantiation of `house`, or some other top level composite FB that contained `house`, which then runs the program.
+In IEC61499, we can define a basic FB `Dog`, and a composite FB `house` that contains an instance of the basic FB `Dog`. Our top level file could simply be an instantiation of `house`, or some other top level composite FB that contained `house`, which then runs the program.
 
 ### Why use IEC61499?
 
@@ -58,24 +58,31 @@ A single TFB file can contain one or many function blocks.
 * Comments begin with //
 * There are no block comments
 
+## Suggested Style Guide
+
+* All block definitions should be camelCase with the first letter capitilised.
+* All block instances should be camelCase with the first letter lower case.
+* For simple BFBs, the internal architecture should be in the order `initials`, `states`, and `algorithms`.
+* For simple CFBs, the internal architecture should be in the order `instances`, `events`, and `data`.
+
 ## Block declaration
 
-To begin with, your block will be declared. This will look like the following, for an IEC61499 Basic Function Block called firstBasic:
+To begin with, your block will be declared. This will look like the following, for an IEC61499 Basic Function Block called FirstBasic:
 
 ```
-basicFB firstBasic;
+basicFB FirstBasic;
 ```
 
-Or, for an IEC61499 Composite Function Block called firstComposite:
+Or, for an IEC61499 Composite Function Block called FirstComposite:
 
 ```
-compositeFB firstComposite;
+compositeFB FirstComposite;
 ```
 
-Or, for an IEC61499 Service Interface Function Block called firstService:
+Or, for an IEC61499 Service Interface Function Block called FirstService:
 
 ```
-serviceFB firstService;
+serviceFB FirstService;
 ```
 
 ## Declaring the interface
@@ -87,8 +94,8 @@ Composite and BasicFBs have nearly identical declaration syntax.
 An example, a composite FB with input event `a`, output event `b`, input integer `c`, and output integer `d`:
 
 ```
-compositeFB firstComposite;
-interface of firstComposite {
+compositeFB FirstComposite;
+interface of FirstComposite {
     in event a;
     out event b;
     in int c;
@@ -102,8 +109,8 @@ The only difference in the interfaces for basic, service, and composite FBs is t
 
 An example of event data associations on a basicFB:
 ```
-basicFB firstBasic;
-interface of firstBasic {
+basicFB FirstBasic;
+interface of FirstBasic {
     in event a;
     out event b;
     in int c with a;
@@ -116,14 +123,14 @@ Event-data associations are used on basicFBs in IEC61499 to identify which data 
 Every name field in the interface supports comma-separated values for more concise code. Hence, the following two examples, where there are two event inputs `a` and `b`, are equivalent.
 
 ```
-basicFB firstBasic1;
-interface of firstBasic1 {
+basicFB FirstBasic1;
+interface of FirstBasic1 {
     in event a;
     in event b;
 }
 
-basicFB firstBasic2;
-interface of firstBasic2 {
+basicFB FirstBasic2;
+interface of FirstBasic2 {
     in event a,b;
 }
 ```
@@ -135,8 +142,8 @@ The associations work on a many-to-many relationship, so `num2` is associated to
 Likewise, `num5` and `num6` are both associated to both `a` and `b`.
 
 ```
-basicFB firstBasic;
-interface of firstBasic {
+basicFB FirstBasic;
+interface of FirstBasic {
     in event a, b, c, d;
     in int num1 with a;
     in int num2 with b, c;
@@ -175,8 +182,8 @@ Valid data types are
 Array sizes can be specified on any valid data type. For instance, the following will create an input integer `y` with an array size of 2, and associate it with input event `a`.
 
 ```
-basicFB firstBasic;
-interface of firstBasic {
+basicFB FirstBasic;
+interface of FirstBasic {
     in event a;
     in int[2] y with a;
 }
@@ -185,8 +192,8 @@ interface of firstBasic {
 Initial values can also be specified on any valid data type. For instance, the following will set the initial value on `z` to be `0`. 
 
 ```
-basicFB firstBasic;
-interface of firstBasic {
+basicFB FirstBasic;
+interface of FirstBasic {
     in event a;
     in int initial 0 z with a;
 }
@@ -196,8 +203,8 @@ When initial values are not provided, they will default to some implementation-s
 If multiple values are presented on that line, all will be given that default value. For instance, this sets the initial values on both `z` and `y` to be `0`.
 
 ```
-basicFB firstBasic;
-interface of firstBasic {
+basicFB FirstBasic;
+interface of FirstBasic {
     in event a;
     in int initial 0 y,z with a;
 }
@@ -206,8 +213,8 @@ interface of firstBasic {
 Initial values can also be provided for arrays. These should be surrounded by square brackets `[` and `]`.
 
 ```
-basicFB firstBasic;
-interface of firstBasic {
+basicFB FirstBasic;
+interface of FirstBasic {
     in event a;
     in int[3] initial [0,1,2] z with a;
 }
@@ -217,22 +224,22 @@ Array sizes and initial conditions can also be used on compositeFBs.
 
 ### The HouseDog so far
 
-In our introduction, we described a `dog` in a `house`. We can implement that in TFBs. Here's what we might have so far.
+In our introduction, we described a `Dog` in a `House`. We can implement that in TFBs. Here's what we might have so far.
 
 ```
-basicFB dog;
-interface of dog {
-    in event tick; //we call this to update the dog's behaviour periodically
+basicFB Dog;
+interface of Dog {
+    in event tick; //we call this to update the Dog's behaviour periodically
 
     in event feed;
-    in int initial 0 foodweight_g with feed; //the amount the dog will eat, in grams
+    in int initial 0 foodweight_g with feed; //the amount the Dog will eat, in grams
     in event walk;
-    in int initial 0 walkDistance_m with walk; //the distance the dog will walk, in metres
+    in int initial 0 walkDistance_m with walk; //the distance the Dog will walk, in metres
 
-    out event bark; //emit this when the dog barks
+    out event bark; //emit this when the Dog barks
    
     out event weightChange;
-    out int initial 7500 dogweight_g with weightChange; //the dogs weight in grams
+    out int initial 7500 dogweight_g with weightChange; //the Dogs weight in grams
 }
 ```
 
@@ -246,17 +253,17 @@ We'll now go through this in more detail.
 
 An architecture is a scoped list of these things, just like an interface. Here is an empty example (not that this won't compile due to the elipses):
 
-_For the purposes of remaining succinct, assume all blocks `firstBasic` are defined with the interface in this example._
+_For the purposes of remaining succinct, assume all blocks `FirstBasic` are defined with the interface in this example._
 
 ```
-basicFB firstBasic;
-interface of firstBasic {
+basicFB FirstBasic;
+interface of FirstBasic {
     in event a;
     out event b;
     in int x with a;
     out int y with b;
 }
-architecture of firstBasic {
+architecture of FirstBasic {
     internals {
         ...
     }
@@ -275,7 +282,7 @@ Internals have the same syntax as interface data lines, except that they have no
 
 ```
 ...
-architecture of firstBasic {
+architecture of FirstBasic {
     internals {
         int initial 0 p,q;
         bool t;
@@ -287,7 +294,7 @@ We can express these individually as well, using `internal` instead of `internal
 
 ```
 ...
-architecture of firstBasic {
+architecture of FirstBasic {
     internal int initial 0 p,q;
     internal bool t;
 }
@@ -298,7 +305,7 @@ architecture of firstBasic {
 States represent the different nodes in the execution control chart (state machine) inside the basicFB. Each state is named, and can have transitions to travel between states. For instance, the following state machine would switch between states `s1` and `s2` every time an `a` was received, and it would emit `b` each time it entered `s2`.
 ```
 ...
-architecture of firstBasic {
+architecture of FirstBasic {
     states {
         s1 {
             -> s2 on a;
@@ -313,7 +320,7 @@ architecture of firstBasic {
 Just like with internals, we can express states individually by using `state` instead of `states`. The following code compiles identically to the previous:
 ```
 ...
-architecture of firstBasic {
+architecture of FirstBasic {
     state s1 {
         -> s2 on a;
     }
@@ -333,7 +340,7 @@ Conditions can be as complex as needed, and support referencing internal and int
 
 ```
 ...
-architecture of firstBasic {
+architecture of FirstBasic {
     state s1 {
         -> s2 on a && x >= 5 && x < 15;
     }
@@ -361,7 +368,7 @@ IEC61499 does not specify what language algorithms are written in, so here we us
 
 ```
 ...
-architecture of firstBasic {
+architecture of FirstBasic {
     states {
         s1 {
             -> s2 on a;
@@ -399,7 +406,7 @@ Often in IEC61499, algorithms can be short and used only in a single state. To t
 
 ```
 ...
-architecture of firstBasic {
+architecture of FirstBasic {
     states {
         s1 {
             -> s2 on a;
@@ -415,30 +422,30 @@ architecture of firstBasic {
 
 ### The HouseDog so far
 
-We can combine all of the above to create the state machine for our dog. In this, our dog has a default wait state `st_wait`.
+We can combine all of the above to create the state machine for our Dog. In this, our Dog has a default wait state `st_wait`.
 
 From `st_wait`, one of three things can happen:
-1. The dog is fed, so the dog gains weight equal to the food eaten.
-2. The dog is walked, so the dog loses weight equal to the distance travelled in metres. The dog can't go below 5kg in weight however.
-3. The dog has nothing happen for 10 ticks, so he barks, and resets the counter.
+1. The Dog is fed, so the Dog gains weight equal to the food eaten.
+2. The Dog is walked, so the Dog loses weight equal to the distance travelled in metres. The Dog can't go below 5kg in weight however.
+3. The Dog has nothing happen for 10 ticks, so he barks, and resets the counter.
 
 ```
-basicFB dog;
-interface of dog {
-    in event tick; //we call this to update the dog's behaviour periodically
+basicFB Dog;
+interface of Dog {
+    in event tick; //we call this to update the Dog's behaviour periodically
 
     in event feed;
-    in int initial 0 foodweight_g with feed; //the amount the dog will eat, in grams
+    in int initial 0 foodweight_g with feed; //the amount the Dog will eat, in grams
     in event walk;
-    in int initial 0 walkDistance_m with walk; //the distance the dog will walk, in metres
+    in int initial 0 walkDistance_m with walk; //the distance the Dog will walk, in metres
 
-    out event bark; //emit this when the dog barks
+    out event bark; //emit this when the Dog barks
    
     out event weightChange;
-    out int initial 7500 dogweight_g with weightChange; //the dogs weight in grams
+    out int initial 7500 Dogweight_g with weightChange; //the Dogs weight in grams
 }
 
-architecture of dog {
+architecture of Dog {
     internal int initial 0 tickCount;
 
     states {
@@ -452,7 +459,7 @@ architecture of dog {
         }
 
         st_feed {
-            run in "C" `me->dogweight_g += me->foodweight_g`;
+            run in "C" `me->Dogweight_g += me->foodweight_g`;
             run clrTick;
             emit weightChange;
 
@@ -480,9 +487,9 @@ architecture of dog {
     } 
         
     algorithm walkDog in "C" `
-        me->dogweight_g -= me->walkDistance_m; 
-        if(me->dogweight_g < 5000) {
-            me->dogweight_g = 5000;
+        me->Dogweight_g -= me->walkDistance_m; 
+        if(me->Dogweight_g < 5000) {
+            me->Dogweight_g = 5000;
         }
     `;
         
@@ -499,8 +506,8 @@ Here is a simple SIFB. In this example, we would need to be providing an additio
 When writing the \*.c and \*.h files, refer to the documentation of your compiler.
 
 ```
-serviceFB counter compileheader "SIFB_counter.h";
-interface of counter {
+serviceFB Counter compileheader "SIFB_counter.h";
+interface of Counter {
 	out event countup;
 	out int count_value with countup; 
 }
@@ -511,13 +518,13 @@ A special extension for goTFB is that it also supports autogeneration of certain
 Here is an empty example of a SIFB in the TFB language for the SIFB format that goFB uses:
 
 ```
-serviceFB counter;
-interface of counter {
+serviceFB Counter;
+interface of Counter {
 	out event countup;
 	out int count_value with countup;
 }
 
-architecture of counter {
+architecture of Counter {
 	in "C";
 
 	in_struct ``;
@@ -540,18 +547,81 @@ These locations refer to different areas in the execution lifestyle compiled by 
 An example of an implemented counter, which simply emits a new count every update:
 
 ```
-serviceFB counter;
-interface of counter {
+serviceFB Counter;
+interface of Counter {
 	out event countup;
 	out int initial 0 count_value with countup;
 }
 
-architecture of counter {
+architecture of Counter {
 	lang "C";
 
 	run `me->count_value++; me->outputEvents.event.countup = 1;`;
 }
 ```
+
+## Special: Hybrid Function Blocks
+
+Hybrid Function Blocks are a special type of Function Block that was created for the express purpose of modelling continuous plant dynamics in a standards-compliant way to improve plant-controller simulations. Each HFB is compiled away to a standards-compliant Basic Function Block with algorithms specified in _ODE Algorithm Language_. 
+
+ODE Algorithm Language is discussed further in `ODEAlgorithmLanguage.md`. 
+
+Specifying a HFB is as simple as specifying a BFB. They have identical interfaces, and very similiar architectures. The only difference is that internal ECC `states` are replaces with Hybrid state machine `locations`, which have slight semantic differences, and different construction.
+
+`locations` can have `emits` and `runs` on their transition edges, like mealy finite state machines.
+
+All algorithms are specified in ODE Algorithm language, and cannot be specified in other languages.
+
+```
+hybridFB Conveyor;
+interface of Conveyor {
+    in event convOn;
+    in event convOff;
+
+    in lreal deltaTime; //compulsory input for hybridFBs.
+    in lreal maxSpeed;
+
+    out event dChange;
+    out lreal initial 0 d with dChange;
+}
+
+architecture of Conveyor {
+    internal lreal initial 0 x;
+    
+    locations {
+        l_start {
+            
+            -> l_off on true, run `x_prime = 0; d_prime = 0;`, emit dChange;
+        }
+
+        l_off {
+            invariant `0 <= x && x <= m`;
+            
+            run `x_dot = x / 5`;
+            run incD;
+            emit dChange;
+
+            -> l_on on convOn, run nextL, emit dChange;
+        }
+
+        l_on {
+            invariant `0 <= x`; //equivalent to invariant 0 <= x && x <= m
+            invariant `x <= m`; //
+
+            run `x_dot = (m - x) / 5`;
+            run incD;
+            emit dChange;
+
+            -> l_off on convOff, run nextL, emit dChange;
+        }
+    }
+
+    algorithm incD `d_dot = x;`;
+    algorithm nextL `x_prime = x; d_prime = d;`;
+        
+}
+```
+
 
 ## Composite Function Block Architectures
 
@@ -563,11 +633,11 @@ We'll now go through this in more detail.
 
 An architecture is a scoped list of these things, just like an interface. Here is an empty example (note that this won't compile due to the elipses):
 
-_For the purposes of remaining succinct, assume all blocks `firstBasic` and `firstComposite` are defined with the interfaces in this example._
+_For the purposes of remaining succinct, assume all blocks `FirstBasic` and `FirstComposite` are defined with the interfaces in this example._
 
 ```
-basicFB firstBasic;
-interface of firstBasic {
+basicFB FirstBasic;
+interface of FirstBasic {
     in event a;
     out event b;
     in int x with a;
@@ -576,18 +646,18 @@ interface of firstBasic {
 
 ...
 
-compositeFB firstComposite;
-interface of firstComposite {
+compositeFB FirstComposite;
+interface of FirstComposite {
 	in event c;
 	out event d;
 	in int p; 
 	out int q;
 }
 
-architecture of firstComposite {
+architecture of FirstComposite {
 	instances {
-		firstBasic myFirst1;
-		firstBasic myFirst2;
+		FirstBasic myFirst1;
+		FirstBasic myFirst2;
 	}
 	events {
 		myFirst1.a <- c;
