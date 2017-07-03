@@ -1,0 +1,15 @@
+serviceFB fifteenSecondTimer;
+interface of fifteenSecondTimer {
+    in event start_timer;
+    out event time;
+}
+
+architecture of fifteenSecondTimer {
+	in "C";
+
+	in_struct ``;
+	pre_init ``;
+	init ``;
+	run ``;
+	shutdown ``;
+}

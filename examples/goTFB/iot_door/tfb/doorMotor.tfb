@@ -1,0 +1,15 @@
+serviceFB doorMotor;
+interface of doorMotor {
+    in event door_open;
+    in event door_close;
+}
+
+architecture of doorMotor {
+	in "C";
+
+	in_struct ``;
+	pre_init ``;
+	init ``;
+	run ``;
+	shutdown ``;
+}

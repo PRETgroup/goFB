@@ -1,0 +1,8 @@
+compositeFB top;
+interface of top {
+
+}
+
+architecture of top {
+
+}

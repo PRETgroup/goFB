@@ -1,0 +1,16 @@
+serviceFB localCtrl;
+interface of localCtrl {
+    out event op_stay_open;
+    out event op_normal;
+    out event op_lock;
+}
+
+architecture of localCtrl {
+	in "C";
+
+	in_struct ``;
+	pre_init ``;
+	init ``;
+	run ``;
+	shutdown ``;
+}

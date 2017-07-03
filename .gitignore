@@ -3,5 +3,4 @@
 *.out
 *.wca
 *.csv
-*.tfb
 *.out.json

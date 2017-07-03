@@ -1,0 +1,8 @@
+compositeFB doorCtrl;
+interface of doorCtrl {
+
+}
+
+architecture of doorCtrl {
+    
+}

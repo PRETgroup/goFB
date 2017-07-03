@@ -1,0 +1,15 @@
+serviceFB fireAlarm;
+interface of fireAlarm {
+    out event fire;
+    out event clr_fire;
+}
+
+architecture of fireAlarm {
+	in "C";
+
+	in_struct ``;
+	pre_init ``;
+	init ``;
+	run ``;
+	shutdown ``;
+}
