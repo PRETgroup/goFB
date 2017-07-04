@@ -14,6 +14,7 @@ const (
 	pBasicFB     = "basicFB"
 	pCompositeFB = "compositeFB"
 	pServiceFB   = "serviceFB"
+	pHybridFB    = "hybridFB"
 
 	pCompilerInfoHeader = "compileheader"
 
@@ -45,12 +46,17 @@ const (
 	pTrans = "->"
 	pOn    = "on"
 
+	pInvariant = "invariant"
+
 	pInternal   = "internal"
 	pInternals  = "internals"
 	pState      = "state"
 	pStates     = "states"
 	pAlgorithm  = "algorithm"
 	pAlgorithms = "algorithms"
+
+	pLocation  = "location"
+	pLocations = "locations"
 
 	pInstance  = "instance"
 	pInstances = "instances"
@@ -192,6 +198,8 @@ func (t *tfbParse) parseFB(fbType string) *ParseError {
 			fbs = append(fbs, *iec61499.NewCompositeFB(name))
 		} else if fbType == pServiceFB {
 			fbs = append(fbs, *iec61499.NewServiceFB(name))
+		} else if fbType == pHybridFB {
+			fbs = append(fbs, *iec61499.NewHybridFB(name))
 		} else {
 			return t.errorWithReason(ErrInternal, "I can't parse fbType "+fbType)
 		}
@@ -238,7 +246,7 @@ func (t *tfbParse) parseFBarchitecture() *ParseError {
 		return t.errorWithArg(ErrUndefinedFB, s)
 	}
 
-	//detect if this is a basic or a compositeFB (their architectures differ)
+	//detect type of FB and parse as appropriate
 	if t.fbs[fbIndex].BasicFB != nil {
 		return t.parseBFBarchitecture(fbIndex)
 	}
@@ -250,5 +258,18 @@ func (t *tfbParse) parseFBarchitecture() *ParseError {
 	if t.fbs[fbIndex].ServiceFB != nil {
 		return t.parseSIFBarchitecture(fbIndex)
 	}
-	return t.error(errors.New("Only BFB/CFB architectures currently implemented!"))
+
+	if t.fbs[fbIndex].HybridFB != nil {
+		//hybridFBs are a bit different, as we parse them and then we translate them (hybridFBs have no representable format in the XML spec)
+		// (they are translated to BFBs)
+		if err := t.parseHFBarchitecture(fbIndex); err != nil {
+			return err
+		}
+		if err := t.fbs[fbIndex].TranslateHFBtoBFB(); err != nil {
+			return t.error(err)
+		}
+		return nil
+	}
+
+	return t.error(errors.New("Can't parse unknown architecture type"))
 }

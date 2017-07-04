@@ -1,6 +1,9 @@
 package iec61499
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 //d is used to overwrite existing debug info when testing for equality (line numbers/source file names don't matter when testing equality)
 var d = DebugInfo{}
@@ -30,6 +33,11 @@ func FBsEqual(a FB, b FB) bool {
 
 	if a.ServiceFB != nil && b.ServiceFB != nil {
 		return siFbsSame(*a.ServiceFB, *b.ServiceFB)
+	}
+
+	if a.HybridFB != nil && b.HybridFB != nil {
+		fmt.Printf("I don't know how to test hybridfb equivalence")
+		return false
 	}
 
 	return false //don't know how to test equivalents on other types of block

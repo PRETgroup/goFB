@@ -35,6 +35,7 @@ type FB struct {
 	BasicFB     *BasicFB     `xml:",omitempty"`
 	CompositeFB *CompositeFB `xml:",omitempty"`
 	ServiceFB   *ServiceFB   `xml:",omitempty"`
+	HybridFB    *HybridFB    `xml:"-"` //don't ever export HybridFBs, convert them to BFBs first
 
 	DebugInfo `xml:"-"`
 }
@@ -102,6 +103,32 @@ type BasicFB struct {
 	States       []ECState      `xml:"ECC>ECState"`
 	Transitions  []ECTransition `xml:"ECC>ECTransition,omitempty"`
 	Algorithms   []Algorithm    `xml:"Algorithm,omitempty"`
+}
+
+//HybridFB is used for Hybrid Function Blocks, which are translated to Basic Function Blocks before export
+type HybridFB struct {
+	InternalVars []Variable     `xml:"-"`
+	Locations    []HFBLocation  `xml:"-"`
+	Transitions  []ECTransition `xml:"-"`
+	Algorithms   []Algorithm    `xml:"-"`
+}
+
+//HFBLocation is a location in the HFB HA (hybrid automata state machine) of a HybridFB
+type HFBLocation struct {
+	Name       string
+	ECActions  []Action
+	Comment    string
+	Invariants []HFBInvariant
+
+	DebugInfo
+}
+
+//HFBInvariant is used to store invariant conditions in HFB locations
+//The invariant will be in the form "variable [operand] value [and/or] ..."
+type HFBInvariant struct {
+	Invariant string
+
+	DebugInfo
 }
 
 //ECState is a state in the ECC (Execution control chart) of a BasicFB

@@ -69,6 +69,16 @@ func NewServiceFB(name string) *FB {
 	return &fb
 }
 
+//NewHybridFB returns a HybridFB with default fields filled
+func NewHybridFB(name string) *FB {
+	fb := FB{}
+	fb.Name = name
+	fb.Identification.Standard = "61499-2"
+	fb.HybridFB = new(HybridFB)
+	fb.SetXMLName()
+	return &fb
+}
+
 //SetXMLName sets an appropriate name for the xml block type
 func (fb *FB) SetXMLName() {
 	fb.XMLName = xml.Name{Space: "", Local: "FBType"}
@@ -216,6 +226,20 @@ func (fb *FB) AddDataOutputs(intNames []string, intTriggers []string, typ string
 		}
 	}
 	return fb, nil
+}
+
+//AddxFBDataInternals adds data internals to an fb's bfb OR hfb
+//if a block is neither an hfb or a bfb then it returns an error
+func (fb *FB) AddxFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) (*FB, error) {
+	if fb.BasicFB != nil {
+		fb.BasicFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+		return fb, nil
+	}
+	if fb.HybridFB != nil {
+		fb.HybridFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+		return fb, nil
+	}
+	return nil, errors.New("AddxFBDataInternals may only be called on HFBs or BFBs")
 }
 
 //AddBFBDataInternals adds data internals to an fb's bfb without performing error checking
@@ -381,4 +405,75 @@ func (sifb *ServiceFB) AddParams(lang string, inStruct string, preInit string, i
 	sifb.Autogenerate.ShutdownText = shutdown
 	sifb.Autogenerate.DebugInfo = debug
 	return sifb
+}
+
+//AddHFBDataInternals adds data internals to an fb's bfb without performing error checking
+func (fb *FB) AddHFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *FB {
+	fb.HybridFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+	return fb
+}
+
+//AddDataInternals adds data internals to a bfb, and adds the InternalVars section if it is nil
+func (hfb *HybridFB) AddDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *HybridFB {
+
+	for _, iname := range intNames {
+		hfb.InternalVars = append(hfb.InternalVars, Variable{Name: iname, Type: typ, ArraySize: size, InitialValue: initialValue, DebugInfo: debug})
+	}
+	return hfb
+}
+
+//AddHFBAlgorithm adds algorithm to an fb's hfb without performing error checking
+func (fb *FB) AddHFBAlgorithm(name string, prog string, debug DebugInfo) *FB {
+	fb.HybridFB.AddAlgorithm(name, prog, debug)
+	return fb
+}
+
+//AddAlgorithm adds an algorithm to a hfb
+func (hfb *HybridFB) AddAlgorithm(name string, prog string, debug DebugInfo) *HybridFB {
+
+	hfb.Algorithms = append(hfb.Algorithms, Algorithm{
+		Name: name,
+		Other: OtherLanguage{
+			Language: "ODE",
+			Text:     prog,
+		},
+		DebugInfo: debug,
+	})
+
+	return hfb
+}
+
+//AddHFBLocation adds location to an fb's hfb without performing error checking
+func (fb *FB) AddHFBLocation(name string, invariants []HFBInvariant, actions []Action, debug DebugInfo) *FB {
+	fb.HybridFB.AddLocation(name, invariants, actions, debug)
+	return fb
+}
+
+//AddLocation adds a location to a hfb
+func (hfb *HybridFB) AddLocation(name string, invariants []HFBInvariant, actions []Action, debug DebugInfo) *HybridFB {
+	hfb.Locations = append(hfb.Locations, HFBLocation{
+		Name:       name,
+		Invariants: invariants,
+		ECActions:  actions,
+		DebugInfo:  debug,
+	})
+	return hfb
+}
+
+//AddHFBTransition adds a transition to an fb's bfb without performing error checking
+func (fb *FB) AddHFBTransition(source string, dest string, cond string, debug DebugInfo) *FB {
+	fb.HybridFB.AddTransition(source, dest, cond, debug)
+	return fb
+}
+
+//AddTransition adds a state transition to a bfb
+func (hfb *HybridFB) AddTransition(source string, dest string, cond string, debug DebugInfo) *HybridFB {
+	hfb.Transitions = append(hfb.Transitions, ECTransition{
+		Source:      source,
+		Destination: dest,
+		Condition:   cond,
+
+		DebugInfo: debug,
+	})
+	return hfb
 }
