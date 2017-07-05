@@ -20,13 +20,11 @@ architecture of InternetCtrl {
 int last_cmd;
 `;
 	
-	pre_init ``;
-	init ``;
 	run 
 `
 int c;
 FILE *file;
-file = fopen("internet.txt", "r");
+file = fopen("commands.txt", "r");
 if (file) {
     c = getc(file);
 	if(c != me->last_cmd) {
@@ -52,9 +50,9 @@ if (file) {
 	}
     fclose(file);
 } else {
-	printf("Couldn't open internet.txt\n");
+	printf("Couldn't open commands.txt\n");
 	while(1);
 }
 `;
-	shutdown ``;
+	
 }
