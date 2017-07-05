@@ -1,10 +1,10 @@
-serviceFB fireAlarm;
-interface of fireAlarm {
+serviceFB FireAlarm;
+interface of FireAlarm {
     out event fire;
     out event clr_fire;
 }
 
-architecture of fireAlarm {
+architecture of FireAlarm {
 	in "C";
 
 	in_struct ``;

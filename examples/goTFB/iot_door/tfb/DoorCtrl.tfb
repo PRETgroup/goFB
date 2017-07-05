@@ -1,0 +1,12 @@
+compositeFB DoorCtrl;
+interface of DoorCtrl {
+
+}
+
+architecture of DoorCtrl {
+    instances {
+        DoorCtrlCmdMux cmdMux;
+        DoorCtrlFireOverride fireOverride;
+        DoorCtrlOp op;
+    }
+}

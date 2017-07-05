@@ -1,9 +1,9 @@
-serviceFB doorSensor;
-interface of doorSensor {
+serviceFB DoorSensor;
+interface of DoorSensor {
     out event door_sense;
 }
 
-architecture of doorSensor {
+architecture of DoorSensor {
 	in "C";
 
 	in_struct ``;

@@ -1,0 +1,17 @@
+compositeFB Top;
+interface of Top {
+
+}
+
+architecture of Top {
+    instances {
+        DoorCtrl door;
+        DoorLock lock;
+        DoorMotor motor;
+        DoorSensor sensor;
+        FifteenSecondTimer timer;
+        FireAlarm fireAlarm;
+        InternetCtrl internet;
+        LocalCtrl local;
+    }
+}

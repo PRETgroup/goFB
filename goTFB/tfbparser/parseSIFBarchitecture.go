@@ -29,6 +29,7 @@ func (t *tfbParse) parseSIFBarchitecture(fbIndex int) *ParseError {
 	//pre_init | init | run | shutdown
 
 	//unlike in an interface, the various things that are in an architecture can be presented out of order
+	arbitrary := ""
 	inStruct := ""
 	preInit := ""
 	init := ""
@@ -42,6 +43,15 @@ func (t *tfbParse) parseSIFBarchitecture(fbIndex int) *ParseError {
 		} else if s == pCloseBrace {
 			//this is the end of the architecture
 			break
+		} else if s == pArbitrary {
+			arbitrary = t.pop()
+			if arbitrary[0] != '`' || arbitrary[len(arbitrary)-1] != '`' {
+				return t.errorWithReason(ErrUnexpectedValue, "Language program should be surrounded by backticks")
+			}
+			arbitrary = strings.Trim(arbitrary, "`")
+			if s := t.pop(); s != pSemicolon {
+				return t.errorUnexpectedWithExpected(s, pSemicolon)
+			}
 		} else if s == pInStruct {
 			inStruct = t.pop()
 			if inStruct[0] != '`' || inStruct[len(inStruct)-1] != '`' {
@@ -92,7 +102,7 @@ func (t *tfbParse) parseSIFBarchitecture(fbIndex int) *ParseError {
 		}
 	}
 
-	t.fbs[fbIndex].ServiceFB.AddParams(lang, inStruct, preInit, init, run, shutdown, debug)
+	t.fbs[fbIndex].ServiceFB.AddParams(lang, arbitrary, inStruct, preInit, init, run, shutdown, debug)
 
 	return nil
 }

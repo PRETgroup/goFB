@@ -389,15 +389,16 @@ func (cfb *CompositeFB) AddNetworkParameter(param string, fbInstName string, por
 }
 
 //AddSIFBParams adds all parameters to an SIFB. It returns no error
-func (fb *FB) AddSIFBParams(lang string, inStruct string, preInit string, init string, run string, shutdown string, debug DebugInfo) *FB {
-	fb.ServiceFB.AddParams(lang, inStruct, preInit, init, run, shutdown, debug)
+func (fb *FB) AddSIFBParams(lang string, arbitrary string, inStruct string, preInit string, init string, run string, shutdown string, debug DebugInfo) *FB {
+	fb.ServiceFB.AddParams(lang, arbitrary, inStruct, preInit, init, run, shutdown, debug)
 	return fb
 }
 
 //AddParams adds all parameters to an autogenerating SIFB
-func (sifb *ServiceFB) AddParams(lang string, inStruct string, preInit string, init string, run string, shutdown string, debug DebugInfo) *ServiceFB {
+func (sifb *ServiceFB) AddParams(lang string, arbitrary string, inStruct string, preInit string, init string, run string, shutdown string, debug DebugInfo) *ServiceFB {
 	sifb.Autogenerate = new(ServiceAutogenerateCode)
 	sifb.Autogenerate.Language = lang
+	sifb.Autogenerate.ArbitraryText = arbitrary
 	sifb.Autogenerate.InStructText = inStruct
 	sifb.Autogenerate.PreInitText = preInit
 	sifb.Autogenerate.InitText = init

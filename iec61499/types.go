@@ -213,11 +213,12 @@ type ServiceFB struct {
 type ServiceAutogenerateCode struct {
 	Language string `xml:",attr"` //Language of all *Texts below
 
-	InStructText string `xml:",attr"` //When autogenerating, put this in the struct
-	PreInitText  string `xml:",attr"` //When autogenerating, put this in pre_init function
-	InitText     string `xml:",attr"` //When autogenerating, put this in init function
-	RunText      string `xml:",attr"` //When autogenerating, put this in run function
-	ShutdownText string `xml:",attr"` //When autogenerating, put this in shutdown function
+	ArbitraryText string `xml:",attr"` //When autogenerating, put this outside of functions/structs at the beginning of the .c file
+	InStructText  string `xml:",attr"` //When autogenerating, put this in the struct
+	PreInitText   string `xml:",attr"` //When autogenerating, put this in pre_init function
+	InitText      string `xml:",attr"` //When autogenerating, put this in init function
+	RunText       string `xml:",attr"` //When autogenerating, put this in run function
+	ShutdownText  string `xml:",attr"` //When autogenerating, put this in shutdown function
 
 	DebugInfo `xml:"-"`
 }

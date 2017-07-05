@@ -18,8 +18,8 @@
 
 {{if $block.CompositeFB}}//This is a CFB, so we need the #includes for the child blocks embedded here
 {{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}#include "{{if $childType.CompilerInfo.Header}}{{$childType.CompilerInfo.Header}}{{else}}FB_{{$child.Type}}.h{{end}}"
-{{end}}{{end}}{{if $block.BasicFB}}//This is a BFB, so we need an enum type for the state machine
-enum {{$block.Name}}_states { {{range $index, $state := $block.BasicFB.States}}{{if $index}}, {{end}}STATE_{{$block.Name}}_{{$state.Name}}{{end}} };
+{{end}}{{end}}{{if $block.BasicFB}}//This is a BFB with states, so we need an enum type for the state machine
+enum {{$block.Name}}_states { {{if len $block.BasicFB.States}}{{range $index, $state := $block.BasicFB.States}}{{if $index}}, {{end}}STATE_{{$block.Name}}_{{$state.Name}}{{end}}{{else}}STATE_{{$block.Name}}_unknown{{end}} };
 {{end}}
 
 {{if $block.EventInputs}}union {{$block.Name}}InputEvents {

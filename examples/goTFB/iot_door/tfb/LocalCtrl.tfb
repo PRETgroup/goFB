@@ -1,12 +1,11 @@
-serviceFB internetCtrl;
-interface of internetCtrl {
-    out event op_clr_command;
+serviceFB LocalCtrl;
+interface of LocalCtrl {
     out event op_stay_open;
     out event op_normal;
     out event op_lock;
 }
 
-architecture of internetCtrl {
+architecture of LocalCtrl {
 	in "C";
 
 	in_struct ``;

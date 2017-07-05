@@ -1,10 +1,10 @@
-serviceFB fifteenSecondTimer;
-interface of fifteenSecondTimer {
+serviceFB FifteenSecondTimer;
+interface of FifteenSecondTimer {
     in event start_timer;
     out event time;
 }
 
-architecture of fifteenSecondTimer {
+architecture of FifteenSecondTimer {
 	in "C";
 
 	in_struct ``;

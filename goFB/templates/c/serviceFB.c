@@ -4,6 +4,9 @@
 // This file represents the implementation of the Basic Function Block for {{$block.Name}}
 #include "FB_{{$block.Name}}.h"
 
+/* Arbitrary code section from SIFB */
+{{if $block.ServiceFB}}{{if $block.ServiceFB.Autogenerate}}{{$block.ServiceFB.Autogenerate.ArbitraryText}}{{end}}{{end}}
+
 {{template "_fbinit" .}}
 
 /* {{$block.Name}}_run() executes a single tick of an

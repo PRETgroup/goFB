@@ -1,0 +1,8 @@
+basicFB DoorCtrlOp;
+interface of DoorCtrlOp {
+
+}
+
+architecture of DoorCtrlOp {
+
+}

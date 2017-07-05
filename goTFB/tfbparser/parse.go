@@ -18,10 +18,11 @@ const (
 
 	pCompilerInfoHeader = "compileheader"
 
-	pInStruct = "in_struct" //used in SIFB autogeneration for goFB
-	pPreInit  = "pre_init"
-	pInit     = "init"
-	pShutdown = "shutdown"
+	pArbitrary = "arbitrary" //used in SIFB autogeneration for goFB
+	pInStruct  = "in_struct"
+	pPreInit   = "pre_init"
+	pInit      = "init"
+	pShutdown  = "shutdown"
 
 	pOpenBrace    = "{"
 	pCloseBrace   = "}"

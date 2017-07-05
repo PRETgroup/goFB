@@ -1,0 +1,7 @@
+-
+This file's first character is examined to give the current "Internet command" operation.
+The options are below:
+o: OP_DOOR_OPEN
+n: OP_NORMAL
+l: OP_LOCK 
+anything else: OP_CLR_COMMAND

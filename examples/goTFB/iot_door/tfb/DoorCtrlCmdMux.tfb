@@ -1,0 +1,8 @@
+basicFB DoorCtrlCmdMux;
+interface of DoorCtrlCmdMux {
+
+}
+
+architecture of DoorCtrlCmdMux {
+
+}
