@@ -29,7 +29,7 @@ if (file) {
 	c = getc(file);
 	c = getc(file);
 	
-	if(c != me->last_cmd) {
+	if(c != me->last_cmd && (c == 'f' || c == '-')) {
 		me->last_cmd = c;
 		switch(c) {
 			case 'f':
@@ -45,7 +45,7 @@ if (file) {
 	}
     fclose(file);
 } else {
-	printf("Couldn't open commands.txt\n");
+	printf("FireAlarm: Couldn't open commands.txt\n");
 	while(1);
 }
 `;

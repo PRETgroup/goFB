@@ -27,7 +27,7 @@ FILE *file;
 file = fopen("commands.txt", "r");
 if (file) {
     c = getc(file);
-	if(c != me->last_cmd) {
+	if(c != me->last_cmd && (c == 'o' || c == 'n' || c == 'l' || c == '-')) {
 		me->last_cmd = c;
 		switch(c) {
 			case 'o':
@@ -42,7 +42,7 @@ if (file) {
 				printf("InternetCtrl: Sending OP_LOCK\n");
 				me->outputEvents.event.op_lock = '1';
 				break;
-			default:
+			case '-':
 				printf("InternetCtrl: Sending OP_CLR_COMMAND\n");
 				me->outputEvents.event.op_clr_command = '1';
 				break;
@@ -50,7 +50,7 @@ if (file) {
 	}
     fclose(file);
 } else {
-	printf("Couldn't open commands.txt\n");
+	printf("InternetCtrl: Couldn't open commands.txt\n");
 	while(1);
 }
 `;

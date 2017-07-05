@@ -1,4 +1,4 @@
--n--
+nn--
 This file controls the iot_door input SIFBs, as detailed below. The associated events will only be emitted on *change* of the characters,
 i.e. changing the first character to an 'o' will cause the InternetCtrl SIFB to emit OP_DOOR_OPEN exactly once.
 
@@ -7,21 +7,20 @@ The options are below:
 o: OP_DOOR_OPEN
 n: OP_NORMAL
 l: OP_LOCK 
-anything else: OP_CLR_COMMAND
+-: OP_CLR_COMMAND
 
 This file's second character is examined to give the current "Local command" operation.
 The options are below:
 o: OP_DOOR_OPEN
 n: OP_NORMAL
 l: OP_LOCK 
-anything else: error
 
 This file's third character is examined to give the current "Door sense command" operation.
 The options are below:
 s: DOOR_SENSE
-anything else: resets DOOR_SENSE internal flag
+-: resets DOOR_SENSE internal flag
 
 This file's fourth character is examined to give the current "Fire alarm sense command" operation.
 The options are below:
 f: FIRE
-anything else: CLR_FIRE
+-: CLR_FIRE

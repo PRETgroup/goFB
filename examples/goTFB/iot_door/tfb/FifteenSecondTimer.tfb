@@ -1,15 +1,22 @@
-serviceFB FifteenSecondTimer;
+basicFB FifteenSecondTimer;
 interface of FifteenSecondTimer {
     in event start_timer;
     out event time;
 }
 
+//TODO: Obviously this isn't a very good timer :-)
 architecture of FifteenSecondTimer {
-	in "C";
-
-	in_struct ``;
-	pre_init ``;
-	init ``;
-	run ``;
-	shutdown ``;
+	states {
+		wait {
+			-> count on start_timer;
+		}
+		count {
+			-> done;
+		}
+		done {
+			run in "C" `printf("FifteenSecondTimer: Time out\n");`;
+			emit time;
+			-> count on start_timer;
+		}
+	}
 }

@@ -14,4 +14,30 @@ architecture of Top {
         InternetCtrl internet;
         LocalCtrl local;
     }
+
+    events {
+        door.inet_op_clr_command <- internet.op_clr_command;
+        door.inet_op_stay_open <- internet.op_stay_open;
+        door.inet_op_normal <- internet.op_normal;
+        door.inet_op_lock <- internet.op_lock;
+
+        door.lcl_op_stay_open <- local.op_stay_open;
+        door.lcl_op_normal <- local.op_normal;
+        door.lcl_op_lock <- local.op_lock;
+
+        door.fire <- fireAlarm.fire;
+        door.clr_fire <- fireAlarm.clr_fire;
+
+        door.door_sense <- sensor.door_sense;
+
+        door.door_timer <- timer.time;
+
+        motor.door_open <- door.door_open;
+        motor.door_close <- door.door_close;
+
+        lock.door_lock <- door.door_lock;
+        lock.door_unlock <- door.door_unlock;
+
+        timer.start_timer <- door.start_timer;
+    }
 }

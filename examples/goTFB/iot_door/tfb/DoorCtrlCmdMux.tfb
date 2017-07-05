@@ -1,8 +1,26 @@
-basicFB DoorCtrlCmdMux;
-interface of DoorCtrlCmdMux {
+//basicFB DoorCtrlCmdMux;
+compositeFB DoorCtrlCmdMux;
 
+interface of DoorCtrlCmdMux {
+    in event inet_op_clr_command;
+    in event inet_op_stay_open;
+    in event inet_op_normal;
+    in event inet_op_lock;
+
+    in event lcl_op_stay_open;
+    in event lcl_op_normal;
+    in event lcl_op_lock;
+
+    out event op_stay_open;
+    out event op_normal;
+    out event op_lock;
 }
 
+//TODO: BFB not CFB
 architecture of DoorCtrlCmdMux {
-
+    events {
+        op_stay_open <- inet_op_stay_open;
+        op_normal <- inet_op_normal;
+        op_lock <- inet_op_lock;
+    }
 }

@@ -27,7 +27,7 @@ file = fopen("commands.txt", "r");
 if (file) {
 	c = getc(file);
     c = getc(file);
-	if(c != me->last_cmd) {
+	if(c != me->last_cmd && (c == 'o' || c == 'n' || c == 'l')) {
 		me->last_cmd = c;
 		switch(c) {
 			case 'o':
@@ -47,9 +47,9 @@ if (file) {
 				break;
 		}
 	}
-    fclose(file);
+	fclose(file);
 } else {
-	printf("Couldn't open local.txt\n");
+	printf("LocalCtrl: Couldn't open local.txt\n");
 	while(1);
 }
 `;

@@ -27,7 +27,7 @@ if (file) {
 	c = getc(file);
 	c = getc(file);
 	
-	if(c != me->last_cmd) {
+	if(c != me->last_cmd && (c == 's' || c == '-')) {
 		me->last_cmd = c;
 		switch(c) {
 			case 's':
@@ -42,7 +42,7 @@ if (file) {
 	}
     fclose(file);
 } else {
-	printf("Couldn't open commands.txt\n");
+	printf("DoorSensor: Couldn't open commands.txt\n");
 	while(1);
 }
 `;

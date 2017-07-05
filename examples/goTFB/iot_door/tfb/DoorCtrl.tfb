@@ -1,6 +1,28 @@
 compositeFB DoorCtrl;
 interface of DoorCtrl {
+    in event inet_op_clr_command;
+    in event inet_op_stay_open;
+    in event inet_op_normal;
+    in event inet_op_lock;
 
+    in event lcl_op_stay_open;
+    in event lcl_op_normal;
+    in event lcl_op_lock;
+
+    in event fire;
+    in event clr_fire;
+
+    in event door_sense;
+
+    in event door_timer;
+
+    out event door_open;
+    out event door_close;
+
+    out event door_lock;
+    out event door_unlock;
+
+    out event start_timer;
 }
 
 architecture of DoorCtrl {
@@ -8,5 +30,35 @@ architecture of DoorCtrl {
         DoorCtrlCmdMux cmdMux;
         DoorCtrlFireOverride fireOverride;
         DoorCtrlOp op;
+    }
+
+    events {
+        cmdMux.inet_op_clr_command <- inet_op_clr_command;
+        cmdMux.inet_op_stay_open <- inet_op_stay_open;
+        cmdMux.inet_op_normal <- inet_op_normal;
+        cmdMux.inet_op_lock <- inet_op_lock;
+
+        cmdMux.lcl_op_stay_open <- lcl_op_stay_open;
+        cmdMux.lcl_op_normal <- lcl_op_normal;
+        cmdMux.lcl_op_lock <- lcl_op_lock;
+
+        op.op_stay_open <- cmdMux.op_stay_open;
+        op.op_normal <- cmdMux.op_normal;
+        op.op_lock <- cmdMux.op_lock;
+        op.door_sense <- door_sense;
+        op.time <- door_timer;
+
+        fireOverride.door_close <- op.door_close;
+        fireOverride.door_open <- op.door_open;
+        fireOverride.door_lock <- op.door_lock;
+        fireOverride.door_unlock <- op.door_unlock;
+        fireOverride.fire <- fire;
+        fireOverride.clr_fire <- clr_fire;
+
+        door_close <- fireOverride.out_door_close;
+        door_open <- fireOverride.out_door_open;
+        door_lock <- fireOverride.out_door_lock;
+        door_unlock <- fireOverride.out_door_unlock;
+        start_timer <- op.start_timer;
     }
 }
