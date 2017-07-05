@@ -1,5 +1,4 @@
-//basicFB DoorCtrlCmdMux;
-compositeFB DoorCtrlCmdMux;
+basicFB DoorCtrlCmdMux;
 
 interface of DoorCtrlCmdMux {
     in event inet_op_clr_command;
@@ -16,11 +15,95 @@ interface of DoorCtrlCmdMux {
     out event op_lock;
 }
 
-//TODO: BFB not CFB
+//Event muxes aren't super great
+//We have an internal variable that saves the state of the local control signals when we go into internet control mode
 architecture of DoorCtrlCmdMux {
-    events {
-        op_stay_open <- inet_op_stay_open;
-        op_normal <- inet_op_normal;
-        op_lock <- inet_op_lock;
+    internal byte initial 0 lcl_stat;
+    states {
+        init {
+            -> inet_stay_open on inet_op_stay_open;
+            -> inet_normal on inet_op_normal;
+            -> inet_lock on inet_op_lock;
+            -> inet_clr_command on inet_op_clr_command;
+        }
+
+        inet_stay_open {
+            emit op_stay_open;
+
+            -> inet_stay_open on inet_op_stay_open;
+            -> inet_normal on inet_op_normal;
+            -> inet_lock on inet_op_lock;
+            -> inet_clr_command on inet_op_clr_command;
+        }
+
+        inet_normal {
+            emit op_normal;
+
+            -> inet_stay_open on inet_op_stay_open;
+            -> inet_normal on inet_op_normal;
+            -> inet_lock on inet_op_lock;
+            -> inet_clr_command on inet_op_clr_command;
+        }
+
+        inet_lock {
+            emit op_lock;
+
+            -> inet_stay_open on inet_op_stay_open;
+            -> inet_normal on inet_op_normal;
+            -> inet_lock on inet_op_lock;
+            -> inet_clr_command on inet_op_clr_command;
+        }
+
+        inet_clr_command {
+            -> inet_stay_open on inet_op_stay_open;
+            -> inet_normal on inet_op_normal;
+            -> inet_lock on inet_op_lock;
+            -> inet_clr_command on inet_op_clr_command;
+            -> lcl_stay_open on lcl_op_stay_open;
+            -> lcl_normal on lcl_op_normal;
+            -> lcl_lock on lcl_op_lock;
+            -> lcl_stay_open on lcl_stat == 1;
+            -> lcl_normal on lcl_stat == 2;
+            -> lcl_lock on lcl_stat == 3;
+        }
+
+        lcl_stay_open {
+            emit op_stay_open;
+            run in "C" `me->lcl_stat = 1;`;
+
+            -> inet_stay_open on inet_op_stay_open;
+            -> inet_normal on inet_op_normal;
+            -> inet_lock on inet_op_lock;
+            -> inet_clr_command on inet_op_clr_command;
+            -> lcl_stay_open on lcl_op_stay_open;
+            -> lcl_normal on lcl_op_normal;
+            -> lcl_lock on lcl_op_lock;
+        }
+
+        lcl_normal {
+            emit op_normal;
+            run in "C" `me->lcl_stat = 2;`;
+            
+            -> inet_stay_open on inet_op_stay_open;
+            -> inet_normal on inet_op_normal;
+            -> inet_lock on inet_op_lock;
+            -> inet_clr_command on inet_op_clr_command;
+            -> lcl_stay_open on lcl_op_stay_open;
+            -> lcl_normal on lcl_op_normal;
+            -> lcl_lock on lcl_op_lock;
+        }
+
+        lcl_lock {
+            emit op_lock;
+            run in "C" `me->lcl_stat = 3;`;
+            
+            -> inet_stay_open on inet_op_stay_open;
+            -> inet_normal on inet_op_normal;
+            -> inet_lock on inet_op_lock;
+            -> inet_clr_command on inet_op_clr_command;
+            -> lcl_stay_open on lcl_op_stay_open;
+            -> lcl_normal on lcl_op_normal;
+            -> lcl_lock on lcl_op_lock;
+        }
     }
 }

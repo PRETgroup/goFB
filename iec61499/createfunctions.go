@@ -3,6 +3,7 @@ package iec61499
 import (
 	"encoding/xml"
 	"errors"
+	"strings"
 )
 
 //FBError is used to pass helpful error messages out to clients
@@ -186,6 +187,7 @@ func Must(f *FB, err *FBError) *FB {
 //AddDataInputs adds data inputs to an FB
 // it will return an error message if a trigger can't be found
 func (fb *FB) AddDataInputs(intNames []string, intTriggers []string, typ string, size string, initialValue string, debug DebugInfo) (*FB, *FBError) {
+	typ = strings.ToUpper(typ)
 
 	for _, iname := range intNames {
 		fb.InputVars = append(fb.InputVars, Variable{Name: iname, Type: typ, ArraySize: size, InitialValue: initialValue, DebugInfo: debug})
@@ -208,6 +210,7 @@ func (fb *FB) AddDataInputs(intNames []string, intTriggers []string, typ string,
 //AddDataOutputs adds data inputs to an FB
 // it will return an error message if a trigger can't be found
 func (fb *FB) AddDataOutputs(intNames []string, intTriggers []string, typ string, size string, initialValue string, debug DebugInfo) (*FB, *FBError) {
+	typ = strings.ToUpper(typ)
 
 	for _, iname := range intNames {
 		fb.OutputVars = append(fb.OutputVars, Variable{Name: iname, Type: typ, ArraySize: size, InitialValue: initialValue, DebugInfo: debug})
@@ -231,6 +234,8 @@ func (fb *FB) AddDataOutputs(intNames []string, intTriggers []string, typ string
 //AddxFBDataInternals adds data internals to an fb's bfb OR hfb
 //if a block is neither an hfb or a bfb then it returns an error
 func (fb *FB) AddxFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) (*FB, error) {
+	typ = strings.ToUpper(typ)
+
 	if fb.BasicFB != nil {
 		fb.BasicFB.AddDataInternals(intNames, typ, size, initialValue, debug)
 		return fb, nil

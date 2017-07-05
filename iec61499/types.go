@@ -1,6 +1,8 @@
 package iec61499
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+)
 
 //DebugInfo is used when valid so that if something is invalid
 //we can let the user know
