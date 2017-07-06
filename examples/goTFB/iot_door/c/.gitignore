@@ -1,2 +1,4 @@
-*.c
-*.h
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
