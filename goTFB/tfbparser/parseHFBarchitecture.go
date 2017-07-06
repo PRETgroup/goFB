@@ -192,6 +192,7 @@ func (t *tfbParse) parseHFBLocation(fbIndex int) *ParseError {
 					condComponents = append(condComponents, s)
 
 				}
+				//TODO: emitting/running things on transitions?!
 			}
 			if len(condComponents) == 0 { //put in a default condition if no condition exists
 				condComponents = append(condComponents, "true")

@@ -260,15 +260,7 @@ func (t *tfbParse) parseFBarchitecture() *ParseError {
 	}
 
 	if t.fbs[fbIndex].HybridFB != nil {
-		//hybridFBs are a bit different, as we parse them and then we translate them (hybridFBs have no representable format in the XML spec)
-		// (they are translated to BFBs)
-		if err := t.parseHFBarchitecture(fbIndex); err != nil {
-			return err
-		}
-		if err := t.fbs[fbIndex].TranslateHFBtoBFB(); err != nil {
-			return t.error(err)
-		}
-		return nil
+		return t.parseHFBarchitecture(fbIndex)
 	}
 
 	return t.error(errors.New("Can't parse unknown architecture type"))

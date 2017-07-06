@@ -82,6 +82,16 @@ func main() {
 			fmt.Printf("Error during parsing file '%s': %s\n", name, parseErr.Error())
 			return
 		}
+
+		//we need to translate any hybridFBs to BFBs before we try export them
+		for i := 0; i < len(mfbs); i++ {
+			if mfbs[i].HybridFB != nil {
+				if err := mfbs[i].TranslateHFBtoBFB(); err != nil {
+					fmt.Printf("Error during hybridFB translation in file '%s': %s\n", name, parseErr.Error())
+					return
+				}
+			}
+		}
 		fbs = append(fbs, mfbs...)
 
 	}
