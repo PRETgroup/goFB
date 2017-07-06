@@ -1,0 +1,27 @@
+//basicFB DoorCtrlFireOverride;
+compositeFB DoorCtrlFireOverride;
+
+interface of DoorCtrlFireOverride {
+    in event door_close;
+    in event door_open;
+    in event door_lock;
+    in event door_unlock;
+    
+    in event fire;
+    in event clr_fire;
+
+    out event out_door_close;
+    out event out_door_open;
+    out event out_door_lock;
+    out event out_door_unlock;
+}
+
+//TODO: replace this with an appropriate BFB rather than a passthrough cFB
+architecture of DoorCtrlFireOverride {
+    events {
+        out_door_close <- door_close;
+        out_door_open <- door_open;
+        out_door_lock <- door_lock;
+        out_door_unlock <- door_unlock;
+    }
+}

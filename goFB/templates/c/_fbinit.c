@@ -43,7 +43,7 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 	{{$block.ServiceFB.Autogenerate.PreInitText}}{{end}}{{end}}
 
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
-	{{if $block.BasicFB}}me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};
+	{{if $block.BasicFB}}{{if len $block.BasicFB.States}}me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};{{else}}me->_state = STATE_{{$block.Name}}_unknown;{{end}}
 	me->_trigger = true;
 	{{if and .CvodeEnabled (blockNeedsCvode $block)}}
 	me->cvode_mem = NULL;

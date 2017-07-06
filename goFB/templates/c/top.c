@@ -6,9 +6,9 @@
 #include "FB_{{$block.Name}}.h"
 #include <sys/time.h>
 
-#ifndef MAX_TICKS
-#define MAX_TICKS 100
-#endif
+// #ifndef MAX_TICKS
+// #define MAX_TICKS 100
+// #endif
 
 //put a copy of the top level block into global memory
 {{$block.Name}}_t my{{$block.Name}};
@@ -49,7 +49,12 @@ int main() {
 		#ifdef PRINT_VALS
 			printf("\n");
 		#endif
-	} while(tickNum++ < MAX_TICKS);
+	} 
+	#ifdef MAX_TICKS
+		while(tickNum++ < MAX_TICKS);
+	#else
+		while(1);
+	#endif
 	gettimeofday(&tv2, NULL);
 	#ifdef PRINT_TIME
 	printf ("Total time = %f seconds\n",

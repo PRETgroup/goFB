@@ -1,0 +1,79 @@
+basicFB DoorCtrlOp;
+interface of DoorCtrlOp {
+    in event op_stay_open;
+    in event op_normal;
+    in event op_lock;
+
+    in event door_sense;
+
+    in event time;
+
+    out event start_timer;
+
+    out event door_open;
+    out event door_close;
+    out event door_unlock;
+    out event door_lock;
+}
+
+architecture of DoorCtrlOp {
+    //this state machine does an okay job at making sure it never
+    //misses events
+    states {
+        init {
+            -> close;
+        }
+
+        close {
+            emit door_close;
+            -> lock on op_lock;
+            -> open_to_stay_open on op_stay_open;
+            -> normal_to_stay_normal on op_normal;
+        }
+
+        lock {
+            emit door_lock;
+            -> unlock_to_stay_open on op_stay_open;
+            -> unlock_to_normal on op_normal;
+        }
+
+        unlock_to_stay_open {
+            emit door_unlock;
+            -> open_to_stay_open;
+        }
+        open_to_stay_open {
+            emit door_open;
+            -> stay_open;
+        }
+        stay_open {
+            -> close_to_lock on op_lock;
+        }
+
+        unlock_to_normal {
+            emit door_unlock;
+            -> normal_to_stay_normal;
+        }
+
+        normal_to_stay_normal {
+            -> normal_open on door_sense;
+            -> open_to_stay_open on op_stay_open;
+            -> lock on op_lock;
+        }
+        normal_open {
+            emit door_open;
+            emit start_timer;
+            -> normal_close on time;
+            -> close_to_lock on op_lock;
+            -> stay_open on op_stay_open;
+        }
+        normal_close {
+            emit door_close;
+            -> normal_to_stay_normal;
+        }
+
+        close_to_lock {
+            emit door_close;
+            -> lock;
+        }
+    }
+}

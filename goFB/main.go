@@ -22,7 +22,6 @@ var (
 	tcrestIncludes         = flag.Bool("ti", false, "(Experimental flag) Include the T-CREST header files in fbtypes.h")
 	autoFlatten            = flag.Bool("af", false, "Automatically flatten out CFBs to save memory")
 	cvodeEnable            = flag.Bool("cvode", false, "Enable cvode for solving algorithms with 'ODE' and 'ODE_init' in comment field")
-	//incrementEventsMode    = flag.Bool("iem", false, "Use Increment-Events Mode instead of the default Set-Events Mode, meaning events won't be missed")
 )
 
 func main() {
@@ -69,7 +68,10 @@ func main() {
 			if extension == "fbt" || extension == "res" || extension == "dev" {
 				fbtFileNames = append(fbtFileNames, name)
 			} else {
-				otherFileNames = append(otherFileNames, name)
+				//only copy the "extra" files if they don't begin with a '.'
+				if name[0] != '.' {
+					otherFileNames = append(otherFileNames, name)
+				}
 			}
 		}
 	} else {
@@ -101,10 +103,6 @@ func main() {
 			return
 		}
 	}
-
-	// if *incrementEventsMode == true {
-	// 	conv.SetIncrementEventsMode()
-	// }
 
 	for _, name := range fbtFileNames {
 		sourceFile, err := ioutil.ReadFile(fmt.Sprintf("%s%c%s", *inFileName, os.PathSeparator, name))

@@ -20,7 +20,7 @@ int main() {
 
 	printf("Top: %20s   Size: %lu\n", "{{$block.Name}}", sizeof(my{{$block.Name}}));
 
-	int tickNum = 0;
+	//int tickNum = 0;
 	do {
 		//printf("=====TICK %i=====\n",tickNum);
 		{{$block.Name}}_syncOutputEvents(&my{{$block.Name}});
@@ -30,7 +30,7 @@ int main() {
 		{{$block.Name}}_syncInputData(&my{{$block.Name}});
 		
 		{{$block.Name}}_run(&my{{$block.Name}});
-	} while(tickNum++ < 500);
+	} while(1);//tickNum++ < 500);
 
 	return 0;
 }

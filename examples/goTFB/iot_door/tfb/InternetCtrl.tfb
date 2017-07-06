@@ -1,0 +1,58 @@
+serviceFB InternetCtrl;
+interface of InternetCtrl {
+    out event op_clr_command;
+    out event op_stay_open;
+    out event op_normal;
+    out event op_lock;
+}
+
+architecture of InternetCtrl {
+	in "C";
+
+	arbitrary 
+`
+#include <stdio.h>
+#include <stdlib.h>
+`;
+	
+	in_struct 
+`
+int last_cmd;
+`;
+	
+	run 
+`
+int c;
+FILE *file;
+file = fopen("commands.txt", "r");
+if (file) {
+    c = getc(file);
+	if(c != me->last_cmd && (c == 'o' || c == 'n' || c == 'l' || c == '-')) {
+		me->last_cmd = c;
+		switch(c) {
+			case 'o':
+				printf("InternetCtrl: Sending OP_STAY_OPEN\n");
+				me->outputEvents.event.op_stay_open = '1';
+				break;
+			case 'n':
+				printf("InternetCtrl: Sending OP_NORMAL\n");
+				me->outputEvents.event.op_normal = '1';
+				break;
+			case 'l':
+				printf("InternetCtrl: Sending OP_LOCK\n");
+				me->outputEvents.event.op_lock = '1';
+				break;
+			case '-':
+				printf("InternetCtrl: Sending OP_CLR_COMMAND\n");
+				me->outputEvents.event.op_clr_command = '1';
+				break;
+		}
+	}
+    fclose(file);
+} else {
+	printf("InternetCtrl: Couldn't open commands.txt\n");
+	while(1);
+}
+`;
+	
+}

@@ -1,0 +1,49 @@
+serviceFB DoorSensor;
+interface of DoorSensor {
+    out event door_sense;
+}
+
+architecture of DoorSensor {
+	in "C";
+
+	arbitrary 
+`
+#include <stdio.h>
+#include <stdlib.h>
+`;
+	
+	in_struct 
+`
+int last_cmd;
+`;
+	
+	run 
+`
+int c;
+FILE *file;
+file = fopen("commands.txt", "r");
+if (file) {
+    c = getc(file);
+	c = getc(file);
+	c = getc(file);
+	
+	if(c != me->last_cmd && (c == 's' || c == '-')) {
+		me->last_cmd = c;
+		switch(c) {
+			case 's':
+				printf("DoorSensor: Sending DOOR_SENSE\n");
+				me->outputEvents.event.door_sense = '1';
+				break;
+
+			default:
+				printf("DoorSensor: Reset internal flag\n");
+				break;
+		}
+	}
+    fclose(file);
+} else {
+	printf("DoorSensor: Couldn't open commands.txt\n");
+	while(1);
+}
+`;
+}

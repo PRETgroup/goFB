@@ -1,8 +1,0 @@
-basicFB doorCtrlFireOverride;
-interface of doorCtrlFireOverride {
-
-}
-
-architecture of doorCtrlFireOverride {
-
-}

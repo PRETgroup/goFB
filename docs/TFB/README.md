@@ -527,6 +527,8 @@ interface of Counter {
 architecture of Counter {
 	in "C";
 
+    arbitrary ``;
+
 	in_struct ``;
 	pre_init ``;
 	init ``;
@@ -535,9 +537,10 @@ architecture of Counter {
 }
 ```
 
-This architecture specification is rigidly defined. The `in` keyword function must be the first element of the architecture, and applies to all raw code locations `in_struct`, `pre_init`, `init`, `run`, and `shutdown`. 
+This architecture specification is rigidly defined. The `in` keyword function must be the first element of the architecture, and applies to all raw code locations `arbitrary`, `in_struct`, `pre_init`, `init`, `run`, and `shutdown`. 
 
 These locations refer to different areas in the execution lifestyle compiled by goFB. They are, as follows:
+* `arbitrary` - Placed outside any function or structure. Use this to define your own custom functions.
 * `in_struct` - Placed inside the structure that defines the serviceFB. Use this to store variable declarations, etc.
 * `pre_init` - First initialisation pass. Default values present in the interface will already be loaded on ports, however, no communication from other FBs or loading of external data has occured yet. Use this for startup code not dependent on other modules being initialised.
 * `init` - Second initialisation pass. Configuration data possibly provided from other FBs has now been loaded on ports.

@@ -1,0 +1,26 @@
+serviceFB DoorLock;
+interface of DoorLock {
+    in event door_lock;
+    in event door_unlock;
+}
+
+architecture of DoorLock {
+	in "C";
+
+	arbitrary `int global_door_locked;`;
+
+	in_struct ``;
+	pre_init `global_door_locked = 0;`;
+	init ``;
+	run `
+if(me->inputEvents.event.door_lock) {
+	printf("DoorLock: Locking door\n");
+	global_door_locked = 1;
+}
+if(me->inputEvents.event.door_unlock) {
+	printf("DoorLock: Unlocking door\n");
+	global_door_locked = 0;
+}
+	`;
+	shutdown ``;
+}

@@ -1,0 +1,32 @@
+serviceFB DoorMotor;
+interface of DoorMotor {
+    in event door_open;
+    in event door_close;
+}
+
+architecture of DoorMotor {
+	in "C";
+
+	arbitrary `extern int global_door_locked;`;
+	in_struct ``;
+	pre_init ``;
+	init ``;
+	run `
+if(me->inputEvents.event.door_open) {
+	if(global_door_locked == 1) {
+		printf("DoorMotor: Tried to open door but door is locked - door damaged!\n");
+		while(1);
+	}
+	printf("DoorMotor: Opening door\n");
+}
+if(me->inputEvents.event.door_close) {
+	if(global_door_locked == 1) {
+		printf("DoorMotor: Tried to close door but door is locked - door damaged!\n");
+		while(1);
+	}
+	printf("DoorMotor: Closing door\n");
+
+}
+	`;
+	shutdown ``;
+}
