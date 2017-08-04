@@ -36,6 +36,7 @@ func main() {
 	if *inFileName == "" {
 		fmt.Println("You need to specify a file or directory name to compile! Check out -help for options")
 		return
+
 	}
 
 	fileInfo, err := os.Stat(*inFileName)

@@ -1,0 +1,63 @@
+basicFB TrainCtrl;
+interface of TrainCtrl {
+    in event RiChange;
+	in bool initial false RiReq with RiChange;
+
+	in event RnChange;
+	in bool initial false RnReq with RnChange;
+
+	in event RsChange;
+	in bool initial false RsReq with RsChange;
+
+	in event DwiChange;
+    in bool initial false DwiPrs with DwiChange;
+
+    in event DwoChange;
+    in bool initial false DwoPrs with DwoChange;
+
+    in event DwnChange;
+    in bool initial false DwnPrs with DwnChange;
+
+    in event DwsChange;
+    in bool initial false DwsPrs with DwsChange;
+
+    in event DnChange;
+    in bool initial false DnPrs with DnChange;
+
+    in event DsChange;
+    in bool initial false DsPrs with DsChange;
+
+    out event SiChange;
+    out bool initial false SiGrn with SiChange;
+
+    out event SoChange;
+    out bool initial false SoGrn with SoChange;
+
+    out event SniChange;
+    out bool initial false SniGrn with SniChange;
+
+    out event SnoChange;
+    out bool initial false SnoGrn with SnoChange;
+
+    out event SsiChange;
+    out bool initial false SsiGrn with SsiChange;
+
+    out event SsoChange;
+    out bool initial false SsoGrn with SsoChange;
+
+    out event WiChange;
+    out bool initial false WiDvrg with WiChange;
+
+    out event WoChange;
+    out bool initial false WoDvrg with WoChange;
+
+    out event WnChange;
+    out bool initial false WnDvrg with WnChange;
+
+    out event WsChange;
+    out bool initial false WsDvrg with WsChange;
+}
+
+architecture of TrainCtrl {
+    
+}

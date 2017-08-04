@@ -1,0 +1,113 @@
+serviceFB EnvRxSystemTx;
+interface of EnvRxSystemTx {
+    in event SiChange;
+    in bool initial false SiGrn with SiChange;
+
+    in event SoChange;
+    in bool initial false SoGrn with SoChange;
+
+    in event SniChange;
+    in bool initial false SniGrn with SniChange;
+
+    in event SnoChange;
+    in bool initial false SnoGrn with SnoChange;
+
+    in event SsiChange;
+    in bool initial false SsiGrn with SsiChange;
+
+    in event SsoChange;
+    in bool initial false SsoGrn with SsoChange;
+
+    in event WiChange;
+    in bool initial false WiDvrg with WiChange;
+
+    in event WoChange;
+    in bool initial false WoDvrg with WoChange;
+
+    in event WnChange;
+    in bool initial false WnDvrg with WnChange;
+
+    in event WsChange;
+    in bool initial false WsDvrg with WsChange;
+
+    in event DwiChangeD; //D for Display
+    in bool initial false DwiPrsD with DwiChangeD;
+
+    in event DwoChangeD;
+    in bool initial false DwoPrsD with DwoChangeD;
+
+    in event DwnChangeD;
+    in bool initial false DwnPrsD with DwnChangeD;
+
+    in event DwsChangeD;
+    in bool initial false DwsPrsD with DwsChangeD;
+
+    in event DnChangeD;
+    in bool initial false DnPrsD with DnChangeD;
+
+    in event DsChangeD;
+    in bool initial false DsPrsD with DsChangeD;
+}
+
+architecture of EnvRxSystemTx {
+    in "C";
+
+    arbitrary 
+`
+#include <stdio.h>
+#include <stdlib.h>
+`;
+    
+    run 
+`
+//if any change occurs
+if(me->inputEvents.event.SiChange || me->inputEvents.event.SoChange || me->inputEvents.event.SniChange || me->inputEvents.event.SnoChange || me->inputEvents.event.SsiChange || me->inputEvents.event.SsoChange || 
+        me->inputEvents.event.WiChange || me->inputEvents.event.WiChange || me->inputEvents.event.WoChange || me->inputEvents.event.WnChange || me->inputEvents.event.WsChange || 
+        me->inputEvents.event.DwiChangeD || me->inputEvents.event.DwoChangeD || me->inputEvents.event.DwnChangeD || me->inputEvents.event.DwsChangeD || me->inputEvents.event.DnChangeD || me->inputEvents.event.DsChangeD) {
+
+    printf("\r\n\r\n\r\n"
+    "               Dwi(%c) Si(%c) Wi(%c)  Wn(%c) Sni(%c) Dwo(%c)                  Dn(%c)                        \r\n"
+    "in -> ----------[%s]---|------=%c----%c=-----|-----[%s]--------------------[%s]-----------------------X\r\n"
+    "                                \\  /     Sno(%c)                                                      \r\n"
+    "                                 \\/                                                                  \r\n"
+    "                                 /\\                                                                  \r\n"
+    "                      So(%c)     /  \\     Ssi(%c)                                                      \r\n"
+    "out<- ----------[%s]---|------=%c----%c=-----|-----[%s]--------------------[%s]-----------------------X\r\n"
+    "              Dwo(%c)       Wo(%c)  Ws(%c) Sso(%c) Dws(%c)                  Ds(%c)                         \r\n",
+    me->DwiPrsD ? 'p' : ' ',
+    me->SiGrn ? 'g' : 'r',
+    me->WiDvrg ? 'd' : 's',
+    me->WnDvrg ? 'd' : 's',
+    me->SniGrn ? 'g' : 'r',
+    me->DwoPrsD ? 'p' : ' ',
+    me->DnPrsD ? 'p' : ' ',
+    
+    me->DwiPrsD ? "HH" : "  ",
+    me->WiDvrg ? '\\' : '-',
+    me->WnDvrg ? '/' : '-',
+    me->DwoPrsD ? "HH" : "  ",
+    me->DnPrsD ? "HH" : "  ",
+    
+    me->SnoGrn ? 'g' : 'r',
+    me->SoGrn ? 'g' : 'r',
+    me->SsiGrn ? 'g' : 'r',
+    
+    me->DwoPrsD ? "HH" : "  ",
+    me->WoDvrg ? '/' : '-',
+    me->WsDvrg ? '\\' : '-',
+    me->DwsPrsD ? "HH" : "  ",
+    me->DsPrsD ? "HH" : "  ",
+    me->DwoPrsD ? 'p' : ' ',
+    
+    me->WoDvrg ? 'd' : 's',
+    me->WsDvrg ? 'd' : 's',
+    me->SsoGrn ? 'g' : 'r',
+    me->DwsPrsD ? 'p' : ' ',
+    me->DsPrsD ? 'p' : ' ');
+    
+    printf("me->DsPrsD ? %i\r\n", me->DsPrsD);
+}
+
+
+`;
+}

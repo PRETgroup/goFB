@@ -1,0 +1,89 @@
+compositeFB Top;
+interface of Top {
+
+}
+
+architecture of Top {
+    instances {
+        TrainCtrl ctrl;
+        EnvRxSystemTx erx;
+        EnvTxSystemRx etx;
+    }
+
+    events {
+        ctrl.RiChange <- etx.RiChange;
+        ctrl.RiReq <- etx.RiReq;
+
+        ctrl.RnChange <- etx.RnChange;
+        ctrl.RnReq <- etx.RnChange;
+
+        ctrl.RsChange <- etx.RsChange;
+        ctrl.RsReq <- etx.RsReq;
+
+        ctrl.DwiChange <- etx.DwiChange;
+        ctrl.DwiPrs <- etx.DwiPrs;
+
+        ctrl.DwoChange <- etx.DwoChange;
+        ctrl.DwoPrs <- etx.DwoPrs;
+
+        ctrl.DwnChange <- etx.DwnChange;
+        ctrl.DwnPrs <- etx.DwnPrs;
+
+        ctrl.DwsChange <- etx.DwsChange;
+        ctrl.DwsPrs <- etx.DwsPrs;
+
+        ctrl.DnChange <- etx.DnChange;
+        ctrl.DnPrs <- etx.DnPrs;
+
+        ctrl.DsChange <- etx.DsChange;
+        ctrl.DsPrs <- etx.DsPrs;
+
+        erx.SiChange <- ctrl.SiChange;
+        erx.SiGrn <- ctrl.SiGrn;
+
+        erx.SoChange <- ctrl.SoChange;
+        erx.SoGrn <- ctrl.SoGrn;
+
+        erx.SniChange <- ctrl.SniChange;
+        erx.SniGrn <- ctrl.SniGrn;
+
+        erx.SnoChange <- ctrl.SnoChange;
+        erx.SnoGrn <- ctrl.SnoGrn;
+
+        erx.SsiChange <- ctrl.SsiChange;
+        erx.SsiGrn <- ctrl.SsiGrn;
+
+        erx.SsoChange <- ctrl.SsoChange;
+        erx.SsoGrn <- ctrl.SsoGrn;
+
+        erx.WiChange <- ctrl.WiChange;
+        erx.WiDvrg <- ctrl.WiDvrg;
+
+        erx.WoChange <- ctrl.WoChange;
+        erx.WoDvrg <- ctrl.WoDvrg;
+
+        erx.WnChange <- ctrl.WnChange;
+        erx.WnDvrg <- ctrl.WnDvrg;
+
+        erx.WsChange <- ctrl.WsChange;
+        erx.WsDvrg <- ctrl.WsDvrg;
+
+        erx.DwiChangeD <- etx.DwiChange; //D for Display
+        erx.DwiPrsD <- etx.DwiPrs;
+
+        erx.DwoChangeD <- etx.DwoChange;
+        erx.DwoPrsD <- etx.DwoPrs;
+
+        erx.DwnChangeD <- etx.DwnChange;
+        erx.DwnPrsD <- etx.DwnPrs;
+
+        erx.DwsChangeD <- etx.DwsChange;
+        erx.DwsPrsD <- etx.DwsPrs;
+
+        erx.DnChangeD <- etx.DnChange;
+        erx.DnPrsD <- etx.DnPrs;
+
+        erx.DsChangeD <- etx.DsChange;
+        erx.DsPrsD <- etx.DsPrs;
+    }
+}

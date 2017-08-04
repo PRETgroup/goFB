@@ -40,8 +40,8 @@ var (
 	//ErrInterfaceDataTypeNotValid is used to indicate when an interface data type isn't valid
 	ErrInterfaceDataTypeNotValid = errors.New("Interface data type '{{arg}}' is not valid")
 
-	//ErrOnlyBFBsGetEventDataAssociations is used to indicate when a block that isn't a BFB has been given event/data associations
-	ErrOnlyBFBsGetEventDataAssociations = errors.New("Only Basic FBs can have event/data associations, and this FB is not a Basic FB")
+	//ErrCompositeBFBsDontGetEventDataAssociations is used to indicate when a CFB block thas been given event/data associations
+	ErrCompositeBFBsDontGetEventDataAssociations = errors.New("Composite FBs can't have event/data associations")
 
 	//ErrUndefinedAlgorithm is used to indicate that an algorithm was referenced that can't be found (so probably a typo has occured)
 	ErrUndefinedAlgorithm = errors.New("Can't find Algorithm with name '{{arg}}'")
@@ -130,8 +130,8 @@ func fbInterfaceNamesUniqueAndValidTypesAndAssociationsValid(fb FB, otherFbs []F
 		if fb.NameUseCounter(e.Name) > 1 {
 			return newValidateError(ErrInterfaceNameNotUnique, e.Name, e.DebugInfo)
 		}
-		if len(e.With) > 0 && fb.BasicFB == nil {
-			return newValidateError(ErrOnlyBFBsGetEventDataAssociations, e.Name, e.DebugInfo)
+		if len(e.With) > 0 && fb.CompositeFB != nil {
+			return newValidateError(ErrCompositeBFBsDontGetEventDataAssociations, e.Name, e.DebugInfo)
 		}
 		for _, w := range e.With {
 			found := false
@@ -150,8 +150,8 @@ func fbInterfaceNamesUniqueAndValidTypesAndAssociationsValid(fb FB, otherFbs []F
 		if fb.NameUseCounter(e.Name) > 1 {
 			return newValidateError(ErrInterfaceNameNotUnique, e.Name, e.DebugInfo)
 		}
-		if len(e.With) > 0 && fb.BasicFB == nil {
-			return newValidateError(ErrOnlyBFBsGetEventDataAssociations, e.Name, e.DebugInfo)
+		if len(e.With) > 0 && fb.CompositeFB != nil {
+			return newValidateError(ErrCompositeBFBsDontGetEventDataAssociations, e.Name, e.DebugInfo)
 		}
 		for _, w := range e.With {
 			found := false
@@ -253,6 +253,7 @@ func fbBFBStateMachineValid(fb FB, otherFBs []FB) *ValidateError {
 
 //isValidDataType returns true if string s is one of the valid IEC61499 event/data types
 func isValidDataType(s string) bool {
+	s = strings.ToLower(s)
 	if s == "bool" ||
 		s == "byte" ||
 		s == "word" ||
