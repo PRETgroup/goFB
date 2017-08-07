@@ -78,7 +78,7 @@ void {{$block.Name}}_syncOutputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM
  */
 void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//for all basic function block children, perform their synchronisations explicitly
-	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.BasicFB}}
+	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if or $childType.BasicFB $childType.IsSIFB}}
 	//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a BFB
 	{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs}}{{if $event.With}}
 	if(me->{{$child.Name}}.inputEvents.event.{{$event.Name}} == 1) { {{range $withIndex, $with := $event.With}}{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $with.Var}}{{$varDef := findVarDefinitionForName $childType $with.Var}}{{if and $source $varDef}}{{if $varDef.GetArraySize}}

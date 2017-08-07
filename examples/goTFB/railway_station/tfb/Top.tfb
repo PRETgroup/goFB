@@ -12,78 +12,65 @@ architecture of Top {
 
     events {
         ctrl.RiChange <- etx.RiChange;
-        ctrl.RiReq <- etx.RiReq;
-
         ctrl.RnChange <- etx.RnChange;
-        ctrl.RnReq <- etx.RnChange;
-
         ctrl.RsChange <- etx.RsChange;
-        ctrl.RsReq <- etx.RsReq;
-
+        
         ctrl.DwiChange <- etx.DwiChange;
-        ctrl.DwiPrs <- etx.DwiPrs;
-
         ctrl.DwoChange <- etx.DwoChange;
-        ctrl.DwoPrs <- etx.DwoPrs;
-
         ctrl.DwnChange <- etx.DwnChange;
-        ctrl.DwnPrs <- etx.DwnPrs;
-
         ctrl.DwsChange <- etx.DwsChange;
-        ctrl.DwsPrs <- etx.DwsPrs;
-
         ctrl.DnChange <- etx.DnChange;
-        ctrl.DnPrs <- etx.DnPrs;
-
         ctrl.DsChange <- etx.DsChange;
-        ctrl.DsPrs <- etx.DsPrs;
 
         erx.SiChange <- ctrl.SiChange;
-        erx.SiGrn <- ctrl.SiGrn;
-
         erx.SoChange <- ctrl.SoChange;
-        erx.SoGrn <- ctrl.SoGrn;
-
         erx.SniChange <- ctrl.SniChange;
-        erx.SniGrn <- ctrl.SniGrn;
-
         erx.SnoChange <- ctrl.SnoChange;
-        erx.SnoGrn <- ctrl.SnoGrn;
-
         erx.SsiChange <- ctrl.SsiChange;
-        erx.SsiGrn <- ctrl.SsiGrn;
-
         erx.SsoChange <- ctrl.SsoChange;
-        erx.SsoGrn <- ctrl.SsoGrn;
 
         erx.WiChange <- ctrl.WiChange;
-        erx.WiDvrg <- ctrl.WiDvrg;
-
         erx.WoChange <- ctrl.WoChange;
-        erx.WoDvrg <- ctrl.WoDvrg;
-
         erx.WnChange <- ctrl.WnChange;
-        erx.WnDvrg <- ctrl.WnDvrg;
-
         erx.WsChange <- ctrl.WsChange;
-        erx.WsDvrg <- ctrl.WsDvrg;
 
         erx.DwiChangeD <- etx.DwiChange; //D for Display
-        erx.DwiPrsD <- etx.DwiPrs;
-
         erx.DwoChangeD <- etx.DwoChange;
-        erx.DwoPrsD <- etx.DwoPrs;
-
         erx.DwnChangeD <- etx.DwnChange;
-        erx.DwnPrsD <- etx.DwnPrs;
-
         erx.DwsChangeD <- etx.DwsChange;
-        erx.DwsPrsD <- etx.DwsPrs;
-
         erx.DnChangeD <- etx.DnChange;
-        erx.DnPrsD <- etx.DnPrs;
-
         erx.DsChangeD <- etx.DsChange;
-        erx.DsPrsD <- etx.DsPrs;
+
+    }
+
+    data {
+        ctrl.RiReq <- etx.RiReq;
+        ctrl.RnReq <- etx.RnReq;
+        ctrl.RsReq <- etx.RsReq;
+
+        ctrl.DwiPrs <- etx.DwiPrs;
+        ctrl.DwoPrs <- etx.DwoPrs;
+        ctrl.DwnPrs <- etx.DwnPrs;
+        ctrl.DwsPrs <- etx.DwsPrs;
+        ctrl.DnPrs <- etx.DnPrs;
+        ctrl.DsPrs <- etx.DsPrs;
+
+        erx.SiGrn <- ctrl.SiGrn;
+        erx.SoGrn <- ctrl.SoGrn;
+        erx.SniGrn <- ctrl.SniGrn;
+        erx.SnoGrn <- ctrl.SnoGrn;
+        erx.SsiGrn <- ctrl.SsiGrn;
+        erx.SsoGrn <- ctrl.SsoGrn;
+        erx.WiDvrg <- ctrl.WiDvrg;
+        erx.WoDvrg <- ctrl.WoDvrg;
+        erx.WnDvrg <- ctrl.WnDvrg;
+        erx.WsDvrg <- ctrl.WsDvrg;
+
+        erx.DwiPrsD <- etx.DwiPrs;
+        erx.DwoPrsD <- etx.DwoPrs;
+        erx.DwnPrsD <- etx.DwnPrs;
+        erx.DwsPrsD <- etx.DwsPrs;
+        erx.DnPrsD <- etx.DnPrs;
+        erx.DsPrsD <- etx.DsPrs; 
     }
 }

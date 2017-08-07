@@ -104,8 +104,6 @@ if(me->inputEvents.event.SiChange || me->inputEvents.event.SoChange || me->input
     me->SsoGrn ? 'g' : 'r',
     me->DwsPrsD ? 'p' : ' ',
     me->DsPrsD ? 'p' : ' ');
-    
-    printf("me->DsPrsD ? %i\r\n", me->DsPrsD);
 }
 
 
