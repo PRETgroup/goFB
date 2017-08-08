@@ -40,44 +40,44 @@ if(me->inputEvents.event.SChange ||
         me->inputEvents.event.DChangeD) {
 
     printf("\r\n\r\n\r\n"
-    "               Dwi(%c) Si(%c) Wi(%c)  Wn(%c) Sni(%c) Dwn(%c)             Dn(%c)           \r\n"
-    "in -> ----------[%s]---|------=%c----%c=-----|-----[%s]---------------[%s]---------------X\r\n"
-    "                                \\  /     Sno(%c)                                         \r\n"
+    "               Dwi%s Si%s Wi%s  Wn%s Sni%s Dwn%s             Dn%s           \r\n"
+    "in -> ----------[%s]---|------=%s----%s=-----|-----[%s]---------------[%s]---------------X\r\n"
+    "                                \\  /     Sno%s                                         \r\n"
     "                                 \\/                                                     \r\n"
     "                                 /\\                                                     \r\n"
-    "                      So(%c)     /  \\     Ssi(%c)                                         \r\n"
-    "out<- ----------[%s]---|------=%c----%c=-----|-----[%s]---------------[%s]---------------X\r\n"
-    "               Dwo(%c)       Wo(%c)  Ws(%c) Sso(%c) Dws(%c)             Ds(%c)            \r\n",
-    me->DwiPrsD ? 'p' : ' ',
-    me->SiGrn ? 'g' : 'r',
-    me->WiDvrg ? 'd' : 's',
-    me->WnDvrg ? 'd' : 's',
-    me->SniGrn ? 'g' : 'r',
-    me->DwnPrsD ? 'p' : ' ',
-    me->DnPrsD ? 'p' : ' ',
+    "                                /  \\     Ssi%s                                         \r\n"
+    "out<- ----------[%s]---|------=%s----%s=-----|-----[%s]---------------[%s]---------------X\r\n"
+    "               Dwo%s So%s Wo%s  Ws%s Sso%s Dws%s             Ds%s            \r\n",
+    me->DwiPrsD ? T_CYN "(p)" T_NRM : "( )",
+    me->SiGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
+    me->WiDvrg ? T_YEL "(d)" T_NRM : "(s)",
+    me->WnDvrg ? T_YEL "(d)" T_NRM : "(s)",
+    me->SniGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
+    me->DwnPrsD ? T_CYN "(p)" T_NRM : "( )",
+    me->DnPrsD ? T_CYN "(p)" T_NRM : "( )",
     
-    me->DwiPrsD ? "HH" : "  ",
-    me->WiDvrg ? '\\' : '-',
-    me->WnDvrg ? '/' : '-',
-    me->DwnPrsD ? "HH" : "  ",
-    me->DnPrsD ? "HH" : "  ",
+    me->DwiPrsD ? T_CYN "HH" T_NRM : "  ",
+    me->WiDvrg ? T_YEL "\\" T_NRM : "-",
+    me->WnDvrg ? T_YEL "/" T_NRM : "-",
+    me->DwnPrsD ? T_CYN "HH" T_NRM : "  ",
+    me->DnPrsD ? T_CYN "HH" T_NRM : "  ",
     
-    me->SnoGrn ? 'g' : 'r',
-    me->SoGrn ? 'g' : 'r',
-    me->SsiGrn ? 'g' : 'r',
+    me->SnoGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
+    me->SsiGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
     
-    me->DwoPrsD ? "HH" : "  ",
-    me->WoDvrg ? '/' : '-',
-    me->WsDvrg ? '\\' : '-',
-    me->DwsPrsD ? "HH" : "  ",
-    me->DsPrsD ? "HH" : "  ",
+    me->DwoPrsD ? T_CYN "HH" T_NRM : "  ",
+    me->WoDvrg ? T_YEL "/" T_NRM : "-",
+    me->WsDvrg ? T_YEL "\\" T_NRM : "-",
+    me->DwsPrsD ? T_CYN "HH" T_NRM : "  ",
+    me->DsPrsD ? T_CYN "HH" T_NRM : "  ",
 
-    me->DwoPrsD ? 'p' : ' ',
-    me->WoDvrg ? 'd' : 's',
-    me->WsDvrg ? 'd' : 's',
-    me->SsoGrn ? 'g' : 'r',
-    me->DwsPrsD ? 'p' : ' ',
-    me->DsPrsD ? 'p' : ' ');
+    me->DwoPrsD ? T_CYN "(p)" T_NRM : "( )",
+    me->SoGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
+    me->WoDvrg ? T_YEL "(d)" T_NRM : "(s)",
+    me->WsDvrg ? T_YEL "(d)" T_NRM : "(s)",
+    me->SsoGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
+    me->DwsPrsD ? T_CYN "(p)" T_NRM : "( )",
+    me->DsPrsD ? T_CYN "(p)" T_NRM : "( )");
 }
 
 
