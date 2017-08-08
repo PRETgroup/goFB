@@ -40,26 +40,26 @@ if(me->inputEvents.event.SChange ||
         me->inputEvents.event.DChangeD) {
 
     printf("\r\n\r\n\r\n"
-    "               Dwi(%c) Si(%c) Wi(%c)  Wn(%c) Sni(%c) Dwo(%c)                  Dn(%c)                        \r\n"
-    "in -> ----------[%s]---|------=%c----%c=-----|-----[%s]--------------------[%s]-----------------------X\r\n"
-    "                                \\  /     Sno(%c)                                                      \r\n"
-    "                                 \\/                                                                  \r\n"
-    "                                 /\\                                                                  \r\n"
-    "                      So(%c)     /  \\     Ssi(%c)                                                      \r\n"
-    "out<- ----------[%s]---|------=%c----%c=-----|-----[%s]--------------------[%s]-----------------------X\r\n"
-    "              Dwo(%c)       Wo(%c)  Ws(%c) Sso(%c) Dws(%c)                  Ds(%c)                         \r\n",
+    "               Dwi(%c) Si(%c) Wi(%c)  Wn(%c) Sni(%c) Dwn(%c)             Dn(%c)           \r\n"
+    "in -> ----------[%s]---|------=%c----%c=-----|-----[%s]---------------[%s]---------------X\r\n"
+    "                                \\  /     Sno(%c)                                         \r\n"
+    "                                 \\/                                                     \r\n"
+    "                                 /\\                                                     \r\n"
+    "                      So(%c)     /  \\     Ssi(%c)                                         \r\n"
+    "out<- ----------[%s]---|------=%c----%c=-----|-----[%s]---------------[%s]---------------X\r\n"
+    "               Dwo(%c)       Wo(%c)  Ws(%c) Sso(%c) Dws(%c)             Ds(%c)            \r\n",
     me->DwiPrsD ? 'p' : ' ',
     me->SiGrn ? 'g' : 'r',
     me->WiDvrg ? 'd' : 's',
     me->WnDvrg ? 'd' : 's',
     me->SniGrn ? 'g' : 'r',
-    me->DwoPrsD ? 'p' : ' ',
+    me->DwnPrsD ? 'p' : ' ',
     me->DnPrsD ? 'p' : ' ',
     
     me->DwiPrsD ? "HH" : "  ",
     me->WiDvrg ? '\\' : '-',
     me->WnDvrg ? '/' : '-',
-    me->DwoPrsD ? "HH" : "  ",
+    me->DwnPrsD ? "HH" : "  ",
     me->DnPrsD ? "HH" : "  ",
     
     me->SnoGrn ? 'g' : 'r',
@@ -71,8 +71,8 @@ if(me->inputEvents.event.SChange ||
     me->WsDvrg ? '\\' : '-',
     me->DwsPrsD ? "HH" : "  ",
     me->DsPrsD ? "HH" : "  ",
+
     me->DwoPrsD ? 'p' : ' ',
-    
     me->WoDvrg ? 'd' : 's',
     me->WsDvrg ? 'd' : 's',
     me->SsoGrn ? 'g' : 'r',

@@ -1,17 +1,31 @@
 basicFB TrainCtrl;
 interface of TrainCtrl {
-    in event RChange;
-	in bool initial false RiReq with RChange;
-	in bool initial false RnReq with RChange;
-	in bool initial false RsReq with RChange;
+    in event RiChange;
+    in bool initial false RiReq with RiChange;
 
-	in event DChange;
-    in bool initial false DwiPrs with DChange;
-    in bool initial false DwoPrs with DChange;
-    in bool initial false DwnPrs with DChange;
-    in bool initial false DwsPrs with DChange;
-    in bool initial false DnPrs with DChange;
-    in bool initial false DsPrs with DChange;
+    in event RnChange;
+    in bool initial false RnReq with RnChange;
+
+    in event RsChange;
+    in bool initial false RsReq with RsChange;
+
+    in event DwiChange;
+    in bool initial false DwiPrs with DwiChange;
+
+    in event DwoChange;
+    in bool initial false DwoPrs with DwoChange;
+
+    in event DwnChange;
+    in bool initial false DwnPrs with DwnChange;
+
+    in event DwsChange;
+    in bool initial false DwsPrs with DwsChange;
+
+    in event DnChange;
+    in bool initial false DnPrs with DnChange;
+
+    in event DsChange;
+    in bool initial false DsPrs with DsChange;
 
     out event SChange;
     out bool initial false SiGrn with SChange;
@@ -29,12 +43,22 @@ interface of TrainCtrl {
 }
 
 architecture of TrainCtrl {
-    state idle {
-        -> n_allow_train_exit_0 on RChange and RnReq == true;
-        -> s_allow_train_exit_0 on RChange and RsReq == true;
-        -> i_allow_train_entrance_0 on RChange && RiReq == true;
+    state init {
+        -> idle;
     }
 
+    //in the idle state, all signals should be RED
+    //switch positions don't really matter
+    state idle {
+        run ClrSignals;
+        emit SChange;
+
+        -> n_allow_train_exit_0 on RnChange and RnReq == true;
+        -> s_allow_train_exit_0 on RsChange and RsReq == true;
+        -> i_allow_train_entrance_0 on RiChange && RiReq == true;
+    }
+
+    //here's the algorithms that manage the signal/switch network
     algorithm ClrSignals in "C" `
         me->SiGrn = false;
         me->SoGrn = false;
@@ -65,6 +89,10 @@ architecture of TrainCtrl {
         me->SoGrn = true;
     `;
 
+    algorithm SetNExitHalf in "C" `
+        me->SnoGrn = false;
+    `;
+
     algorithm SetSExit in "C" `
         me->SsoGrn = true;
         me->WsDvrg = false;
@@ -72,27 +100,51 @@ architecture of TrainCtrl {
         me->SoGrn = true;
     `;
 
+    algorithm SetSExitHalf in "C" `
+        me->SsoGrn = false;
+    `;
+
     //train EXITS from platform N
     states {
         n_allow_train_exit_0 {
-            run ClrSignals;
             run SetNExit;
+            emit SChange;
+            emit WChange;
+
+            -> n_allow_train_exit_passed_first_signal on DwnChange and DwnPrs == false;
+        }
+
+        n_allow_train_exit_passed_first_signal {
+            run SetNExitHalf;
+            emit SChange; 
+
+            -> idle on DwoChange and DwoPrs == false;
         }
     }
 
     //train EXITS from platform S 
     states {
         s_allow_train_exit_0 {
-            run ClrSignals;
             run SetSExit;
+            emit SChange;
+            emit WChange;
+
+            -> s_allow_train_exit_passed_first_signal on DwsChange and DwsPrs == false;
+        }
+
+        s_allow_train_exit_passed_first_signal {
+            run SetSExitHalf;
+            emit SChange; 
+
+            -> idle on DwoChange and DwoPrs == false;
         }
     }
 
     //train ENTRANCE to platform
     states {
         i_allow_train_entrance_0 {
-            run ClrSignals;
             //decide which platform to go to
+            run in "C" `printf("not yet implemented!\r\n"); while(1);`;
         }
     }
 

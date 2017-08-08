@@ -11,15 +11,27 @@ architecture of Top {
     }
 
     events {
-        ctrl.RChange <- etx.RChange;
+        ctrl.RiChange <- etx.RiChange;
+        ctrl.RnChange <- etx.RnChange;
+        ctrl.RsChange <- etx.RsChange;
         
-        ctrl.DChange <- etx.DChange;
+        ctrl.DwiChange <- etx.DwiChange;
+        ctrl.DwoChange <- etx.DwoChange;
+        ctrl.DwnChange <- etx.DwnChange;
+        ctrl.DwsChange <- etx.DwsChange;
+        ctrl.DnChange <- etx.DnChange;
+        ctrl.DsChange <- etx.DsChange;
 
         erx.SChange <- ctrl.SChange;
 
         erx.WChange <- ctrl.WChange;
 
-        erx.DChangeD <- etx.DChange; //D for Display
+        erx.DChangeD <- etx.DwiChange; //D for Display
+        erx.DChangeD <- etx.DwoChange; //D for Display
+        erx.DChangeD <- etx.DwnChange; //D for Display
+        erx.DChangeD <- etx.DwsChange; //D for Display
+        erx.DChangeD <- etx.DnChange; //D for Display
+        erx.DChangeD <- etx.DsChange; //D for Display                     
     }
 
     data {
