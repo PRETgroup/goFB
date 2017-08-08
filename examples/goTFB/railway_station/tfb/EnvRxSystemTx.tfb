@@ -1,52 +1,26 @@
 serviceFB EnvRxSystemTx;
 interface of EnvRxSystemTx {
-    in event SiChange;
-    in bool initial false SiGrn with SiChange;
+    in event SChange;
+    in bool initial false SiGrn with SChange;
+    in bool initial false SoGrn with SChange;
+    in bool initial false SniGrn with SChange;
+    in bool initial false SnoGrn with SChange;
+    in bool initial false SsiGrn with SChange;
+    in bool initial false SsoGrn with SChange;
 
-    in event SoChange;
-    in bool initial false SoGrn with SoChange;
+    in event WChange;
+    in bool initial false WiDvrg with WChange;
+    in bool initial false WoDvrg with WChange;
+    in bool initial false WnDvrg with WChange;
+    in bool initial false WsDvrg with WChange;
 
-    in event SniChange;
-    in bool initial false SniGrn with SniChange;
-
-    in event SnoChange;
-    in bool initial false SnoGrn with SnoChange;
-
-    in event SsiChange;
-    in bool initial false SsiGrn with SsiChange;
-
-    in event SsoChange;
-    in bool initial false SsoGrn with SsoChange;
-
-    in event WiChange;
-    in bool initial false WiDvrg with WiChange;
-
-    in event WoChange;
-    in bool initial false WoDvrg with WoChange;
-
-    in event WnChange;
-    in bool initial false WnDvrg with WnChange;
-
-    in event WsChange;
-    in bool initial false WsDvrg with WsChange;
-
-    in event DwiChangeD; //D for Display
-    in bool initial false DwiPrsD with DwiChangeD;
-
-    in event DwoChangeD;
-    in bool initial false DwoPrsD with DwoChangeD;
-
-    in event DwnChangeD;
-    in bool initial false DwnPrsD with DwnChangeD;
-
-    in event DwsChangeD;
-    in bool initial false DwsPrsD with DwsChangeD;
-
-    in event DnChangeD;
-    in bool initial false DnPrsD with DnChangeD;
-
-    in event DsChangeD;
-    in bool initial false DsPrsD with DsChangeD;
+    in event DChangeD; //D for Display
+    in bool initial false DwiPrsD with DChangeD;
+    in bool initial false DwoPrsD with DChangeD;
+    in bool initial false DwnPrsD with DChangeD;
+    in bool initial false DwsPrsD with DChangeD;
+    in bool initial false DnPrsD with DChangeD;
+    in bool initial false DsPrsD with DChangeD;
 }
 
 architecture of EnvRxSystemTx {
@@ -61,9 +35,9 @@ architecture of EnvRxSystemTx {
     run 
 `
 //if any change occurs
-if(me->inputEvents.event.SiChange || me->inputEvents.event.SoChange || me->inputEvents.event.SniChange || me->inputEvents.event.SnoChange || me->inputEvents.event.SsiChange || me->inputEvents.event.SsoChange || 
-        me->inputEvents.event.WiChange || me->inputEvents.event.WiChange || me->inputEvents.event.WoChange || me->inputEvents.event.WnChange || me->inputEvents.event.WsChange || 
-        me->inputEvents.event.DwiChangeD || me->inputEvents.event.DwoChangeD || me->inputEvents.event.DwnChangeD || me->inputEvents.event.DwsChangeD || me->inputEvents.event.DnChangeD || me->inputEvents.event.DsChangeD) {
+if(me->inputEvents.event.SChange || 
+        me->inputEvents.event.WChange || 
+        me->inputEvents.event.DChangeD) {
 
     printf("\r\n\r\n\r\n"
     "               Dwi(%c) Si(%c) Wi(%c)  Wn(%c) Sni(%c) Dwo(%c)                  Dn(%c)                        \r\n"

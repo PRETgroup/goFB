@@ -238,6 +238,11 @@ func (t *tfbParse) parseBFBState(fbIndex int) *ParseError {
 					if s == pSemicolon {
 						break
 					}
+
+					//if any condComponent is "and" then turn it into &&
+					if s == "and" {
+						s = "&&"
+					}
 					condComponents = append(condComponents, s)
 
 				}

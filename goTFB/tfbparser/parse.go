@@ -121,6 +121,11 @@ func scanString(name string, input string) []string {
 			items[i] = "=="
 			items = append(items[:i+1], items[i+2:]...)
 		}
+
+		if items[i] == "&" && items[i+1] == "&" {
+			items[i] = "&&"
+			items = append(items[:i+1], items[i+2:]...)
+		}
 	}
 
 	return items

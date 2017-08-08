@@ -1,63 +1,100 @@
 basicFB TrainCtrl;
 interface of TrainCtrl {
-    in event RiChange;
-	in bool initial false RiReq with RiChange;
+    in event RChange;
+	in bool initial false RiReq with RChange;
+	in bool initial false RnReq with RChange;
+	in bool initial false RsReq with RChange;
 
-	in event RnChange;
-	in bool initial false RnReq with RnChange;
+	in event DChange;
+    in bool initial false DwiPrs with DChange;
+    in bool initial false DwoPrs with DChange;
+    in bool initial false DwnPrs with DChange;
+    in bool initial false DwsPrs with DChange;
+    in bool initial false DnPrs with DChange;
+    in bool initial false DsPrs with DChange;
 
-	in event RsChange;
-	in bool initial false RsReq with RsChange;
+    out event SChange;
+    out bool initial false SiGrn with SChange;
+    out bool initial false SoGrn with SChange;
+    out bool initial false SniGrn with SChange;
+    out bool initial false SnoGrn with SChange;
+    out bool initial false SsiGrn with SChange;
+    out bool initial false SsoGrn with SChange;
 
-	in event DwiChange;
-    in bool initial false DwiPrs with DwiChange;
-
-    in event DwoChange;
-    in bool initial false DwoPrs with DwoChange;
-
-    in event DwnChange;
-    in bool initial false DwnPrs with DwnChange;
-
-    in event DwsChange;
-    in bool initial false DwsPrs with DwsChange;
-
-    in event DnChange;
-    in bool initial false DnPrs with DnChange;
-
-    in event DsChange;
-    in bool initial false DsPrs with DsChange;
-
-    out event SiChange;
-    out bool initial false SiGrn with SiChange;
-
-    out event SoChange;
-    out bool initial false SoGrn with SoChange;
-
-    out event SniChange;
-    out bool initial false SniGrn with SniChange;
-
-    out event SnoChange;
-    out bool initial false SnoGrn with SnoChange;
-
-    out event SsiChange;
-    out bool initial false SsiGrn with SsiChange;
-
-    out event SsoChange;
-    out bool initial false SsoGrn with SsoChange;
-
-    out event WiChange;
-    out bool initial false WiDvrg with WiChange;
-
-    out event WoChange;
-    out bool initial false WoDvrg with WoChange;
-
-    out event WnChange;
-    out bool initial false WnDvrg with WnChange;
-
-    out event WsChange;
-    out bool initial false WsDvrg with WsChange;
+    out event WChange;
+    out bool initial false WiDvrg with WChange;
+    out bool initial false WoDvrg with WChange;
+    out bool initial false WnDvrg with WChange;
+    out bool initial false WsDvrg with WChange;
 }
 
 architecture of TrainCtrl {
-    
+    state idle {
+        -> n_allow_train_exit_0 on RChange and RnReq == true;
+        -> s_allow_train_exit_0 on RChange and RsReq == true;
+        -> i_allow_train_entrance_0 on RChange && RiReq == true;
+    }
+
+    algorithm ClrSignals in "C" `
+        me->SiGrn = false;
+        me->SoGrn = false;
+        me->SniGrn = false;
+        me->SnoGrn = false;
+        me->SsiGrn = false;
+        me->SsoGrn = false;
+    `;
+
+    algorithm SetNEntrance in "C" `
+        me->SiGrn = true;
+        me->WiDvrg = false;
+        me->WnDvrg = false;
+        me->SniGrn = true;
+    `;
+
+    algorithm SetSEntrance in "C" `
+        me->SiGrn = true;
+        me->WiDvrg = true;
+        me->WsDvrg = true;
+        me->SsiGrn = true;
+    `;
+
+    algorithm SetNExit in "C" `
+        me->SnoGrn = true;
+        me->WnDvrg = true;
+        me->WoDvrg = true;
+        me->SoGrn = true;
+    `;
+
+    algorithm SetSExit in "C" `
+        me->SsoGrn = true;
+        me->WsDvrg = false;
+        me->WoDvrg = false;
+        me->SoGrn = true;
+    `;
+
+    //train EXITS from platform N
+    states {
+        n_allow_train_exit_0 {
+            run ClrSignals;
+            run SetNExit;
+        }
+    }
+
+    //train EXITS from platform S 
+    states {
+        s_allow_train_exit_0 {
+            run ClrSignals;
+            run SetSExit;
+        }
+    }
+
+    //train ENTRANCE to platform
+    states {
+        i_allow_train_entrance_0 {
+            run ClrSignals;
+            //decide which platform to go to
+        }
+    }
+
+
 }

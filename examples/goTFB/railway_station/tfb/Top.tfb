@@ -11,36 +11,15 @@ architecture of Top {
     }
 
     events {
-        ctrl.RiChange <- etx.RiChange;
-        ctrl.RnChange <- etx.RnChange;
-        ctrl.RsChange <- etx.RsChange;
+        ctrl.RChange <- etx.RChange;
         
-        ctrl.DwiChange <- etx.DwiChange;
-        ctrl.DwoChange <- etx.DwoChange;
-        ctrl.DwnChange <- etx.DwnChange;
-        ctrl.DwsChange <- etx.DwsChange;
-        ctrl.DnChange <- etx.DnChange;
-        ctrl.DsChange <- etx.DsChange;
+        ctrl.DChange <- etx.DChange;
 
-        erx.SiChange <- ctrl.SiChange;
-        erx.SoChange <- ctrl.SoChange;
-        erx.SniChange <- ctrl.SniChange;
-        erx.SnoChange <- ctrl.SnoChange;
-        erx.SsiChange <- ctrl.SsiChange;
-        erx.SsoChange <- ctrl.SsoChange;
+        erx.SChange <- ctrl.SChange;
 
-        erx.WiChange <- ctrl.WiChange;
-        erx.WoChange <- ctrl.WoChange;
-        erx.WnChange <- ctrl.WnChange;
-        erx.WsChange <- ctrl.WsChange;
+        erx.WChange <- ctrl.WChange;
 
-        erx.DwiChangeD <- etx.DwiChange; //D for Display
-        erx.DwoChangeD <- etx.DwoChange;
-        erx.DwnChangeD <- etx.DwnChange;
-        erx.DwsChangeD <- etx.DwsChange;
-        erx.DnChangeD <- etx.DnChange;
-        erx.DsChangeD <- etx.DsChange;
-
+        erx.DChangeD <- etx.DChange; //D for Display
     }
 
     data {
