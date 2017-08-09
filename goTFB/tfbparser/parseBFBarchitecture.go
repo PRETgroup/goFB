@@ -243,6 +243,10 @@ func (t *tfbParse) parseBFBState(fbIndex int) *ParseError {
 					if s == "and" {
 						s = "&&"
 					}
+					//if any condComponint is "or" then turn it into ||
+					if s == "or" {
+						s = "||"
+					}
 					condComponents = append(condComponents, s)
 
 				}

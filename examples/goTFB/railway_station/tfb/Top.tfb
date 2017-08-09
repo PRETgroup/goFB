@@ -8,6 +8,7 @@ architecture of Top {
         TrainCtrl ctrl;
         EnvRxSystemTx erx;
         EnvTxSystemRx etx;
+        EnvRxEnforcer enforcer;
     }
 
     events {
@@ -22,16 +23,25 @@ architecture of Top {
         ctrl.DnChange <- etx.DnChange;
         ctrl.DsChange <- etx.DsChange;
 
-        erx.SChange <- ctrl.SChange;
+        enforcer.SChange_in <- ctrl.SChange;
+        enforcer.WChange_in <- ctrl.WChange;
 
-        erx.WChange <- ctrl.WChange;
+        enforcer.DChange <- etx.DwiChange;
+        enforcer.DChange <- etx.DwoChange; 
+        enforcer.DChange <- etx.DwnChange;
+        enforcer.DChange <- etx.DwsChange; 
+        enforcer.DChange <- etx.DnChange; 
+        enforcer.DChange <- etx.DsChange;  
+        
+        erx.SChange <- enforcer.SChange_out;
+        erx.WChange <- enforcer.WChange_out;
 
         erx.DChangeD <- etx.DwiChange; //D for Display
         erx.DChangeD <- etx.DwoChange; //D for Display
         erx.DChangeD <- etx.DwnChange; //D for Display
         erx.DChangeD <- etx.DwsChange; //D for Display
         erx.DChangeD <- etx.DnChange; //D for Display
-        erx.DChangeD <- etx.DsChange; //D for Display                     
+        erx.DChangeD <- etx.DsChange; //D for Display       
     }
 
     data {
@@ -46,16 +56,33 @@ architecture of Top {
         ctrl.DnPrs <- etx.DnPrs;
         ctrl.DsPrs <- etx.DsPrs;
 
-        erx.SiGrn <- ctrl.SiGrn;
-        erx.SoGrn <- ctrl.SoGrn;
-        erx.SniGrn <- ctrl.SniGrn;
-        erx.SnoGrn <- ctrl.SnoGrn;
-        erx.SsiGrn <- ctrl.SsiGrn;
-        erx.SsoGrn <- ctrl.SsoGrn;
-        erx.WiDvrg <- ctrl.WiDvrg;
-        erx.WoDvrg <- ctrl.WoDvrg;
-        erx.WnDvrg <- ctrl.WnDvrg;
-        erx.WsDvrg <- ctrl.WsDvrg;
+        enforcer.SiGrn_in <- ctrl.SiGrn;
+        enforcer.SoGrn_in <- ctrl.SoGrn;
+        enforcer.SniGrn_in <- ctrl.SniGrn;
+        enforcer.SnoGrn_in <- ctrl.SnoGrn;
+        enforcer.SsiGrn_in <- ctrl.SsiGrn;
+        enforcer.SsoGrn_in <- ctrl.SsoGrn;
+        enforcer.WiDvrg_in <- ctrl.WiDvrg;
+        enforcer.WoDvrg_in <- ctrl.WoDvrg;
+        enforcer.WnDvrg_in <- ctrl.WnDvrg;
+        enforcer.WsDvrg_in <- ctrl.WsDvrg;
+        enforcer.DwiPrs_in <- etx.DwiPrs;
+        enforcer.DwoPrs_in <- etx.DwoPrs;
+        enforcer.DwnPrs_in <- etx.DwnPrs;
+        enforcer.DwsPrs_in <- etx.DwsPrs;
+        enforcer.DnPrs_in <- etx.DnPrs;
+        enforcer.DsPrs_in <- etx.DsPrs; 
+
+        erx.SiGrn <- enforcer.SiGrn_out;
+        erx.SoGrn <- enforcer.SoGrn_out;
+        erx.SniGrn <- enforcer.SniGrn_out;
+        erx.SnoGrn <- enforcer.SnoGrn_out;
+        erx.SsiGrn <- enforcer.SsiGrn_out;
+        erx.SsoGrn <- enforcer.SsoGrn_out;
+        erx.WiDvrg <- enforcer.WiDvrg_out;
+        erx.WoDvrg <- enforcer.WoDvrg_out;
+        erx.WnDvrg <- enforcer.WnDvrg_out;
+        erx.WsDvrg <- enforcer.WsDvrg_out;
 
         erx.DwiPrsD <- etx.DwiPrs;
         erx.DwoPrsD <- etx.DwoPrs;

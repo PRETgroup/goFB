@@ -1,0 +1,135 @@
+basicFB EnvRxEnforcer;
+interface of EnvRxEnforcer {
+    in event SChange_in;
+    in bool initial false SiGrn_in with SChange_in;
+    in bool initial false SoGrn_in with SChange_in;
+    in bool initial false SniGrn_in with SChange_in;
+    in bool initial false SnoGrn_in with SChange_in;
+    in bool initial false SsiGrn_in with SChange_in;
+    in bool initial false SsoGrn_in with SChange_in;
+
+    in event WChange_in;
+    in bool initial false WiDvrg_in with WChange_in;
+    in bool initial false WoDvrg_in with WChange_in;
+    in bool initial false WnDvrg_in with WChange_in;
+    in bool initial false WsDvrg_in with WChange_in;
+
+    in event DChange_in; 
+    in bool initial false DwiPrs_in with DChange_in;
+    in bool initial false DwoPrs_in with DChange_in;
+    in bool initial false DwnPrs_in with DChange_in;
+    in bool initial false DwsPrs_in with DChange_in;
+    in bool initial false DnPrs_in with DChange_in;
+    in bool initial false DsPrs_in with DChange_in;
+
+	out event EnforcerTookAction; //let the controller know it done bad
+
+	out event SChange_out;
+    out bool initial false SiGrn_out with SChange_out;
+    out bool initial false SoGrn_out with SChange_out;
+    out bool initial false SniGrn_out with SChange_out;
+    out bool initial false SnoGrn_out with SChange_out;
+    out bool initial false SsiGrn_out with SChange_out;
+    out bool initial false SsoGrn_out with SChange_out;
+
+    out event WChange_out;
+    out bool initial false WiDvrg_out with WChange_out;
+    out bool initial false WoDvrg_out with WChange_out;
+    out bool initial false WnDvrg_out with WChange_out;
+    out bool initial false WsDvrg_out with WChange_out;
+}
+
+architecture of EnvRxEnforcer {
+
+	//our own modifiable copies of the inputs
+	//we'll make sure we're happy with these before we pass them to the outputs
+	internal bool initial false SiGrn, SoGrn, SniGrn, SnoGrn, SsiGrn, SsoGrn, WiDvrg, WoDvrg, WnDvrg, WsDvrg;
+
+	//we have two ways of dealing with failures
+	//some failures are recoverable, where we make a change to the inputs and then try another pass
+	//some failures are unrecovereable, where we simply don't pass the current i/o to the system
+	states {
+		idle {
+			//do a check through when we get an input event
+			run in "C" `printf("idle\r\n");`;
+			-> copyVals on (SChange_in || WChange_in);
+		}
+
+		copyVals {
+			run in "C" `printf("copyVals\r\n");`;
+			run copyInVals;
+			-> startCheck;
+		}
+
+		startCheck {
+			run in "C" `printf("startCheck\r\n");`;
+			-> singleGreenSiSnoSso;
+		}
+
+		singleGreenSiSnoSso {
+			run in "C" `printf("singleGreenSiSnoSso\r\n");`;
+			-> singleGreenSiSnoSso_unrecoverable on (SiGrn + SnoGrn + SsoGrn) > 1;
+			-> singleGreenSniSsi;
+		}
+
+		singleGreenSiSnoSso_unrecoverable {
+			//too many greens, no way to rectify this
+			//stick with current outputs, take no action other than blocking
+			run in "C" `printf("singleGreenSiSnoSso_unrecoverable\r\n");`;
+			emit EnforcerTookAction;
+			-> idle;
+		}
+
+		singleGreenSniSsi {
+			run in "C" `printf("singleGreenSniSsi\r\n");`;
+			-> singleGreenSniSsi_unrecoverable on (SniGrn + SsiGrn) > 1;
+			-> finished;
+		}
+
+		singleGreenSniSsi_unrecoverable {
+			//too many greens, no way to rectify
+			run in "C" `printf("singleGreenSniSsi_unrecoverable\r\n");`;
+			emit EnforcerTookAction;
+			-> idle;
+		}
+
+		finished {
+			run in "C" `printf("finished\r\n");`;
+			run copyOutVals;
+			//it's not super clean to emit the events if we don't *have* to, but nothing will technically be hurt if we do
+			emit SChange_out;
+			emit WChange_out;
+			-> idle;
+		}
+
+
+	}
+
+	algorithm copyInVals in "C" `
+		printf("copying in vals\r\n");
+		me->SiGrn = me->SiGrn_in;
+		me->SoGrn = me->SoGrn_in;
+		me->SniGrn = me->SniGrn_in;
+		me->SnoGrn = me->SnoGrn_in;
+		me->SsiGrn = me->SsiGrn_in;
+		me->SsoGrn = me->SsoGrn_in;
+		me->WiDvrg = me->WiDvrg_in;
+		me->WoDvrg = me->WoDvrg_in;
+		me->WnDvrg = me->WnDvrg_in;
+		me->WsDvrg = me->WsDvrg_in;
+	`;
+
+	algorithm copyOutVals in "C" `
+		printf("copying out vals\r\n");
+		me->SiGrn_out = me->SiGrn;
+		me->SoGrn_out = me->SoGrn;
+		me->SniGrn_out = me->SniGrn;
+		me->SnoGrn_out = me->SnoGrn;
+		me->SsiGrn_out = me->SsiGrn;
+		me->SsoGrn_out = me->SsoGrn;
+		me->WiDvrg_out = me->WiDvrg;
+		me->WoDvrg_out = me->WoDvrg;
+		me->WnDvrg_out = me->WnDvrg;
+		me->WsDvrg_out = me->WsDvrg;
+	`;
+}
