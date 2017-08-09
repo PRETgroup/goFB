@@ -40,14 +40,14 @@ if(me->inputEvents.event.SChange ||
         me->inputEvents.event.DChangeD) {
 
     printf("\r\n\r\n\r\n"
-    "               Dwi%s Si%s Wi%s  Wn%s Sni%s Dwn%s             Dn%s           \r\n"
-    "in -> ----------[%s]---|------=%s----%s=-----|-----[%s]---------------[%s]---------------X\r\n"
-    "                                \\  /     Sno%s                                         \r\n"
-    "                                 \\/                                                     \r\n"
-    "                                 /\\                                                     \r\n"
-    "                                /  \\     Ssi%s                                         \r\n"
-    "out<- ----------[%s]---|------=%s----%s=-----|-----[%s]---------------[%s]---------------X\r\n"
-    "               Dwo%s So%s Wo%s  Ws%s Sso%s Dws%s             Ds%s            \r\n",
+    "              Dwi%s Si%s Wi%s  Wn%s Sni%s Dwn%s           Dn%s         \r\n"
+    "in -> --------[%s]---|------=%s----%s=-----|-----[%s]-------------[%s]-------------X\r\n"
+    "                              \\  /      Sno%s                                     \r\n"
+    "                               \\/                                                 \r\n"
+    "                               /\\                                                 \r\n"
+    "                              /  \\      Ssi%s                                     \r\n"
+    "out<- --------[%s]---|------=%s----%s=-----|-----[%s]-------------[%s]-------------X\r\n"
+    "              Dwo%s So%s Wo%s  Ws%s Sso%s Dws%s           Ds%s          \r\n",
     me->DwiPrsD ? T_CYN "(p)" T_NRM : "( )",
     me->SiGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
     me->WiDvrg ? T_YEL "(d)" T_NRM : "(s)",

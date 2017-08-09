@@ -1,4 +1,4 @@
--r- p---pp
+--- ----pp
 This file controls the railway_station input SIFBs, as detailed below. The associated events will only be emitted on *change* of the characters,
 i.e. changing the first character to an 'o' will cause the InternetCtrl SIFB to emit OP_DOOR_OPEN exactly once.
 

@@ -43,6 +43,10 @@ interface of TrainCtrl {
 }
 
 architecture of TrainCtrl {
+
+    internal bool initial false busyN;
+    internal bool initial false busyS;
+
     state init {
         -> idle;
     }
@@ -53,9 +57,9 @@ architecture of TrainCtrl {
         run ClrSignals;
         emit SChange;
 
-        -> n_allow_train_exit_0 on RnChange and RnReq == true;
-        -> s_allow_train_exit_0 on RsChange and RsReq == true;
-        -> i_allow_train_entrance_0 on RiChange && RiReq == true;
+        -> n_allow_train_exit_0 on RnReq == true;
+        -> s_allow_train_exit_0 on RsReq == true;
+        -> i_allow_train_entrance_0 on RiReq == true;
     }
 
     //here's the algorithms that manage the signal/switch network
@@ -69,20 +73,29 @@ architecture of TrainCtrl {
     `;
 
     algorithm SetNEntrance in "C" `
+        printf("SetNEntrance\r\n");
         me->SiGrn = true;
         me->WiDvrg = false;
         me->WnDvrg = false;
         me->SniGrn = true;
+        me->busyN = true;
     `;
 
     algorithm SetSEntrance in "C" `
+        printf("SetSEntrance\r\n");
         me->SiGrn = true;
         me->WiDvrg = true;
         me->WsDvrg = true;
         me->SsiGrn = true;
+        me->busyS = true;
+    `;
+
+    algorithm SetEntranceHalf in "C" `
+        me->SiGrn = false;
     `;
 
     algorithm SetNExit in "C" `
+        printf("SetNExit\r\n");
         me->SnoGrn = true;
         me->WnDvrg = true;
         me->WoDvrg = true;
@@ -91,9 +104,11 @@ architecture of TrainCtrl {
 
     algorithm SetNExitHalf in "C" `
         me->SnoGrn = false;
+        me->busyN = false;
     `;
 
     algorithm SetSExit in "C" `
+        printf("SetSExit\r\n");
         me->SsoGrn = true;
         me->WsDvrg = false;
         me->WoDvrg = false;
@@ -102,6 +117,7 @@ architecture of TrainCtrl {
 
     algorithm SetSExitHalf in "C" `
         me->SsoGrn = false;
+        me->busyS = false;
     `;
 
     //train EXITS from platform N
@@ -140,13 +156,48 @@ architecture of TrainCtrl {
         }
     }
 
-    //train ENTRANCE to platform
+    //train request ENTRANCE to platform
     states {
         i_allow_train_entrance_0 {
-            //decide which platform to go to
-            run in "C" `printf("not yet implemented!\r\n"); while(1);`;
+            //decide which platform to go to, if no platform available, return to idle state to allow a train in the station to exit
+            
+            -> i_allow_train_entrance_s on busyS == false and DsPrs == false;
+            -> i_allow_train_entrance_n on busyN == false and DnPrs == false;
+            -> idle;
         }
     }
 
+    //train granted ENTRANCE to platform S
+    states {
+        i_allow_train_entrance_s {
+            run SetSEntrance;
+            emit SChange;
+            emit WChange;
 
+            -> i_allow_train_entrance_s_passed_first_signal on DwiChange and DwiPrs == false;
+        }
+
+        i_allow_train_entrance_s_passed_first_signal {
+            run SetEntranceHalf;
+            emit SChange;
+            -> idle on DwsChange and DwsPrs == false;
+        }
+    }
+
+    //train granted ENTRANCE to platform N 
+    states {
+        i_allow_train_entrance_n {
+            run SetNEntrance;
+            emit SChange;
+            emit WChange;
+
+            -> i_allow_train_entrance_n_passed_first_signal on DwiChange and DwiPrs == false;
+        }
+
+        i_allow_train_entrance_n_passed_first_signal {
+            run SetEntranceHalf;
+            emit SChange;
+            -> idle on DwnChange and DwnPrs == false;
+        }
+    }
 }
