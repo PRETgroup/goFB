@@ -57,6 +57,12 @@ func (c *Converter) SetTcrestSmartSPM() {
 	c.TcrestSmartSPM = true
 }
 
+//SetRunOnECC sets that ECCs will "run-on", rather than taking a single transition in a tick
+//this is part of the IEC61499 revision 2 specification
+func (c *Converter) SetRunOnECC() {
+	c.RunOnECC = true
+}
+
 //CvodeEnable enables using C CVODE library from SUNDIALS to solve algorithms with 'ODE' and 'ODE_init' in comment fields
 func (c *Converter) CvodeEnable() error {
 	if c.outputLanguage != languageC {
@@ -88,6 +94,7 @@ type ConverterSettings struct {
 	TcrestIncludes           bool
 	IgnoreAlgorithmLanguages bool
 	CvodeEnabled             bool
+	RunOnECC                 bool //Use IEC61499 v2 specification for ECC logic instead of synchronous logic (i.e. consume single event, run as far as possible vs. run single transition)
 }
 
 //OutputFile is used when returning the converted data from the iec61499

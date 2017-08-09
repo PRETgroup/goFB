@@ -22,6 +22,7 @@ var (
 	tcrestIncludes         = flag.Bool("ti", false, "(Experimental flag) Include the T-CREST header files in fbtypes.h")
 	autoFlatten            = flag.Bool("af", false, "Automatically flatten out CFBs to save memory")
 	cvodeEnable            = flag.Bool("cvode", false, "Enable cvode for solving algorithms with 'ODE' and 'ODE_init' in comment field")
+	eventMoC               = flag.Bool("eventMoC", false, "Use event-driven MoC instead of synchronous MoC (makes it compliant with IEC61499 revision 2)")
 )
 
 func main() {
@@ -96,6 +97,10 @@ func main() {
 
 	if *tcrestIncludes == true {
 		conv.SetTcrestIncludes()
+	}
+
+	if *eventMoC == true {
+		conv.SetRunOnECC()
 	}
 
 	if *cvodeEnable == true {

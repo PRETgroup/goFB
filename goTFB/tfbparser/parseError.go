@@ -7,7 +7,7 @@ import (
 
 var (
 	//ErrInternal means something went wrong and it's the transpiler's fault
-	ErrInternal = errors.New("An internal error occured!")
+	ErrInternal = errors.New("An internal error occured")
 
 	//ErrUnexpectedEOF means the document ended unexpectedly
 	ErrUnexpectedEOF = errors.New("Unexpected EOF")
