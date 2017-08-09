@@ -38,4 +38,7 @@ future proof)
 
 For now, we'll ignore resourceID (leave it as zero) and just focus on the bottom 24
 bits
+
+We'll queue events from where they are emitted, and have a global queue executing in top
+
 */}}
