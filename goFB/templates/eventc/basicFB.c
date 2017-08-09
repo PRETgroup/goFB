@@ -17,13 +17,13 @@ void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t {{if or $tcrestUsingSPM $tc
 {{end}}
 
 /* {{$block.Name}}_run() executes a single tick of an
- * instance of {{$block.Name}} according to synchronous semantics.
+ * instance of {{$block.Name}} according to {{if $eventMoC}}event MoC{{else}}synchronous{{end}} semantics.
  * Notice that it does NOT perform any I/O - synchronisation
  * will need to be done in the parent.
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartSPM}}_SPM{{end}} *me) {
+void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartSPM}}_SPM{{end}} *me{{if $eventMoC}}, short InstanceID{{end}}) {
 	//if there are output events, reset them
 	{{/*{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
 	{{end}}{{end}}// this method seems to be having trouble on the t-crest SPM memory*/}}

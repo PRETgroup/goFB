@@ -76,5 +76,11 @@ typedef char FBstring[STRING_LENGTH];
 typedef FBstring STRING;
 typedef FBstring WSTRING;
 
+{{if .EventMoC}}
+typedef struct {
+	short InstanceID;
+	char SourceID;
+} EventInvokation;
+{{end}}
 #endif // FBTYPES_H_
 {{end}}

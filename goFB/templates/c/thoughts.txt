@@ -1,0 +1,41 @@
+{{/* 
+
+I think the following, and hear me out:
+
+The synchronous MoC is defined by the following behaviours:
+BFB: one transition per tick
+CFB: copying stuff around and iterating the _run of each block
+
+We can make an event driven MoC which has chains of function invokations (YES I KNOW IT'LL BE BAD IF INFINITE LOOP)
+i.e.
+ FBA ->  FBB ->  FBC
+             ->  FBD
+
+When FBA emits event, it will invoke FBBs _run function, and so on and so forth. 
+This will end up very recursive, but I think it will be fine.
+
+Ideally, there would get to a point where the whole system returned. Then you could just keep invoking the SIFBs over and over.
+
+SIFBs will need two types of invoke, received_event_run and idle_run, so that they can keep operating when no events are active in the system.
+
+We can try implement this without being too hacky, but we'll see how we go.
+
+
+Try again:
+I think we need to have events queued globally, and drawn from globally
+as a result, i don't think CFBs will actually have a run function anymore
+
+I think we can assign them IDs using Go, but we need to have their instance ID as 
+well as the event ID, which is slightly more complicated
+
+We might be able to represent events with a 32 bit number from their source
+|---8 bits---||---16 bits---||---8 bits---|
+ Resource ID    Instance ID    Local ID
+
+That means we can have 256 output events from each block, 65536 blocks in a resource,
+and 256 resources sharing a queue (this probably won't be used, but it's nice to
+future proof)
+
+For now, we'll ignore resourceID (leave it as zero) and just focus on the bottom 24
+bits
+*/}}
