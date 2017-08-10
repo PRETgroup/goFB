@@ -55,22 +55,28 @@ func GetFBChildrenCounts(fb *iec61499.FB, fbs []iec61499.FB) (int, error) {
 	return count, nil
 }
 
-//An InstanceGraph is used with the event MoC to store the unique identifiers for all fbs in the instantiated network
-type InstanceGraph struct {
+//An InstanceNode is used with the event MoC to store the unique identifiers for all fbs in the instantiated network
+type InstanceNode struct {
 	InstanceID   int
+	ParentID     int //if ParentID == InstanceID then it has no parent, i.e. is the top
 	InstanceName string
 	FBType       string
-	ChildNodes   []InstanceGraph
+	ChildNodeIDs []int
 }
 
-//FBToInstanceGraph will construct the InstanceGraph for a given FB network
-func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, myInstanceID int) (InstanceGraph, error) {
-	instG := InstanceGraph{
+//FBToInstanceGraph will construct the []InstanceNode for a given FB network
+func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, myInstanceID int, parentID int) ([]InstanceNode, error) {
+	nodes := make([]InstanceNode, 0)
+
+	me := InstanceNode{
 		InstanceID:   myInstanceID,
+		ParentID:     parentID,
 		InstanceName: instanceName,
 		FBType:       fb.Name,
-		ChildNodes:   make([]InstanceGraph, 0),
+		ChildNodeIDs: make([]int, 0),
 	}
+
+	nodes = append(nodes, me)
 
 	//define the unprocessed children
 	children := make([]iec61499.FBReference, 0)
@@ -88,17 +94,19 @@ func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, 
 	for _, childFBRef := range children {
 		childFBType := findBlockDefinitionForType(fbs, childFBRef.Type)
 		if childFBType == nil {
-			return InstanceGraph{}, errors.New("Couldn't find instance type")
+			return nil, errors.New("Couldn't find instance type")
 		}
 
-		chi, err := FBToInstanceGraph(childFBType, fbs, instanceName+"->"+childFBRef.Name, myInstanceID+instanceOffset)
+		childInstanceID := myInstanceID + instanceOffset
+		chi, err := FBToInstanceGraph(childFBType, fbs, instanceName+"->"+childFBRef.Name, childInstanceID, myInstanceID)
 		if err != nil {
-			return InstanceGraph{}, err
+			return nil, err
 		}
-		instG.ChildNodes = append(instG.ChildNodes, chi)
+		nodes[0].ChildNodeIDs = append(nodes[0].ChildNodeIDs, childInstanceID)
+		nodes = append(nodes, chi...)
 		instanceOffset += (childFBType.NumChildren + 1)
 
 	}
 
-	return instG, nil
+	return nodes, nil
 }

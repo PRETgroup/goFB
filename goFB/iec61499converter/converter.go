@@ -18,7 +18,7 @@ type Converter struct {
 
 	ConverterSettings
 
-	InstG InstanceGraph
+	InstG []InstanceNode
 
 	outputLanguage language
 	templates      *template.Template
@@ -117,7 +117,7 @@ type OutputFile struct {
 type TemplateData struct {
 	ConverterSettings
 
-	InstG InstanceGraph
+	InstG []InstanceNode
 
 	BlockIndex int
 	Blocks     []iec61499.FB
@@ -376,7 +376,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 				return nil, err
 			}
 
-			c.InstG, err = FBToInstanceGraph(&c.Blocks[topIndex], c.Blocks, c.topName, 0)
+			c.InstG, err = FBToInstanceGraph(&c.Blocks[topIndex], c.Blocks, c.topName, 0, 0)
 			if err != nil {
 				return nil, err
 			}

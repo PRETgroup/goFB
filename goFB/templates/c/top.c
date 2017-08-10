@@ -71,8 +71,7 @@ int main() {
 				//copy data to destinations
 				//perform all connected invokations
 		switch(curEvent.InstanceID) {
-		{{$listIG := getInstanceGraphAsList $instG}}
-		{{range $instanceIndex, $inst := $listIG}}
+		{{range $instanceIndex, $inst := $instG}}
 		{{$blockDef := findBlockDefinitionForType $.Blocks $inst.FBType}}{{if and (or $blockDef.BasicFB $blockDef.IsSIFB) $blockDef.EventOutputs}}case {{$inst.InstanceID}}: //{{$inst.InstanceName}} (type {{$inst.FBType}})
 			switch(curEvent.PortID) {//range over source output event ports
 			{{range $outputEventIndex, $outputEvent := $blockDef.EventOutputs}}

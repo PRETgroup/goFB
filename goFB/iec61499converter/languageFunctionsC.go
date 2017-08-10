@@ -370,11 +370,28 @@ func getOutputEventPortID(fb iec61499.FB, name string) string {
 }
 
 //getInstanceGraphAsList is used in the EventMoC for flattening the instance graph for easy iteration
-func getInstanceGraphAsList(instG InstanceGraph) []InstanceGraph {
-	ig := make([]InstanceGraph, 0, 1)
-	ig = append(ig, instG)
-	for _, chiIg := range instG.ChildNodes {
-		ig = append(ig, getInstanceGraphAsList(chiIg)...)
-	}
-	return ig
+// func getInstanceGraphAsList(instG InstanceGraph) []InstanceGraph {
+// 	ig := make([]InstanceGraph, 0, 1)
+// 	ig = append(ig, instG)
+// 	for _, chiIg := range instG.ChildNodes {
+// 		ig = append(ig, getInstanceGraphAsList(chiIg)...)
+// 	}
+// 	return ig
+//}
+
+//InvokedEventCopyInformation is used to provide information on all data that should be copied when a certain event is invoked
+type InvokedEventCopyInformation struct {
+	EventDestinations []string
+	VarCopies         []InvokedEventVarCopy
+}
+
+//InvokedEventVarCopy is used to provide information on data ports that are copied when a certain event is invoked
+type InvokedEventVarCopy struct {
+	SourceVar string
+	DestVar   string
+}
+
+func getInvokedEventCopyInformation(instanceID int, portID int, instG []InstanceNode, blocks []iec61499.FB) InvokedEventCopyInformation {
+	//this is quite complicated, as we need to traverse all blocks and try and determine which blocks have inputs that source from
+	return InvokedEventCopyInformation{}
 }

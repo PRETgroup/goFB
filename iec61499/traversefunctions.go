@@ -191,3 +191,18 @@ conns:
 
 	return connAndTypes, nil
 }
+
+//GetGlobalConnectionList when given a network of FBs, it returns the list of all connections globally
+func GetGlobalConnectionList(blocks []FB) []ConnectionWithType {
+	return nil
+}
+
+//FindGlobalDataDestinations will find the external destinations of data to an output port connections
+func FindGlobalDataDestinations(fb FB, portName string, blocks []FB) []string {
+	return nil
+}
+
+//FindGlobalEventDestinations will find the external destinations for output port connections
+func FindGlobalEventDestinations(fb FB, portName string, blocks []FB) []string {
+	return nil
+}
