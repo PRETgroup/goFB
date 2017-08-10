@@ -23,7 +23,7 @@ void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t {{if or $tcrestUsingSPM $tc
  * Also note that on the first run of this function, trigger will be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
-void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartSPM}}_SPM{{end}} *me{{if $eventQueue}}, short myInstanceID{{end}}) {
+void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartSPM}}_SPM{{end}} *me) {
 	//if there are output events, reset them
 	{{/*{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
 	{{end}}{{end}}// this method seems to be having trouble on the t-crest SPM memory*/}}
@@ -57,7 +57,7 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 		switch(me->_state) {
 		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$block.Name}}_{{$curState.Name}}:
 			{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
-			{{end}}{{if $action.Output}}{{if $eventQueue}}PushEvent(myInstanceID, {{getOutputEventPortID $block $action.Output}});{{else}}me->outputEvents.event.{{$action.Output}} = 1;{{end}}
+			{{end}}{{if $action.Output}}{{if $eventQueue}}PushEvent(me->myInstanceID, {{getOutputEventPortID $block $action.Output}});{{else}}me->outputEvents.event.{{$action.Output}} = 1;{{end}}
 			{{end}}{{end}}
 			{{if $runOnECC}}goto {{$block.Name}}_runOn;
 			{{end}}break;

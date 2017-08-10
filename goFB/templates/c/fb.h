@@ -80,16 +80,18 @@ typedef struct {
 	{{end}}{{end}}
 	{{end}}{{if $block.ServiceFB}}{{if $block.ServiceFB.Autogenerate}}//Code provided in SIFB
 	{{$block.ServiceFB.Autogenerate.InStructText}}{{end}}{{end}}
+	{{if .EventQueue}}//because we're using an event queue, rather than the synchronous MoC, all blocks need a unique instanceID
+	short myInstanceID;{{end}}
 } {{$block.Name}}_t;
 
 //all FBs get a preinit function
-int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
+int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me{{if $eventQueue}}, short myInstanceID{{end}});
 
 //all FBs get an init function
 int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);
 
 //all FBs get a run function
-void {{$block.Name}}_run({{$block.Name}}_t {{if or .TcrestUsingSPM (and $block.BasicFB .TcrestSmartSPM)}}_SPM{{end}} *me{{if $eventQueue}}, short myInstanceID{{end}});
+void {{$block.Name}}_run({{$block.Name}}_t {{if or .TcrestUsingSPM (and $block.BasicFB .TcrestSmartSPM)}}_SPM{{end}} *me);
 
 {{if or (or $block.CompositeFB $block.Resources) $block.ResourceVars}}//composite/resource/device FBs get sync functions
 void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me);

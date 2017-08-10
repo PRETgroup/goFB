@@ -55,12 +55,13 @@ int main() {
 
 	EventInvokation curEvent;
 	while(1) {
-		
+
 
 		if(!PopEvent(&curEvent)) {
 			printf("No events to execute\n");
 			sleep(1);
 		} 
+	
 	}
 
 {{else}}//this is executing with synchronous semantics

@@ -1,49 +1,55 @@
-{{define "_fbinit"}}{{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}
+{{define "_fbinit"}}{{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}{{$tcrestUsingSPM := .TcrestUsingSPM}}{{$tcrestSmartSPM := .TcrestSmartSPM}}{{$runOnECC := .RunOnECC}}{{$eventQueue := .EventQueue}}
 /* {{$block.Name}}_preinit() is required to be called to 
  * initialise an instance of {{$block.Name}}. 
  * It sets all I/O values to zero.
  */
-int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
-	//if there are input events, reset them
-	{{range $index, $event := $block.EventInputs}}me->inputEvents.event.{{$event.Name}} = 0;
+int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me{{if $eventQueue}}, short myInstanceID{{end}}) {
+	{{if $eventQueue}}//as we're using event queue, each FB has a unique instance ID to be associated with emitted events
+	me->myInstanceID = myInstanceID;
+	short instanceOffset = 1;//this is what is used to create the instance numbers of any child blocks{{end}}
+
+	{{range $index, $event := $block.EventInputs}}//reset the input events
+	me->inputEvents.event.{{$event.Name}} = 0;
 	{{end}}
-	//if there are output events, reset them
-	{{range $index, $event := $block.EventOutputs}}me->outputEvents.event.{{$event.Name}} = 0;
+	{{range $index, $event := $block.EventOutputs}}//reset the output events
+	me->outputEvents.event.{{$event.Name}} = 0;
 	{{end}}
-	//if there are input vars with default values, set them
+	//set any input vars with default values
 	{{range $index, $var := $block.InputVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
 	{{end}}{{else}}me->{{$var.Name}} = {{$var.InitialValue}};
 	{{end}}{{end}}{{end}}
-	//if there are output vars with default values, set them
+	//set any output vars with default values
 	{{range $index, $var := $block.OutputVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
 	{{end}}{{else}}me->{{$var.Name}} = {{$var.InitialValue}};
 	{{end}}{{end}}{{end}}
-	//if there are internal vars with default values, set them (BFBs only)
-	{{if $block.BasicFB}}{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
+	{{if $block.BasicFB}}//set any internal vars with default values
+	{{if $block.BasicFB.InternalVars}}{{range $varIndex, $var := $block.BasicFB.InternalVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
 	{{end}}{{else}}me->{{$var.Name}} = {{$var.InitialValue}};
 	{{end}}{{end}}{{end}}{{end}}{{end}}
-	//if there are resource vars with default values, set them
-	{{if $block.ResourceVars}}{{range $index, $var := $block.ResourceVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
+	{{if $block.ResourceVars}}//set any resource vars with default values
+	{{range $index, $var := $block.ResourceVars}}{{if $var.InitialValue}}{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};
 	{{end}}{{else}}me->{{$var.Name}} = {{$var.InitialValue}};
 	{{end}}{{end}}{{end}}{{end}}
-	//if there are resources with set parameters, set them
-	{{if $block.Resources}}{{range $index, $res := $block.Resources}}{{if $res.Parameter}}{{range $paramIndex, $param := $res.Parameter}}me->{{$res.Name}}.{{$param.Name}} = {{$param.Value}};
+	{{if $block.Resources}}//set any resource params
+	{{range $index, $res := $block.Resources}}{{if $res.Parameter}}{{range $paramIndex, $param := $res.Parameter}}me->{{$res.Name}}.{{$param.Name}} = {{$param.Value}};
 	{{end}}{{end}}{{end}}{{end}}
-	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
-	{{if $block.CompositeFB}}{{range $currChildIndex, $child := $block.CompositeFB.FBs}}if({{$child.Type}}_preinit(&me->{{$child.Name}}) != 0) {
+	{{if $block.CompositeFB}}//if there are fb children (CFBs/Devices/Resources only), call this same function on them
+	{{range $currChildIndex, $child := $block.CompositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}if({{$child.Type}}_preinit(&me->{{$child.Name}}{{if $eventQueue}}, myInstanceID + instanceOffset{{end}}) != 0) {
 		return 1;
 	}
+	{{if $eventQueue}}instanceOffset += ({{$childType.NumChildren}} + 1);{{end}}
 	{{end}}{{end}}
-	{{if $block.Resources}}{{range $index, $res := $block.Resources}}if({{$res.Type}}_preinit(&me->{{$res.Name}}) != 0) {
+	{{if $block.Resources}}{{range $index, $res := $block.Resources}}{{$childType := findBlockDefinitionForType $blocks $res.Type}}if({{$res.Type}}_preinit(&me->{{$res.Name}}{{if $eventQueue}}, myInstanceID + instanceOffset{{end}}) != 0) {
 		return 1;
 	}
+	{{if $eventQueue}}instanceOffset += ({{$childType.NumChildren}} + 1);{{end}}
 	{{end}}{{end}}
 
 	{{if $block.ServiceFB}}{{if $block.ServiceFB.Autogenerate}}//Code provided in SIFB
 	{{$block.ServiceFB.Autogenerate.PreInitText}}{{end}}{{end}}
-
-	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
-	{{if $block.BasicFB}}{{if len $block.BasicFB.States}}me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};{{else}}me->_state = STATE_{{$block.Name}}_unknown;{{end}}
+	
+	{{if $block.BasicFB}}//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
+	{{if len $block.BasicFB.States}}me->_state = STATE_{{$block.Name}}_{{(index $block.BasicFB.States 0).Name}};{{else}}me->_state = STATE_{{$block.Name}}_unknown;{{end}}
 	me->_trigger = true;
 	{{if and .CvodeEnabled (blockNeedsCvode $block)}}
 	me->cvode_mem = NULL;

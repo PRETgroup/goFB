@@ -39,7 +39,8 @@ type FB struct {
 	ServiceFB   *ServiceFB   `xml:",omitempty"`
 	HybridFB    *HybridFB    `xml:"-"` //don't ever export HybridFBs, convert them to BFBs first
 
-	DebugInfo `xml:"-"`
+	NumChildren int `xml:"-"` //this is useful when using the event queue as we use it to assign unique blockInstanceIDs, it stores the recursive number of children a block has
+	DebugInfo   `xml:"-"`
 }
 
 //IsSIFB returns true if the FB is an interface only (i.e. is a SIFB)
