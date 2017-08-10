@@ -368,7 +368,3 @@ func getOutputEventPortID(fb iec61499.FB, name string) string {
 	}
 	return ""
 }
-
-func getNextInstanceID() string {
-	return ""
-}

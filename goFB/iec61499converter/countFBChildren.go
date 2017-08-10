@@ -54,3 +54,51 @@ func GetFBChildrenCounts(fb *iec61499.FB, fbs []iec61499.FB) (int, error) {
 	fb.NumChildren = count
 	return count, nil
 }
+
+//An InstanceGraph is used with the event MoC to store the unique identifiers for all fbs in the instantiated network
+type InstanceGraph struct {
+	InstanceID   int
+	InstanceName string
+	FBType       string
+	ChildNodes   []InstanceGraph
+}
+
+//FBToInstanceGraph will construct the InstanceGraph for a given FB network
+func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, myInstanceID int) (InstanceGraph, error) {
+	instG := InstanceGraph{
+		InstanceID:   myInstanceID,
+		InstanceName: instanceName,
+		FBType:       fb.Name,
+		ChildNodes:   make([]InstanceGraph, 0),
+	}
+
+	//define the unprocessed children
+	children := make([]iec61499.FBReference, 0)
+
+	if fb.CompositeFB != nil {
+		children = append(children, fb.CompositeFB.FBs...)
+	}
+
+	if fb.Resources != nil {
+		children = append(children, fb.Resources...)
+	}
+
+	instanceOffset := 1
+
+	for _, childFBRef := range children {
+		childFBType := findBlockDefinitionForType(fbs, childFBRef.Type)
+		if childFBType == nil {
+			return InstanceGraph{}, errors.New("Couldn't find instance type")
+		}
+
+		chi, err := FBToInstanceGraph(childFBType, fbs, childFBRef.Name, myInstanceID+instanceOffset)
+		if err != nil {
+			return InstanceGraph{}, err
+		}
+		instG.ChildNodes = append(instG.ChildNodes, chi)
+		instanceOffset += (childFBType.NumChildren + 1)
+
+	}
+
+	return instG, nil
+}

@@ -114,7 +114,6 @@ var (
 
 		//eventMoC functions
 		"getOutputEventPortID": getOutputEventPortID,
-		"getNextInstanceID":    getNextInstanceID,
 
 		//cvode functions
 		"blockNeedsCvode":         blockNeedsCvode,
