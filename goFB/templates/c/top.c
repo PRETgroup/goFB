@@ -136,7 +136,7 @@ int main() {
 {{end}}
 
 {{define "_getInstanceCases"}}{{/*This is used in the event queue, when the event queue is used*/}}
-		{{$instG := .}}case {{$instG.InstanceID}}:
+		{{$instG := .}}case {{$instG.InstanceID}}: //{{$instG.InstanceName}}
 			//range over ports
 			break;
 		{{range $instanceIndex, $instance := $instG.ChildNodes}}{{template "_getInstanceCases" $instance}}{{end}}

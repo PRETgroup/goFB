@@ -7,7 +7,7 @@ architecture of Top {
     instances {
         TrainCtrl ctrl;
         EnvRxSystemTx erx;
-        EnvTxSystemRx etx;
+        EnvTxSystemRxContainer etx;
         EnvRxEnforcer enforcer;
     }
 

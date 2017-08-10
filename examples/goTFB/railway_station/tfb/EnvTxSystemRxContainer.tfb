@@ -1,0 +1,61 @@
+compositeFB EnvTxSystemRxContainer;
+interface of EnvTxSystemRxContainer {
+    out event RiChange;
+    out bool initial false RiReq;
+
+    out event RnChange;
+    out bool initial false RnReq;
+
+    out event RsChange;
+    out bool initial false RsReq;
+
+    out event DwiChange;
+    out bool initial false DwiPrs;
+
+    out event DwoChange;
+    out bool initial false DwoPrs;
+
+    out event DwnChange;
+    out bool initial false DwnPrs;
+
+    out event DwsChange;
+    out bool initial false DwsPrs;
+
+    out event DnChange;
+    out bool initial false DnPrs;
+
+    out event DsChange;
+    out bool initial false DsPrs;
+}
+
+architecture of EnvTxSystemRxContainer {
+    instances {
+        EnvTxSystemRx etx;
+    }
+
+    events {
+        RiChange <- etx.RiChange;
+        RnChange <- etx.RnChange;
+        RsChange <- etx.RsChange;
+
+        DwiChange <- etx.DwiChange;
+        DwoChange <- etx.DwoChange;
+        DwnChange <- etx.DwnChange;
+        DwsChange <- etx.DwsChange;
+        DnChange <- etx.DnChange;
+        DsChange <- etx.DsChange;
+    }
+
+    data {
+        RiReq <- etx.RiReq;
+        RnReq <- etx.RnReq;
+        RsReq <- etx.RsReq;
+
+        DwiPrs <- etx.DwiPrs;
+        DwoPrs <- etx.DwoPrs;
+        DwnPrs <- etx.DwnPrs;
+        DwsPrs <- etx.DwsPrs;
+        DnPrs <- etx.DnPrs;
+        DsPrs <- etx.DsPrs;
+    }
+}
