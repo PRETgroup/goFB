@@ -113,7 +113,8 @@ var (
 		"findAlgorithmFromName":           findAlgorithmFromName,
 
 		//eventMoC functions
-		"getOutputEventPortID": getOutputEventPortID,
+		"getOutputEventPortID":   getOutputEventPortID,
+		"getInstanceGraphAsList": getInstanceGraphAsList,
 
 		//cvode functions
 		"blockNeedsCvode":         blockNeedsCvode,

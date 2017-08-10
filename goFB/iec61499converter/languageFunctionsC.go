@@ -368,3 +368,13 @@ func getOutputEventPortID(fb iec61499.FB, name string) string {
 	}
 	return ""
 }
+
+//getInstanceGraphAsList is used in the EventMoC for flattening the instance graph for easy iteration
+func getInstanceGraphAsList(instG InstanceGraph) []InstanceGraph {
+	ig := make([]InstanceGraph, 0, 1)
+	ig = append(ig, instG)
+	for _, chiIg := range instG.ChildNodes {
+		ig = append(ig, getInstanceGraphAsList(chiIg)...)
+	}
+	return ig
+}

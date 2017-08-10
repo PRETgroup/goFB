@@ -17,10 +17,10 @@ void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t {{if or $tcrestUsingSPM $tc
 {{end}}
 
 /* {{$block.Name}}_run() executes a single tick of an
- * instance of {{$block.Name}} according to synchronous semantics.
+ * instance of {{$block.Name}} according to {{if $eventQueue}}event-driven{{else}}synchronous{{end}} semantics.
  * Notice that it does NOT perform any I/O - synchronisation
  * will need to be done in the parent.
- * Also note that on the first run of this function, trigger will be set
+ * Also note that on the first run of this function, trigger will already be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
 void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartSPM}}_SPM{{end}} *me) {
@@ -57,7 +57,7 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 		switch(me->_state) {
 		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$block.Name}}_{{$curState.Name}}:
 			{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
-			{{end}}{{if $action.Output}}{{if $eventQueue}}PushEvent(me->myInstanceID, {{getOutputEventPortID $block $action.Output}});{{else}}me->outputEvents.event.{{$action.Output}} = 1;{{end}}
+			{{end}}{{if $action.Output}}{{if $eventQueue}}PushEvent(me->myInstanceID, {{getOutputEventPortID $block $action.Output}}); /*i'm emitting {{$action.Output}}*/{{else}}me->outputEvents.event.{{$action.Output}} = 1;{{end}}
 			{{end}}{{end}}
 			{{if $runOnECC}}goto {{$block.Name}}_runOn;
 			{{end}}break;

@@ -91,7 +91,7 @@ func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, 
 			return InstanceGraph{}, errors.New("Couldn't find instance type")
 		}
 
-		chi, err := FBToInstanceGraph(childFBType, fbs, instanceName+"_"+childFBRef.Name, myInstanceID+instanceOffset)
+		chi, err := FBToInstanceGraph(childFBType, fbs, instanceName+"->"+childFBRef.Name, myInstanceID+instanceOffset)
 		if err != nil {
 			return InstanceGraph{}, err
 		}

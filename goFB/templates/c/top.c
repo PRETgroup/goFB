@@ -71,9 +71,24 @@ int main() {
 				//copy data to destinations
 				//perform all connected invokations
 		switch(curEvent.InstanceID) {
-		{{template "_getInstanceCases" $instG}}
+		{{$listIG := getInstanceGraphAsList $instG}}
+		{{range $instanceIndex, $inst := $listIG}}
+		{{$blockDef := findBlockDefinitionForType $.Blocks $inst.FBType}}{{if and (or $blockDef.BasicFB $blockDef.IsSIFB) $blockDef.EventOutputs}}case {{$inst.InstanceID}}: //{{$inst.InstanceName}} (type {{$inst.FBType}})
+			switch(curEvent.PortID) {//range over source output event ports
+			{{range $outputEventIndex, $outputEvent := $blockDef.EventOutputs}}
+			case {{$outputEventIndex}}: //{{$outputEvent.Name}}
+				//copy associated data
+				//invoke connected FBs network-wide
+				break;{{end}}
+			default:
+				printf("An error has occurred (unknown port ID %i in event invokation in block {{$inst.InstanceName}}(type {{$blockDef.Name}})!\r\n", curEvent.PortID);
+				while(1);
+			}
+			break;
+		{{else}}//{{$inst.InstanceName}} has no source output event ports so can't generate events
+		{{end}}{{end}}
 		default:
-			printf("An error has occurred (unknown instance ID in event invokation!\r\n");
+			printf("An error has occurred (unknown instance ID %i in event invokation!\r\n", curEvent.InstanceID);
 			while(1);
 		}
 	
@@ -133,11 +148,4 @@ int main() {
 
 
 
-{{end}}
-
-{{define "_getInstanceCases"}}{{/*This is used in the event queue, when the event queue is used*/}}
-		{{$instG := .}}case {{$instG.InstanceID}}: //{{$instG.InstanceName}}
-			//range over ports
-			break;
-		{{range $instanceIndex, $instance := $instG.ChildNodes}}{{template "_getInstanceCases" $instance}}{{end}}
 {{end}}
