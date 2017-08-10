@@ -96,7 +96,7 @@ int main() {
 		{{$block.Name}}_syncOutputData(&my{{$block.Name}});
 		{{$block.Name}}_syncInputData(&my{{$block.Name}});
 		
-		{{$block.Name}}_run(&my{{$block.Name}}, {{getNextInstanceID}});
+		{{$block.Name}}_run(&my{{$block.Name}});
 		#ifdef PRINT_VALS
 			printf("\n");
 		#endif
