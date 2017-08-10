@@ -55,12 +55,21 @@ int main() {
 
 	EventInvokation curEvent;
 	while(1) {
-
+		//TODO: only tick SIFBs
+		{{$block.Name}}_runSIFBs(&my{{$block.Name}});
 
 		if(!PopEvent(&curEvent)) {
 			printf("No events to execute\n");
 			sleep(1);
 		} 
+
+		//there was an event to execute
+		//range all instanceIDs
+			//if selected,
+			//range all portIDs
+				//if selected,
+				//copy data to destinations
+				//perform all connected invokations
 	
 	}
 
