@@ -112,6 +112,10 @@ var (
 		"nextPossibleECCStates":           nextPossibleECCStates,
 		"findAlgorithmFromName":           findAlgorithmFromName,
 
+		//eventMoC functions
+		"getOutputEventPortID": getOutputEventPortID,
+		"getNextInstanceID":    getNextInstanceID,
+
 		//cvode functions
 		"blockNeedsCvode":         blockNeedsCvode,
 		"algorithmNeedsCvode":     algorithmNeedsCvode,
@@ -129,7 +133,7 @@ var (
 
 	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/c/*"))
 
-	eventCTemplateFuncMap = cTemplateFuncMap
+	//eventCTemplateFuncMap = cTemplateFuncMap
 
-	eventCTemplates = template.Must(template.New("").Funcs(eventCTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/eventc/*"))
+	//eventCTemplates = template.Must(template.New("").Funcs(eventCTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/eventc/*"))
 )

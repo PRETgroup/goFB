@@ -76,5 +76,14 @@ typedef char FBstring[STRING_LENGTH];
 typedef FBstring STRING;
 typedef FBstring WSTRING;
 
+{{if .EventQueue}}
+typedef struct {
+	short InstanceID;
+	char PortID;
+} EventInvokation;
+
+void PushEvent(short InstanceID, char PortID);
+{{end}}
+
 #endif // FBTYPES_H_
 {{end}}

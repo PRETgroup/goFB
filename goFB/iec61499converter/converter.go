@@ -28,8 +28,8 @@ func New(language string) (*Converter, error) {
 		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageVHDL, templates: vhdlTemplates}, nil
 	} else if strings.ToLower(language) == "c" {
 		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageC, templates: cTemplates}, nil
-	} else if strings.ToLower(language) == "eventc" {
-		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageEventC, templates: eventCTemplates}, nil
+		// } else if strings.ToLower(language) == "eventc" {
+		// 	return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageEventC, templates: eventCTemplates}, nil
 	}
 
 	return nil, errors.New("Unknown language " + language + "for converter")
@@ -61,6 +61,12 @@ func (c *Converter) SetTcrestSmartSPM() {
 //this is part of the IEC61499 revision 2 specification
 func (c *Converter) SetRunOnECC() {
 	c.RunOnECC = true
+}
+
+//SetEventQueue sets that events will be queued and executed one by one, preventing events from being missed
+//this is part of the IEC61499 revision 2 specification
+func (c *Converter) SetEventQueue() {
+	c.EventQueue = true
 }
 
 //CvodeEnable enables using C CVODE library from SUNDIALS to solve algorithms with 'ODE' and 'ODE_init' in comment fields
@@ -95,6 +101,7 @@ type ConverterSettings struct {
 	IgnoreAlgorithmLanguages bool
 	CvodeEnabled             bool
 	RunOnECC                 bool //Use IEC61499 v2 specification for ECC logic instead of synchronous logic (i.e. consume single event, run as far as possible vs. run single transition)
+	EventQueue               bool //Queue events and run them one by one, disallowing simultaneous events and greatly changing data passing logic
 }
 
 //OutputFile is used when returning the converted data from the iec61499
@@ -107,6 +114,8 @@ type OutputFile struct {
 //TemplateData is the structure used to hold data being passed into the templating engine
 type TemplateData struct {
 	ConverterSettings
+
+	InstG InstanceGraph
 
 	BlockIndex int
 	Blocks     []iec61499.FB
@@ -345,6 +354,8 @@ func (c *Converter) extractChildrenFromCFBChild(parentCFB *iec61499.FB, childCFB
 func (c *Converter) ConvertAll() ([]OutputFile, error) {
 	finishedConversions := make([]OutputFile, 0, len(c.Blocks))
 
+	instG := InstanceGraph{} //instance graph for use if we are using the event queue for the event MoC
+
 	//if a top block is present
 	topIndex := -1
 	if c.topName != "" {
@@ -357,6 +368,15 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 
 		if topIndex == -1 {
 			return nil, errors.New("Can't find provided top-level name '" + c.topName + "'")
+		}
+
+		if c.EventQueue {
+			var err error
+			instG, err = FBToInstanceGraph(&c.Blocks[topIndex], c.Blocks, c.topName)
+			if err != nil {
+				return nil, err
+			}
+			fmt.Printf("Instance Graph: %+v\n", instG)
 		}
 	}
 
@@ -387,7 +407,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			return nil, errors.New("Can't determine type of FB of " + c.Blocks[i].Name)
 		}
 
-		if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks, ConverterSettings: c.ConverterSettings}); err != nil {
+		if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks, ConverterSettings: c.ConverterSettings, InstG: instG}); err != nil {
 			return nil, errors.New("Couldn't format template (fb) of" + c.Blocks[i].Name + ": " + err.Error())
 		}
 
@@ -397,7 +417,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			output := &bytes.Buffer{}
 			templateName := "FBheader"
 
-			if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks, ConverterSettings: c.ConverterSettings}); err != nil {
+			if err := c.templates.ExecuteTemplate(output, templateName, TemplateData{BlockIndex: i, Blocks: c.Blocks, ConverterSettings: c.ConverterSettings, InstG: instG}); err != nil {
 				return nil, errors.New("Couldn't format template (fb header) of" + c.Blocks[i].Name + ": " + err.Error())
 			}
 
@@ -409,7 +429,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 	if topIndex != -1 {
 		output := &bytes.Buffer{}
 
-		if err := c.templates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks, ConverterSettings: c.ConverterSettings}); err != nil {
+		if err := c.templates.ExecuteTemplate(output, "top", TemplateData{BlockIndex: topIndex, Blocks: c.Blocks, ConverterSettings: c.ConverterSettings, InstG: instG}); err != nil {
 			return nil, errors.New("Couldn't format template (top) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 
@@ -421,7 +441,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 	for _, st := range c.outputLanguage.supportFileTemplates() {
 		output := &bytes.Buffer{}
 
-		if err := c.templates.ExecuteTemplate(output, st.templateName, TemplateData{Blocks: c.Blocks, ConverterSettings: c.ConverterSettings}); err != nil {
+		if err := c.templates.ExecuteTemplate(output, st.templateName, TemplateData{Blocks: c.Blocks, ConverterSettings: c.ConverterSettings, InstG: instG}); err != nil {
 			return nil, errors.New("Couldn't format template (support) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 

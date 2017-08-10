@@ -3,6 +3,7 @@ package iec61499converter
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/kiwih/goFB/iec61499"
@@ -356,4 +357,18 @@ func parseOdeRunAlgo(s string) CvodeTick {
 //  function and this function only, instead, we have to refer to them using the NV_Ith_S(ode_solution, index) notation
 func fixOdeVarNameInF(curEval string, name string, index int) string {
 	return strings.Replace(curEval, "me->"+name, fmt.Sprintf("NV_Ith_S(ode_solution, %v)", index), -1)
+}
+
+//getOutputEventPortID is used in the EventMoC for calculating PortIDs when emitting output events
+func getOutputEventPortID(fb iec61499.FB, name string) string {
+	for i, oE := range fb.EventOutputs {
+		if oE.Name == name {
+			return strconv.Itoa(i)
+		}
+	}
+	return ""
+}
+
+func getNextInstanceID() string {
+	return ""
 }

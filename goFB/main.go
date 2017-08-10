@@ -101,6 +101,7 @@ func main() {
 
 	if *eventMoC == true {
 		conv.SetRunOnECC()
+		conv.SetEventQueue()
 	}
 
 	if *cvodeEnable == true {
