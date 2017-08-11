@@ -32,7 +32,6 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 
 	{{if $runOnECC}}
 {{$block.Name}}_runOn:{{end}}
-	printf("running {{$block.Name}}\n");
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {

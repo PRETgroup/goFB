@@ -56,18 +56,18 @@ architecture of EnvRxEnforcer {
 		}
 
 		copyVals {
-			run in "C" `printf("copyVals\r\n");`;
+			//run in "C" `printf("copyVals\r\n");`;
 			run copyInVals;
 			-> startCheck;
 		}
 
 		startCheck {
-			run in "C" `printf("startCheck\r\n");`;
+			//run in "C" `printf("startCheck\r\n");`;
 			-> singleGreenSiSnoSso;
 		}
 
 		singleGreenSiSnoSso {
-			run in "C" `printf("singleGreenSiSnoSso\r\n");`;
+			//run in "C" `printf("singleGreenSiSnoSso\r\n");`;
 			-> singleGreenSiSnoSso_unrecoverable on (SiGrn + SnoGrn + SsoGrn) > 1;
 			-> singleGreenSniSsi;
 		}
@@ -75,26 +75,26 @@ architecture of EnvRxEnforcer {
 		singleGreenSiSnoSso_unrecoverable {
 			//too many greens, no way to rectify this
 			//stick with current outputs, take no action other than blocking
-			run in "C" `printf("singleGreenSiSnoSso_unrecoverable\r\n");`;
+			//run in "C" `printf("singleGreenSiSnoSso_unrecoverable\r\n");`;
 			emit EnforcerTookAction;
 			-> idle;
 		}
 
 		singleGreenSniSsi {
-			run in "C" `printf("singleGreenSniSsi\r\n");`;
+			//run in "C" `printf("singleGreenSniSsi\r\n");`;
 			-> singleGreenSniSsi_unrecoverable on (SniGrn + SsiGrn) > 1;
 			-> finished;
 		}
 
 		singleGreenSniSsi_unrecoverable {
 			//too many greens, no way to rectify
-			run in "C" `printf("singleGreenSniSsi_unrecoverable\r\n");`;
+			//run in "C" `printf("singleGreenSniSsi_unrecoverable\r\n");`;
 			emit EnforcerTookAction;
 			-> idle;
 		}
 
 		finished {
-			run in "C" `printf("finished\r\n");`;
+			//run in "C" `printf("finished\r\n");`;
 			run copyOutVals;
 			//it's not super clean to emit the events if we don't *have* to, but nothing will technically be hurt if we do
 			emit SChange_out;
@@ -106,7 +106,7 @@ architecture of EnvRxEnforcer {
 	}
 
 	algorithm copyInVals in "C" `
-		printf("copying in vals\r\n");
+		//printf("copying in vals\r\n");
 		me->SiGrn = me->SiGrn_in;
 		me->SoGrn = me->SoGrn_in;
 		me->SniGrn = me->SniGrn_in;
@@ -120,7 +120,7 @@ architecture of EnvRxEnforcer {
 	`;
 
 	algorithm copyOutVals in "C" `
-		printf("copying out vals\r\n");
+		//printf("copying out vals\r\n");
 		me->SiGrn_out = me->SiGrn;
 		me->SoGrn_out = me->SoGrn;
 		me->SniGrn_out = me->SniGrn;

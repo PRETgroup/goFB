@@ -25,11 +25,15 @@ int eventInsert; //the location to insert events
 
 //PushEvent is for when an event is emitted by a BFB, and it adds the event to the queue for execution
 void PushEvent(short instanceID, char portID) {
-	printf("I'm pushing an event, InstanceID %i, PortID %i\n", instanceID, portID);
+	//printf("I'm pushing an event, InstanceID %i, PortID %i\n", instanceID, portID);
 
 	events[eventInsert].InstanceID = instanceID;
 	events[eventInsert].PortID = portID;
 	eventInsert++;
+	if(eventInsert > EVENT_QUEUE_LENGTH) {
+		printf("I have run out of event queue!\r\n");
+		while(1);
+	}
 }
 
 //PopEvent is for when the runtime consumes an event, and it removes an event from the queue
@@ -72,6 +76,8 @@ int main() {
 		printf("c,i : (%i,%i)\n", eventCurrent, eventInsert);
 		if(!PopEvent(&curEvent)) {
 			printf("No events to execute\n");
+			eventCurrent = 0;
+			eventInsert = 0;
 			//Tick the SIFBs
 			{{range $instanceIndex, $inst := $instG}}{{/*
 			*/}}{{$blockDef := findBlockDefinitionForType $.Blocks $inst.FBType}}{{/*
@@ -82,7 +88,7 @@ int main() {
 			continue;
 		} 
 
-		printf("I'm processing an event, InstanceID %i, PortID %i\n", curEvent.InstanceID, curEvent.PortID);
+		//printf("I'm processing an event, InstanceID %i, PortID %i\n", curEvent.InstanceID, curEvent.PortID);
 
 		//there was an event to execute
 		//range all instanceIDs
