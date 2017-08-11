@@ -30,8 +30,6 @@ func New(language string) (*Converter, error) {
 		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageVHDL, templates: vhdlTemplates}, nil
 	} else if strings.ToLower(language) == "c" {
 		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageC, templates: cTemplates}, nil
-		// } else if strings.ToLower(language) == "eventc" {
-		// 	return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageEventC, templates: eventCTemplates}, nil
 	}
 
 	return nil, errors.New("Unknown language " + language + "for converter")

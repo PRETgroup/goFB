@@ -134,8 +134,4 @@ var (
 	}
 
 	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/c/*"))
-
-	//eventCTemplateFuncMap = cTemplateFuncMap
-
-	//eventCTemplates = template.Must(template.New("").Funcs(eventCTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/eventc/*"))
 )
