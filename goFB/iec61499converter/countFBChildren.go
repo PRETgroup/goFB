@@ -2,7 +2,6 @@ package iec61499converter
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/kiwih/goFB/iec61499"
@@ -135,7 +134,6 @@ func findDestinations(fromInstanceID int, fromName string, instG []InstanceNode,
 		//pop the first unresolved connection
 		var unresolvedConn InstanceConnection
 		unresolvedConn, unresolvedConns = unresolvedConns[0], unresolvedConns[1:]
-		fmt.Printf("Popped %v, '%v'\n", unresolvedConn.InstanceID, unresolvedConn.PortName)
 		examineInst := instG[unresolvedConn.InstanceID]
 		examineFB := findBlockDefinitionForType(fbs, examineInst.FBType)
 		if examineFB == nil {
@@ -215,4 +213,102 @@ func findDestinations(fromInstanceID int, fromName string, instG []InstanceNode,
 
 	//job's done
 	return destinationConns
+}
+
+//findSources : Given an instance and an input port, find the instances where that port comes from
+func findSources(toInstanceID int, toName string, instG []InstanceNode, fbs []iec61499.FB) []InstanceConnection {
+	myInst := instG[toInstanceID]
+	me := findBlockDefinitionForType(fbs, myInst.FBType)
+	if me == nil {
+		return nil
+	}
+
+	unresolvedConns := make([]InstanceConnection, 0) //we'll queue mystery connections as we find them
+	sourceConns := make([]InstanceConnection, 0)     //final connections loaded in here
+
+	unresolvedConns = append(unresolvedConns, InstanceConnection{InstanceID: toInstanceID, PortName: toName})
+
+	for len(unresolvedConns) > 0 {
+		//pop the first unresolved connection
+		var unresolvedConn InstanceConnection
+		unresolvedConn, unresolvedConns = unresolvedConns[0], unresolvedConns[1:]
+		examineInst := instG[unresolvedConn.InstanceID]
+		examineFB := findBlockDefinitionForType(fbs, examineInst.FBType)
+		if examineFB == nil {
+			//whoops, something bad has happened, we can't resolve the instance ID
+			return nil
+		}
+		if examineFB.CompositeFB == nil {
+			//if this is an output from this block, we're finished here
+			found := false
+			for _, eventIn := range examineFB.EventOutputs {
+				if eventIn.Name == unresolvedConn.PortName {
+					found = true
+					break
+				}
+			}
+			if found == false {
+				for _, dataIn := range examineFB.OutputVars {
+					if dataIn.Name == unresolvedConn.PortName {
+						found = true
+						break
+					}
+				}
+			}
+			if found == true {
+				sourceConns = append(sourceConns,
+					InstanceConnection{
+						InstanceID: unresolvedConn.InstanceID,
+						PortName:   unresolvedConn.PortName,
+					})
+				continue
+			}
+
+			//if this is an input to this block, it is also unresolved, and needs to be fixed at a higher level
+			//we can't do much with this at this level
+			unresolvedConns = append(unresolvedConns,
+				InstanceConnection{
+					InstanceID: examineInst.ParentID,
+					PortName:   examineInst.InstanceName + "." + unresolvedConn.PortName,
+				})
+			continue
+		}
+		//we are a composite FB now, and we're examining a destination port
+		//(either an output from this block, or an input of a child block)
+	inner: //we need an inner loop because one source might have multiple destinations
+		for _, conn := range append(examineFB.CompositeFB.DataConnections, examineFB.CompositeFB.EventConnections...) {
+			if conn.Destination == unresolvedConn.PortName {
+				//the source of this connection might be a resolution to this
+				//we'll check later
+				if strings.Contains(conn.Source, ".") {
+					//this goes to a child block
+					sourceParts := strings.Split(conn.Source, ".")
+					childInstName := sourceParts[0]
+					childPortName := sourceParts[1]
+
+					for _, childInstID := range examineInst.ChildNodeIDs {
+						if instG[childInstID].InstanceName == childInstName {
+							unresolvedConns = append(unresolvedConns, InstanceConnection{
+								InstanceID: childInstID,
+								PortName:   childPortName,
+							})
+							continue inner
+						}
+					}
+					//if we're still here, something has derped, and we can't find a matching instance name
+					return nil
+				}
+				//okay, the source is an input port of this CFB
+				//parent will need to resolve this
+				unresolvedConns = append(unresolvedConns, InstanceConnection{
+					InstanceID: examineInst.ParentID,
+					PortName:   examineInst.InstanceName + "." + conn.Source,
+				})
+				continue inner
+			}
+		}
+	}
+
+	//job's done
+	return sourceConns
 }

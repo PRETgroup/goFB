@@ -111,10 +111,12 @@ var (
 		"connIsOnParent":                  connIsOnParent,
 		"nextPossibleECCStates":           nextPossibleECCStates,
 		"findAlgorithmFromName":           findAlgorithmFromName,
+		"findEventPortForName":            findEventPortForName,
 
 		//eventMoC functions
 		"getOutputEventPortID": getOutputEventPortID,
 		"findDestinations":     findDestinations,
+		"findSources":          findSources,
 		"instIDToName":         instIDToName,
 		//"getInstanceGraphAsList": getInstanceGraphAsList,
 

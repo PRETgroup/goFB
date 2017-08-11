@@ -188,6 +188,21 @@ func findDestsEventName(conns []iec61499.Connection, sourceChildName string, sou
 	return dests
 }
 
+//findEventPortForName returns the port that matches a given name on an FB
+func findEventPortForName(fb iec61499.FB, name string) iec61499.Event {
+	for _, p := range fb.EventInputs {
+		if p.Name == name {
+			return p
+		}
+	}
+	for _, p := range fb.EventOutputs {
+		if p.Name == name {
+			return p
+		}
+	}
+	return iec61499.Event{}
+}
+
 //nextPossibleECCStates will find all states in the ECC in this basicFB that the current state feeds into
 func nextPossibleECCStates(basicFB iec61499.BasicFB, curState iec61499.ECState) []iec61499.ECState {
 	var nextStates []iec61499.ECState

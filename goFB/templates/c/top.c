@@ -46,7 +46,7 @@ char PopEvent(EventInvokation* event) {
 {{end}}
 
 //put a copy of the top level block into global memory
-{{$block.Name}}_t my{{$block.Name}};
+{{$block.Name}}_t {{$block.Name}};
 
 int main() {
 {{if $eventQueue}}//this is executing with an event queue and event-driven semantics
@@ -76,12 +76,15 @@ int main() {
 			switch(curEvent.PortID) {//range over source output event ports
 			{{range $outputEventIndex, $outputEvent := $blockDef.EventOutputs}}
 			case {{$outputEventIndex}}: //{{$outputEvent.Name}}
-				{{$eventDestinations := findDestinations $inst.InstanceID $outputEvent.Name $instG $.Blocks}}{{range $eventDestIndex, $eventDest := $eventDestinations}}//set correct event input
-				{{instIDToName $eventDest.InstanceID $instG}}.{{$eventDest.PortName}} = 1;
+				{{$eventDestinations := findDestinations $inst.InstanceID $outputEvent.Name $instG $.Blocks}}{{range $eventDestIndex, $eventDest := $eventDestinations}}
+				{{$destInst := index $instG $eventDest.InstanceID}}
+				{{$destDef := findBlockDefinitionForType $.Blocks $destInst.FBType}}
+				{{$destPort := findEventPortForName $destDef $eventDest.PortName}}//set correct event input
+				{{instIDToName $eventDest.InstanceID $instG}}.{{$destPort.Name}} = 1;
 				//copy associated data
-
+				//{{$destPort.With}}
 				//invoke function block
-				{{$destInst := index $instG $eventDest.InstanceID}}{{$destDef := findBlockDefinitionForType $.Blocks $destInst.FBType}}{{$destDef.Name}}_run(&{{instIDToName $eventDest.InstanceID $instG}});
+				{{$destDef.Name}}_run(&{{instIDToName $eventDest.InstanceID $instG}});
 				
 				{{end}}
 				break;{{end}}
@@ -125,13 +128,13 @@ int main() {
 		#ifdef PRINT_VALS
 			printf("%f,",(double)tickNum*0.01);
 		#endif
-		{{$block.Name}}_syncOutputEvents(&my{{$block.Name}});
-		{{$block.Name}}_syncInputEvents(&my{{$block.Name}});
+		{{$block.Name}}_syncOutputEvents(&{{$block.Name}});
+		{{$block.Name}}_syncInputEvents(&{{$block.Name}});
 
-		{{$block.Name}}_syncOutputData(&my{{$block.Name}});
-		{{$block.Name}}_syncInputData(&my{{$block.Name}});
+		{{$block.Name}}_syncOutputData(&{{$block.Name}});
+		{{$block.Name}}_syncInputData(&{{$block.Name}});
 		
-		{{$block.Name}}_run(&my{{$block.Name}});
+		{{$block.Name}}_run(&{{$block.Name}});
 		#ifdef PRINT_VALS
 			printf("\n");
 		#endif
