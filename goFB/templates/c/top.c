@@ -76,6 +76,7 @@ int main() {
 			switch(curEvent.PortID) {//range over source output event ports
 			{{range $outputEventIndex, $outputEvent := $blockDef.EventOutputs}}
 			case {{$outputEventIndex}}: //{{$outputEvent.Name}}
+				//{{findDestinations $inst.InstanceID $outputEvent.Name $instG $.Blocks}}
 				//copy associated data
 				//invoke connected FBs network-wide
 				break;{{end}}

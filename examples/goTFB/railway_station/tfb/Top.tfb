@@ -26,12 +26,12 @@ architecture of Top {
         enforcer.SChange_in <- ctrl.SChange;
         enforcer.WChange_in <- ctrl.WChange;
 
-        enforcer.DChange <- etx.DwiChange;
-        enforcer.DChange <- etx.DwoChange; 
-        enforcer.DChange <- etx.DwnChange;
-        enforcer.DChange <- etx.DwsChange; 
-        enforcer.DChange <- etx.DnChange; 
-        enforcer.DChange <- etx.DsChange;  
+        enforcer.DChange_in <- etx.DwiChange;
+        enforcer.DChange_in <- etx.DwoChange; 
+        enforcer.DChange_in <- etx.DwnChange;
+        enforcer.DChange_in <- etx.DwsChange; 
+        enforcer.DChange_in <- etx.DnChange; 
+        enforcer.DChange_in <- etx.DsChange;  
         
         erx.SChange <- enforcer.SChange_out;
         erx.WChange <- enforcer.WChange_out;
