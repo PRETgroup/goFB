@@ -115,6 +115,7 @@ var (
 		//eventMoC functions
 		"getOutputEventPortID": getOutputEventPortID,
 		"findDestinations":     findDestinations,
+		"instIDToName":         instIDToName,
 		//"getInstanceGraphAsList": getInstanceGraphAsList,
 
 		//cvode functions

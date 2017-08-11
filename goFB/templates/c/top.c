@@ -76,9 +76,14 @@ int main() {
 			switch(curEvent.PortID) {//range over source output event ports
 			{{range $outputEventIndex, $outputEvent := $blockDef.EventOutputs}}
 			case {{$outputEventIndex}}: //{{$outputEvent.Name}}
-				//{{findDestinations $inst.InstanceID $outputEvent.Name $instG $.Blocks}}
+				{{$eventDestinations := findDestinations $inst.InstanceID $outputEvent.Name $instG $.Blocks}}{{range $eventDestIndex, $eventDest := $eventDestinations}}//set correct event input
+				{{instIDToName $eventDest.InstanceID $instG}}.{{$eventDest.PortName}} = 1;
 				//copy associated data
-				//invoke connected FBs network-wide
+
+				//invoke function block
+				{{$destInst := index $instG $eventDest.InstanceID}}{{$destDef := findBlockDefinitionForType $.Blocks $destInst.FBType}}{{$destDef.Name}}_run(&{{instIDToName $eventDest.InstanceID $instG}});
+				
+				{{end}}
 				break;{{end}}
 			default:
 				printf("An error has occurred (unknown port ID %i in event invokation in block {{$inst.InstanceName}}(type {{$blockDef.Name}})!\r\n", curEvent.PortID);

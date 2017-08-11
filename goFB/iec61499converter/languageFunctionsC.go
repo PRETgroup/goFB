@@ -395,3 +395,16 @@ func getInvokedEventCopyInformation(instanceID int, portID int, instG []Instance
 	//this is quite complicated, as we need to traverse all blocks and try and determine which blocks have inputs that source from
 	return InvokedEventCopyInformation{}
 }
+
+//instIDToName converts an instance ID into a full usable C name
+func instIDToName(instanceID int, instG []InstanceNode) string {
+	inst := &instG[instanceID]
+
+	name := inst.InstanceName
+	for inst.ParentID != inst.InstanceID {
+		inst = &instG[inst.ParentID]
+		name = inst.InstanceName + "." + name
+	}
+
+	return name
+}
