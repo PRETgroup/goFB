@@ -25,6 +25,8 @@ int eventInsert; //the location to insert events
 
 //PushEvent is for when an event is emitted by a BFB, and it adds the event to the queue for execution
 void PushEvent(short instanceID, char portID) {
+	printf("I'm pushing an event, InstanceID %i, PortID %i\n", instanceID, portID);
+
 	events[eventInsert].InstanceID = instanceID;
 	events[eventInsert].PortID = portID;
 	eventInsert++;
@@ -49,19 +51,38 @@ char PopEvent(EventInvokation* event) {
 {{$block.Name}}_t {{$block.Name}};
 
 int main() {
+	if({{$block.Name}}_preinit(&{{$block.Name}}{{if $eventQueue}}, 0{{end}}) != 0) {
+		printf("Failed to preinitialize.");
+		return 1;
+	}
+	if({{$block.Name}}_init(&{{$block.Name}}) != 0) {
+		printf("Failed to initialize.");
+		return 1;
+	}
+	printf("\n");
+	
 {{if $eventQueue}}//this is executing with an event queue and event-driven semantics
 	eventCurrent = 0;
 	eventInsert = 0;
 
 	EventInvokation curEvent;
-	while(1) {
-		//TODO: only tick SIFBs
-		{{$block.Name}}_runSIFBs(&my{{$block.Name}});
 
+	
+	while(1) {
+		printf("c,i : (%i,%i)\n", eventCurrent, eventInsert);
 		if(!PopEvent(&curEvent)) {
 			printf("No events to execute\n");
+			//Tick the SIFBs
+			{{range $instanceIndex, $inst := $instG}}{{/*
+			*/}}{{$blockDef := findBlockDefinitionForType $.Blocks $inst.FBType}}{{/*
+			*/}}{{if $blockDef.IsSIFB}}
+			{{$blockDef.Name}}_run(&{{instIDToName $inst.InstanceID $instG}});
+			{{end}}{{end}}
 			sleep(1);
+			continue;
 		} 
+
+		printf("I'm processing an event, InstanceID %i, PortID %i\n", curEvent.InstanceID, curEvent.PortID);
 
 		//there was an event to execute
 		//range all instanceIDs
@@ -77,12 +98,16 @@ int main() {
 			{{range $outputEventIndex, $outputEvent := $blockDef.EventOutputs}}
 			case {{$outputEventIndex}}: //{{$outputEvent.Name}}
 				{{$eventDestinations := findDestinations $inst.InstanceID $outputEvent.Name $instG $.Blocks}}{{range $eventDestIndex, $eventDest := $eventDestinations}}
-				{{$destInst := index $instG $eventDest.InstanceID}}
-				{{$destDef := findBlockDefinitionForType $.Blocks $destInst.FBType}}
-				{{$destPort := findEventPortForName $destDef $eventDest.PortName}}//set correct event input
-				{{instIDToName $eventDest.InstanceID $instG}}.{{$destPort.Name}} = 1;
+				{{$destInst := index $instG $eventDest.InstanceID}}{{/* This loads the destination instance from its ID
+				*/}}{{$destDef := findBlockDefinitionForType $.Blocks $destInst.FBType}}{{/*This loads the definition of the destination instance
+				*/}}{{$destPort := findEventPortForName $destDef $eventDest.PortName}}{{/*This loads the definition of the port we're targeting
+				*/}}{{$fullInstName := instIDToName $eventDest.InstanceID $instG}}{{/*finally, the full instance name*/}}//set correct event input
+				{{$fullInstName}}.inputEvents.event.{{$destPort.Name}} = 1;
 				//copy associated data
-				//{{$destPort.With}}
+				{{range $withVarIndex, $withVar := $destPort.With}}{{/*
+				*/}}{{$dataSources := findSources $destInst.InstanceID $withVar.Var $instG $.Blocks}}{{$dataSource := index $dataSources 0}}{{/*
+				*/}}{{$fullInstName}}.{{$withVar.Var}} = {{instIDToName $dataSource.InstanceID $instG}}.{{$dataSource.PortName}};
+				{{end}}
 				//invoke function block
 				{{$destDef.Name}}_run(&{{instIDToName $eventDest.InstanceID $instG}});
 				
@@ -109,16 +134,6 @@ int main() {
 	#ifdef PRINT_VALS
 	printf("Simulation time,");
 	#endif
-
-	if({{$block.Name}}_preinit(&my{{$block.Name}}) != 0) {
-		printf("Failed to preinitialize.");
-		return 1;
-	}
-	if({{$block.Name}}_init(&my{{$block.Name}}) != 0) {
-		printf("Failed to initialize.");
-		return 1;
-	}
-	printf("\n");
 	
 	struct timeval tv1, tv2;
 	gettimeofday(&tv1, NULL);

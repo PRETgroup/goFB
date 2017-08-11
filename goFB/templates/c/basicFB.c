@@ -32,7 +32,7 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 
 	{{if $runOnECC}}
 {{$block.Name}}_runOn:{{end}}
-
+	printf("running {{$block.Name}}\n");
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
@@ -59,7 +59,8 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 			{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
 			{{end}}{{if $action.Output}}{{if $eventQueue}}PushEvent(me->myInstanceID, {{getOutputEventPortID $block $action.Output}}); /*i'm emitting {{$action.Output}}*/{{else}}me->outputEvents.event.{{$action.Output}} = 1;{{end}}
 			{{end}}{{end}}
-			{{if $runOnECC}}goto {{$block.Name}}_runOn;
+			{{if $runOnECC}}me->_trigger = false;
+			goto {{$block.Name}}_runOn;
 			{{end}}break;
 
 		{{end}}

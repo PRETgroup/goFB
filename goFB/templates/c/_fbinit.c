@@ -6,7 +6,9 @@
 int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me{{if $eventQueue}}, short myInstanceID{{end}}) {
 	{{if $eventQueue}}//as we're using event queue, each FB has a unique instance ID to be associated with emitted events
 	me->myInstanceID = myInstanceID;
-	short instanceOffset = 1;//this is what is used to create the instance numbers of any child blocks{{end}}
+	printf("I just set a {{$block.Name}} to have instance ID %i\n", myInstanceID);
+	short instanceOffset = 1;//this is what is used to create the instance numbers of any child blocks
+	{{end}}
 
 	{{range $index, $event := $block.EventInputs}}//reset the input events
 	me->inputEvents.event.{{$event.Name}} = 0;
