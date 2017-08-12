@@ -112,9 +112,10 @@ func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, 
 	return nodes, nil
 }
 
+//InstanceConnection is used to help us find connections globally between BFBs
 type InstanceConnection struct {
-	InstanceID int
-	PortName   string
+	InstanceID int    //ID of an instance in an InstanceGraph
+	PortName   string //name of port on instance
 }
 
 //findDestinations : Given an instance and an output port, find the instances where that port go

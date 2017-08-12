@@ -83,6 +83,8 @@ typedef struct {
 } EventInvokation;
 
 void PushEvent(short InstanceID, char PortID);
+{{else}}
+#define PushEvent(...) (void)0
 {{end}}
 
 #endif // FBTYPES_H_

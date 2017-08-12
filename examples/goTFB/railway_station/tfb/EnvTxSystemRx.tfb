@@ -26,6 +26,8 @@ interface of EnvTxSystemRx {
 
     out event DsChange;
     out bool initial false DsPrs with DsChange;
+
+    out event SysReady;
 }
 
 architecture of EnvTxSystemRx {
@@ -40,6 +42,7 @@ architecture of EnvTxSystemRx {
     in_struct 
 `
 int last_RiReq, last_RnReq, last_RsReq, last_DwiPrs, last_DwoPrs, last_DwnPrs, last_DwsPrs, last_DnPrs, last_DsPrs;
+int initialised;
 `;
     
     run 
@@ -50,40 +53,12 @@ if (file) {
     int c;
 
     c = getc(file);
-    if(c != me->last_RiReq && (c == '-' || c == 'r')) {
-        me->last_RiReq = c;
-        me->outputEvents.event.RiChange = 1;
-        PushEvent(me->myInstanceID, 0);
-        me->RiReq = (c == 'r');
-        printf("EnvTxSystemRx: RiReq event and set to %i\r\n", me->RiReq);
-    }
-
-    c = getc(file);
-    if(c != me->last_RnReq && (c == '-' || c == 'r')) {
-        me->last_RnReq = c;
-        me->outputEvents.event.RnChange = 1;
-        PushEvent(me->myInstanceID, 1);
-        me->RnReq = (c == 'r');
-        printf("EnvTxSystemRx: RnReq event and set to %i\r\n", me->RnReq);
-    }
-
-    c = getc(file);
-    if(c != me->last_RsReq && (c == '-' || c == 'r')) {
-        me->last_RsReq = c;
-        me->outputEvents.event.RsChange = 1;
-        PushEvent(me->myInstanceID, 2);
-        me->RsReq = (c == 'r');
-        printf("EnvTxSystemRx: RsReq event and set to %i\r\n", me->RsReq);
-    }
-
-    //get rid of space
-    c = getc(file);
-    
-    c = getc(file);
     if(c != me->last_DwiPrs && (c == '-' || c == 'p')) {
         me->last_DwiPrs = c;
-        me->outputEvents.event.DwiChange = 1;
-        PushEvent(me->myInstanceID, 3);
+        //if(me->initialised) {
+            me->outputEvents.event.DwiChange = 1;
+            PushEvent(me->myInstanceID, 3);
+        //}
         me->DwiPrs = (c == 'p');
         printf("EnvTxSystemRx: DwiPrs event and set to %i\r\n", me->DwiPrs);
     }
@@ -91,8 +66,10 @@ if (file) {
     c = getc(file);
     if(c != me->last_DwoPrs && (c == '-' || c == 'p')) {
         me->last_DwoPrs = c;
-        me->outputEvents.event.DwoChange = 1;
-        PushEvent(me->myInstanceID, 4);
+        //if(me->initialised) {
+            me->outputEvents.event.DwoChange = 1;
+            PushEvent(me->myInstanceID, 4);
+        //}
         me->DwoPrs = (c == 'p');
         printf("EnvTxSystemRx: DwoPrs event and set to %i\r\n", me->DwoPrs);
     }
@@ -100,8 +77,10 @@ if (file) {
     c = getc(file);
     if(c != me->last_DwnPrs && (c == '-' || c == 'p')) {
         me->last_DwnPrs = c;
-        me->outputEvents.event.DwnChange = 1;
-        PushEvent(me->myInstanceID, 5);
+        //if(me->initialised) {
+            me->outputEvents.event.DwnChange = 1;
+            PushEvent(me->myInstanceID, 5);
+        //}
         me->DwnPrs = (c == 'p');
         printf("EnvTxSystemRx: DwnPrs event and set to %i\r\n", me->DwnPrs);
     }
@@ -109,8 +88,10 @@ if (file) {
     c = getc(file);
     if(c != me->last_DwsPrs && (c == '-' || c == 'p')) {
         me->last_DwsPrs = c;
-        me->outputEvents.event.DwsChange = 1;
-        PushEvent(me->myInstanceID, 6);
+        //if(me->initialised) {
+            me->outputEvents.event.DwsChange = 1;
+            PushEvent(me->myInstanceID, 6);
+        //}
         me->DwsPrs = (c == 'p');
         printf("EnvTxSystemRx: DwsPrs event and set to %i\r\n", me->DwsPrs);
     }
@@ -118,8 +99,10 @@ if (file) {
     c = getc(file);
     if(c != me->last_DnPrs && (c == '-' || c == 'p')) {
         me->last_DnPrs = c;
-        me->outputEvents.event.DnChange = 1;
-        PushEvent(me->myInstanceID, 7);
+        //if(me->initialised) {
+            me->outputEvents.event.DnChange = 1;
+            PushEvent(me->myInstanceID, 7);
+        //}
         me->DnPrs = (c == 'p');
         printf("EnvTxSystemRx: DnPrs event and set to %i\r\n", me->DnPrs);
     }
@@ -127,11 +110,56 @@ if (file) {
     c = getc(file);
     if(c != me->last_DsPrs && (c == '-' || c == 'p')) {
         me->last_DsPrs = c;
-        me->outputEvents.event.DsChange = 1;
-        PushEvent(me->myInstanceID, 8);
+        //if(me->initialised) {
+            me->outputEvents.event.DsChange = 1;
+            PushEvent(me->myInstanceID, 8);
+        //}
         me->DsPrs = (c == 'p');
         printf("EnvTxSystemRx: DsPrs event and set to %i\r\n", me->DsPrs);
+    }    
+
+    //get rid of space
+    c = getc(file);
+
+    c = getc(file);
+    if(c != me->last_RiReq && (c == '-' || c == 'r')) {
+        me->last_RiReq = c;
+        //if(me->initialised) {
+            me->outputEvents.event.RiChange = 1;
+            PushEvent(me->myInstanceID, 0);
+        //}
+        me->RiReq = (c == 'r');
+        printf("EnvTxSystemRx: RiReq event and set to %i\r\n", me->RiReq);
     }
+
+    c = getc(file);
+    if(c != me->last_RnReq && (c == '-' || c == 'r')) {
+        me->last_RnReq = c;
+        //if(me->initialised) {
+            me->outputEvents.event.RnChange = 1;
+            PushEvent(me->myInstanceID, 1);
+        //}
+        me->RnReq = (c == 'r');
+        printf("EnvTxSystemRx: RnReq event and set to %i\r\n", me->RnReq);
+    }
+
+    c = getc(file);
+    if(c != me->last_RsReq && (c == '-' || c == 'r')) {
+        me->last_RsReq = c;
+        //if(me->initialised) {
+            me->outputEvents.event.RsChange = 1;
+            PushEvent(me->myInstanceID, 2);
+        //}
+        me->RsReq = (c == 'r');
+        printf("EnvTxSystemRx: RsReq event and set to %i\r\n", me->RsReq);
+    }
+
+    if(me->initialised == 0) {
+        me->initialised = 1;
+        me->outputEvents.event.SysReady = 1;
+        PushEvent(me->myInstanceID, 9);
+    }
+    
     
     fclose(file);
 } else {

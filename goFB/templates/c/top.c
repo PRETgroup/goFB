@@ -73,9 +73,9 @@ int main() {
 
 	
 	while(1) {
-		printf("c,i : (%i,%i)\n", eventCurrent, eventInsert);
+		//printf("c,i : (%i,%i)\n", eventCurrent, eventInsert);
 		if(!PopEvent(&curEvent)) {
-			printf("No events to execute\n");
+			//printf("No events to execute\n");
 			eventCurrent = 0;
 			eventInsert = 0;
 			//Tick the SIFBs
@@ -88,7 +88,7 @@ int main() {
 			continue;
 		} 
 
-		//printf("I'm processing an event, InstanceID %i, PortID %i\n", curEvent.InstanceID, curEvent.PortID);
+		printf("I'm processing an event, InstanceID %i, PortID %i\n", curEvent.InstanceID, curEvent.PortID);
 
 		//there was an event to execute
 		//range all instanceIDs

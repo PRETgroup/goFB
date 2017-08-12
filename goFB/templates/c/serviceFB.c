@@ -20,7 +20,7 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 	//Code provided in SIFB
 	{{if $block.ServiceFB}}{{if $block.ServiceFB.Autogenerate}}{{$block.ServiceFB.Autogenerate.RunText}}{{end}}{{end}}
 
-	//SIFBs need to ensure their input events are cleared
+	//Ensure input events are cleared
 	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs}}me->inputEvents.event.{{$event.Name}} = 0;
 	{{end}}{{end}}
 }

@@ -1,5 +1,7 @@
 basicFB TrainCtrl;
 interface of TrainCtrl {
+    in event SysReady;
+    
     in event RiChange;
     in bool initial false RiReq with RiChange;
 
@@ -48,7 +50,7 @@ architecture of TrainCtrl {
     internal bool initial false busyS;
 
     state init {
-        -> idle;
+        -> idle on SysReady;
     }
 
     //in the idle state, all signals should be RED
@@ -57,13 +59,14 @@ architecture of TrainCtrl {
         run ClrSignals;
         emit SChange;
 
-        -> n_allow_train_exit_0 on RnReq == true;
-        -> s_allow_train_exit_0 on RsReq == true;
-        -> i_allow_train_entrance_0 on RiReq == true;
+        -> n_allow_train_exit_0 on RnChange and RnReq == true;
+        -> s_allow_train_exit_0 on RsChange and RsReq == true;
+        -> i_allow_train_entrance_0 on RiChange and RiReq == true;
     }
 
     //here's the algorithms that manage the signal/switch network
     algorithm ClrSignals in "C" `
+        printf("TrainCtrl: ClrSignals\n");
         me->SiGrn = false;
         me->SoGrn = false;
         me->SniGrn = false;
@@ -73,7 +76,7 @@ architecture of TrainCtrl {
     `;
 
     algorithm SetNEntrance in "C" `
-        printf("SetNEntrance\r\n");
+        printf("TrainCtrl: SetNEntrance\r\n");
         me->SiGrn = true;
         me->WiDvrg = false;
         me->WnDvrg = false;
@@ -82,7 +85,7 @@ architecture of TrainCtrl {
     `;
 
     algorithm SetSEntrance in "C" `
-        printf("SetSEntrance\r\n");
+        printf("TrainCtrl: SetSEntrance\r\n");
         me->SiGrn = true;
         me->WiDvrg = true;
         me->WsDvrg = true;
@@ -91,11 +94,12 @@ architecture of TrainCtrl {
     `;
 
     algorithm SetEntranceHalf in "C" `
+        printf("TrainCtrl: SetEntranceHalf\n");
         me->SiGrn = false;
     `;
 
     algorithm SetNExit in "C" `
-        printf("SetNExit\r\n");
+        printf("TrainCtrl: SetNExit\n");
         me->SnoGrn = true;
         me->WnDvrg = true;
         me->WoDvrg = true;
@@ -103,12 +107,13 @@ architecture of TrainCtrl {
     `;
 
     algorithm SetNExitHalf in "C" `
+        printf("TrainCtrl: SetNExitHalf\n");
         me->SnoGrn = false;
         me->busyN = false;
     `;
 
     algorithm SetSExit in "C" `
-        printf("SetSExit\r\n");
+        printf("TrainCtrl: SetSExit\n");
         me->SsoGrn = true;
         me->WsDvrg = false;
         me->WoDvrg = false;
@@ -116,6 +121,7 @@ architecture of TrainCtrl {
     `;
 
     algorithm SetSExitHalf in "C" `
+        printf("TrainCtrl: SetSExitHalf\n");
         me->SsoGrn = false;
         me->busyS = false;
     `;
@@ -124,8 +130,9 @@ architecture of TrainCtrl {
     states {
         n_allow_train_exit_0 {
             run SetNExit;
-            emit SChange;
             emit WChange;
+            emit SChange;
+
 
             -> n_allow_train_exit_passed_first_signal on DwnChange and DwnPrs == false;
         }
@@ -142,8 +149,9 @@ architecture of TrainCtrl {
     states {
         s_allow_train_exit_0 {
             run SetSExit;
-            emit SChange;
             emit WChange;
+            emit SChange;
+
 
             -> s_allow_train_exit_passed_first_signal on DwsChange and DwsPrs == false;
         }
@@ -171,8 +179,9 @@ architecture of TrainCtrl {
     states {
         i_allow_train_entrance_s {
             run SetSEntrance;
-            emit SChange;
             emit WChange;
+            emit SChange;
+
 
             -> i_allow_train_entrance_s_passed_first_signal on DwiChange and DwiPrs == false;
         }
@@ -188,8 +197,8 @@ architecture of TrainCtrl {
     states {
         i_allow_train_entrance_n {
             run SetNEntrance;
-            emit SChange;
             emit WChange;
+            emit SChange;
 
             -> i_allow_train_entrance_n_passed_first_signal on DwiChange and DwiPrs == false;
         }

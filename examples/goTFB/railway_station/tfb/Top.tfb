@@ -8,7 +8,7 @@ architecture of Top {
         TrainCtrl ctrl;
         EnvRxSystemTx erx;
         EnvTxSystemRxContainer etx;
-        EnvRxEnforcer enforcer;
+        EnvRxDummyEnforcer enforcer;
     }
 
     events {
@@ -22,6 +22,8 @@ architecture of Top {
         ctrl.DwsChange <- etx.DwsChange;
         ctrl.DnChange <- etx.DnChange;
         ctrl.DsChange <- etx.DsChange;
+
+        ctrl.SysReady <- etx.SysReady;
 
         enforcer.SChange_in <- ctrl.SChange;
         enforcer.WChange_in <- ctrl.WChange;

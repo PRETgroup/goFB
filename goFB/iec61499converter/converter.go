@@ -378,7 +378,6 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			if err != nil {
 				return nil, err
 			}
-			fmt.Printf("Instance Graph: %+v\n", c.InstG)
 		}
 	}
 

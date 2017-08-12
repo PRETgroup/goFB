@@ -4,7 +4,7 @@ fbt/%.fbt: tfb/%.tfb
 	goTFB -i=tfb -o=fbt
 
 c/%.c: fbt/%.fbt
-	goFB -i=./fbt -o=./c -l=c -t=Top
+	goFB -i=./fbt -o=./c -l=c -t=Top -eventMoC=true
 
 bin: c/%.c
 	gcc c/*.c -o railway_station.out
