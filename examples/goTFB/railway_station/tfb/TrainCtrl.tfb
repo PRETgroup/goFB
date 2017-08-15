@@ -39,6 +39,8 @@ interface of TrainCtrl {
     out bool initial false WoDvrg with WChange;
     out bool initial false WnDvrg with WChange;
     out bool initial false WsDvrg with WChange;
+
+    in event abort;
 }
 
 architecture of TrainCtrl {
@@ -125,6 +127,7 @@ architecture of TrainCtrl {
 
 
             -> n_allow_train_exit_passed_first_signal on DwnChange and DwnPrs == false;
+            -> idle on abort;
         }
 
         n_allow_train_exit_passed_first_signal {
@@ -132,6 +135,7 @@ architecture of TrainCtrl {
             emit SChange; 
 
             -> idle on DwoChange and DwoPrs == false;
+            -> idle on abort;
         }
     }
 
@@ -144,6 +148,7 @@ architecture of TrainCtrl {
 
 
             -> s_allow_train_exit_passed_first_signal on DwsChange and DwsPrs == false;
+            -> idle on abort;
         }
 
         s_allow_train_exit_passed_first_signal {
@@ -151,6 +156,7 @@ architecture of TrainCtrl {
             emit SChange; 
 
             -> idle on DwoChange and DwoPrs == false;
+            -> idle on abort;
         }
     }
 
@@ -174,6 +180,7 @@ architecture of TrainCtrl {
 
 
             -> i_allow_train_entrance_s_passed_first_signal on DwiChange and DwiPrs == false;
+            -> idle on abort;
         }
 
         i_allow_train_entrance_s_passed_first_signal {
@@ -191,12 +198,14 @@ architecture of TrainCtrl {
             emit SChange;
 
             -> i_allow_train_entrance_n_passed_first_signal on DwiChange and DwiPrs == false;
+            -> idle on abort;
         }
 
         i_allow_train_entrance_n_passed_first_signal {
             run SetEntranceHalf;
             emit SChange;
             -> idle on DwnChange and DwnPrs == false;
+            -> idle on abort;
         }
     }
 }

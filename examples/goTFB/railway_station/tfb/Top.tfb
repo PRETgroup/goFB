@@ -8,7 +8,7 @@ architecture of Top {
         TrainCtrl ctrl;
         EnvRxSystemTx erx;
         EnvTxSystemRxContainer etx;
-        EnvRxDummyEnforcer enforcer;
+        EnvRxEnforcer enforcer;
     }
 
     events {
@@ -26,6 +26,7 @@ architecture of Top {
         ctrl.SoChange <- etx.SoChange;
 
         ctrl.SysReady <- etx.SysReady;
+        ctrl.abort <- enforcer.EnforcerAbortedAction;
 
         enforcer.SoChange <- etx.SoChange;
 

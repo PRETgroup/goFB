@@ -22,7 +22,7 @@ interface of EnvRxEnforcer {
     in bool initial false DnPrs_in with DChange_in;
     in bool initial false DsPrs_in with DChange_in;
 
-	out event EnforcerTookAction; //let the controller know it done bad
+	out event EnforcerAbortedAction; //let the controller know it done bad
 
 	out event SChange_out;
     out bool initial false SiGrn_out with SChange_out;
@@ -60,34 +60,76 @@ architecture of EnvRxEnforcer {
 
 		startCheck {
 			//run in "C" `printf("startCheck\r\n");`;
-			-> singleGreenSiSnoSso;
+			-> singleGreenSiSnSs;
 		}
 
-		singleGreenSiSnoSso {
-			//run in "C" `printf("singleGreenSiSnoSso\r\n");`;
-			-> singleGreenSiSnoSso_unrecoverable on (SiGrn + SnGrn + SsGrn) > 1;
-			-> singleGreenSniSsi;
+		singleGreenSiSnSs {
+			//run in "C" `printf("singleGreenSiSnSs\r\n");`;
+			-> singleGreenSiSnSs_correction on (SiGrn + SnGrn + SsGrn) > 1;
+			-> SoRequiredForSnSs;
 		}
 
-		singleGreenSiSnoSso_unrecoverable {
+		singleGreenSiSnSs_correction {
 			//too many greens, no way to rectify this
 			//stick with current outputs, take no action other than blocking
-			//run in "C" `printf("singleGreenSiSnoSso_unrecoverable\r\n");`;
-			emit EnforcerTookAction;
-			-> idle;
+			//run in "C" `printf("singleGreenSiSnSs_unrecoverable\r\n");`;
+			run in "C" `me->SiGrn = me->SiGrn_out; me->SnGrn = me->SnGrn_out; me->SsGrn = me->SsGrn_out;`;
+			emit EnforcerAbortedAction;
+			-> SoRequiredForSnSs; //continue analysis
 		}
 
-		singleGreenSniSsi {
-			//run in "C" `printf("singleGreenSniSsi\r\n");`;
-			-> singleGreenSniSsi_unrecoverable on (SnGrn + SsGrn) > 1;
+		SoRequiredForSnSs {
+			run in "C" `printf("Enforcer: SoRequiredForSnSs\r\n");`;
+			-> SoRequiredForSnSs_correction on SoGrn == 0 && (SnGrn == 1 || SsGrn == 1);
+			-> WiWsMatch;
+		}
+
+		SoRequiredForSnSs_correction {
+			run in "C" `printf("Enforcer: SoRequiredForSnSs_correction\r\n");`;
+			run in "C" `me->SnGrn = 0; me->SsGrn = 0;`;
+			emit EnforcerAbortedAction;
+			-> WiWsMatch;
+		}
+
+		WiWsMatch {
+			-> WiWsMatch_correction on SiGrn == 1 && WiDvrg == 1 && WsDvrg != 1;
+			-> WiWnMatch;
+		}
+
+		WiWsMatch_correction {
+			run in "C" `me->WsDvrg = 1;`;
+			//corrected but not aborted
+			-> WiWnMatch;
+		}
+
+		WiWnMatch {
+			-> WiWnMatch_correction on SiGrn == 1 && WiDvrg == 0 && WnDvrg != 0;
+			-> SsWMatch; 
+		}
+
+		WiWnMatch_correction {
+			run in "C" `me->WnDvrg = 0;`;
+			-> SsWMatch;
+		}
+
+		SsWMatch {
+			-> SsWMatch_correction on SsGrn == 1 && (WsDvrg != 0 || WoDvrg != 0);
+			-> SnWMatch;
+		}
+
+		SsWMatch_correction {
+			run in "C" `me->WsDvrg = 0; me->WoDvrg = 0;`;
+			-> SnWMatch;
+		}
+
+		SnWMatch {
+			-> SnWMatch_correction on SnGrn == 1 && (WnDvrg != 1 || WoDvrg != 1);
 			-> finished;
 		}
 
-		singleGreenSniSsi_unrecoverable {
-			//too many greens, no way to rectify
-			//run in "C" `printf("singleGreenSniSsi_unrecoverable\r\n");`;
-			emit EnforcerTookAction;
-			-> idle;
+		SnWMatch_correction {
+			run in "C" `me->WnDvrg = 1; me->WoDvrg = 1;`;
+			-> finished;
 		}
 
 		finished {

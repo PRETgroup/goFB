@@ -22,7 +22,7 @@ interface of EnvRxDummyEnforcer {
     in bool initial false DnPrs_in;
     in bool initial false DsPrs_in;
 
-	out event EnforcerTookAction; //let the controller know it done bad
+	out event EnforcerAbortedAction; //let the controller know it done bad
 
 	out event SChange_out;
     out bool initial false SiGrn_out;
@@ -44,8 +44,8 @@ architecture of EnvRxDummyEnforcer {
 
     data {
         SiGrn_out <- SiGrn_in;
-        SnGrn_out <- SsGrn_in;
-        SsGrn_out <- SiGrn_in;
+        SnGrn_out <- SnGrn_in;
+        SsGrn_out <- SsGrn_in;
 
         WiDvrg_out <- WiDvrg_in;
         WoDvrg_out <- WoDvrg_in;
