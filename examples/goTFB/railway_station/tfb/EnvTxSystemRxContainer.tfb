@@ -27,6 +27,9 @@ interface of EnvTxSystemRxContainer {
     out event DsChange;
     out bool initial false DsPrs;
 
+    out event SoChange;
+    out bool initial false SoGrn;
+
     out event SysReady;
 }
 
@@ -47,6 +50,8 @@ architecture of EnvTxSystemRxContainer {
         DnChange <- etx.DnChange;
         DsChange <- etx.DsChange;
 
+        SoChange <- etx.SoChange;
+
         SysReady <- etx.SysReady;
     }
 
@@ -61,5 +66,7 @@ architecture of EnvTxSystemRxContainer {
         DwsPrs <- etx.DwsPrs;
         DnPrs <- etx.DnPrs;
         DsPrs <- etx.DsPrs;
+
+        SoGrn <- etx.SoGrn;
     }
 }

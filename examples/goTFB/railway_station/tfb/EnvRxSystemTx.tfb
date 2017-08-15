@@ -3,10 +3,8 @@ interface of EnvRxSystemTx {
     in event SChange;
     in bool initial false SiGrn with SChange;
     in bool initial false SoGrn with SChange;
-    in bool initial false SniGrn with SChange;
-    in bool initial false SnoGrn with SChange;
-    in bool initial false SsiGrn with SChange;
-    in bool initial false SsoGrn with SChange;
+    in bool initial false SnGrn with SChange;
+    in bool initial false SsGrn with SChange;
 
     in event WChange;
     in bool initial false WiDvrg with WChange;
@@ -40,44 +38,47 @@ if(me->inputEvents.event.SChange ||
         me->inputEvents.event.DChangeD) {
 
     printf("\r\n\r\n\r\n"
-    "              Dwi%s Si%s Wi%s  Wn%s Sni%s Dwn%s           Dn%s         \r\n"
-    "in -> --------[%s]---|------=%s----%s=-----|-----[%s]-------------[%s]-------------X\r\n"
-    "                              \\  /      Sno%s                                     \r\n"
+    "        Si%s      Dwi%s Wi%s  Wn%s Dwn%s                  Dn%s         \r\n"
+    "in -> ---%s----------[%s]----=%s----%s=----[%s]---%s----------------[%s]-------------X\r\n"
+    "                              \\  /             Sn%s                              \r\n"
     "                               \\/                                                 \r\n"
     "                               /\\                                                 \r\n"
-    "                              /  \\      Ssi%s                                     \r\n"
-    "out<- --------[%s]---|------=%s----%s=-----|-----[%s]-------------[%s]-------------X\r\n"
-    "              Dwo%s So%s Wo%s  Ws%s Sso%s Dws%s           Ds%s          \r\n",
-    me->DwiPrsD ? T_CYN "(p)" T_NRM : "( )",
-    me->SiGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
-    me->WiDvrg ? T_YEL "(d)" T_NRM : "(s)",
-    me->WnDvrg ? T_YEL "(d)" T_NRM : "(s)",
-    me->SniGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
-    me->DwnPrsD ? T_CYN "(p)" T_NRM : "( )",
-    me->DnPrsD ? T_CYN "(p)" T_NRM : "( )",
+    "                              /  \\                                                 \r\n"
+    "out<- ---%s----------[%s]----=%s----%s=----[%s]---%s----------------[%s]-------------X\r\n"
+    "        So%s      Dwo%s  Wo%s  Ws%s Dws%s Ss%s           Ds%s          \r\n",
     
-    me->DwiPrsD ? T_CYN "HH" T_NRM : "  ",
-    me->WiDvrg ? T_YEL "\\" T_NRM : "-",
-    me->WnDvrg ? T_YEL "/" T_NRM : "-",
-    me->DwnPrsD ? T_CYN "HH" T_NRM : "  ",
-    me->DnPrsD ? T_CYN "HH" T_NRM : "  ",
+    me->SiGrn ? TF_GRN "(g)" T_NRM : TF_RED "(r)" T_NRM,
+    me->DwiPrsD ? TF_CYN "(p)" T_NRM : "( )",
+    me->WiDvrg ? TF_YEL "(d)" T_NRM : "(s)",
+    me->WnDvrg ? TF_YEL "(d)" T_NRM : "(s)",
+    me->DwnPrsD ? TF_CYN "(p)" T_NRM : "( )",
+    me->DnPrsD ? TF_CYN "(p)" T_NRM : "( )",
     
-    me->SnoGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
-    me->SsiGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
+    me->SiGrn ? TB_GRN "|" T_NRM : TB_RED "|" T_NRM,
+    me->DwiPrsD ? TF_CYN "HH" T_NRM : "  ",
+    me->WiDvrg ? TF_YEL "\\" T_NRM : TF_YEL "-" T_NRM,
+    me->WnDvrg ? TF_YEL "/" T_NRM : TF_YEL "-" T_NRM,
+    me->DwnPrsD ? TF_CYN "HH" T_NRM : "  ",
+    me->SnGrn ? TB_GRN "|" T_NRM : TB_RED "|" T_NRM,
+    me->DnPrsD ? TF_CYN "HH" T_NRM : "  ",
     
-    me->DwoPrsD ? T_CYN "HH" T_NRM : "  ",
-    me->WoDvrg ? T_YEL "/" T_NRM : "-",
-    me->WsDvrg ? T_YEL "\\" T_NRM : "-",
-    me->DwsPrsD ? T_CYN "HH" T_NRM : "  ",
-    me->DsPrsD ? T_CYN "HH" T_NRM : "  ",
+    me->SnGrn ? TF_GRN "(g)" T_NRM : TF_RED "(r)" T_NRM,
+    
+    me->SoGrn ? TB_GRN "|" T_NRM : TB_RED "|" T_NRM,
+    me->DwoPrsD ? TF_CYN "HH" T_NRM : "  ",
+    me->WoDvrg ? TF_YEL "/" T_NRM : TF_YEL "-" T_NRM,
+    me->WsDvrg ? TF_YEL "\\" T_NRM : TF_YEL "-" T_NRM,
+    me->DwsPrsD ? TF_CYN "HH" T_NRM : "  ",
+    me->SsGrn ? TB_GRN "|" T_NRM : TB_RED "|" T_NRM,
+    me->DsPrsD ? TF_CYN "HH" T_NRM : "  ",
 
-    me->DwoPrsD ? T_CYN "(p)" T_NRM : "( )",
-    me->SoGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
-    me->WoDvrg ? T_YEL "(d)" T_NRM : "(s)",
-    me->WsDvrg ? T_YEL "(d)" T_NRM : "(s)",
-    me->SsoGrn ? T_GRN "(g)" T_NRM : T_RED "(r)" T_NRM,
-    me->DwsPrsD ? T_CYN "(p)" T_NRM : "( )",
-    me->DsPrsD ? T_CYN "(p)" T_NRM : "( )");
+    me->SoGrn ? TF_GRN "(g)" T_NRM : TF_RED "(r)" T_NRM,
+    me->DwoPrsD ? TF_CYN "(p)" T_NRM : "( )",
+    me->WoDvrg ? TF_YEL "(d)" T_NRM : "(s)",
+    me->WsDvrg ? TF_YEL "(d)" T_NRM : "(s)",
+    me->DwsPrsD ? TF_CYN "(p)" T_NRM : "( )",
+    me->SsGrn ? TF_GRN "(g)" T_NRM : TF_RED "(r)" T_NRM,
+    me->DsPrsD ? TF_CYN "(p)" T_NRM : "( )");
 }
 
 

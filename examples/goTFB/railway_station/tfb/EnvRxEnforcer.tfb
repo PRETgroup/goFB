@@ -1,12 +1,12 @@
 basicFB EnvRxEnforcer;
 interface of EnvRxEnforcer {
+	in event SoChange;
+    in bool initial false SoGrn with SoChange;
+
     in event SChange_in;
     in bool initial false SiGrn_in with SChange_in;
-    in bool initial false SoGrn_in with SChange_in;
-    in bool initial false SniGrn_in with SChange_in;
-    in bool initial false SnoGrn_in with SChange_in;
-    in bool initial false SsiGrn_in with SChange_in;
-    in bool initial false SsoGrn_in with SChange_in;
+    in bool initial false SnGrn_in with SChange_in;
+    in bool initial false SsGrn_in with SChange_in;
 
     in event WChange_in;
     in bool initial false WiDvrg_in with WChange_in;
@@ -26,11 +26,8 @@ interface of EnvRxEnforcer {
 
 	out event SChange_out;
     out bool initial false SiGrn_out with SChange_out;
-    out bool initial false SoGrn_out with SChange_out;
-    out bool initial false SniGrn_out with SChange_out;
-    out bool initial false SnoGrn_out with SChange_out;
-    out bool initial false SsiGrn_out with SChange_out;
-    out bool initial false SsoGrn_out with SChange_out;
+    out bool initial false SnGrn_out with SChange_out;
+    out bool initial false SsGrn_out with SChange_out;
 
     out event WChange_out;
     out bool initial false WiDvrg_out with WChange_out;
@@ -43,7 +40,7 @@ architecture of EnvRxEnforcer {
 
 	//our own modifiable copies of the inputs
 	//we'll make sure we're happy with these before we pass them to the outputs
-	internal bool initial false SiGrn, SoGrn, SniGrn, SnoGrn, SsiGrn, SsoGrn, WiDvrg, WoDvrg, WnDvrg, WsDvrg;
+	internal bool initial false SiGrn, SnGrn, SsGrn, WiDvrg, WoDvrg, WnDvrg, WsDvrg;
 
 	//we have two ways of dealing with failures
 	//some failures are recoverable, where we make a change to the inputs and then try another pass
@@ -68,7 +65,7 @@ architecture of EnvRxEnforcer {
 
 		singleGreenSiSnoSso {
 			//run in "C" `printf("singleGreenSiSnoSso\r\n");`;
-			-> singleGreenSiSnoSso_unrecoverable on (SiGrn + SnoGrn + SsoGrn) > 1;
+			-> singleGreenSiSnoSso_unrecoverable on (SiGrn + SnGrn + SsGrn) > 1;
 			-> singleGreenSniSsi;
 		}
 
@@ -82,7 +79,7 @@ architecture of EnvRxEnforcer {
 
 		singleGreenSniSsi {
 			//run in "C" `printf("singleGreenSniSsi\r\n");`;
-			-> singleGreenSniSsi_unrecoverable on (SniGrn + SsiGrn) > 1;
+			-> singleGreenSniSsi_unrecoverable on (SnGrn + SsGrn) > 1;
 			-> finished;
 		}
 
@@ -108,11 +105,9 @@ architecture of EnvRxEnforcer {
 	algorithm copyInVals in "C" `
 		//printf("copying in vals\r\n");
 		me->SiGrn = me->SiGrn_in;
-		me->SoGrn = me->SoGrn_in;
-		me->SniGrn = me->SniGrn_in;
-		me->SnoGrn = me->SnoGrn_in;
-		me->SsiGrn = me->SsiGrn_in;
-		me->SsoGrn = me->SsoGrn_in;
+		me->SnGrn = me->SnGrn_in;
+		me->SsGrn = me->SsGrn_in;
+
 		me->WiDvrg = me->WiDvrg_in;
 		me->WoDvrg = me->WoDvrg_in;
 		me->WnDvrg = me->WnDvrg_in;
@@ -122,11 +117,9 @@ architecture of EnvRxEnforcer {
 	algorithm copyOutVals in "C" `
 		//printf("copying out vals\r\n");
 		me->SiGrn_out = me->SiGrn;
-		me->SoGrn_out = me->SoGrn;
-		me->SniGrn_out = me->SniGrn;
-		me->SnoGrn_out = me->SnoGrn;
-		me->SsiGrn_out = me->SsiGrn;
-		me->SsoGrn_out = me->SsoGrn;
+		me->SnGrn_out = me->SnGrn;
+		me->SsGrn_out = me->SsGrn;
+
 		me->WiDvrg_out = me->WiDvrg;
 		me->WoDvrg_out = me->WoDvrg;
 		me->WnDvrg_out = me->WnDvrg;

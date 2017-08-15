@@ -111,8 +111,8 @@ int main() {
 				{{$fullInstName}}.inputEvents.event.{{$destPort.Name}} = 1;
 				//copy associated data
 				{{range $withVarIndex, $withVar := $destPort.With}}{{/*
-				*/}}{{$dataSources := findSources $destInst.InstanceID $withVar.Var $instG $.Blocks}}{{$dataSource := index $dataSources 0}}{{/*
-				*/}}{{$fullInstName}}.{{$withVar.Var}} = {{instIDToName $dataSource.InstanceID $instG}}.{{$dataSource.PortName}};
+				*/}}{{$dataSources := findSources $destInst.InstanceID $withVar.Var $instG $.Blocks}}{{/*
+				*/}}{{$fullInstName}}.{{$withVar.Var}} = {{if $dataSources}}{{$dataSource := index $dataSources 0}}{{instIDToName $dataSource.InstanceID $instG}}.{{$dataSource.PortName}};{{else}}0; //i couldn't find a data source!{{end}}
 				{{end}}
 				//invoke function block
 				{{$destDef.Name}}_run(&{{instIDToName $eventDest.InstanceID $instG}});

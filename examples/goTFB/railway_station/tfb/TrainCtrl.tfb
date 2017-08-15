@@ -31,11 +31,8 @@ interface of TrainCtrl {
 
     out event SChange;
     out bool initial false SiGrn with SChange;
-    out bool initial false SoGrn with SChange;
-    out bool initial false SniGrn with SChange;
-    out bool initial false SnoGrn with SChange;
-    out bool initial false SsiGrn with SChange;
-    out bool initial false SsoGrn with SChange;
+    out bool initial false SnGrn with SChange;
+    out bool initial false SsGrn with SChange;
 
     out event WChange;
     out bool initial false WiDvrg with WChange;
@@ -68,11 +65,8 @@ architecture of TrainCtrl {
     algorithm ClrSignals in "C" `
         printf("TrainCtrl: ClrSignals\n");
         me->SiGrn = false;
-        me->SoGrn = false;
-        me->SniGrn = false;
-        me->SnoGrn = false;
-        me->SsiGrn = false;
-        me->SsoGrn = false;
+        me->SnGrn = false;
+        me->SsGrn = false;
     `;
 
     algorithm SetNEntrance in "C" `
@@ -80,7 +74,6 @@ architecture of TrainCtrl {
         me->SiGrn = true;
         me->WiDvrg = false;
         me->WnDvrg = false;
-        me->SniGrn = true;
         me->busyN = true;
     `;
 
@@ -89,7 +82,6 @@ architecture of TrainCtrl {
         me->SiGrn = true;
         me->WiDvrg = true;
         me->WsDvrg = true;
-        me->SsiGrn = true;
         me->busyS = true;
     `;
 
@@ -100,29 +92,27 @@ architecture of TrainCtrl {
 
     algorithm SetNExit in "C" `
         printf("TrainCtrl: SetNExit\n");
-        me->SnoGrn = true;
+        me->SnGrn = true;
         me->WnDvrg = true;
         me->WoDvrg = true;
-        me->SoGrn = true;
     `;
 
     algorithm SetNExitHalf in "C" `
         printf("TrainCtrl: SetNExitHalf\n");
-        me->SnoGrn = false;
+        me->SnGrn = false;
         me->busyN = false;
     `;
 
     algorithm SetSExit in "C" `
         printf("TrainCtrl: SetSExit\n");
-        me->SsoGrn = true;
+        me->SsGrn = true;
         me->WsDvrg = false;
         me->WoDvrg = false;
-        me->SoGrn = true;
     `;
 
     algorithm SetSExitHalf in "C" `
         printf("TrainCtrl: SetSExitHalf\n");
-        me->SsoGrn = false;
+        me->SsGrn = false;
         me->busyS = false;
     `;
 

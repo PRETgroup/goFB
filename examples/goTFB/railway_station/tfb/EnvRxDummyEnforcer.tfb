@@ -1,12 +1,12 @@
 compositeFB EnvRxDummyEnforcer;
 interface of EnvRxDummyEnforcer {
+    in event SoChange;
+    in bool initial false SoGrn;
+
     in event SChange_in;
     in bool initial false SiGrn_in;
-    in bool initial false SoGrn_in;
-    in bool initial false SniGrn_in;
-    in bool initial false SnoGrn_in;
-    in bool initial false SsiGrn_in;
-    in bool initial false SsoGrn_in;
+    in bool initial false SnGrn_in;
+    in bool initial false SsGrn_in;
 
     in event WChange_in;
     in bool initial false WiDvrg_in;
@@ -26,11 +26,8 @@ interface of EnvRxDummyEnforcer {
 
 	out event SChange_out;
     out bool initial false SiGrn_out;
-    out bool initial false SoGrn_out;
-    out bool initial false SniGrn_out;
-    out bool initial false SnoGrn_out;
-    out bool initial false SsiGrn_out;
-    out bool initial false SsoGrn_out;
+    out bool initial false SnGrn_out;
+    out bool initial false SsGrn_out;
 
     out event WChange_out;
     out bool initial false WiDvrg_out;
@@ -47,11 +44,8 @@ architecture of EnvRxDummyEnforcer {
 
     data {
         SiGrn_out <- SiGrn_in;
-        SoGrn_out <- SoGrn_in;
-        SniGrn_out <- SniGrn_in;
-        SnoGrn_out <- SnoGrn_in;
-        SsiGrn_out <- SsiGrn_in;
-        SsoGrn_out <- SsoGrn_in;
+        SnGrn_out <- SsGrn_in;
+        SsGrn_out <- SiGrn_in;
 
         WiDvrg_out <- WiDvrg_in;
         WoDvrg_out <- WoDvrg_in;

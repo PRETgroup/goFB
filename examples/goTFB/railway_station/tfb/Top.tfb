@@ -23,7 +23,11 @@ architecture of Top {
         ctrl.DnChange <- etx.DnChange;
         ctrl.DsChange <- etx.DsChange;
 
+        ctrl.SoChange <- etx.SoChange;
+
         ctrl.SysReady <- etx.SysReady;
+
+        enforcer.SoChange <- etx.SoChange;
 
         enforcer.SChange_in <- ctrl.SChange;
         enforcer.WChange_in <- ctrl.WChange;
@@ -36,6 +40,7 @@ architecture of Top {
         enforcer.DChange_in <- etx.DsChange;  
         
         erx.SChange <- enforcer.SChange_out;
+        erx.SChange <- etx.SoChange;
         erx.WChange <- enforcer.WChange_out;
 
         erx.DChangeD <- etx.DwiChange; //D for Display
@@ -51,6 +56,8 @@ architecture of Top {
         ctrl.RnReq <- etx.RnReq;
         ctrl.RsReq <- etx.RsReq;
 
+        ctrl.SoGrn <- etx.SoGrn;
+
         ctrl.DwiPrs <- etx.DwiPrs;
         ctrl.DwoPrs <- etx.DwoPrs;
         ctrl.DwnPrs <- etx.DwnPrs;
@@ -58,12 +65,12 @@ architecture of Top {
         ctrl.DnPrs <- etx.DnPrs;
         ctrl.DsPrs <- etx.DsPrs;
 
+        enforcer.SoGrn <- etx.SoGrn;
+
         enforcer.SiGrn_in <- ctrl.SiGrn;
-        enforcer.SoGrn_in <- ctrl.SoGrn;
-        enforcer.SniGrn_in <- ctrl.SniGrn;
-        enforcer.SnoGrn_in <- ctrl.SnoGrn;
-        enforcer.SsiGrn_in <- ctrl.SsiGrn;
-        enforcer.SsoGrn_in <- ctrl.SsoGrn;
+        enforcer.SnGrn_in <- ctrl.SnGrn;
+        enforcer.SsGrn_in <- ctrl.SsGrn;
+
         enforcer.WiDvrg_in <- ctrl.WiDvrg;
         enforcer.WoDvrg_in <- ctrl.WoDvrg;
         enforcer.WnDvrg_in <- ctrl.WnDvrg;
@@ -76,11 +83,10 @@ architecture of Top {
         enforcer.DsPrs_in <- etx.DsPrs; 
 
         erx.SiGrn <- enforcer.SiGrn_out;
-        erx.SoGrn <- enforcer.SoGrn_out;
-        erx.SniGrn <- enforcer.SniGrn_out;
-        erx.SnoGrn <- enforcer.SnoGrn_out;
-        erx.SsiGrn <- enforcer.SsiGrn_out;
-        erx.SsoGrn <- enforcer.SsoGrn_out;
+        erx.SoGrn <- etx.SoGrn;
+        erx.SnGrn <- enforcer.SnGrn_out;
+        erx.SsGrn <- enforcer.SsGrn_out;
+
         erx.WiDvrg <- enforcer.WiDvrg_out;
         erx.WoDvrg <- enforcer.WoDvrg_out;
         erx.WnDvrg <- enforcer.WnDvrg_out;

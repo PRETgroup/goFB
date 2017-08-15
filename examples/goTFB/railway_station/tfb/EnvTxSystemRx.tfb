@@ -27,6 +27,9 @@ interface of EnvTxSystemRx {
     out event DsChange;
     out bool initial false DsPrs with DsChange;
 
+    out event SoChange;
+    out bool initial false SoGrn with SoChange;
+
     out event SysReady;
 }
 
@@ -41,7 +44,7 @@ architecture of EnvTxSystemRx {
     
     in_struct 
 `
-int last_RiReq, last_RnReq, last_RsReq, last_DwiPrs, last_DwoPrs, last_DwnPrs, last_DwsPrs, last_DnPrs, last_DsPrs;
+int last_RiReq, last_RnReq, last_RsReq, last_DwiPrs, last_DwoPrs, last_DwnPrs, last_DwsPrs, last_DnPrs, last_DsPrs, last_SoGrn;
 int initialised;
 `;
     
@@ -154,10 +157,24 @@ if (file) {
         printf("EnvTxSystemRx: RsReq event and set to %i\r\n", me->RsReq);
     }
 
+    //get rid of space
+    c = getc(file);
+
+    c = getc(file);
+    if(c != me->last_SoGrn && (c == 'r' || c == 'g')) {
+        me->last_SoGrn = c;
+        //if(me->initialised) {
+            me->outputEvents.event.SoChange = 1;
+            PushEvent(me->myInstanceID, 9);
+        //}
+        me->SoGrn = (c == 'g');
+        printf("EnvTxSystemRx: SoChange event and set to %i\r\n", me->SoGrn);
+    }
+
     if(me->initialised == 0) {
         me->initialised = 1;
         me->outputEvents.event.SysReady = 1;
-        PushEvent(me->myInstanceID, 9);
+        PushEvent(me->myInstanceID, 10);
     }
     
     
