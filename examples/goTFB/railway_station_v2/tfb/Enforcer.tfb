@@ -1,0 +1,84 @@
+compositeFB Enforcer;
+interface of Enforcer {
+    in event SysReady_env_tx;
+
+    in event RiChange_env_tx;
+    in bool initial false RiReq_env_tx;
+    in event RnChange_env_tx;
+    in bool initial false RnReq_env_tx;
+    in event RsChange_env_tx;
+    in bool initial false RsReq_env_tx;
+
+    in event DwiChange_env_tx;
+    in bool initial false DwiPrs_env_tx;
+    in event DwoChange_env_tx;
+    in bool initial false DwoPrs_env_tx;
+    in event DwnChange_env_tx;
+    in bool initial false DwnPrs_env_tx;
+    in event DwsChange_env_tx;
+    in bool initial false DwsPrs_env_tx;
+    in event DnChange_env_tx;
+    in bool initial false DnPrs_env_tx;
+    in event DsChange_env_tx;
+    in bool initial false DsPrs_env_tx;
+
+    in event SoChange_env_tx;
+    in bool initial false SoGrn_env_tx;
+
+    in event SChange_ctrl_tx;
+    in bool initial false SiGrn_ctrl_tx;
+	in bool initial false SnGrn_ctrl_tx;
+    in bool initial false SsGrn_ctrl_tx;
+
+    in event WChange_ctrl_tx;
+    in bool initial false WiDvrg_ctrl_tx;
+    in bool initial false WoDvrg_ctrl_tx;
+    in bool initial false WnDvrg_ctrl_tx;
+    in bool initial false WsDvrg_ctrl_tx;
+
+	out event SysReady_ctrl_rx;
+
+    out event RiChange_ctrl_rx;
+    out bool initial false RiReq_ctrl_rx;
+    out event RnChange_ctrl_rx;
+    out bool initial false RnReq_ctrl_rx;
+    out event RsChange_ctrl_rx;
+    out bool initial false RsReq_ctrl_rx;
+
+    out event DwiChange_ctrl_rx;
+    out bool initial false DwiPrs_ctrl_rx;
+    out event DwoChange_ctrl_rx;
+    out bool initial false DwoPrs_ctrl_rx;
+    out event DwnChange_ctrl_rx;
+    out bool initial false DwnPrs_ctrl_rx;
+    out event DwsChange_ctrl_rx;
+    out bool initial false DwsPrs_ctrl_rx;
+    out event DnChange_ctrl_rx;
+    out bool initial false DnPrs_ctrl_rx;
+    out event DsChange_ctrl_rx;
+    out bool initial false DsPrs_ctrl_rx;
+
+    out event SoChange_ctrl_rx;
+    out bool initial false SoGrn_ctrl_rx;
+
+    out event SChange_env_rx;
+    out bool initial false SiGrn_env_rx;
+	out bool initial false SnGrn_env_rx;
+    out bool initial false SsGrn_env_rx;
+
+    out event WChange_env_rx;
+    out bool initial false WiDvrg_env_rx;
+    out bool initial false WoDvrg_env_rx;
+    out bool initial false WnDvrg_env_rx;
+    out bool initial false WsDvrg_env_rx;
+}
+
+architecture of Enforcer {
+	instances {
+		EnfRxEnforcer enfRx;
+	}
+
+	events {
+
+	}
+}

@@ -7,80 +7,80 @@ architecture of Top {
     instances {
         TrainCtrl ctrl;
         Environment env;
-        EnvRxEnforcer enforcer;
+        Enforcer enf;
     }
 
     events {
-        ctrl.RiChange <- env.RiChange;
-        ctrl.RnChange <- env.RnChange;
-        ctrl.RsChange <- env.RsChange;
+        ctrl.RiChange <- enf.RiChange_ctrl_rx;
+        ctrl.RnChange <- enf.RnChange_ctrl_rx;
+        ctrl.RsChange <- enf.RsChange_ctrl_rx;
         
-        ctrl.DwiChange <- env.DwiChange;
-        ctrl.DwoChange <- env.DwoChange;
-        ctrl.DwnChange <- env.DwnChange;
-        ctrl.DwsChange <- env.DwsChange;
-        ctrl.DnChange <- env.DnChange;
-        ctrl.DsChange <- env.DsChange;
+        ctrl.DwiChange <- enf.DwiChange_ctrl_rx;
+        ctrl.DwoChange <- enf.DwoChange_ctrl_rx;
+        ctrl.DwnChange <- enf.DwnChange_ctrl_rx;
+        ctrl.DwsChange <- enf.DwsChange_ctrl_rx;
+        ctrl.DnChange <- enf.DnChange_ctrl_rx;
+        ctrl.DsChange <- enf.DsChange_ctrl_rx;
 
-        ctrl.SoChange <- env.SoChange;
+        ctrl.SoChange <- enf.SoChange_ctrl_rx;
 
-        ctrl.SysReady <- env.SysReady;
-        ctrl.abort <- enforcer.EnforcerAbortedAction;
+        ctrl.SysReady <- enf.SysReady_ctrl_rx;
 
-        enforcer.SoChange <- env.SoChange;
+        enf.SoChange_env_tx <- env.SoChange;
 
-        enforcer.SChange_in <- ctrl.SChange;
-        enforcer.WChange_in <- ctrl.WChange;
+        enf.SChange_ctrl_tx <- ctrl.SChange;
+        enf.WChange_ctrl_tx <- ctrl.WChange;
 
-        enforcer.DChange_in <- env.DwiChange;
-        enforcer.DChange_in <- env.DwoChange; 
-        enforcer.DChange_in <- env.DwnChange;
-        enforcer.DChange_in <- env.DwsChange; 
-        enforcer.DChange_in <- env.DnChange; 
-        enforcer.DChange_in <- env.DsChange;  
+        enf.DwiChange_env_tx <- env.DwiChange;
+        enf.DwoChange_env_tx <- env.DwoChange; 
+        enf.DwnChange_env_tx <- env.DwnChange;
+        enf.DwsChange_env_tx <- env.DwsChange; 
+        enf.DnChange_env_tx <- env.DnChange; 
+        enf.DsChange_env_tx <- env.DsChange;  
         
-        env.SChange <- enforcer.SChange_out;
-        env.WChange <- enforcer.WChange_out;    
+        env.SChange <- enforcer.SChange_env_rx;
+        env.WChange <- enforcer.WChange_env_rx;    
     }
 
     data {
-        ctrl.RiReq <- env.RiReq;
-        ctrl.RnReq <- env.RnReq;
-        ctrl.RsReq <- env.RsReq;
+        ctrl.RiReq <- enf.RiReq_ctrl_rx;
+        ctrl.RnReq <- enf.RnReq_ctrl_rx;
+        ctrl.RsReq <- enf.RsReq_ctrl_rx;
 
-        ctrl.SoGrn <- env.SoGrn;
+        ctrl.SoGrn <- enf.SoGrn_ctrl_rx;
 
-        ctrl.DwiPrs <- env.DwiPrs;
-        ctrl.DwoPrs <- env.DwoPrs;
-        ctrl.DwnPrs <- env.DwnPrs;
-        ctrl.DwsPrs <- env.DwsPrs;
-        ctrl.DnPrs <- env.DnPrs;
-        ctrl.DsPrs <- env.DsPrs;
+        ctrl.DwiPrs <- enf.DwiPrs_ctrl_rx;
+        ctrl.DwoPrs <- enf.DwoPrs_ctrl_rx;
+        ctrl.DwnPrs <- enf.DwnPrs_ctrl_rx;
+        ctrl.DwsPrs <- enf.DwsPrs_ctrl_rx;
+        ctrl.DnPrs <- enf.DnPrs_ctrl_rx;
+        ctrl.DsPrs <- enf.DsPrs_ctrl_rx;
 
-        enforcer.SoGrn <- env.SoGrn;
+        enf.SoGrn_env_tx <- env.SoGrn;
 
-        enforcer.SiGrn_in <- ctrl.SiGrn;
-        enforcer.SnGrn_in <- ctrl.SnGrn;
-        enforcer.SsGrn_in <- ctrl.SsGrn;
+        enf.SiGrn_ctrl_tx <- ctrl.SiGrn;
+        enf.SnGrn_ctrl_tx <- ctrl.SnGrn;
+        enf.SsGrn_ctrl_tx <- ctrl.SsGrn;
 
-        enforcer.WiDvrg_in <- ctrl.WiDvrg;
-        enforcer.WoDvrg_in <- ctrl.WoDvrg;
-        enforcer.WnDvrg_in <- ctrl.WnDvrg;
-        enforcer.WsDvrg_in <- ctrl.WsDvrg;
-        enforcer.DwiPrs_in <- env.DwiPrs;
-        enforcer.DwoPrs_in <- env.DwoPrs;
-        enforcer.DwnPrs_in <- env.DwnPrs;
-        enforcer.DwsPrs_in <- env.DwsPrs;
-        enforcer.DnPrs_in <- env.DnPrs;
-        enforcer.DsPrs_in <- env.DsPrs; 
+        enf.WiDvrg_ctrl_tx <- ctrl.WiDvrg;
+        enf.WoDvrg_ctrl_tx <- ctrl.WoDvrg;
+        enf.WnDvrg_ctrl_tx <- ctrl.WnDvrg;
+        enf.WsDvrg_ctrl_tx <- ctrl.WsDvrg;
 
-        env.SiGrn <- enforcer.SiGrn_out;
-        env.SnGrn <- enforcer.SnGrn_out;
-        env.SsGrn <- enforcer.SsGrn_out;
+        enf.DwiPrs_env_tx <- env.DwiPrs;
+        enf.DwoPrs_env_tx <- env.DwoPrs;
+        enf.DwnPrs_env_tx <- env.DwnPrs;
+        enf.DwsPrs_env_tx <- env.DwsPrs;
+        enf.DnPrs_env_tx <- env.DnPrs;
+        enf.DsPrs_env_tx <- env.DsPrs; 
 
-        env.WiDvrg <- enforcer.WiDvrg_out;
-        env.WoDvrg <- enforcer.WoDvrg_out;
-        env.WnDvrg <- enforcer.WnDvrg_out;
-        env.WsDvrg <- enforcer.WsDvrg_out;
+        env.SiGrn <- enf.SiGrn_env_rx;
+        env.SnGrn <- enf.SnGrn_env_rx;
+        env.SsGrn <- enf.SsGrn_env_rx;
+
+        env.WiDvrg <- enf.WiDvrg_env_rx;
+        env.WoDvrg <- enf.WoDvrg_env_rx;
+        env.WnDvrg <- enf.WnDvrg_env_rx;
+        env.WsDvrg <- enf.WsDvrg_env_rx;
     }
 }
