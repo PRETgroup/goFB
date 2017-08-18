@@ -1,0 +1,86 @@
+compositeFB Top;
+interface of Top {
+
+}
+
+architecture of Top {
+    instances {
+        TrainCtrl ctrl;
+        Environment env;
+        EnvRxEnforcer enforcer;
+    }
+
+    events {
+        ctrl.RiChange <- env.RiChange;
+        ctrl.RnChange <- env.RnChange;
+        ctrl.RsChange <- env.RsChange;
+        
+        ctrl.DwiChange <- env.DwiChange;
+        ctrl.DwoChange <- env.DwoChange;
+        ctrl.DwnChange <- env.DwnChange;
+        ctrl.DwsChange <- env.DwsChange;
+        ctrl.DnChange <- env.DnChange;
+        ctrl.DsChange <- env.DsChange;
+
+        ctrl.SoChange <- env.SoChange;
+
+        ctrl.SysReady <- env.SysReady;
+        ctrl.abort <- enforcer.EnforcerAbortedAction;
+
+        enforcer.SoChange <- env.SoChange;
+
+        enforcer.SChange_in <- ctrl.SChange;
+        enforcer.WChange_in <- ctrl.WChange;
+
+        enforcer.DChange_in <- env.DwiChange;
+        enforcer.DChange_in <- env.DwoChange; 
+        enforcer.DChange_in <- env.DwnChange;
+        enforcer.DChange_in <- env.DwsChange; 
+        enforcer.DChange_in <- env.DnChange; 
+        enforcer.DChange_in <- env.DsChange;  
+        
+        env.SChange <- enforcer.SChange_out;
+        env.WChange <- enforcer.WChange_out;    
+    }
+
+    data {
+        ctrl.RiReq <- env.RiReq;
+        ctrl.RnReq <- env.RnReq;
+        ctrl.RsReq <- env.RsReq;
+
+        ctrl.SoGrn <- env.SoGrn;
+
+        ctrl.DwiPrs <- env.DwiPrs;
+        ctrl.DwoPrs <- env.DwoPrs;
+        ctrl.DwnPrs <- env.DwnPrs;
+        ctrl.DwsPrs <- env.DwsPrs;
+        ctrl.DnPrs <- env.DnPrs;
+        ctrl.DsPrs <- env.DsPrs;
+
+        enforcer.SoGrn <- env.SoGrn;
+
+        enforcer.SiGrn_in <- ctrl.SiGrn;
+        enforcer.SnGrn_in <- ctrl.SnGrn;
+        enforcer.SsGrn_in <- ctrl.SsGrn;
+
+        enforcer.WiDvrg_in <- ctrl.WiDvrg;
+        enforcer.WoDvrg_in <- ctrl.WoDvrg;
+        enforcer.WnDvrg_in <- ctrl.WnDvrg;
+        enforcer.WsDvrg_in <- ctrl.WsDvrg;
+        enforcer.DwiPrs_in <- env.DwiPrs;
+        enforcer.DwoPrs_in <- env.DwoPrs;
+        enforcer.DwnPrs_in <- env.DwnPrs;
+        enforcer.DwsPrs_in <- env.DwsPrs;
+        enforcer.DnPrs_in <- env.DnPrs;
+        enforcer.DsPrs_in <- env.DsPrs; 
+
+        env.SiGrn <- enforcer.SiGrn_out;
+        env.SnGrn <- enforcer.SnGrn_out;
+        env.SsGrn <- enforcer.SsGrn_out;
+
+        env.WiDvrg <- enforcer.WiDvrg_out;
+        env.WoDvrg <- enforcer.WoDvrg_out;
+        env.WnDvrg <- enforcer.WnDvrg_out;
+        env.WsDvrg <- enforcer.WsDvrg_out;
+    }
+}

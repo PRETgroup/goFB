@@ -88,7 +88,7 @@ int main() {
 			continue;
 		} 
 
-		printf("I'm processing an event, InstanceID %i, PortID %i\n", curEvent.InstanceID, curEvent.PortID);
+		printf("I'm processing an event (# %i), InstanceID %i, PortID %i\n", eventCurrent - 1, curEvent.InstanceID, curEvent.PortID);
 
 		//there was an event to execute
 		//range all instanceIDs

@@ -1,0 +1,108 @@
+compositeFB Environment;
+interface of Environment {
+    out event SysReady;
+
+    out event RiChange;
+    out bool initial false RiReq;
+    out event RnChange;
+    out bool initial false RnReq;
+    out event RsChange;
+    out bool initial false RsReq;
+
+    out event DwiChange;
+    out bool initial false DwiPrs;
+    out event DwoChange;
+    out bool initial false DwoPrs;
+    out event DwnChange;
+    out bool initial false DwnPrs;
+    out event DwsChange;
+    out bool initial false DwsPrs;
+    out event DnChange;
+    out bool initial false DnPrs;
+    out event DsChange;
+    out bool initial false DsPrs;
+
+    out event SoChange;
+    out bool initial false SoGrn;
+
+    in event SChange;
+    in bool initial false SiGrn;
+	in bool initial false SnGrn;
+    in bool initial false SsGrn;
+
+    in event WChange;
+    in bool initial false WiDvrg;
+    in bool initial false WoDvrg;
+    in bool initial false WnDvrg;
+    in bool initial false WsDvrg;
+}
+
+architecture of Environment {
+    instances {
+        EnvTxSystemRx etx;
+		EnvRxSystemTx erx;
+    }
+
+    events {
+        RiChange <- etx.RiChange;
+        RnChange <- etx.RnChange;
+        RsChange <- etx.RsChange;
+
+        DwiChange <- etx.DwiChange;
+        DwoChange <- etx.DwoChange;
+        DwnChange <- etx.DwnChange;
+        DwsChange <- etx.DwsChange;
+        DnChange <- etx.DnChange;
+        DsChange <- etx.DsChange;
+
+        SoChange <- etx.SoChange;
+
+		erx.SChange <- SChange;
+//		erx.SChange <- SnChange;
+//		erx.SChange <- SsChange;
+        erx.SChange <- etx.SoChange;
+
+		erx.WChange <- WChange;
+
+		erx.DChangeD <- etx.DwiChange; //D for Display
+        erx.DChangeD <- etx.DwoChange; //D for Display
+        erx.DChangeD <- etx.DwnChange; //D for Display
+        erx.DChangeD <- etx.DwsChange; //D for Display
+        erx.DChangeD <- etx.DnChange; //D for Display
+        erx.DChangeD <- etx.DsChange; //D for Display    
+
+        SysReady <- etx.SysReady;
+    }
+
+    data {
+        RiReq <- etx.RiReq;
+        RnReq <- etx.RnReq;
+        RsReq <- etx.RsReq;
+
+        DwiPrs <- etx.DwiPrs;
+        DwoPrs <- etx.DwoPrs;
+        DwnPrs <- etx.DwnPrs;
+        DwsPrs <- etx.DwsPrs;
+        DnPrs <- etx.DnPrs;
+        DsPrs <- etx.DsPrs;
+
+        SoGrn <- etx.SoGrn;
+
+		erx.SiGrn <- SiGrn;
+        erx.SoGrn <- etx.SoGrn;
+        erx.SnGrn <- SnGrn;
+        erx.SsGrn <- SsGrn;
+
+        erx.WiDvrg <- WiDvrg;
+        erx.WoDvrg <- WoDvrg;
+        erx.WnDvrg <- WnDvrg;
+        erx.WsDvrg <- WsDvrg;
+
+        erx.DwiPrsD <- etx.DwiPrs;
+        erx.DwoPrsD <- etx.DwoPrs;
+        erx.DwnPrsD <- etx.DwnPrs;
+        erx.DwsPrsD <- etx.DwsPrs;
+        erx.DnPrsD <- etx.DnPrs;
+        erx.DsPrsD <- etx.DsPrs;
+    }
+}

@@ -1,4 +1,4 @@
-----p- r-- r
+----p- --- r
 This file controls the railway_station input SIFBs, as detailed below. The associated events will only be emitted on *change* of the characters,
 i.e. changing the first character to an 'o' will cause the InternetCtrl SIFB to emit OP_DOOR_OPEN exactly once.
 
@@ -28,32 +28,3 @@ Then there is a space
 The file's next character is examined to give status of So Signal
 r: red
 g: green
-
-
-
-	out event RiChange;
-	out bool initial false RiReq with RiChange;
-
-	out event RnChange;
-	out bool inital false RnReq with RnChange;
-
-	out event RsChange;
-	out bool initial false RsReq with RsChange;
-
-	out event DwiChange;
-    out bool initial false DwiPrs with DwiChange;
-
-    out event DwoChange;
-    out bool initial false DwoPrs with DwoChange;
-
-    out event DwnChange;
-    out bool initial false DwnPrs with DwnChange;
-
-    out event DwsChange;
-    out bool initial false DwsPrs with DwsChange;
-
-    out event DnChange;
-    out bool initial false DnPrs with DnChange;
-
-    out event DsChange;
-    out bool initial false DsPrs with DsChange;

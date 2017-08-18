@@ -1,42 +1,39 @@
-basicFB EnvRxEnforcer;
-interface of EnvRxEnforcer {
+enforcerFB EnvRxEnforcerProp;
+interface of EnvRxEnforcerProp {
 	in event SoChange;
     in bool initial false SoGrn with SoChange;
 
-    in event SChange_in;
-    in bool initial false SiGrn_in with SChange_in;
-    in bool initial false SnGrn_in with SChange_in;
-    in bool initial false SsGrn_in with SChange_in;
+    enforce event SChange; //enforce types will create both inputs and outputs and internals
+    enforce bool initial false SiGrn with SChange;
+    enforce bool initial false SnGrn with SChange;
+    enforce bool initial false SsGrn with SChange;
 
-    in event WChange_in;
-    in bool initial false WiDvrg_in with WChange_in;
-    in bool initial false WoDvrg_in with WChange_in;
-    in bool initial false WnDvrg_in with WChange_in;
-    in bool initial false WsDvrg_in with WChange_in;
+    enforce event WChange;
+    enforce bool initial false WiDvrg with WChange;
+    enforce bool initial false WoDvrg with WChange;
+    enforce bool initial false WnDvrg with WChange;
+    enforce bool initial false WsDvrg with WChange;
 
     in event DChange_in; 
-    in bool initial false DwiPrs_in with DChange_in;
-    in bool initial false DwoPrs_in with DChange_in;
-    in bool initial false DwnPrs_in with DChange_in;
-    in bool initial false DwsPrs_in with DChange_in;
-    in bool initial false DnPrs_in with DChange_in;
-    in bool initial false DsPrs_in with DChange_in;
+    in bool initial false DwiPrs with DChange;
+    in bool initial false DwoPrs with DChange;
+    in bool initial false DwnPrs with DChange;
+    in bool initial false DwsPrs with DChange;
+    in bool initial false DnPrs with DChange;
+    in bool initial false DsPrs with DChange;
 
 	out event EnforcerAbortedAction; //let the controller know it done bad
-
-	out event SChange_out;
-    out bool initial false SiGrn_out with SChange_out;
-    out bool initial false SnGrn_out with SChange_out;
-    out bool initial false SsGrn_out with SChange_out;
-
-    out event WChange_out;
-    out bool initial false WiDvrg_out with WChange_out;
-    out bool initial false WoDvrg_out with WChange_out;
-    out bool initial false WnDvrg_out with WChange_out;
-    out bool initial false WsDvrg_out with WChange_out;
 }
 
-architecture of EnvRxEnforcer {
+architecture of EnvRxEnforcerProp {
+
+	policies {
+		singleGreenEntry on (SiGrn + SnGrn + SsGrn) > 1 {
+			 run in "C" `me->SiGrn = me->SiGrn_out; me->SnGrn = me->SnGrn_out; me->SsGrn = me->SsGrn_out;`;
+			 
+		}
+	}
+
 
 	//our own modifiable copies of the inputs
 	//we'll make sure we're happy with these before we pass them to the outputs
@@ -73,7 +70,7 @@ architecture of EnvRxEnforcer {
 			//too many greens, no way to rectify this
 			//stick with current outputs, take no action other than blocking
 			//run in "C" `printf("singleGreenSiSnSs_unrecoverable\r\n");`;
-			run in "C" `me->SiGrn = me->SiGrn_out; me->SnGrn = me->SnGrn_out; me->SsGrn = me->SsGrn_out;`;
+			
 			emit EnforcerAbortedAction;
 			-> SoRequiredForSnSs; //continue analysis
 		}
