@@ -75,10 +75,74 @@ interface of Enforcer {
 
 architecture of Enforcer {
 	instances {
-		EnfRxEnforcer enfRx;
+		EnvRxEnforcer enfRx;
 	}
 
 	events {
+        enfRx.SoChange <- SoChange_env_tx;
+        enfRx.SChange_in <- SChange_ctrl_tx;
+        enfRx.WChange_in <- WChange_ctrl_tx;
+        enfRx.DChange_in <- DwiChange_env_tx;
+        enfRx.DChange_in <- DwoChange_env_tx;
+        enfRx.DChange_in <- DwnChange_env_tx;
+        enfRx.DChange_in <- DwsChange_env_tx;
+        enfRx.DChange_in <- DnChange_env_tx;
+        enfRx.DChange_in <- DsChange_env_tx;
 
+        RiChange_ctrl_rx <- RiChange_env_tx;
+        RnChange_ctrl_rx <- RnChange_env_tx;
+        RsChange_ctrl_rx <- RsChange_env_tx;
+
+        SysReady_ctrl_rx <- SysReady_env_tx;
+
+        DwiChange_ctrl_rx <- DwiChange_env_tx;
+        DwoChange_ctrl_rx <- DwoChange_env_tx;
+        DwnChange_ctrl_rx <- DwnChange_env_tx;
+        DwsChange_ctrl_rx <- DwsChange_env_tx;
+        DnChange_ctrl_rx <- DnChange_env_tx;
+        DsChange_ctrl_rx <- DsChange_env_tx;
+
+        SoChange_ctrl_rx <- SoChange_env_tx;
+
+        SChange_env_rx <- enfRx.SChange_out;
+        WChange_env_rx <- enfRx.WChange_out;
 	}
+
+    data {
+        enfRx.SoGrn <- SoGrn_env_tx;
+        enfRx.SiGrn_in <- SiGrn_ctrl_tx;
+        enfRx.SnGrn_in <- SnGrn_ctrl_tx;
+        enfRx.SsGrn_in <- SsGrn_ctrl_tx;
+        enfRx.WiDvrg_in <- WiDvrg_ctrl_tx;
+        enfRx.WoDvrg_in <- WoDvrg_ctrl_tx;
+        enfRx.WnDvrg_in <- WnDvrg_ctrl_tx;
+        enfRx.WsDvrg_in <- WsDvrg_ctrl_tx;
+        enfRx.DwiPrs_in <- DwiPrs_env_tx;
+        enfRx.DwoPrs_in <- DwoPrs_env_tx;
+        enfRx.DwnPrs_in <- DwnPrs_env_tx;
+        enfRx.DwsPrs_in <- DwsPrs_env_tx;
+        enfRx.DnPrs_in <- DnPrs_env_tx;
+        enfRx.DsPrs_in <- DsPrs_env_tx;
+
+        SiGrn_env_rx <- enfRx.SiGrn_out;
+        SnGrn_env_rx <- enfRx.SnGrn_out;
+        SsGrn_env_rx <- enfRx.SsGrn_out;
+
+        WiDvrg_env_rx <- enfRx.WiDvrg_out;
+        WoDvrg_env_rx <- enfRx.WoDvrg_out;
+        WnDvrg_env_rx <- enfRx.WnDvrg_out;
+        WsDvrg_env_rx <- enfRx.WsDvrg_out;
+
+        RiReq_ctrl_rx <- RiReq_env_tx;
+        RnReq_ctrl_rx <- RnReq_env_tx;
+        RsReq_ctrl_rx <- RsReq_env_tx;
+
+        DwiPrs_ctrl_rx <- DwiPrs_env_tx;
+        DwoPrs_ctrl_rx <- DwoPrs_env_tx;
+        DwnPrs_ctrl_rx <- DwnPrs_env_tx;
+        DwsPrs_ctrl_rx <- DwsPrs_env_tx;
+        DnPrs_ctrl_rx <- DnPrs_env_tx;
+        DsPrs_ctrl_rx <- DsPrs_env_tx;
+        
+    }
 }

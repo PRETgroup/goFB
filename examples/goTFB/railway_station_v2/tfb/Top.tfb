@@ -11,6 +11,7 @@ architecture of Top {
     }
 
     events {
+        
         ctrl.RiChange <- enf.RiChange_ctrl_rx;
         ctrl.RnChange <- enf.RnChange_ctrl_rx;
         ctrl.RsChange <- enf.RsChange_ctrl_rx;
@@ -26,6 +27,8 @@ architecture of Top {
 
         ctrl.SysReady <- enf.SysReady_ctrl_rx;
 
+        enf.SysReady_env_tx <- env.SysReady;
+
         enf.SoChange_env_tx <- env.SoChange;
 
         enf.SChange_ctrl_tx <- ctrl.SChange;
@@ -37,9 +40,13 @@ architecture of Top {
         enf.DwsChange_env_tx <- env.DwsChange; 
         enf.DnChange_env_tx <- env.DnChange; 
         enf.DsChange_env_tx <- env.DsChange;  
+
+        enf.RiChange_env_tx <- env.RiChange;
+        enf.RnChange_env_tx <- env.RnChange;
+        enf.RsChange_env_tx <- env.RsChange;
         
-        env.SChange <- enforcer.SChange_env_rx;
-        env.WChange <- enforcer.WChange_env_rx;    
+        env.SChange <- enf.SChange_env_rx;
+        env.WChange <- enf.WChange_env_rx;    
     }
 
     data {
@@ -73,6 +80,10 @@ architecture of Top {
         enf.DwsPrs_env_tx <- env.DwsPrs;
         enf.DnPrs_env_tx <- env.DnPrs;
         enf.DsPrs_env_tx <- env.DsPrs; 
+
+        enf.RiReq_env_tx <- env.RiReq;
+        enf.RnReq_env_tx <- env.RnReq;
+        enf.RsReq_env_tx <- env.RsReq;
 
         env.SiGrn <- enf.SiGrn_env_rx;
         env.SnGrn <- enf.SnGrn_env_rx;
