@@ -37,4 +37,6 @@ Then, you can `go get` this repository, and run `bash build.sh`.
 
 You will need to add the `bin` directory of the repostory to your `$PATH`, for instance, in `~/.profile`.
 
+## Publications
 
+The goFB toolchain was used in the ACM-IEEE MEMOCODE publication [Simulation of cyber-physical systems using IEC61499](https://dl.acm.org/citation.cfm?id=3127052), and the examples used in this paper can be found under `examples/goFB_only/c_odes`.
