@@ -184,7 +184,36 @@ architecture of InjectorController {
 
 ```
 
-## EnforcerFB example
+## EnforcerFB semantics
+Enforcers are designed to work with GALS semantics with other FBs (at least at the moment). They don't need to use events on their I/O,
+and instead use valued signals. 
+
+EnforcerFBs are designed to execute a number of policies on valued signals. 
+
+A ```require (condition) [before (duration)] recovery `code` ``` command is used to specify requirements as well as the recovery plans.
+
+For instance, ```require(A && B == 1) recovery `A = 0;` ``` says that _If 'A' and 'B' are equal to '1', set 'A' to be '0'_. 
+
+`observe(condition) [before (duration)]` are used for sequences, and pre-conditions.
+When a given condition in an `observe` block becomes `true`, the contents of the observe block come into effect.
+`observe` blocks also set the _start time_ for timers internal to their block. 
+
+For instance,
+```
+observe(A) {
+	require (B) before (30ms) recovery `
+		B = 1;
+	`
+}
+```
+This says that _If 'A' is true, 'B' must be true before 30ms, else set 'B' to be true._
+
+When considering `[before (duration)]` for `observe` and `require`, it is important to note that the default _start time_ is the currently active `observe`. That is, top-level `observe` and `require` cannot have a `before` clause.
+
+However, in deep-level nesting we can also label our `observe` blocks, and use the `from` keyword in the `before` clause to specify which `observe` we are measuring from. This is present in Policy P1 of AlphabetEnforcer in the examples below.
+
+
+## EnforcerFB examples
 
 ```
 //P1: AP and VP cannot happen simultaneously.
@@ -219,10 +248,10 @@ architecture of PaceEnforcer {
 	//P1: AP and VP cannot happen simultaneously.
 	policy {
 		require (AP && VP != 1)
-		recover {
+		recover `
 			VP = 0; //set both to be zero
 			AP = 0; //could be either really, but as it's a bad order, we'll cancel both, and rely on subsequent enforcers to correct
-		}
+		`;
 	}
 
 	//P2: VS or VP must be true within AVI after an atrial event AS or AP.
@@ -230,9 +259,9 @@ architecture of PaceEnforcer {
 		observe (AS || AP == 1) {
 			require (VS || VP == 1)
 			before (AVI_time)
-			recover {
+			recover `
 				VP = 1; //pulse the heart VP
-			}
+			`;
 		}
 	}
 
@@ -241,9 +270,9 @@ architecture of PaceEnforcer {
 		observe (VS || VP == 1) {
 			require (AS || AP == 1)
 			before (AEI_time)
-			recover {
+			recover `
 				AP = 1; //pulse the heart AP
-			}
+			`;
 		}
 	}
 
@@ -252,9 +281,9 @@ architecture of PaceEnforcer {
 		observe (VS || VP == 1) {
 			require (VS || VP != 1)
 			before (URI_time)
-			recover {
+			recover `
 				VP = 0; //cancel pulsing the heart VP
-			}
+			`;
 		}
 	}
 
@@ -263,9 +292,9 @@ architecture of PaceEnforcer {
 		observe (VS || VP == 1) {
 			require (VS || VP == 1)
 			before (LRI_time)
-			recover {
+			recover `
 				VP = 1; //pulse the heart VP
-			}
+			`;
 		}
 	}
 
@@ -274,9 +303,9 @@ architecture of PaceEnforcer {
 		observe (VP == 1) {
 			require (VP == 0)
 			before (VPHigh_time)
-			recover {
+			recover `
 				VP = 0; //deassert the heart VP
-			}
+			`;
 		}
 	}
 	
@@ -285,9 +314,9 @@ architecture of PaceEnforcer {
 		observe (AP == 1) {
 			require (AP == 0)
 			before (APHigh_time)
-			recover {
+			recover `
 				AP = 0; //deassert the heart AP
-			}
+			`;
 		}
 	}
 }
@@ -314,12 +343,12 @@ architecture of AlphabetEnforcer {
 	policy {
 		AStart: observe(A) {
 			BStart: observe(B) before (30ms from AStart) {
-				require (C) before (60ms from AStart) recover {
+				require (C) before (60ms from AStart) recover `
 					C = 1;
-				}
-				require (D) before (10ms from BStart) recover {
+				`;
+				require (D) before (10ms from BStart) recover `
 					D = 1;
-				}
+				`;
 			}
 		}
 	}
@@ -328,12 +357,12 @@ architecture of AlphabetEnforcer {
 	policy {
 		AStart: observe(A) {
 			observe(B) before (30ms) {
-				require (C) before (60ms from AStart) recover {
+				require (C) before (60ms from AStart) recover `
 					C = 1;
-				}
-				require (D) before (10ms) recover {
+				`;
+				require (D) before (10ms) recover `
 					D = 1;
-				}
+				`;
 			}
 		}
 	}
@@ -341,20 +370,20 @@ architecture of AlphabetEnforcer {
 	//P2: Flashing light L. L needs to be on for between 500ms and 600ms, and then off for between 500ms and 600ms, and then on again etc.
 	policy {
 		observe(L==1) {
-			require (L==1) before (500ms) recover {
+			require (L==1) before (500ms) recover `
 				L = 1;
-			}
-			require (L==0) before (600ms) recover {
+			`;
+			require (L==0) before (600ms) recover `
 				L = 0;
-			}
+			`;
 		}
 		observe(L==0) {
-			require (L==0) before (500ms) recover {
+			require (L==0) before (500ms) recover `
 				L = 0;
-			}
-			require (L==1) before (600ms) recover {
+			`;
+			require (L==1) before (600ms) recover `
 				L = 1;
-			}
+			`;
 		}
 	}
 }
