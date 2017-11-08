@@ -1,6 +1,6 @@
 # Text-FB specification
 
-Initial thoughts on the textual representation of IEC 61499 Basic and Composite Function Blocks
+Initial thoughts on the textual representation of IEC 61499 Basic and Composite Function Blocks. This document is not exhaustive.
 
 ## BFB specification:
 
@@ -182,4 +182,107 @@ architecture of InjectorController {
 	}
 }
 
+```
+
+## EnforcerFB example
+
+```
+//P1: AP and VP cannot happen simultaneously.
+//P2: VS or VP must be true within AVI after an atrial event AS or AP.
+//P3: AS or AP must be true within AEI after a ventricular event VS or VP.
+//P4: After a ventricular event, another ventricular event can happen only after URI.
+//P5: After a ventricular event, another ventricular event should happen within LRI.
+//P6: (fabricated) VP can only be asserted for VPHigh time units.
+//P7: (fabricated) AP can only be asserted for APHigh time units.
+
+EnforcerFB XYEnforcer;
+
+interface of XYEnforcer {
+	//enforcement parameters
+	in int AVI_time initial 1000;
+	in int AEI_time initial 1000;
+	in int URI_time initial 1000;
+	in int LRI_time initial 1000;
+	in int VPHigh_time initial 10;
+	in int APHigh_time initial 10;
+
+	//enforcement data lines
+	enforce bool VP;
+	enforce bool AP;
+	enforce bool VS;
+	enforce bool AS;
+}
+
+architecture of XYEnforcer {
+	//policies are executed downwards
+
+	//P1: AP and VP cannot happen simultaneously.
+	policy {
+		observe (AP && VP == 1);
+		recovery {
+			VP = 0; //set both to be zero
+			AP = 0; //could be either really, but as it's a bad order, we'll cancel both, and rely on subsequent enforcers to correct
+		}
+	}
+
+	//P2: VS or VP must be true within AVI after an atrial event AS or AP.
+	policy {
+		observe (AS || AP == 1)
+		require (VS || VP == 1)
+		before (AVI_time);
+		recovery {
+			VP = 1; //pulse the heart VP
+		}
+	}
+
+	//P3: AS or AP must be true within AEI after a ventricular event VS or VP.
+	policy {
+		observe (VS || VP == 1)
+		require (AS || AP == 1)
+		before (AEI_time);
+		recovery {
+			AP = 1; //pulse the heart AP
+		}
+	}
+
+	//P4: After a ventricular event, another ventricular event can happen only after URI.
+	policy {
+		observe (VS || VP == 1)
+		exclude (VS || VP == 1)
+		before (URI_time);
+		recovery {
+			VP = 0; //cancel pulsing the heart VP
+		}
+	}
+
+	//P5: After a ventricular event, another ventricular event should happen within LRI.
+	policy {
+		observe (VS || VP == 1)
+		require (VS || VP == 1)
+		before (LRI_time)
+		recovery {
+			VP = 1; //pulse the heart VP
+		}
+	}
+
+	//P6: (fabricated) VP can only be asserted for VPHigh time units.
+	policy {
+		observe (VP == 1)
+		require (VP == 0)
+		before (VPHigh_time);
+		recovery {
+			VP = 0; //deassert the heart VP
+		}
+	}
+	
+	//P7: (fabricated) AP can only be asserted for APHigh time units.
+	policy {
+		observe (AP == 1)
+		require (AP == 0)
+		before (APHigh_time);
+		recovery {
+			AP = 0; //deassert the heart AP
+		}
+	}
+}
 ```
