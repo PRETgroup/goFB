@@ -195,9 +195,9 @@ architecture of InjectorController {
 //P6: (fabricated) VP can only be asserted for VPHigh time units.
 //P7: (fabricated) AP can only be asserted for APHigh time units.
 
-EnforcerFB XYEnforcer;
+EnforcerFB PaceEnforcer;
 
-interface of XYEnforcer {
+interface of PaceEnforcer {
 	//enforcement parameters
 	in int AVI_time initial 1000;
 	in int AEI_time initial 1000;
@@ -213,13 +213,13 @@ interface of XYEnforcer {
 	enforce bool AS;
 }
 
-architecture of XYEnforcer {
+architecture of PaceEnforcer {
 	//policies are executed downwards
 
 	//P1: AP and VP cannot happen simultaneously.
 	policy {
-		observe (AP && VP == 1);
-		recovery {
+		require (AP && VP != 1)
+		recover {
 			VP = 0; //set both to be zero
 			AP = 0; //could be either really, but as it's a bad order, we'll cancel both, and rely on subsequent enforcers to correct
 		}
@@ -227,61 +227,134 @@ architecture of XYEnforcer {
 
 	//P2: VS or VP must be true within AVI after an atrial event AS or AP.
 	policy {
-		observe (AS || AP == 1)
-		require (VS || VP == 1)
-		before (AVI_time);
-		recovery {
-			VP = 1; //pulse the heart VP
+		observe (AS || AP == 1) {
+			require (VS || VP == 1)
+			before (AVI_time)
+			recover {
+				VP = 1; //pulse the heart VP
+			}
 		}
 	}
 
 	//P3: AS or AP must be true within AEI after a ventricular event VS or VP.
 	policy {
-		observe (VS || VP == 1)
-		require (AS || AP == 1)
-		before (AEI_time);
-		recovery {
-			AP = 1; //pulse the heart AP
+		observe (VS || VP == 1) {
+			require (AS || AP == 1)
+			before (AEI_time)
+			recover {
+				AP = 1; //pulse the heart AP
+			}
 		}
 	}
 
 	//P4: After a ventricular event, another ventricular event can happen only after URI.
 	policy {
-		observe (VS || VP == 1)
-		exclude (VS || VP == 1)
-		before (URI_time);
-		recovery {
-			VP = 0; //cancel pulsing the heart VP
+		observe (VS || VP == 1) {
+			require (VS || VP != 1)
+			before (URI_time)
+			recover {
+				VP = 0; //cancel pulsing the heart VP
+			}
 		}
 	}
 
 	//P5: After a ventricular event, another ventricular event should happen within LRI.
 	policy {
-		observe (VS || VP == 1)
-		require (VS || VP == 1)
-		before (LRI_time)
-		recovery {
-			VP = 1; //pulse the heart VP
+		observe (VS || VP == 1) {
+			require (VS || VP == 1)
+			before (LRI_time)
+			recover {
+				VP = 1; //pulse the heart VP
+			}
 		}
 	}
 
 	//P6: (fabricated) VP can only be asserted for VPHigh time units.
 	policy {
-		observe (VP == 1)
-		require (VP == 0)
-		before (VPHigh_time);
-		recovery {
-			VP = 0; //deassert the heart VP
+		observe (VP == 1) {
+			require (VP == 0)
+			before (VPHigh_time)
+			recover {
+				VP = 0; //deassert the heart VP
+			}
 		}
 	}
 	
 	//P7: (fabricated) AP can only be asserted for APHigh time units.
 	policy {
-		observe (AP == 1)
-		require (AP == 0)
-		before (APHigh_time);
-		recovery {
-			AP = 0; //deassert the heart AP
+		observe (AP == 1) {
+			require (AP == 0)
+			before (APHigh_time)
+			recover {
+				AP = 0; //deassert the heart AP
+			}
+		}
+	}
+}
+```
+
+```
+//P1: If B happens within 30ms of A, C must happen within 60ms of A, and D must happen within 10ms of B.
+//P2: Flashing light L. L needs to be on for between 500ms and 600ms, and then off for between 500ms and 600ms, and then on again etc.
+EnforcerFB AlphabetEnforcer;
+
+interface of AlphabetEnforcer {
+	//enforcement data lines
+	enforce bool A;
+	enforce bool B;
+	enforce bool C;
+	enforce bool D;
+	enforce bool L;
+}
+
+architecture of AlphabetEnforcer {
+	//policies are executed downwards
+
+	//P1: If B happens within 30ms of A, C must happen within 60ms of A, and D must happen within 10ms of B.
+	policy {
+		AStart: observe(A) {
+			BStart: observe(B) before (30ms from AStart) {
+				require (C) before (60ms from AStart) recover {
+					C = 1;
+				}
+				require (D) before (10ms from BStart) recover {
+					D = 1;
+				}
+			}
+		}
+	}
+
+	//equivalent P1: If B happens within 30ms of A, C must happen within 60ms of A, and D must happen within 10ms of B.
+	policy {
+		AStart: observe(A) {
+			observe(B) before (30ms) {
+				require (C) before (60ms from AStart) recover {
+					C = 1;
+				}
+				require (D) before (10ms) recover {
+					D = 1;
+				}
+			}
+		}
+	}
+
+	//P2: Flashing light L. L needs to be on for between 500ms and 600ms, and then off for between 500ms and 600ms, and then on again etc.
+	policy {
+		observe(L==1) {
+			require (L==1) before (500ms) recover {
+				L = 1;
+			}
+			require (L==0) before (600ms) recover {
+				L = 0;
+			}
+		}
+		observe(L==0) {
+			require (L==0) before (500ms) recover {
+				L = 0;
+			}
+			require (L==1) before (600ms) recover {
+				L = 1;
+			}
 		}
 	}
 }
