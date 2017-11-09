@@ -571,7 +571,7 @@ ODE Algorithm Language is discussed further in `ODEAlgorithmLanguage.md`.
 
 Specifying a HFB is as simple as specifying a BFB. They have identical interfaces, and very similiar architectures. The only difference is that internal ECC `states` are replaces with Hybrid state machine `locations`, which have slight semantic differences, and different construction.
 
-`locations` can have `emits` and `runs` on their transition edges, like mealy finite state machines.
+`locations` can have `emits` and `runs` on their transition edges, like mealy finite state machines. These are specified in `{` and `}` after the transition condition. If no braces are specified, provide a semicolon instead.
 
 All algorithms are specified in ODE Algorithm language, and cannot be specified in other languages.
 
@@ -593,8 +593,12 @@ architecture of Conveyor {
     
     locations {
         l_start {
-            
-            -> l_off on true, run `x_prime = 0; d_prime = 0;`, emit dChange;
+
+            //this is equivalent to "-> l_off on true {"
+            -> l_off { 
+                run `x_prime = 0; d_prime = 0;`
+                emit dChange;
+            }
         }
 
         l_off {
@@ -604,7 +608,10 @@ architecture of Conveyor {
             run incD;
             emit dChange;
 
-            -> l_on on convOn, run nextL, emit dChange;
+            -> l_on on convOn {
+                run nextL;
+                emit dChange;
+            } 
         }
 
         l_on {
@@ -615,7 +622,10 @@ architecture of Conveyor {
             run incD;
             emit dChange;
 
-            -> l_off on convOff, run nextL, emit dChange;
+            -> l_off on convOff {
+                run nextL;
+                emit dChange;
+            }
         }
     }
 

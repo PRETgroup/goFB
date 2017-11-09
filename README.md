@@ -17,7 +17,9 @@ The goFB toolchain currently supports the following aspects of the IEC61499 stan
 - [x] Basic Function Blocks
 - [x] Service Interface Function Blocks
 - [x] Composite Function Blocks
-- [x] Resources (partial)
+- [x] Resources *(partial - goFB but not goTFB)*
+- [x] Hybrid Function Blocks *(partial - goFB but not goTFB)*
+- [ ] Enforcer Function Blocks
 - [ ] Devices 
 - [ ] Systems
 
