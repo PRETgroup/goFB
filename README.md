@@ -42,3 +42,5 @@ You will need to add the `bin` directory of the repostory to your `$PATH`, for i
 ## Publications
 
 The goFB toolchain was used in the ACM-IEEE MEMOCODE publication [Simulation of cyber-physical systems using IEC61499](https://dl.acm.org/citation.cfm?id=3127052), and the examples used in this paper can be found under `examples/goFB_only/c_odes`.
+
+The goFB toolchain was also used in the IEEE ISORC 2018 paper "Faster Function Blocks for Precision Timed Industrial Automation" (still under review). The examples for this paper can be found under `examples/goFB_only/c_tcrest`.
