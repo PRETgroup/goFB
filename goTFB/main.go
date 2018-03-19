@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kiwih/goFB/goTFB/tfbparser"
-	"github.com/kiwih/goFB/iec61499"
+	"github.com/PRETgroup/goFB/goTFB/tfbparser"
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 var (

@@ -3,7 +3,7 @@ package iec61499converter
 import (
 	"strings"
 
-	"github.com/kiwih/goFB/iec61499"
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 //connChildSourceOnly is used in templates for getting rid of prefix stuff on connections

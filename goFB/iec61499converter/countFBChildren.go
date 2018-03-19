@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/kiwih/goFB/iec61499"
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 //ComputeFBChildrenCounts counts and stores all FB children in all FBtypes across the network

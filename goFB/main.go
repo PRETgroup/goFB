@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kiwih/goFB/goFB/iec61499converter"
+	"github.com/PRETgroup/goFB/goFB/iec61499converter"
 )
 
 var (

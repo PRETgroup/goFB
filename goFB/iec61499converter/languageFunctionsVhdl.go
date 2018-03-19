@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kiwih/goFB/iec61499"
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 const (

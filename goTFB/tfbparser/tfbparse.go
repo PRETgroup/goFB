@@ -1,6 +1,6 @@
 package tfbparser
 
-import "github.com/kiwih/goFB/iec61499"
+import "github.com/PRETgroup/goFB/iec61499"
 
 //tfbparse is the containing struct for the parsing code
 type tfbParse struct {

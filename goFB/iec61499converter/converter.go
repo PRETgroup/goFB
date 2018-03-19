@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/kiwih/goFB/iec61499"
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 //Converter is the struct we use to store all blocks for conversion (and what we operate from)
