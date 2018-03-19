@@ -15,6 +15,7 @@ const (
 	pCompositeFB = "compositeFB"
 	pServiceFB   = "serviceFB"
 	pHybridFB    = "hybridFB"
+	pEnforceFB   = "enforceFB"
 
 	pCompilerInfoHeader = "compileheader"
 
@@ -68,6 +69,15 @@ const (
 
 	pConn   = "<-"
 	pPeriod = "."
+)
+
+//enforceFB-specific string constants
+const (
+	pViolation = "violation"
+	pAfter     = "after"
+	pBefore    = "before"
+	pUntil     = "until"
+	pSetTime   = "settime"
 )
 
 //ParseString takes an input string (i.e. filename) and input and returns all FBs in that string
@@ -151,7 +161,7 @@ func parseItems(name string, items []string) ([]iec61499.FB, *ParseError) {
 			break
 		}
 		//have we defined a basicFB or compositeFB
-		if s == pBasicFB || s == pCompositeFB || s == pServiceFB {
+		if s == pBasicFB || s == pCompositeFB || s == pServiceFB || s == pEnforceFB {
 			if err := t.parseFB(s); err != nil {
 				return nil, err
 			}
@@ -221,6 +231,8 @@ func (t *tfbParse) parseFB(fbType string) *ParseError {
 			fbs = append(fbs, *iec61499.NewServiceFB(name))
 		} else if fbType == pHybridFB {
 			fbs = append(fbs, *iec61499.NewHybridFB(name))
+		} else if fbType == pEnforceFB {
+			fbs = append(fbs, *iec61499.NewEnforceFB(name))
 		} else {
 			return t.errorWithReason(ErrInternal, "I can't parse fbType "+fbType)
 		}

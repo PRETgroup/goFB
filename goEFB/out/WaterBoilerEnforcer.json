@@ -1,0 +1,236 @@
+{
+	"Name": "WaterBoilerEnforcer",
+	"IO": {
+		"Inputs": null,
+		"Enforce": [
+			{
+				"Name": "Pboiler",
+				"Type": "unsigned(7 downto 0)",
+				"Initial": ""
+			},
+			{
+				"Name": "Fin",
+				"Type": "unsigned(7 downto 0)",
+				"Initial": ""
+			},
+			{
+				"Name": "Fout",
+				"Type": "unsigned(7 downto 0)",
+				"Initial": ""
+			},
+			{
+				"Name": "Fop",
+				"Type": "unsigned(7 downto 0)",
+				"Initial": ""
+			},
+			{
+				"Name": "Lboiler",
+				"Type": "unsigned(7 downto 0)",
+				"Initial": ""
+			},
+			{
+				"Name": "Hboiler",
+				"Type": "std_logic",
+				"Initial": ""
+			},
+			{
+				"Name": "Cin",
+				"Type": "std_logic",
+				"Initial": ""
+			},
+			{
+				"Name": "Vin",
+				"Type": "unsigned(7 downto 0)",
+				"Initial": ""
+			},
+			{
+				"Name": "Vop",
+				"Type": "unsigned(7 downto 0)",
+				"Initial": ""
+			},
+			{
+				"Name": "Vout",
+				"Type": "unsigned(7 downto 0)",
+				"Initial": ""
+			},
+			{
+				"Name": "Aop",
+				"Type": "std_logic",
+				"Initial": ""
+			}
+		]
+	},
+	"Policies": [
+		{
+			"Name": "P1",
+			"Triggers": [
+				{
+					"Name": "Top",
+					"StartCondition": {
+						"Type": "\u003e=",
+						"Value": "",
+						"A": {
+							"Type": "$",
+							"Value": "Pboiler",
+							"A": null,
+							"B": null
+						},
+						"B": {
+							"Type": "#",
+							"Value": "to_unsigned(100, 8)",
+							"A": null,
+							"B": null
+						}
+					},
+					"ResetCondition": {
+						"Type": "\u003c",
+						"Value": "",
+						"A": {
+							"Type": "$",
+							"Value": "Pboiler",
+							"A": null,
+							"B": null
+						},
+						"B": {
+							"Type": "#",
+							"Value": "to_unsigned(100, 8)",
+							"A": null,
+							"B": null
+						}
+					}
+				}
+			],
+			"Requirements": [
+				{
+					"With": [
+						"Top"
+					],
+					"Requires": [
+						{
+							"Type": "before",
+							"Value": "",
+							"A": {
+								"Type": "=",
+								"Value": "",
+								"A": {
+									"Type": "$",
+									"Value": "Vop",
+									"A": null,
+									"B": null
+								},
+								"B": {
+									"Type": "#",
+									"Value": "to_unsigned(255, 8)",
+									"A": null,
+									"B": null
+								}
+							},
+							"B": {
+								"Type": "after",
+								"Value": "",
+								"A": {
+									"Type": "#",
+									"Value": "to_unsigned(10000000, 64)",
+									"A": null,
+									"B": null
+								},
+								"B": {
+									"Type": "$",
+									"Value": "Top",
+									"A": null,
+									"B": null
+								}
+							}
+						}
+					],
+					"Recover": [
+						{
+							"Type": ":=",
+							"Value": "",
+							"A": {
+								"Type": "$",
+								"Value": "Vop",
+								"A": null,
+								"B": null
+							},
+							"B": {
+								"Type": "#",
+								"Value": "to_unsigned(255, 8)",
+								"A": null,
+								"B": null
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"Name": "P2",
+			"Triggers": [
+				{
+					"Name": "Top",
+					"StartCondition": {
+						"Type": "\u003e=",
+						"Value": "",
+						"A": {
+							"Type": "$",
+							"Value": "Pboiler",
+							"A": null,
+							"B": null
+						},
+						"B": {
+							"Type": "#",
+							"Value": "to_unsigned(100, 8)",
+							"A": null,
+							"B": null
+						}
+					},
+					"ResetCondition": null
+				}
+			],
+			"Requirements": [
+				{
+					"With": [
+						"Top"
+					],
+					"Requires": [
+						{
+							"Type": "=",
+							"Value": "",
+							"A": {
+								"Type": "$",
+								"Value": "Aop",
+								"A": null,
+								"B": null
+							},
+							"B": {
+								"Type": "#",
+								"Value": "'1'",
+								"A": null,
+								"B": null
+							}
+						}
+					],
+					"Recover": [
+						{
+							"Type": ":=",
+							"Value": "",
+							"A": {
+								"Type": "$",
+								"Value": "Aop",
+								"A": null,
+								"B": null
+							},
+							"B": {
+								"Type": "#",
+								"Value": "'1'",
+								"A": null,
+								"B": null
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

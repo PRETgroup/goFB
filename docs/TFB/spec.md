@@ -388,3 +388,37 @@ architecture of AlphabetEnforcer {
 	}
 }
 ```
+
+## EFB v2 example
+
+Here's an example:
+```
+enforcerFB AEIEnforcer;
+
+interface of AEIEnforcer {
+	enforce event AS, VS, AP, VP;
+	in ulint AEI_ns default "900000000";
+}
+
+architecture of AEIEnforcer {
+	internals {
+		ulint tAEI;
+	}
+
+	//P3: AS or AP must be true within AEI after a ventricular event VS or VP.
+
+	states {
+		s0 {
+			-> s1 on (VS or VP); 
+		}
+
+		s1 {
+			settime tAEI;
+
+			-> s1 on (AS or AP);
+			-> violation on (AEI_time after tAEI);
+		}
+	} 
+}
+
+```

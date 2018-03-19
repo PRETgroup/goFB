@@ -80,6 +80,15 @@ func NewHybridFB(name string) *FB {
 	return &fb
 }
 
+func NewEnforceFB(name string) *FB {
+	fb := FB{}
+	fb.Name = name
+	fb.Identification.Standard = "61499-2"
+	fb.EnforceFB = new(EnforceFB)
+	fb.SetXMLName()
+	return &fb
+}
+
 //SetXMLName sets an appropriate name for the xml block type
 func (fb *FB) SetXMLName() {
 	fb.XMLName = xml.Name{Space: "", Local: "FBType"}
