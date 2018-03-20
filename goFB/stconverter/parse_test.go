@@ -80,7 +80,16 @@ func TestCases(t *testing.T) {
 		prog, err := ParseString(stTestCases[i].name, stTestCases[i].progString)
 		if err != nil && stTestCases[i].err != nil {
 			//TODO check if errors are the same
+			if stTestCases[i].err.Error() != err.Err.Error() {
+				t.Errorf("Test %d (%s) FAIL.\nError mismatch. Expecting %s, but received:%s", i, stTestCases[i].name, stTestCases[i].err.Error(), err.Err.Error())
+			}
+		}
+		if err != nil {
+			t.Errorf("Test %d (%s) FAIL.\nNot expecting error, but received:%s", i, stTestCases[i].name, err.Error())
 			continue
+		}
+		if stTestCases[i].err != nil {
+			t.Errorf("Test %d (%s) FAIL.\nWas expecting error, but did not receive.", i, stTestCases[i].name)
 		}
 		if !reflect.DeepEqual(prog, stTestCases[i].prog) {
 			expected, _ := json.MarshalIndent(stTestCases[i].prog, "\t", "\t")
