@@ -53,7 +53,7 @@ func (f functionOp) GetNumOperands() int {
 	if first == -1 {
 		return 0
 	}
-	ops := f.token[first : len(f.token)-1]
+	ops := f.token[first+1 : len(f.token)-1]
 	opsInt, err := strconv.Atoi(ops)
 	if err != nil {
 		return 0
@@ -108,13 +108,63 @@ func IsFunction(tok string) (bool, Operator) {
 	return false, nil
 }
 
+//IsPossibleFunctionName returns if a given string _could_ be a function
+//i.e. if it begins with a zero, it cannot be a function
+func IsPossibleFunctionName(tok string) bool {
+	if len(tok) == 0 {
+		return false
+	}
+	c := byte(tok[0])
+	if c >= '0' && c <= '9' {
+		return false
+	}
+	if c >= 'a' && c <= 'z' {
+		return true
+	}
+	if c >= 'A' && c <= 'Z' {
+		return true
+	}
+	return false
+}
+
+func (c *Converter) changeFunctionCalls(tokens []string) []string {
+	outp := make([]string, 0)
+	for i := 0; i < len(tokens); i++ {
+		token := tokens[i]
+		//check if it is in list of operators
+		isOp, _ := c.IsOperator(token)
+		if isOp {
+			outp = append(outp, token)
+			continue
+		}
+
+		//check if it has a valid name
+		if !IsPossibleFunctionName(token) {
+			outp = append(outp, token)
+			continue
+		}
+
+		//check if the next thing is an bracket
+		if i+1 < len(tokens) && tokens[i+1] == "(" {
+			//we have found a function
+			outp = append(outp, token+"(")
+			i++
+		} else {
+			//not a bracket: not a function
+			outp = append(outp, token)
+		}
+
+	}
+	return outp
+}
+
 //ToPostfix converts a string slice of tokens in infix format to postfix
 //this is an implementation of the Shunting-Yard algorithm
 //https://en.wikipedia.org/wiki/Shunting-yard_algorithm
 //	It has been extended to support arbitrary function calls.
 //	These are treated as right-aligned operators (i.e. function(2, 3) becomes "2 3 function<2>")
-func (c *Converter) ToPostfix(tokens []string) []string {
-
+func (c *Converter) ToPostfix(nftokens []string) []string {
+	tokens := c.changeFunctionCalls(nftokens)
 	var stack Stack
 
 	postfix := make([]string, 0, len(tokens))

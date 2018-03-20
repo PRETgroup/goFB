@@ -7,7 +7,7 @@ import (
 	"github.com/PRETgroup/goFB/goFB/postfix"
 )
 
-func (t *stParse) parseNext() *STParseError {
+func (t *stParse) parseNext() ([]STInstruction, *STParseError) {
 	s := t.peek()
 	//decide which parser to call
 	//are we beginning a block {if, case, for, while, repeat}
@@ -79,6 +79,7 @@ func (t *stParse) parseExpressionTerminatesWith(terminates string) (STExpression
 	}
 	//now we're done!
 	if len(stack) != 1 {
+		fmt.Println(stack)
 		return nil, t.error(ErrBadExpression)
 	}
 	s := stack[0]
@@ -96,45 +97,109 @@ ELSIF [boolean expression] THEN
 ELSE
     <statement>;
 END_IF ; */
-func (t *stParse) parseIfElsifElse() *STParseError {
+func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
 	//the first word should be if
 	s := t.pop()
 	if s != stIf {
-		return t.errorUnexpectedWithExpected(s, stIf)
+		return nil, t.errorUnexpectedWithExpected(s, stIf)
 	}
 
-	//now we should get an expression terminated with then
-	// expr, err := t.parseExpressionTerminatesWith(stThen)
-	// if err != nil {
-	// 	return err
-	// }
+	ifte := STIfElsIfElse{}
 
-	return nil
+	//now we should get an expression terminated with "then"
+	//("then" is consumed in this process)
+	ifExpr, err := t.parseExpressionTerminatesWith(stThen)
+	if err != nil {
+		return nil, err
+	}
+
+	it := STIfThen{
+		IfExpression: ifExpr,
+	}
+
+	//now we should get a then sequence terminated by either end_if or elsif
+	for t.peek() != stElsif && t.peek() != stElse && t.peek() != stEndIf && !t.done() {
+		seq, err := t.parseNext()
+		if err != nil {
+			return nil, err
+		}
+		it.ThenSequence = append(it.ThenSequence, seq...)
+	}
+
+	ifte.IfThens = append(ifte.IfThens, it)
+
+	//if we have an elsif...
+	for t.peek() == stElsif {
+		t.pop()
+		//terminate at then
+		elsIfExpr, err := t.parseExpressionTerminatesWith(stThen)
+		if err != nil {
+			return nil, err
+		}
+		eit := STIfThen{
+			IfExpression: elsIfExpr,
+		}
+		//now we should get a then sequence terminated by either end_if or elsif
+		for t.peek() != stElsif && t.peek() != stElse && t.peek() != stEndIf && !t.done() {
+			seq, err := t.parseNext()
+			if err != nil {
+				return nil, err
+			}
+			eit.ThenSequence = append(eit.ThenSequence, seq...)
+		}
+		ifte.IfThens = append(ifte.IfThens, eit)
+	}
+
+	//if we have an else
+	if t.peek() == stElse {
+		t.pop()
+		for t.peek() != stEndIf && !t.done() {
+			seq, err := t.parseNext()
+			if err != nil {
+				return nil, err
+			}
+			ifte.ElseSequence = append(ifte.ElseSequence, seq...)
+		}
+	}
+
+	//now consume the stEndIf (we've only peeked at it until now)
+	s = t.pop()
+	if s != stEndIf {
+		return nil, t.errorUnexpectedWithExpected(s, stEndIf)
+	}
+
+	//now consume the stSemicolon
+	s = t.pop()
+	if s != stSemicolon {
+		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
+	}
+
+	return []STInstruction{ifte}, nil
 
 }
 
-func (t *stParse) parseSwitchCase() *STParseError {
-	return t.error(errors.New("not yet implemented"))
+func (t *stParse) parseSwitchCase() ([]STInstruction, *STParseError) {
+	return nil, t.error(errors.New("not yet implemented"))
 }
 
-func (t *stParse) parseForLoop() *STParseError {
-	return t.error(errors.New("not yet implemented"))
+func (t *stParse) parseForLoop() ([]STInstruction, *STParseError) {
+	return nil, t.error(errors.New("not yet implemented"))
 }
 
-func (t *stParse) parseWhileLoop() *STParseError {
-	return t.error(errors.New("not yet implemented"))
+func (t *stParse) parseWhileLoop() ([]STInstruction, *STParseError) {
+	return nil, t.error(errors.New("not yet implemented"))
 }
 
-func (t *stParse) parseRepeatLoop() *STParseError {
-	return t.error(errors.New("not yet implemented"))
+func (t *stParse) parseRepeatLoop() ([]STInstruction, *STParseError) {
+	return nil, t.error(errors.New("not yet implemented"))
 }
 
-func (t *stParse) parseAssignment() *STParseError {
+func (t *stParse) parseAssignment() ([]STInstruction, *STParseError) {
+	//consumes stSemicolon
 	ass, err := t.parseExpressionTerminatesWith(stSemicolon)
 	if err != nil {
 		fmt.Println("error", err)
-		return err
+		return nil, err
 	}
-	t.instructions = append(t.instructions, ass)
-	return nil
+	return []STInstruction{ass}, nil
 }

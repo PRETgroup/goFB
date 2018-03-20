@@ -123,9 +123,11 @@ func parseItems(name string, items []string) ([]STInstruction, *STParseError) {
 			continue
 		}
 		//continue parsing...
-		if err := t.parseNext(); err != nil {
-			return nil, t.errorWithArg(ErrUnexpectedValue, s)
+		instr, err := t.parseNext()
+		if err != nil {
+			return nil, err
 		}
+		t.instructions = append(t.instructions, instr...)
 	}
 
 	return t.instructions, nil

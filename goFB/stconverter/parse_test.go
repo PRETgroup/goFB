@@ -46,7 +46,7 @@ var stTestCases = []stTestCase{
 			},
 		},
 	},
-	/*{
+	{
 		name:       "if/then 1",
 		progString: "if y > x then y := x; end_if;",
 		prog: []STInstruction{
@@ -54,17 +54,18 @@ var stTestCases = []stTestCase{
 				IfThens: []STIfThen{
 					{
 						IfExpression: STExpressionOperator{
-							AValue:   "y",
-							Operator: stGreaterThan,
-							B: &STExpression{
-								AValue: "x",
+							Operator: findOp(stGreaterThan),
+							Arguments: []STExpression{
+								STExpressionValue{"x"},
+								STExpressionValue{"y"},
 							},
 						},
 						ThenSequence: []STInstruction{
-							STAssignment{
-								AValue: "y",
-								Assigned: STExpression{
-									AValue: "x",
+							STExpressionOperator{
+								Operator: findOp(stAssignment),
+								Arguments: []STExpression{
+									STExpressionValue{"x"},
+									STExpressionValue{"y"},
 								},
 							},
 						},
@@ -72,7 +73,85 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-	},*/
+	},
+	{
+		name:       "if/elsif/else 1",
+		progString: "if y > x then y := x;\n print(\"hello\");\n elsif x > y then \n a := 1 + 2 * 3; \n else print(\"hi\"); \n print(\"yes\"); \n end_if;",
+		prog: []STInstruction{
+			STIfElsIfElse{
+				IfThens: []STIfThen{
+					{
+						IfExpression: STExpressionOperator{
+							Operator: findOp(stGreaterThan),
+							Arguments: []STExpression{
+								STExpressionValue{"x"},
+								STExpressionValue{"y"},
+							},
+						},
+						ThenSequence: []STInstruction{
+							STExpressionOperator{
+								Operator: findOp(stAssignment),
+								Arguments: []STExpression{
+									STExpressionValue{"x"},
+									STExpressionValue{"y"},
+								},
+							},
+							STExpressionOperator{
+								Operator: findOp("print<1>"),
+								Arguments: []STExpression{
+									STExpressionValue{"\"hello\""},
+								},
+							},
+						},
+					},
+					{
+						IfExpression: STExpressionOperator{
+							Operator: findOp(stGreaterThan),
+							Arguments: []STExpression{
+								STExpressionValue{"y"},
+								STExpressionValue{"x"},
+							},
+						},
+						ThenSequence: []STInstruction{
+							STExpressionOperator{
+								Operator: findOp(stAssignment),
+								Arguments: []STExpression{
+									STExpressionOperator{
+										Operator: findOp(stAdd),
+										Arguments: []STExpression{
+											STExpressionOperator{
+												Operator: findOp(stMultiply),
+												Arguments: []STExpression{
+													STExpressionValue{"3"},
+													STExpressionValue{"2"},
+												},
+											},
+											STExpressionValue{"1"},
+										},
+									},
+									STExpressionValue{"a"},
+								},
+							},
+						},
+					},
+				},
+				ElseSequence: []STInstruction{
+					STExpressionOperator{
+						Operator: findOp("print<1>"),
+						Arguments: []STExpression{
+							STExpressionValue{"\"hi\""},
+						},
+					},
+					STExpressionOperator{
+						Operator: findOp("print<1>"),
+						Arguments: []STExpression{
+							STExpressionValue{"\"yes\""},
+						},
+					},
+				},
+			},
+		},
+	},
 }
 
 func TestCases(t *testing.T) {
