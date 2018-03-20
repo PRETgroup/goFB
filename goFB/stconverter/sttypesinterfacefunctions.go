@@ -14,7 +14,12 @@ type STInstruction interface {
 }
 
 //IsInstruction meets the STInstruction interface
-func (s STAssignment) IsInstruction() bool {
+func (s STExpressionValue) IsInstruction() bool {
+	return true
+}
+
+//IsInstruction meets the STInstruction interface
+func (s STExpressionOperator) IsInstruction() bool {
 	return true
 }
 

@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	stNewline = "\n"
+	stNewline   = "\n"
+	stSemicolon = ";"
 
 	stOpenBracket  = "("
 	stCloseBracket = ")"
@@ -117,6 +118,11 @@ func parseItems(name string, items []string) ([]STInstruction, *STParseError) {
 
 	for !t.done() {
 		s := t.peek()
+		if s == "" { //don't do anything with empty strings
+			t.pop()
+			continue
+		}
+		//continue parsing...
 		if err := t.parseNext(); err != nil {
 			return nil, t.errorWithArg(ErrUnexpectedValue, s)
 		}

@@ -1,6 +1,11 @@
 package stconverter
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+
+	"github.com/PRETgroup/goFB/goFB/postfix"
+)
 
 func (t *stParse) parseNext() *STParseError {
 	s := t.peek()
@@ -30,51 +35,9 @@ func (t *stParse) parseNext() *STParseError {
 	return t.parseAssignment()
 }
 
-// func convertInfixExpressionToPrefix(infix []string) ([]string, *STParseError) {
-// 	operands := make([]string, 0)
-// 	operators := make([]string, 0)
-
-// 	for len(infix) > 0 {
-// 		in := infix[len]
-// 	}
-// 	/*//we first want an A argument
-// 	if s == stOpenBracket {
-// 		expr, err := t.parseExpressionTerminatesWith(stCloseBracket)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		curExpr.A = expr
-// 	} else {
-// 		curExpr.AValue = s
-// 	}
-
-// 	//pop the next thing, if we terminate, time to go home
-// 	s = t.pop()
-// 	if s == terminates {
-// 		return &topExpr, nil
-// 	}
-
-// 	//now we are looking for an operator?
-// 	//if lookingForOp {
-// 	foundOp := false
-// 	for _, op := range stOps {
-// 		if s == op.token {
-// 			foundOp := true
-// 			break
-// 			//the returned precedence should effect where the operation gets put
-
-// 		}
-// 	}
-
-// 	if foundOp == false {
-// 		//we were looking for an operator but didn't find one
-// 		return nil, t.errorUnexpectedWithExpected(s, "[any valid operator]")
-// 	}*/
-
-// }
-
-func (t *stParse) parseExpressionTerminatesWith(terminates string) (*STExpression, *STParseError) {
-	//step 1, convert from infix to prefix
+func (t *stParse) parseExpressionTerminatesWith(terminates string) (STExpression, *STParseError) {
+	//step 1, convert from infix to postfix
+	//load the string tokens up to a match with "terminates"
 	infixExprString := make([]string, 0)
 	for {
 		if t.done() {
@@ -87,7 +50,39 @@ func (t *stParse) parseExpressionTerminatesWith(terminates string) (*STExpressio
 		}
 		infixExprString = append(infixExprString, s)
 	}
-	prefixExprString, err := t.convertInfixExpressionToPrefix(infixExprString)
+
+	//convert to postfix notation
+	postfixConverter := postfix.NewConverter(stOps)
+	postfixExprString := postfixConverter.ToPostfix(infixExprString)
+
+	//now go through the postfix expression and convert to function tree
+	//postfixExprString could look something like this: []string{"x", "y", "2", "z", "*", "max<2>", ">="},
+	var stack []STExpression
+	for i := 0; i < len(postfixExprString); i++ {
+		token := postfixExprString[i]
+		op := findOp(token)
+		if op == nil {
+			stack = append(stack, STExpressionValue{token})
+			continue
+		}
+		//if op is not nil, then we use it (it is an operator)
+
+		//create an stExpressionOperator
+		stEOp := STExpressionOperator{}
+		var e STExpression
+		stEOp.Operator = op
+		for j := 0; j < op.GetNumOperands(); j++ {
+			e, stack = stack[len(stack)-1], stack[:len(stack)-1]
+			stEOp.Arguments = append(stEOp.Arguments, e)
+		}
+		stack = append(stack, stEOp)
+	}
+	//now we're done!
+	if len(stack) != 1 {
+		return nil, t.error(ErrBadExpression)
+	}
+	s := stack[0]
+	return s, nil
 }
 
 //STIfElsIfElse is used to make up the full if... elsif... elsif.... else... sequence
@@ -109,10 +104,12 @@ func (t *stParse) parseIfElsifElse() *STParseError {
 	}
 
 	//now we should get an expression terminated with then
-	expr, err := t.parseExpressionTerminatesWith(stThen)
-	if err != nil {
-		return err
-	}
+	// expr, err := t.parseExpressionTerminatesWith(stThen)
+	// if err != nil {
+	// 	return err
+	// }
+
+	return nil
 
 }
 
@@ -133,5 +130,11 @@ func (t *stParse) parseRepeatLoop() *STParseError {
 }
 
 func (t *stParse) parseAssignment() *STParseError {
-	return t.error(errors.New("not yet implemented"))
+	ass, err := t.parseExpressionTerminatesWith(stSemicolon)
+	if err != nil {
+		fmt.Println("error", err)
+		return err
+	}
+	t.instructions = append(t.instructions, ass)
+	return nil
 }

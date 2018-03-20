@@ -15,8 +15,8 @@ var (
 	//ErrUnexpectedValue is used to indicate a parsed value was not what was expected (i.e. a word instead of a semicolon)
 	ErrUnexpectedValue = errors.New("Unexpected value")
 
-	//ErrUndefinedFB is used to indicate a FB was referenced that can't be found (so probably a typo has occured)
-	ErrUndefinedFB = errors.New("Can't find FB with name")
+	//ErrBadExpression is used to indicate something went wrong when parsing a provided ST expression
+	ErrBadExpression = errors.New("A bad ST expression was encountered")
 
 	//ErrUndefinedEvent is used to indicate that an event was referenced that can't be found (so probably a typo has occured)
 	ErrUndefinedEvent = errors.New("Can't find Event with name")

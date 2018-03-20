@@ -66,6 +66,10 @@ func (f functionOp) GetAssociation() Association {
 	return AssociationRight
 }
 
+func (f functionOp) MarshalJSON() ([]byte, error) {
+	return []byte("\"" + f.token + "\""), nil
+}
+
 //NewConverter creates a converter for a list of operators
 func NewConverter(Operators []Operator) Converter {
 	return Converter{Operators}
@@ -92,7 +96,16 @@ func (c *Converter) IsOperand(tok string) bool {
 
 //IsFunction returns if this is a function call or not
 func (c *Converter) IsFunction(tok string) bool {
-	return len(tok) > 1 && (tok[len(tok)-1:] == "(" || tok[len(tok)-1:] == ">")
+	is, _ := IsFunction(tok)
+	return is
+}
+
+//IsFunction returns if this is a function call or not
+func IsFunction(tok string) (bool, Operator) {
+	if len(tok) > 1 && (tok[len(tok)-1:] == "(" || tok[len(tok)-1:] == ">") {
+		return true, functionOp{tok}
+	}
+	return false, nil
 }
 
 //ToPostfix converts a string slice of tokens in infix format to postfix

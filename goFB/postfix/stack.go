@@ -34,7 +34,7 @@ func (s *Stack) Pop() (value interface{}) {
 	return nil
 }
 
-func (s *Stack) String() string {
+func (s Stack) String() string {
 	curPtr := s.top
 	str := ""
 	for i := 0; i < s.size; i++ {

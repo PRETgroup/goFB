@@ -1,21 +1,57 @@
 package stconverter
 
-//STExpression stores primitives
-//E.g. A = 2
-type STExpression struct {
-	A        *STExpression
-	AValue   string //if A is nil, then use AValue
-	Operator string
-	B        *STExpression
+import (
+	"github.com/PRETgroup/goFB/goFB/postfix"
+)
+
+//STExpression is an interface defining an assignments and comparison function tree
+//E.g. A := (2 + y) can be defined using STExpressions
+type STExpression interface {
+	IsValue() (bool, string) //IsValue reflects that this STExpression is an STExpressionValue, and is just a single variable or value
+	IsOperator() (bool, postfix.Operator)
+	GetArguments() []STExpression
+	IsInstruction() bool
 }
 
-//STAssignment is used to assign a value to A
-//examples:
-//  x := 2;
-//  ON_OFF := (ONS_Trig AND NOT ON_OFF) OR (ON_OFF AND NOT ONS_Trig);
-type STAssignment struct {
-	AValue   string
-	Assigned STExpression
+//STExpressionValue is a type of STExpression that is just a single variable or value (i.e. an operand)
+type STExpressionValue struct {
+	Value string
+}
+
+//IsValue returns the internal value
+func (s STExpressionValue) IsValue() (bool, string) {
+	return true, s.Value
+}
+
+//IsOperator returns nothing, as an STExpressionValue is not an operator
+func (s STExpressionValue) IsOperator() (bool, postfix.Operator) {
+	return false, nil
+}
+
+//GetArguments returns the internal value as a single-element slice
+func (s STExpressionValue) GetArguments() []STExpression {
+	return []STExpression{s}
+}
+
+//STExpressionOperator is a type of STExpression that is an operator or a function with a list of arguments
+type STExpressionOperator struct {
+	Operator  postfix.Operator
+	Arguments []STExpression
+}
+
+//IsValue returns nothing, as STExpressionOperator is not a value
+func (s STExpressionOperator) IsValue() (bool, string) {
+	return false, ""
+}
+
+//IsOperator returns the internal operator
+func (s STExpressionOperator) IsOperator() (bool, postfix.Operator) {
+	return true, s.Operator
+}
+
+//GetArguments returns the list of arguments
+func (s STExpressionOperator) GetArguments() []STExpression {
+	return s.Arguments
 }
 
 //STIfThen is used as part of an STIfElsIfElse
@@ -86,7 +122,7 @@ FOR count := initial_value TO final_value BY increment DO
 END_FOR;
 */
 type STForLoop struct {
-	ForAssigment STAssignment
+	ForAssigment STExpression
 	ToValue      STExpression
 	ByIncrement  string
 	Sequence     []STInstruction

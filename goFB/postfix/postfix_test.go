@@ -29,6 +29,7 @@ func (s stOp) GetAssociation() Association {
 }
 
 const (
+	stAssignment         = ":="
 	stNot                = "not"
 	stExponentiation     = "**"
 	stMultiply           = "*"
@@ -64,6 +65,7 @@ var ops = []Operator{
 	stOp{stAnd, 5, 2, AssociationLeft},
 	stOp{stExlusiveOr, 5, 2, AssociationLeft},
 	stOp{stOr, 5, 2, AssociationLeft},
+	stOp{stAssignment, 6, 2, AssociationLeft},
 }
 
 type postfixTest struct {
@@ -110,6 +112,14 @@ var tests = []postfixTest{
 	{ //variables!
 		in:  []string{"x", "+", "max(", "y", ",", "2", "*", "z", ")"},
 		out: []string{"x", "y", "2", "z", "*", "max<2>", "+"},
+	},
+	{
+		in:  []string{"x", ">=", "max(", "y", ",", "2", "*", "z", ")"},
+		out: []string{"x", "y", "2", "z", "*", "max<2>", ">="},
+	},
+	{
+		in:  []string{"x", ":=", "max(", "y", ",", "2", "*", "z", ")"},
+		out: []string{"x", "y", "2", "z", "*", "max<2>", ":="},
 	},
 }
 
