@@ -1,31 +1,5 @@
 package stconverter
 
-const (
-	stOpenBracket  = "("
-	stCloseBracket = ")"
-
-	stNoFurtherOperations = ""
-
-	stAssignment = ":="
-
-	stNot                = "not"
-	stExponentiation     = "**"
-	stMultiply           = "*"
-	stDivide             = "/"
-	stModulo             = "MOD"
-	stAdd                = "+"
-	stSubtract           = "-"
-	stLessThan           = "<"
-	stGreaterThan        = ">"
-	stLessThanEqualTo    = "<="
-	stGreaterThanEqualTo = ">="
-	stEqual              = "="
-	stInequal            = "<>"
-	stAnd                = "and"
-	stExlusiveOr         = "xor"
-	stOr                 = "or"
-)
-
 //STExpression stores primitives
 //E.g. A = 2
 type STExpression struct {
@@ -47,7 +21,7 @@ type STAssignment struct {
 //STIfThen is used as part of an STIfElsIfElse
 //  it holds the if [boolean expression] then <statements...>; part
 type STIfThen struct {
-	Expression   STExpression
+	IfExpression STExpression
 	ThenSequence []STInstruction
 }
 

@@ -32,6 +32,6 @@ assigment
 */
 
 //An STSequence represents a sequence of ST instructions in an IEC61499 program
-type STSequence struct {
-	STInstructions []STInstruction
-}
+// type STSequence struct {
+// 	STInstructions []STInstruction
+// }
