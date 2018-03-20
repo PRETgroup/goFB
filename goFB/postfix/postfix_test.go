@@ -100,8 +100,16 @@ var tests = []postfixTest{
 		out: []string{"1", "2", "not", "+"},
 	},
 	{
-		in:  []string{"sin(", "max(", "2", "3", ")", "/", "3", "*", "3.1415"},
+		in:  []string{"sin(", "max(", "2", ",", "3", ")", "/", "3", "*", "3.1415", ")"},
 		out: []string{"2", "3", "max<2>", "3", "/", "3.1415", "*", "sin<1>"},
+	},
+	{
+		in:  []string{"max(", "sin(", "2", "*", "(", "3", "+", "5", ")", ")", ",", "max(", "1", ",", "2", ")"},
+		out: []string{"2", "3", "5", "+", "*", "sin<1>", "1", "2", "max<2>", "max<2>"},
+	},
+	{ //variables!
+		in:  []string{"x", "+", "max(", "y", ",", "2", "*", "z", ")"},
+		out: []string{"x", "y", "2", "z", "*", "max<2>", "+"},
 	},
 }
 
@@ -110,7 +118,9 @@ func TestPostfix(t *testing.T) {
 	for i := 0; i < len(tests); i++ {
 		pOut := c.ToPostfix(tests[i].in)
 		if !reflect.DeepEqual(tests[i].out, pOut) {
-			t.Errorf("failed test %d\nout:  %+v\npOut: %+v\n", i, tests[i].out, pOut)
+			t.Errorf("Failed test %d\nInput:   %+v\nReqOut:  %+v\ngaveOut: %+v\n", i, tests[i].in, tests[i].out, pOut)
+		} else {
+			t.Logf("Pass test %d\nInput:   %+v\nReqOut:  %+v\n", i, tests[i].in, tests[i].out)
 		}
 	}
 }

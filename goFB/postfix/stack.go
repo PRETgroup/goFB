@@ -1,5 +1,7 @@
 package postfix
 
+import "fmt"
+
 type Stack struct {
 	top  *Element
 	size int
@@ -30,4 +32,14 @@ func (s *Stack) Pop() (value interface{}) {
 		return
 	}
 	return nil
+}
+
+func (s *Stack) String() string {
+	curPtr := s.top
+	str := ""
+	for i := 0; i < s.size; i++ {
+		str += fmt.Sprintf("%d:%v\n", i, curPtr.value)
+		curPtr = curPtr.next
+	}
+	return str
 }
