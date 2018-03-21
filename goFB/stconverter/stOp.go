@@ -27,6 +27,10 @@ func (s stOp) GetAssociation() postfix.Association {
 	return s.association
 }
 
+func (s stOp) LeftAssociative() bool {
+	return s.association == postfix.AssociationLeft
+}
+
 func (s stOp) MarshalJSON() ([]byte, error) {
 	return []byte("\"" + s.token + "\""), nil
 }

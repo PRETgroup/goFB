@@ -22,6 +22,7 @@ type Operator interface {
 	GetToken() string
 	GetPrecedence() int
 	GetNumOperands() int
+	LeftAssociative() bool
 	GetAssociation() Association
 }
 
@@ -64,6 +65,10 @@ func (f functionOp) GetNumOperands() int {
 //GetAssociation returns the Association (which is always Right for functions) and fulfils the Operator interface
 func (f functionOp) GetAssociation() Association {
 	return AssociationRight
+}
+
+func (f functionOp) LeftAssociative() bool {
+	return false
 }
 
 func (f functionOp) MarshalJSON() ([]byte, error) {

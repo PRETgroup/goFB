@@ -7,8 +7,8 @@ import (
 //STExpression is an interface defining an assignments and comparison function tree
 //E.g. A := (2 + y) can be defined using STExpressions
 type STExpression interface {
-	IsValue() (bool, string) //IsValue reflects that this STExpression is an STExpressionValue, and is just a single variable or value
-	IsOperator() (bool, postfix.Operator)
+	HasValue() string //IsValue reflects that this STExpression is an STExpressionValue, and is just a single variable or value
+	HasOperator() postfix.Operator
 	GetArguments() []STExpression
 	IsInstruction() bool
 }
@@ -18,14 +18,14 @@ type STExpressionValue struct {
 	Value string
 }
 
-//IsValue returns the internal value
-func (s STExpressionValue) IsValue() (bool, string) {
-	return true, s.Value
+//HasValue returns the internal value
+func (s STExpressionValue) HasValue() string {
+	return s.Value
 }
 
-//IsOperator returns nothing, as an STExpressionValue is not an operator
-func (s STExpressionValue) IsOperator() (bool, postfix.Operator) {
-	return false, nil
+//HasOperator returns nothing, as an STExpressionValue is not an operator
+func (s STExpressionValue) HasOperator() postfix.Operator {
+	return nil
 }
 
 //GetArguments returns the internal value as a single-element slice
@@ -39,14 +39,14 @@ type STExpressionOperator struct {
 	Arguments []STExpression
 }
 
-//IsValue returns nothing, as STExpressionOperator is not a value
-func (s STExpressionOperator) IsValue() (bool, string) {
-	return false, ""
+//HasValue returns nothing, as STExpressionOperator is not a value
+func (s STExpressionOperator) HasValue() string {
+	return ""
 }
 
-//IsOperator returns the internal operator
-func (s STExpressionOperator) IsOperator() (bool, postfix.Operator) {
-	return true, s.Operator
+//HasOperator returns the internal operator
+func (s STExpressionOperator) HasOperator() postfix.Operator {
+	return s.Operator
 }
 
 //GetArguments returns the list of arguments

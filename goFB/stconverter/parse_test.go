@@ -10,6 +10,7 @@ type stTestCase struct {
 	name       string
 	progString string
 	prog       []STInstruction
+	compC      string
 	err        error
 }
 
@@ -26,6 +27,7 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: "x = 1;",
 	},
 	{
 		name:       "assignment 2",
@@ -45,6 +47,7 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: "y = x + 2;",
 	},
 	{
 		name:       "if/then 1",
@@ -497,25 +500,30 @@ var stTestCases = []stTestCase{
 }
 
 func TestCases(t *testing.T) {
-	for i := 0; i < len(stTestCases); i++ {
+	for i := 0; i < 2; i++ {
 		prog, err := ParseString(stTestCases[i].name, stTestCases[i].progString)
 		if err != nil && stTestCases[i].err != nil {
 			if stTestCases[i].err.Error() != err.Err.Error() {
-				t.Errorf("Test %d (%s) FAIL.\nError mismatch. Expecting %s, but received:%s", i, stTestCases[i].name, stTestCases[i].err.Error(), err.Err.Error())
+				t.Errorf("Test %d (%s) PARSING FAIL.\nError mismatch. Expecting %s, but received:%s", i, stTestCases[i].name, stTestCases[i].err.Error(), err.Err.Error())
 			}
 			continue
 		}
 		if err != nil {
-			t.Errorf("Test %d (%s) FAIL.\nNot expecting error, but received:%s", i, stTestCases[i].name, err.Error())
+			t.Errorf("Test %d (%s) PARSING FAIL.\nNot expecting error, but received:%s", i, stTestCases[i].name, err.Error())
 			continue
 		}
 		if stTestCases[i].err != nil {
-			t.Errorf("Test %d (%s) FAIL.\nWas expecting error, but did not receive.", i, stTestCases[i].name)
+			t.Errorf("Test %d (%s) PARSING FAIL.\nWas expecting error, but did not receive.", i, stTestCases[i].name)
 		}
 		if !reflect.DeepEqual(prog, stTestCases[i].prog) {
 			expected, _ := json.MarshalIndent(stTestCases[i].prog, "\t", "\t")
 			received, _ := json.MarshalIndent(prog, "\t", "\t")
-			t.Errorf("Test %d (%s) FAIL.\n:Expected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, expected, received)
+			t.Errorf("Test %d (%s) PARSING FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, expected, received)
+		}
+		//now check if the compiled version matches
+		compProg := CCompileSequence(prog)
+		if compProg != stTestCases[i].compC {
+			t.Errorf("Test %d (%s) COMPILATION FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, stTestCases[i].compC, compProg)
 		}
 	}
 }

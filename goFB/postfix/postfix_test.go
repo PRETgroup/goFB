@@ -28,6 +28,10 @@ func (s stOp) GetAssociation() Association {
 	return s.association
 }
 
+func (s stOp) LeftAssociative() bool {
+	return s.association == AssociationLeft
+}
+
 const (
 	stAssignment         = ":="
 	stNot                = "not"

@@ -1,0 +1,86 @@
+package stconverter
+
+import (
+	"strings"
+)
+
+const cTemplate = `
+{{define "expression"}}{{$value := .HasValue}}{{$operator := .HasOperator}}{{/*
+*/}}{{if $value}}{{/*
+	*/}}{{$value}}{{/*
+*/}}{{else if $operator}}{{/* //then we need to determine how to print this operator
+	*/}}{{if $operator.LeftAssociative}}{{/* //print first argument, operator string, then remaining arguments
+		*/}}{{$args := .GetArguments}}{{/*
+		*/}}{{template "expression" index $args 1}} {{translateOperatorToken $operator.GetToken}} {{template "expression" index $args 0}}{{/*
+	*/}}{{else}}{{/* //print name, opening bracket, then arguments separated by commas
+		*/}}{{translateOperatorToken $operator.GetToken}}{{if not tokenIsFunctionCall $operator.GetToken}} ({{end}}{{/*
+		*/}}{{range $ind, $arg := .GetArguments}}{{if $ind}}, {{end}}({{template "expression" $arg}}){{end}}{{/*
+	*/}}{{end}}{{/*
+*/}}{{end}}{{/*}}
+*/}}{{end}}`
+
+func cTokenIsFunctionCall(token string) bool {
+	first := strings.Index(token, "<")
+	if len(token) > 2 && token[len(token)-1:] == ">" && first != -1 {
+		return true
+	}
+	return false
+}
+
+func cTranslateOperatorToken(token string) string {
+	//is it our function<n> syntax?
+	first := strings.Index(token, "<")
+	if len(token) > 2 && token[len(token)-1:] == ">" && first != -1 {
+		//we on't need the following... we don't need the number of arguments??
+		// ops := token[first+1 : len(token)-1]
+		// opsInt, err := strconv.Atoi(ops)
+		// if err != nil {
+		// 	return token[:first-1] + "("
+		// }
+		return token[:first-1] + "("
+	}
+	//ok, not a function, so it's one of the st Operators
+	switch token {
+	case stExit:
+		return "break"
+	case stReturn:
+		return "return"
+	case stNot:
+		return "!"
+	case stExponentiation:
+		//todo: we need to roll a custom exponentiation function
+		panic("exponentiation not supported in C!")
+		return ""
+	case stMultiply:
+		return "*"
+	case stModulo:
+		return "%"
+	case stAdd:
+		return "+"
+	case stSubtract:
+		return "-"
+	case stLessThan:
+		return "<"
+	case stGreaterThan:
+		return ">"
+	case stLessThanEqualTo:
+		return "<="
+	case stGreaterThanEqualTo:
+		return ">="
+	case stEqual:
+		return "=="
+	case stInequal:
+		return "!="
+	case stAnd:
+		return "&"
+	case stExlusiveOr:
+		return "^"
+	case stOr:
+		return "|"
+	case stAssignment:
+		return "="
+	}
+	//still here? panic
+	panic("unsupported token " + token)
+	return ""
+}
