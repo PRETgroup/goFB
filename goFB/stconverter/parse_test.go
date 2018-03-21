@@ -374,6 +374,7 @@ var stTestCases = []stTestCase{
 			"while i >= 1 do\n" +
 			"	print(i);\n" +
 			"	i := i-1;\n" +
+			"	exit;\n" +
 			"end_while;\n",
 		prog: []STInstruction{
 			STWhileLoop{
@@ -404,9 +405,29 @@ var stTestCases = []stTestCase{
 							STExpressionValue{"i"},
 						},
 					},
+					STExpressionOperator{
+						Operator: findOp("exit"),
+					},
 				},
 			},
 		},
+	},
+	{
+		name: "bad while loop 1",
+		progString: "" +
+			"while i >= 1 do\n" +
+			"	print(i);\n" +
+			"	i := i-1;\n" +
+			"end_for;\n",
+		err: ErrUnexpectedToken,
+	},
+	{
+		name: "bad while loop 2",
+		progString: "" +
+			"while i >= 1 do\n" +
+			"	print(i);\n" +
+			"	i := i-1;\n",
+		err: ErrUnexpectedEOF,
 	},
 }
 
@@ -414,10 +435,10 @@ func TestCases(t *testing.T) {
 	for i := 0; i < len(stTestCases); i++ {
 		prog, err := ParseString(stTestCases[i].name, stTestCases[i].progString)
 		if err != nil && stTestCases[i].err != nil {
-			//TODO check if errors are the same
 			if stTestCases[i].err.Error() != err.Err.Error() {
 				t.Errorf("Test %d (%s) FAIL.\nError mismatch. Expecting %s, but received:%s", i, stTestCases[i].name, stTestCases[i].err.Error(), err.Err.Error())
 			}
+			continue
 		}
 		if err != nil {
 			t.Errorf("Test %d (%s) FAIL.\nNot expecting error, but received:%s", i, stTestCases[i].name, err.Error())

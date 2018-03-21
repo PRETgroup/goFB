@@ -12,8 +12,8 @@ var (
 	//ErrUnexpectedEOF means the document ended unexpectedly
 	ErrUnexpectedEOF = errors.New("Unexpected EOF")
 
-	//ErrUnexpectedValue is used to indicate a parsed value was not what was expected (i.e. a word instead of a semicolon)
-	ErrUnexpectedValue = errors.New("Unexpected value")
+	//ErrUnexpectedToken is used to indicate a parsed value was not what was expected (i.e. a word instead of a semicolon)
+	ErrUnexpectedToken = errors.New("Unexpected token")
 
 	//ErrBadExpression is used to indicate something went wrong when parsing a provided ST expression
 	ErrBadExpression = errors.New("A bad ST expression was encountered")
@@ -79,6 +79,10 @@ func (t *stParse) errorWithArgAndReason(err error, arg string, reason string) *S
 	return &STParseError{LineNumber: t.currentLine, Argument: arg, Reason: reason, Err: err}
 }
 
-func (t *stParse) errorUnexpectedWithExpected(unexpected string, expected string) *STParseError {
-	return &STParseError{LineNumber: t.currentLine, Argument: unexpected, Reason: "Expected: " + expected, Err: ErrUnexpectedValue}
+func (t *stParse) errorUnexpectedToken(token string) *STParseError {
+	return &STParseError{LineNumber: t.currentLine, Argument: token, Err: ErrUnexpectedToken}
+}
+
+func (t *stParse) errorUnexpectedTokenWithExpected(unexpected string, expected string) *STParseError {
+	return &STParseError{LineNumber: t.currentLine, Argument: unexpected, Reason: "Expected: " + expected, Err: ErrUnexpectedToken}
 }

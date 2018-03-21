@@ -2,7 +2,6 @@ package stconverter
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/PRETgroup/goFB/goFB/postfix"
 )
@@ -35,6 +34,29 @@ func (t *stParse) parseNext() (STInstruction, *STParseError) {
 	return t.parseAssignment()
 }
 
+var disallowedExpressionKeywords = []string{
+	stIf,
+	stThen,
+	stElsif,
+	stElse,
+	stEndIf,
+	stCase,
+	stOf,
+	stComma,
+	stColon,
+	stEndCase,
+	stFor,
+	stTo,
+	stBy,
+	stDo,
+	stEndFor,
+	stWhile,
+	stEndWhile,
+	stRepeat,
+	stUntil,
+	stEndRepeat,
+}
+
 //pareExpressionTerminatesWith will run through the parse until it reaches a given termination value
 //then it will convert that into a STExpression
 func (t *stParse) parseExpressionTerminatesWith(terminates ...string) (STExpression, *STParseError) {
@@ -48,9 +70,15 @@ out:
 		}
 		s := t.peek()
 		//determine if s terminates
-		for _, t := range terminates {
-			if s == t {
+		for _, te := range terminates {
+			if s == te {
 				break out
+			}
+		}
+		//check if s is a disallowed instruction (any of the other keywords)
+		for _, kw := range disallowedExpressionKeywords {
+			if s == kw {
+				return nil, t.errorUnexpectedToken(s)
 			}
 		}
 		t.pop()
@@ -85,7 +113,6 @@ out:
 	}
 	//now we're done!
 	if len(stack) != 1 {
-		fmt.Println(stack)
 		return nil, t.error(ErrBadExpression)
 	}
 	s := stack[0]
@@ -107,7 +134,7 @@ func (t *stParse) parseIfElsifElse() (STInstruction, *STParseError) {
 	//the first word should be if
 	s := t.pop()
 	if s != stIf {
-		return nil, t.errorUnexpectedWithExpected(s, stIf)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stIf)
 	}
 
 	ifte := STIfElsIfElse{}
@@ -172,13 +199,13 @@ func (t *stParse) parseIfElsifElse() (STInstruction, *STParseError) {
 	//now consume the stEndIf (we've only peeked at it until now)
 	s = t.pop()
 	if s != stEndIf {
-		return nil, t.errorUnexpectedWithExpected(s, stEndIf)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stEndIf)
 	}
 
 	//now consume the stSemicolon
 	s = t.pop()
 	if s != stSemicolon {
-		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stSemicolon)
 	}
 
 	return ifte, nil
@@ -199,7 +226,7 @@ func (t *stParse) parseSwitchCase() (STInstruction, *STParseError) {
 	//the first word should be case
 	s := t.pop()
 	if s != stCase {
-		return nil, t.errorUnexpectedWithExpected(s, stCase)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stCase)
 	}
 
 	sc := STSwitchCase{}
@@ -228,7 +255,7 @@ cases:
 		}
 		//now we should have a colon
 		if colon := t.pop(); colon != stColon {
-			return nil, t.errorUnexpectedWithExpected(colon, stColon)
+			return nil, t.errorUnexpectedTokenWithExpected(colon, stColon)
 		}
 
 		//now we have a sequence of instructions, terminated by the next case or terminated by else
@@ -289,13 +316,13 @@ cases:
 	//now consume the stEndCase (we've only peeked at it until now)
 	s = t.pop()
 	if s != stEndCase {
-		return nil, t.errorUnexpectedWithExpected(s, stEndCase)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stEndCase)
 	}
 
 	//now consume the stSemicolon
 	s = t.pop()
 	if s != stSemicolon {
-		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stSemicolon)
 	}
 
 	return sc, nil
@@ -312,7 +339,7 @@ func (t *stParse) parseForLoop() (STInstruction, *STParseError) {
 	//the first word should be for
 	s := t.pop()
 	if s != stFor {
-		return nil, t.errorUnexpectedWithExpected(s, stFor)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stFor)
 	}
 
 	fl := STForLoop{}
@@ -356,13 +383,13 @@ func (t *stParse) parseForLoop() (STInstruction, *STParseError) {
 	//now consume the stEndIf (we've only peeked at it until now)
 	s = t.pop()
 	if s != stEndFor {
-		return nil, t.errorUnexpectedWithExpected(s, stEndFor)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stEndFor)
 	}
 
 	//now consume the stSemicolon
 	s = t.pop()
 	if s != stSemicolon {
-		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stSemicolon)
 	}
 
 	return fl, nil
@@ -379,7 +406,7 @@ func (t *stParse) parseWhileLoop() (STInstruction, *STParseError) {
 	//the first word should be while
 	s := t.pop()
 	if s != stWhile {
-		return nil, t.errorUnexpectedWithExpected(s, stWhile)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stWhile)
 	}
 
 	wl := STWhileLoop{}
@@ -404,13 +431,13 @@ func (t *stParse) parseWhileLoop() (STInstruction, *STParseError) {
 	//now consume the stEndWhile (we've only peeked at it until now)
 	s = t.pop()
 	if s != stEndWhile {
-		return nil, t.errorUnexpectedWithExpected(s, stEndWhile)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stEndWhile)
 	}
 
 	//now consume the stSemicolon
 	s = t.pop()
 	if s != stSemicolon {
-		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
+		return nil, t.errorUnexpectedTokenWithExpected(s, stSemicolon)
 	}
 
 	return wl, nil
@@ -432,7 +459,6 @@ func (t *stParse) parseAssignment() (STInstruction, *STParseError) {
 	//consumes stSemicolon
 	ass, err := t.parseExpressionTerminatesWith(stSemicolon)
 	if err != nil {
-		fmt.Println("error", err)
 		return nil, err
 	}
 	t.pop() //consume semicolon
