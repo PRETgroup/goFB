@@ -229,11 +229,14 @@ cases:
 	caseseq:
 		for {
 			//is the next instruction an "else" or an "end_case"?
-			if t.peek() == stElse || t.peek() == stEndCase {
+			if t.peek() == stElse || t.peek() == stEndCase || t.done() {
 				break caseseq
 			}
 
 			//is the next instruction the beginning of the next case?
+			//the only way to tell this is to peek far ahead using the deepPeek instruction
+			//to see which is first, a semicolon (indicating that it's a normal instruction)
+			//or a colon, indicating that it's a case
 			i := 0
 		search:
 			for {
