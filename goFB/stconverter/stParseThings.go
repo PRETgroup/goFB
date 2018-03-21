@@ -7,7 +7,7 @@ import (
 	"github.com/PRETgroup/goFB/goFB/postfix"
 )
 
-func (t *stParse) parseNext() ([]STInstruction, *STParseError) {
+func (t *stParse) parseNext() (STInstruction, *STParseError) {
 	s := t.peek()
 	//decide which parser to call
 	//are we beginning a block {if, case, for, while, repeat}
@@ -103,7 +103,7 @@ ELSIF [boolean expression] THEN
 ELSE
     <statement>;
 END_IF ; */
-func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
+func (t *stParse) parseIfElsifElse() (STInstruction, *STParseError) {
 	//the first word should be if
 	s := t.pop()
 	if s != stIf {
@@ -129,7 +129,7 @@ func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
 		if err != nil {
 			return nil, err
 		}
-		it.ThenSequence = append(it.ThenSequence, seq...)
+		it.ThenSequence = append(it.ThenSequence, seq)
 	}
 
 	ifte.IfThens = append(ifte.IfThens, it)
@@ -152,7 +152,7 @@ func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
 			if err != nil {
 				return nil, err
 			}
-			eit.ThenSequence = append(eit.ThenSequence, seq...)
+			eit.ThenSequence = append(eit.ThenSequence, seq)
 		}
 		ifte.IfThens = append(ifte.IfThens, eit)
 	}
@@ -165,7 +165,7 @@ func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
 			if err != nil {
 				return nil, err
 			}
-			ifte.ElseSequence = append(ifte.ElseSequence, seq...)
+			ifte.ElseSequence = append(ifte.ElseSequence, seq)
 		}
 	}
 
@@ -181,7 +181,7 @@ func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
 		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
 	}
 
-	return []STInstruction{ifte}, nil
+	return ifte, nil
 
 }
 
@@ -195,7 +195,7 @@ ELSE
     <statement>;
 END_CASE;
 */
-func (t *stParse) parseSwitchCase() ([]STInstruction, *STParseError) {
+func (t *stParse) parseSwitchCase() (STInstruction, *STParseError) {
 	//the first word should be case
 	s := t.pop()
 	if s != stCase {
@@ -266,7 +266,7 @@ cases:
 			if err != nil {
 				return nil, err
 			}
-			scase.Sequence = append(scase.Sequence, seq...)
+			scase.Sequence = append(scase.Sequence, seq)
 		}
 		sc.Cases = append(sc.Cases, scase)
 		if t.peek() == stElse || t.peek() == stEndCase || t.done() {
@@ -282,7 +282,7 @@ cases:
 			if err != nil {
 				return nil, err
 			}
-			sc.ElseSequence = append(sc.ElseSequence, seq...)
+			sc.ElseSequence = append(sc.ElseSequence, seq)
 		}
 	}
 
@@ -298,7 +298,7 @@ cases:
 		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
 	}
 
-	return []STInstruction{sc}, nil
+	return sc, nil
 }
 
 //STForLoop is used for for loops
@@ -308,7 +308,7 @@ FOR count := initial_value TO final_value BY increment DO
     <statement>;
 END_FOR;
 */
-func (t *stParse) parseForLoop() ([]STInstruction, *STParseError) {
+func (t *stParse) parseForLoop() (STInstruction, *STParseError) {
 	//the first word should be for
 	s := t.pop()
 	if s != stFor {
@@ -350,7 +350,7 @@ func (t *stParse) parseForLoop() ([]STInstruction, *STParseError) {
 		if err != nil {
 			return nil, err
 		}
-		fl.Sequence = append(fl.Sequence, seq...)
+		fl.Sequence = append(fl.Sequence, seq)
 	}
 
 	//now consume the stEndIf (we've only peeked at it until now)
@@ -365,18 +365,70 @@ func (t *stParse) parseForLoop() ([]STInstruction, *STParseError) {
 		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
 	}
 
-	return []STInstruction{fl}, nil
+	return fl, nil
 }
 
-func (t *stParse) parseWhileLoop() ([]STInstruction, *STParseError) {
+//STWhileLoop is used for while loops
+//Example:
+/*
+WHILE [boolean expression] DO
+    <statement>;
+END_WHILE;
+*/
+func (t *stParse) parseWhileLoop() (STInstruction, *STParseError) {
+	//the first word should be while
+	s := t.pop()
+	if s != stWhile {
+		return nil, t.errorUnexpectedWithExpected(s, stWhile)
+	}
+
+	wl := STWhileLoop{}
+
+	//now we should get an expression terminated with "do"
+	wExpr, err := t.parseExpressionTerminatesWith(stDo)
+	if err != nil {
+		return nil, err
+	}
+	t.pop() //consume "do"
+	wl.WhileExpression = wExpr
+
+	//now we should get a sequence terminated by end_while
+	for t.peek() != stEndWhile && !t.done() {
+		seq, err := t.parseNext()
+		if err != nil {
+			return nil, err
+		}
+		wl.Sequence = append(wl.Sequence, seq)
+	}
+
+	//now consume the stEndWhile (we've only peeked at it until now)
+	s = t.pop()
+	if s != stEndWhile {
+		return nil, t.errorUnexpectedWithExpected(s, stEndWhile)
+	}
+
+	//now consume the stSemicolon
+	s = t.pop()
+	if s != stSemicolon {
+		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
+	}
+
+	return wl, nil
+}
+
+//STRepeatLoop is used for Repeat....Until loops
+//Example:
+/*
+REPEAT
+    <statement>;
+UNTIL [boolean expression]
+END_REPEAT;
+*/
+func (t *stParse) parseRepeatLoop() (STInstruction, *STParseError) {
 	return nil, t.error(errors.New("not yet implemented"))
 }
 
-func (t *stParse) parseRepeatLoop() ([]STInstruction, *STParseError) {
-	return nil, t.error(errors.New("not yet implemented"))
-}
-
-func (t *stParse) parseAssignment() ([]STInstruction, *STParseError) {
+func (t *stParse) parseAssignment() (STInstruction, *STParseError) {
 	//consumes stSemicolon
 	ass, err := t.parseExpressionTerminatesWith(stSemicolon)
 	if err != nil {
@@ -384,5 +436,5 @@ func (t *stParse) parseAssignment() ([]STInstruction, *STParseError) {
 		return nil, err
 	}
 	t.pop() //consume semicolon
-	return []STInstruction{ass}, nil
+	return ass, nil
 }

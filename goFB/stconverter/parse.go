@@ -131,7 +131,7 @@ func parseItems(name string, items []string) ([]STInstruction, *STParseError) {
 		if err != nil {
 			return nil, err
 		}
-		t.instructions = append(t.instructions, instr...)
+		t.instructions = append(t.instructions, instr)
 	}
 
 	return t.instructions, nil

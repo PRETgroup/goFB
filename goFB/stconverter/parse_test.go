@@ -368,6 +368,46 @@ var stTestCases = []stTestCase{
 			},
 		},
 	},
+	{
+		name: "while loop 1",
+		progString: "" +
+			"while i >= 1 do\n" +
+			"	print(i);\n" +
+			"	i := i-1;\n" +
+			"end_while;\n",
+		prog: []STInstruction{
+			STWhileLoop{
+				WhileExpression: STExpressionOperator{
+					Operator: findOp(stGreaterThanEqualTo),
+					Arguments: []STExpression{
+						STExpressionValue{"1"},
+						STExpressionValue{"i"},
+					},
+				},
+				Sequence: []STInstruction{
+					STExpressionOperator{
+						Operator: findOp("print<1>"),
+						Arguments: []STExpression{
+							STExpressionValue{"i"},
+						},
+					},
+					STExpressionOperator{
+						Operator: findOp(stAssignment),
+						Arguments: []STExpression{
+							STExpressionOperator{
+								Operator: findOp(stSubtract),
+								Arguments: []STExpression{
+									STExpressionValue{"1"},
+									STExpressionValue{"i"},
+								},
+							},
+							STExpressionValue{"i"},
+						},
+					},
+				},
+			},
+		},
+	},
 }
 
 func TestCases(t *testing.T) {
