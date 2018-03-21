@@ -75,8 +75,17 @@ var stTestCases = []stTestCase{
 		},
 	},
 	{
-		name:       "if/elsif/else 1",
-		progString: "if y > x then y := x;\n print(\"hello\");\n elsif x > y then \n a := 1 + 2 * 3; \n else print(\"hi\"); \n print(\"yes\"); \n end_if;",
+		name: "if/elsif/else 1",
+		progString: "" +
+			"if y > x then" +
+			"	y := x;\n" +
+			"	print(\"hello\");\n" +
+			"elsif x > y then\n" +
+			"	a := 1 + 2 * 3;\n" +
+			"else\n" +
+			"	print(\"hi\"); \n" +
+			"	print(\"yes\"); \n" +
+			"end_if;",
 		prog: []STInstruction{
 			STIfElsIfElse{
 				IfThens: []STIfThen{
@@ -153,8 +162,15 @@ var stTestCases = []stTestCase{
 		},
 	},
 	{
-		name:       "switchcase 1",
-		progString: "case x + 1 of \n 1: print(\"hello\"); \n y := 2; \n 2, 3: print(\"many\");\nelse\nz := 2 + 2;end_case;",
+		name: "switchcase 1",
+		progString: "" +
+			"case x + 1 of \n" +
+			"1:	print(\"hello\"); \n" +
+			"	y := 2; \n" +
+			"2, 3: print(\"many\");\n" +
+			"else\n" +
+			"	z := 2 + 2;" +
+			"end_case;",
 		prog: []STInstruction{
 			STSwitchCase{
 				SwitchOn: STExpressionOperator{
@@ -218,11 +234,11 @@ var stTestCases = []stTestCase{
 		progString: "" +
 			"case (x + 1) of \n" +
 			"1: print(\"hello\"); \n" +
-			"y := 2; \n" +
+			"	y := 2; \n" +
 			"2: \n" +
 			"3: print(\"many\");\n" +
 			"else\n" +
-			"z := 2 + 2;\n" +
+			"	z := 2 + 2;\n" +
 			"end_case;",
 		prog: []STInstruction{
 			STSwitchCase{
@@ -289,7 +305,7 @@ var stTestCases = []stTestCase{
 		name: "for loop 1",
 		progString: "" +
 			"for i := 1 to 10 by 2 do\n" +
-			"print(i);\n" +
+			"	print(i);\n" +
 			"end_for;\n",
 		prog: []STInstruction{
 			STForLoop{
@@ -317,7 +333,7 @@ var stTestCases = []stTestCase{
 		name: "for loop 2",
 		progString: "" +
 			"for i := 1 to (2+10)*5 do\n" +
-			"print(i);\n" +
+			"	print(i);\n" +
 			"end_for;\n",
 		prog: []STInstruction{
 			STForLoop{
