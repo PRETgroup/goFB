@@ -32,6 +32,9 @@ const (
 	stExlusiveOr         = "xor"
 	stOr                 = "or"
 
+	stExit   = "exit"
+	stReturn = "return"
+
 	stIf    = "if" //block beginner
 	stThen  = "then"
 	stElsif = "elsif"

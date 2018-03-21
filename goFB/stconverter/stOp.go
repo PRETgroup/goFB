@@ -32,6 +32,8 @@ func (s stOp) MarshalJSON() ([]byte, error) {
 }
 
 var stOps = []postfix.Operator{
+	stOp{stExit, 0, 0, postfix.AssociationNone},   //not technically operators but they might appear in expressions (with no other things around them)
+	stOp{stReturn, 0, 0, postfix.AssociationNone}, //not technically operators but they might appear in expressions (with no other things around them)
 	stOp{stNot, 0, 1, postfix.AssociationRight},
 	stOp{stExponentiation, 1, 2, postfix.AssociationRight},
 	stOp{stMultiply, 2, 2, postfix.AssociationLeft},

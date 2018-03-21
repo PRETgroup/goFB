@@ -35,19 +35,25 @@ func (t *stParse) parseNext() ([]STInstruction, *STParseError) {
 	return t.parseAssignment()
 }
 
-func (t *stParse) parseExpressionTerminatesWith(terminates string) (STExpression, *STParseError) {
+//pareExpressionTerminatesWith will run through the parse until it reaches a given termination value
+//then it will convert that into a STExpression
+func (t *stParse) parseExpressionTerminatesWith(terminates ...string) (STExpression, *STParseError) {
 	//step 1, convert from infix to postfix
 	//load the string tokens up to a match with "terminates"
 	infixExprString := make([]string, 0)
+out:
 	for {
 		if t.done() {
 			return nil, t.error(ErrUnexpectedEOF)
 		}
-		s := t.pop()
-		//determine what s is
-		if s == terminates {
-			break
+		s := t.peek()
+		//determine if s terminates
+		for _, t := range terminates {
+			if s == t {
+				break out
+			}
 		}
+		t.pop()
 		infixExprString = append(infixExprString, s)
 	}
 
@@ -107,11 +113,11 @@ func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
 	ifte := STIfElsIfElse{}
 
 	//now we should get an expression terminated with "then"
-	//("then" is consumed in this process)
 	ifExpr, err := t.parseExpressionTerminatesWith(stThen)
 	if err != nil {
 		return nil, err
 	}
+	t.pop() //consume then
 
 	it := STIfThen{
 		IfExpression: ifExpr,
@@ -136,6 +142,7 @@ func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
 		if err != nil {
 			return nil, err
 		}
+		t.pop() //consume then
 		eit := STIfThen{
 			IfExpression: elsIfExpr,
 		}
@@ -198,12 +205,11 @@ func (t *stParse) parseSwitchCase() ([]STInstruction, *STParseError) {
 	sc := STSwitchCase{}
 
 	//now we should get an expression terminated with "of"
-	//("of" is consumed in this process)
 	ofExpr, err := t.parseExpressionTerminatesWith(stOf)
 	if err != nil {
 		return nil, err
 	}
-
+	t.pop() //consume of
 	sc.SwitchOn = ofExpr
 
 	//now we have a number of cases marked as
@@ -295,8 +301,71 @@ cases:
 	return []STInstruction{sc}, nil
 }
 
+//STForLoop is used for for loops
+//Example:
+/*
+FOR count := initial_value TO final_value BY increment DO
+    <statement>;
+END_FOR;
+*/
 func (t *stParse) parseForLoop() ([]STInstruction, *STParseError) {
-	return nil, t.error(errors.New("not yet implemented"))
+	//the first word should be for
+	s := t.pop()
+	if s != stFor {
+		return nil, t.errorUnexpectedWithExpected(s, stFor)
+	}
+
+	fl := STForLoop{}
+
+	//now we should get an expression terminated with "to"
+	forAss, err := t.parseExpressionTerminatesWith(stTo)
+	if err != nil {
+		return nil, err
+	}
+	t.pop() //consume "to"
+	fl.ForAssigment = forAss
+
+	//now we should get an expression terminated with "by" or "do"
+	//(consumed in this process)
+	toVal, err := t.parseExpressionTerminatesWith(stBy, stDo)
+	if err != nil {
+		return nil, err
+	}
+
+	fl.ToValue = toVal
+
+	//if the next value is "by" then we need to do increment
+	if t.pop() == stBy {
+		incrVal, err := t.parseExpressionTerminatesWith(stDo)
+		if err != nil {
+			return nil, err
+		}
+		t.pop() //consume "do"
+		fl.ByIncrement = incrVal
+	}
+
+	//now we should get a sequence terminated by end_for
+	for t.peek() != stEndFor && !t.done() {
+		seq, err := t.parseNext()
+		if err != nil {
+			return nil, err
+		}
+		fl.Sequence = append(fl.Sequence, seq...)
+	}
+
+	//now consume the stEndIf (we've only peeked at it until now)
+	s = t.pop()
+	if s != stEndFor {
+		return nil, t.errorUnexpectedWithExpected(s, stEndFor)
+	}
+
+	//now consume the stSemicolon
+	s = t.pop()
+	if s != stSemicolon {
+		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
+	}
+
+	return []STInstruction{fl}, nil
 }
 
 func (t *stParse) parseWhileLoop() ([]STInstruction, *STParseError) {
@@ -314,5 +383,6 @@ func (t *stParse) parseAssignment() ([]STInstruction, *STParseError) {
 		fmt.Println("error", err)
 		return nil, err
 	}
+	t.pop() //consume semicolon
 	return []STInstruction{ass}, nil
 }

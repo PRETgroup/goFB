@@ -124,7 +124,7 @@ END_FOR;
 type STForLoop struct {
 	ForAssigment STExpression
 	ToValue      STExpression
-	ByIncrement  string
+	ByIncrement  STExpression
 	Sequence     []STInstruction
 }
 
