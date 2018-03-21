@@ -122,10 +122,10 @@ FOR count := initial_value TO final_value BY increment DO
 END_FOR;
 */
 type STForLoop struct {
-	ForAssigment STExpression
-	ToValue      STExpression
-	ByIncrement  STExpression
-	Sequence     []STInstruction
+	ForAssignment STExpression
+	ToValue       STExpression
+	ByIncrement   STExpression
+	Sequence      []STInstruction
 }
 
 //STWhileLoop is used for while loops

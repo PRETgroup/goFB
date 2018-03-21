@@ -214,8 +214,16 @@ var stTestCases = []stTestCase{
 		},
 	},
 	{
-		name:       "switchcase 2",
-		progString: "case (x + 1) of \n 1: print(\"hello\"); \n y := 2; \n 2: 3: print(\"many\");\nelse\nz := 2 + 2;end_case;",
+		name: "switchcase 2",
+		progString: "" +
+			"case (x + 1) of \n" +
+			"1: print(\"hello\"); \n" +
+			"y := 2; \n" +
+			"2: \n" +
+			"3: print(\"many\");\n" +
+			"else\n" +
+			"z := 2 + 2;\n" +
+			"end_case;",
 		prog: []STInstruction{
 			STSwitchCase{
 				SwitchOn: STExpressionOperator{
@@ -271,6 +279,73 @@ var stTestCases = []stTestCase{
 								},
 							},
 							STExpressionValue{"z"},
+						},
+					},
+				},
+			},
+		},
+	},
+	{
+		name: "for loop 1",
+		progString: "" +
+			"for i := 1 to 10 by 2 do\n" +
+			"print(i);\n" +
+			"end_for;\n",
+		prog: []STInstruction{
+			STForLoop{
+				ForAssignment: STExpressionOperator{
+					Operator: findOp(stAssignment),
+					Arguments: []STExpression{
+						STExpressionValue{"1"},
+						STExpressionValue{"i"},
+					},
+				},
+				ToValue:     STExpressionValue{"10"},
+				ByIncrement: STExpressionValue{"2"},
+				Sequence: []STInstruction{
+					STExpressionOperator{
+						Operator: findOp("print<1>"),
+						Arguments: []STExpression{
+							STExpressionValue{"i"},
+						},
+					},
+				},
+			},
+		},
+	},
+	{
+		name: "for loop 2",
+		progString: "" +
+			"for i := 1 to (2+10)*5 do\n" +
+			"print(i);\n" +
+			"end_for;\n",
+		prog: []STInstruction{
+			STForLoop{
+				ForAssignment: STExpressionOperator{
+					Operator: findOp(stAssignment),
+					Arguments: []STExpression{
+						STExpressionValue{"1"},
+						STExpressionValue{"i"},
+					},
+				},
+				ToValue: STExpressionOperator{
+					Operator: findOp(stMultiply),
+					Arguments: []STExpression{
+						STExpressionValue{"5"},
+						STExpressionOperator{
+							Operator: findOp(stAdd),
+							Arguments: []STExpression{
+								STExpressionValue{"10"},
+								STExpressionValue{"2"},
+							},
+						},
+					},
+				},
+				Sequence: []STInstruction{
+					STExpressionOperator{
+						Operator: findOp("print<1>"),
+						Arguments: []STExpression{
+							STExpressionValue{"i"},
 						},
 					},
 				},

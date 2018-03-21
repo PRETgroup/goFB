@@ -323,7 +323,7 @@ func (t *stParse) parseForLoop() ([]STInstruction, *STParseError) {
 		return nil, err
 	}
 	t.pop() //consume "to"
-	fl.ForAssigment = forAss
+	fl.ForAssignment = forAss
 
 	//now we should get an expression terminated with "by" or "do"
 	//(consumed in this process)
