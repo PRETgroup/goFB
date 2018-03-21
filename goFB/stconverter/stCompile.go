@@ -33,8 +33,9 @@ func CCompileSequence(sequence []STInstruction) string {
 		case STExpression:
 			panicOnErr(cTemplates.ExecuteTemplate(output, "expression", inst))
 			panicOnErr(output.WriteByte(';'))
+			panicOnErr(output.WriteByte('\n'))
 		case STIfElsIfElse:
-			panic("Not yet supporting this type")
+			panicOnErr(cTemplates.ExecuteTemplate(output, "ifelsifelse", inst))
 		case STSwitchCase:
 			panic("Not yet supporting this type")
 		case STForLoop:

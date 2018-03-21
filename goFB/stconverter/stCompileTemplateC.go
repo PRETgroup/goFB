@@ -6,17 +6,27 @@ import (
 
 const cTemplate = `
 {{define "expression"}}{{$value := .HasValue}}{{$operator := .HasOperator}}{{/*
-*/}}{{if $value}}{{/*
-	*/}}{{$value}}{{/*
-*/}}{{else if $operator}}{{/* //then we need to determine how to print this operator
-	*/}}{{if $operator.LeftAssociative}}{{/* //print first argument, operator string, then remaining arguments
-		*/}}{{$args := .GetArguments}}{{/*
-		*/}}{{template "expression" index $args 1}} {{translateOperatorToken $operator.GetToken}} {{template "expression" index $args 0}}{{/*
-	*/}}{{else}}{{/* //print name, opening bracket, then arguments separated by commas
-		*/}}{{translateOperatorToken $operator.GetToken}}{{if not tokenIsFunctionCall $operator.GetToken}} ({{end}}{{/*
-		*/}}{{range $ind, $arg := .GetArguments}}{{if $ind}}, {{end}}({{template "expression" $arg}}){{end}}{{/*
-	*/}}{{end}}{{/*
-*/}}{{end}}{{/*}}
+	*/}}{{if $value}}{{/*
+		*/}}{{$value}}{{/*
+	*/}}{{else if $operator}}{{/* //then we need to determine how to print this operator
+		*/}}{{if $operator.LeftAssociative}}{{/* //print first argument, operator string, then remaining arguments
+			*/}}{{$args := .GetArguments}}{{/*
+			*/}}{{template "expression" index $args 1}} {{translateOperatorToken $operator.GetToken}} {{template "expression" index $args 0}}{{/*
+		*/}}{{else}}{{/* //print name, opening bracket, then arguments separated by commas
+			*/}}{{translateOperatorToken $operator.GetToken}}{{if not (tokenIsFunctionCall $operator.GetToken)}} ({{end}}{{/*
+			*/}}{{range $ind, $arg := .GetArguments}}{{if $ind}}, {{end}}{{template "expression" $arg}}{{end}}){{/*
+		*/}}{{end}}{{/*
+	*/}}{{end}}{{/*}}
+*/}}{{end}}
+
+{{define "ifelsifelse"}}{{/*
+	*/}}{{range $i, $ifThen := .IfThens}}{{/* //cycle through all the ifThens
+		*/}}{{if $i}} else {{end}}if({{template "expression" $ifThen.IfExpression}}) {
+			{{compileSequence $ifThen.ThenSequence}}
+		}{{end}}{{/*
+	*/}}{{if .ElseSequence}} else {
+		{{compileSequence .ElseSequence}}
+	}{{end}}{{/*
 */}}{{end}}`
 
 func cTokenIsFunctionCall(token string) bool {
@@ -37,7 +47,7 @@ func cTranslateOperatorToken(token string) string {
 		// if err != nil {
 		// 	return token[:first-1] + "("
 		// }
-		return token[:first-1] + "("
+		return token[:first] + "("
 	}
 	//ok, not a function, so it's one of the st Operators
 	switch token {

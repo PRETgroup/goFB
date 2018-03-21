@@ -3,6 +3,7 @@ package stconverter
 import (
 	"encoding/json"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -50,6 +51,19 @@ var stTestCases = []stTestCase{
 		compC: "y = x + 2;",
 	},
 	{
+		name:       "basic function call",
+		progString: "print(\"hi\");",
+		prog: []STInstruction{
+			STExpressionOperator{
+				Operator: findOp("print<1>"),
+				Arguments: []STExpression{
+					STExpressionValue{"\"hi\""},
+				},
+			},
+		},
+		compC: "print(\"hi\");",
+	},
+	{
 		name:       "if/then 1",
 		progString: "if y > x then y := x; end_if;",
 		prog: []STInstruction{
@@ -76,6 +90,7 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: "if(y > x) { y = x; }",
 	},
 	{
 		name: "if/elsif/else 1",
@@ -163,6 +178,16 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: "" +
+			"if(y > x) {\n" +
+			"	y = x;\n" +
+			"	print(\"hello\");\n" +
+			"} else if(y <= x) {\n" +
+			"	a = 1 + 2 * 3; \n" +
+			"} else {\n" +
+			"	print(\"hi\");\n" +
+			"	print(\"yes\");\n" +
+			"}",
 	},
 	{
 		name: "switchcase 1",
@@ -500,7 +525,7 @@ var stTestCases = []stTestCase{
 }
 
 func TestCases(t *testing.T) {
-	for i := 0; i < 2; i++ {
+	for i := 0; i < len(stTestCases); i++ {
 		prog, err := ParseString(stTestCases[i].name, stTestCases[i].progString)
 		if err != nil && stTestCases[i].err != nil {
 			if stTestCases[i].err.Error() != err.Err.Error() {
@@ -521,9 +546,16 @@ func TestCases(t *testing.T) {
 			t.Errorf("Test %d (%s) PARSING FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, expected, received)
 		}
 		//now check if the compiled version matches
-		compProg := CCompileSequence(prog)
-		if compProg != stTestCases[i].compC {
-			t.Errorf("Test %d (%s) COMPILATION FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, stTestCases[i].compC, compProg)
+		recvProg := standardizeSpaces(CCompileSequence(prog))
+		//convert to have equivalent whitespaces
+		desrProg := standardizeSpaces(stTestCases[i].compC)
+
+		if recvProg != desrProg {
+			t.Errorf("Test %d (%s) COMPILATION FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, desrProg, recvProg)
 		}
 	}
+}
+
+func standardizeSpaces(s string) string {
+	return strings.Join(strings.Fields(s), " ")
 }
