@@ -27,6 +27,18 @@ const cTemplate = `
 	*/}}{{if .ElseSequence}} else {
 		{{compileSequence .ElseSequence}}
 	}{{end}}{{/*
+*/}}{{end}}
+
+{{define "switchcase"}}{{/*
+	*/}}switch({{template "expression" .SwitchOn}}) { {{range $ci, $case := .Cases}}
+	{{range $cii, $casev := $case.CaseValues}}case {{$casev}}:
+	{{end}}	{{compileSequence $case.Sequence}}
+		break;{{end}}{{/*we need a break because ST case is not fall-through*/}}
+	{{if .ElseSequence}}default:
+		{{compileSequence .ElseSequence}}
+		break;
+	{{end}}
+	} {{/*
 */}}{{end}}`
 
 func cTokenIsFunctionCall(token string) bool {

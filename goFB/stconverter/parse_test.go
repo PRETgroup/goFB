@@ -191,14 +191,14 @@ var stTestCases = []stTestCase{
 	},
 	{
 		name: "switchcase 1",
-		progString: "" +
-			"case x + 1 of \n" +
-			"1:	print(\"hello\"); \n" +
-			"	y := 2; \n" +
-			"2, 3: print(\"many\");\n" +
-			"else\n" +
-			"	z := 2 + 2;" +
-			"end_case;",
+		progString: `
+			case x + 1 of 
+			1:	print("hello");
+				y := 2;
+			2, 3: print("many");
+			else
+				z := 2 + 2;
+			end_case;`,
 		prog: []STInstruction{
 			STSwitchCase{
 				SwitchOn: STExpressionOperator{
@@ -256,18 +256,32 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: `
+		switch(x + 1) {
+			case 1:
+				print("hello");
+				y = 2;
+				break;
+			case 2:
+			case 3:
+				print("many");
+				break;
+			default:
+				z = 2 + 2;
+				break;
+		}`,
 	},
 	{
 		name: "switchcase 2",
-		progString: "" +
-			"case (x + 1) of \n" +
-			"1: print(\"hello\"); \n" +
-			"	y := 2; \n" +
-			"2: \n" +
-			"3: print(\"many\");\n" +
-			"else\n" +
-			"	z := 2 + 2;\n" +
-			"end_case;",
+		progString: `
+			case (x + 1) of 
+			1: print("hello");
+				y := 2; 
+			2: 
+			3: print("many");
+			else
+				z := 2 + 2;
+			end_case;`,
 		prog: []STInstruction{
 			STSwitchCase{
 				SwitchOn: STExpressionOperator{
@@ -328,6 +342,21 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: `
+		switch(x + 1) {
+			case 1:
+				print("hello");
+				y = 2;
+				break;
+			case 2:
+				break;
+			case 3:
+				print("many");
+				break;
+			default:
+				z = 2 + 2;
+				break;
+		}`,
 	},
 	{
 		name: "for loop 1",
