@@ -102,7 +102,8 @@ func (c *Converter) IsFunction(tok string) bool {
 
 //IsFunction returns if this is a function call or not
 func IsFunction(tok string) (bool, Operator) {
-	if len(tok) > 1 && (tok[len(tok)-1:] == "(" || tok[len(tok)-1:] == ">") {
+	if (len(tok) > 1 && tok[len(tok)-1:] == "(") ||
+		(len(tok) > 2 && tok[len(tok)-1:] == ">") {
 		return true, functionOp{tok}
 	}
 	return false, nil
@@ -258,6 +259,8 @@ func (c *Converter) ToPostfix(nftokens []string) []string {
 		str, _ := stack.Pop().(string)
 		postfix = append(postfix, str)
 	}
+
+	//TODO: scan the completed postfix and check for errors
 
 	return postfix
 }

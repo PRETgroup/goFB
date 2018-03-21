@@ -80,7 +80,7 @@ var stTestCases = []stTestCase{
 			"if y > x then" +
 			"	y := x;\n" +
 			"	print(\"hello\");\n" +
-			"elsif x > y then\n" +
+			"elsif y <= x then\n" +
 			"	a := 1 + 2 * 3;\n" +
 			"else\n" +
 			"	print(\"hi\"); \n" +
@@ -115,10 +115,10 @@ var stTestCases = []stTestCase{
 					},
 					{
 						IfExpression: STExpressionOperator{
-							Operator: findOp(stGreaterThan),
+							Operator: findOp(stLessThanEqualTo),
 							Arguments: []STExpression{
-								STExpressionValue{"y"},
 								STExpressionValue{"x"},
+								STExpressionValue{"y"},
 							},
 						},
 						ThenSequence: []STInstruction{
@@ -406,7 +406,7 @@ var stTestCases = []stTestCase{
 						},
 					},
 					STExpressionOperator{
-						Operator: findOp("exit"),
+						Operator: findOp(stExit),
 					},
 				},
 			},
@@ -428,6 +428,71 @@ var stTestCases = []stTestCase{
 			"	print(i);\n" +
 			"	i := i-1;\n",
 		err: ErrUnexpectedEOF,
+	},
+	{
+		name: "repeat loop 1",
+		progString: "" +
+			"repeat\n" +
+			"	print(i);\n" +
+			"	i := i-1;\n" +
+			"until i <> 5\n" +
+			"end_repeat;",
+		prog: []STInstruction{
+			STRepeatLoop{
+				UntilExpression: STExpressionOperator{
+					Operator: findOp(stInequal),
+					Arguments: []STExpression{
+						STExpressionValue{"5"},
+						STExpressionValue{"i"},
+					},
+				},
+				Sequence: []STInstruction{
+					STExpressionOperator{
+						Operator: findOp("print<1>"),
+						Arguments: []STExpression{
+							STExpressionValue{"i"},
+						},
+					},
+					STExpressionOperator{
+						Operator: findOp(stAssignment),
+						Arguments: []STExpression{
+							STExpressionOperator{
+								Operator: findOp(stSubtract),
+								Arguments: []STExpression{
+									STExpressionValue{"1"},
+									STExpressionValue{"i"},
+								},
+							},
+							STExpressionValue{"i"},
+						},
+					},
+				},
+			},
+		},
+	},
+
+	{
+		name: "repeat loop 2",
+		progString: "" +
+			"repeat\n" +
+			"	print(i);\n" +
+			"	exit;\n" +
+			"end_repeat;",
+		prog: []STInstruction{
+			STRepeatLoop{
+				Sequence: []STInstruction{
+					STExpressionOperator{
+						Operator: findOp("print<1>"),
+						Arguments: []STExpression{
+							STExpressionValue{"i"},
+						},
+					},
+					STExpressionOperator{
+						Operator: findOp(stExit),
+					},
+				},
+			},
+		},
 	},
 }
 

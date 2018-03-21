@@ -78,6 +78,10 @@ var tests = []postfixTest{
 		out: []string{"1", "2", "+"},
 	},
 	{
+		in:  []string{"1", "<>", "2"},
+		out: []string{"1", "2", "<>"},
+	},
+	{
 		in:  []string{"1", "+", "2", "*", "3"},
 		out: []string{"1", "2", "3", "*", "+"},
 	},
@@ -124,6 +128,10 @@ var tests = []postfixTest{
 	{
 		in:  []string{"print", "(", "\"hello\"", ")"},
 		out: []string{"\"hello\"", "print<1>"},
+	},
+	{
+		in:  []string{"-", "1", "+", "-", "2"}, //this one takes some thinking about, but is correct if you consider there to be an invisible zero off the stack
+		out: []string{"1", "-", "+", "2", "-"},
 	},
 }
 

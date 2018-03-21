@@ -1,8 +1,6 @@
 package stconverter
 
 import (
-	"errors"
-
 	"github.com/PRETgroup/goFB/goFB/postfix"
 )
 
@@ -452,7 +450,46 @@ UNTIL [boolean expression]
 END_REPEAT;
 */
 func (t *stParse) parseRepeatLoop() (STInstruction, *STParseError) {
-	return nil, t.error(errors.New("not yet implemented"))
+	//the first word should be repeat
+	s := t.pop()
+	if s != stRepeat {
+		return nil, t.errorUnexpectedTokenWithExpected(s, stRepeat)
+	}
+
+	rl := STRepeatLoop{}
+
+	//now we should get a sequence terminated by either until or end_repeat
+	for t.peek() != stEndRepeat && t.peek() != stUntil && !t.done() {
+		seq, err := t.parseNext()
+		if err != nil {
+			return nil, err
+		}
+		rl.Sequence = append(rl.Sequence, seq)
+	}
+
+	s = t.pop()
+	if s == stUntil {
+		//now we should get an expression terminated with "end_repeat"
+		uExpr, err := t.parseExpressionTerminatesWith(stEndRepeat)
+		if err != nil {
+			return nil, err
+		}
+		s = t.pop() //consume end_repeat
+		rl.UntilExpression = uExpr
+
+	}
+
+	if s != stEndRepeat {
+		return nil, t.errorUnexpectedTokenWithExpected(s, stEndRepeat)
+	}
+
+	//now consume the stSemicolon
+	s = t.pop()
+	if s != stSemicolon {
+		return nil, t.errorUnexpectedTokenWithExpected(s, stSemicolon)
+	}
+
+	return rl, nil
 }
 
 func (t *stParse) parseAssignment() (STInstruction, *STParseError) {
