@@ -152,6 +152,67 @@ var stTestCases = []stTestCase{
 			},
 		},
 	},
+	{
+		name:       "switchcase 1",
+		progString: "case x + 1 of \n 1: print(\"hello\"); \n y := 2; \n 2, 3: print(\"many\");\nelse\nz := 2 + 2;end_case;",
+		prog: []STInstruction{
+			STSwitchCase{
+				SwitchOn: STExpressionOperator{
+					Operator: findOp(stAdd),
+					Arguments: []STExpression{
+						STExpressionValue{"1"},
+						STExpressionValue{"x"},
+					},
+				},
+				Cases: []STCase{
+					STCase{
+						CaseValues: []string{"1"},
+						Sequence: []STInstruction{
+							STExpressionOperator{
+								Operator: findOp("print<1>"),
+								Arguments: []STExpression{
+									STExpressionValue{"\"hello\""},
+								},
+							},
+							STExpressionOperator{
+								Operator: findOp(stAssignment),
+								Arguments: []STExpression{
+									STExpressionValue{"2"},
+									STExpressionValue{"y"},
+								},
+							},
+						},
+					},
+					STCase{
+						CaseValues: []string{"2", "3"},
+						Sequence: []STInstruction{
+							STExpressionOperator{
+								Operator: findOp("print<1>"),
+								Arguments: []STExpression{
+									STExpressionValue{"\"many\""},
+								},
+							},
+						},
+					},
+				},
+				ElseSequence: []STInstruction{
+					STExpressionOperator{
+						Operator: findOp(stAssignment),
+						Arguments: []STExpression{
+							STExpressionOperator{
+								Operator: findOp(stAdd),
+								Arguments: []STExpression{
+									STExpressionValue{"2"},
+									STExpressionValue{"2"},
+								},
+							},
+							STExpressionValue{"z"},
+						},
+					},
+				},
+			},
+		},
+	},
 }
 
 func TestCases(t *testing.T) {

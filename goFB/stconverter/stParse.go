@@ -40,10 +40,16 @@ func (t *stParse) pop() string {
 //peek gets the current element of the tfbparse internal items slice (or the next non-newline character)
 // without incrementing the index
 func (t *stParse) peek() string {
+	return t.deepPeek(0)
+}
+
+//deepPeek gets the current element + offs of the tfbparse internal items slice (or the next non-newline character)
+// without incrementing the index
+func (t *stParse) deepPeek(offs int) string {
 	if t.done() {
 		return ""
 	}
-	for i := 0; i < len(t.items); i++ {
+	for i := offs; i < len(t.items); i++ {
 		if t.items[t.itemIndex+i] != stNewline {
 			return t.items[t.itemIndex+i]
 		}

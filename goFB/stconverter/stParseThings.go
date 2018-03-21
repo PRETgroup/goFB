@@ -178,8 +178,118 @@ func (t *stParse) parseIfElsifElse() ([]STInstruction, *STParseError) {
 
 }
 
+//STSwitchCase is used for the switch... case... case... else sequence
+//examples:
+/*
+CASE [numeric expression] OF
+    result1, result2: <statement>;
+    resultN[, resultN]: <statemtent>;
+ELSE
+    <statement>;
+END_CASE;
+*/
 func (t *stParse) parseSwitchCase() ([]STInstruction, *STParseError) {
-	return nil, t.error(errors.New("not yet implemented"))
+	//the first word should be case
+	s := t.pop()
+	if s != stCase {
+		return nil, t.errorUnexpectedWithExpected(s, stCase)
+	}
+
+	sc := STSwitchCase{}
+
+	//now we should get an expression terminated with "of"
+	//("of" is consumed in this process)
+	ofExpr, err := t.parseExpressionTerminatesWith(stOf)
+	if err != nil {
+		return nil, err
+	}
+
+	sc.SwitchOn = ofExpr
+
+	//now we have a number of cases marked as
+	//[value][, value]: <statement>; <statement>; etc
+cases:
+	for {
+		//to begin, get the case values
+		scase := STCase{}
+		for {
+			scase.CaseValues = append(scase.CaseValues, t.pop())
+			if t.peek() == stComma {
+				t.pop()
+				continue
+			}
+			break
+		}
+		//now we should have a colon
+		if colon := t.pop(); colon != stColon {
+			return nil, t.errorUnexpectedWithExpected(colon, stColon)
+		}
+
+		//now we have a sequence of instructions, terminated by the next case or terminated by else
+	caseseq:
+		for {
+			//is the next instruction an "else" or an "end_case"?
+			if t.peek() == stElse || t.peek() == stEndCase {
+				break caseseq
+			}
+
+			//is the next instruction the beginning of the next case?
+			i := 0
+		search:
+			for {
+				if t.deepPeek(i) == stColon {
+					//the next instruction is the beginning of the next case
+					break caseseq
+				}
+				if t.deepPeek(i) == stSemicolon {
+					//the next instruction is a general instruction
+					break search
+				}
+
+				//this ain't no infinite loop
+				if t.itemIndex+i > len(t.items) {
+					return nil, t.error(ErrUnexpectedEOF)
+				}
+				i++
+			}
+			//the next instruction must be a general instruction
+			seq, err := t.parseNext()
+			if err != nil {
+				return nil, err
+			}
+			scase.Sequence = append(scase.Sequence, seq...)
+		}
+		sc.Cases = append(sc.Cases, scase)
+		if t.peek() == stElse || t.peek() == stEndCase || t.done() {
+			break cases
+		}
+	}
+
+	//if we have an else
+	if t.peek() == stElse {
+		t.pop()
+		for t.peek() != stEndCase && !t.done() {
+			seq, err := t.parseNext()
+			if err != nil {
+				return nil, err
+			}
+			sc.ElseSequence = append(sc.ElseSequence, seq...)
+		}
+	}
+
+	//now consume the stEndCase (we've only peeked at it until now)
+	s = t.pop()
+	if s != stEndCase {
+		return nil, t.errorUnexpectedWithExpected(s, stEndCase)
+	}
+
+	//now consume the stSemicolon
+	s = t.pop()
+	if s != stSemicolon {
+		return nil, t.errorUnexpectedWithExpected(s, stSemicolon)
+	}
+
+	return []STInstruction{sc}, nil
 }
 
 func (t *stParse) parseForLoop() ([]STInstruction, *STParseError) {

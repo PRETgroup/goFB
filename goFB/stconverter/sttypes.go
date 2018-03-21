@@ -85,16 +85,16 @@ type STIfElsIfElse struct {
 
 //STCase is used inside STSwitchCase to store the different case options
 type STCase struct {
-	CaseValue string
-	Sequence  []STInstruction
+	CaseValues []string
+	Sequence   []STInstruction
 }
 
 //STSwitchCase is used for the switch... case... case... else sequence
 //examples:
 /*
 CASE [numeric expression] OF
-    result1: <statement>;
-    resultN: <statemtent>;
+    result1, result2: <statement>;
+    resultN[, resultN]: <statemtent>;
 ELSE
     <statement>;
 END_CASE;

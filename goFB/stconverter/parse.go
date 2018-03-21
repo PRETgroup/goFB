@@ -40,6 +40,7 @@ const (
 
 	stCase    = "case" //block beginner
 	stOf      = "of"
+	stComma   = ","
 	stColon   = ":"
 	stEndCase = "end_case"
 
