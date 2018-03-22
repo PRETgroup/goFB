@@ -1,0 +1,22 @@
+basicFB BfbGen;
+
+interface of BfbGen {
+	out event genE;
+
+	out int initial 1 genDat with genE;
+} 
+
+architecture of BfbGen {
+	states {
+		start {
+			-> run;
+		}
+
+		run {
+			emit genE;
+			run in "ST" `genDat := genDat + 1;`;
+			
+			-> run;
+		}
+	}
+}

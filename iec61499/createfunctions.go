@@ -21,7 +21,7 @@ func (f FBError) error() string {
 
 var (
 	//ErrUndefinedEvent is used to indicate an event can't be found
-	ErrUndefinedEvent = errors.New("Unknown event")
+	ErrUndefinedEvent = errors.New("Unknown event '{{arg}}'")
 
 	//ErrNoEvents is used to indicate no events are present
 	ErrNoEvents = errors.New("No Events Present")

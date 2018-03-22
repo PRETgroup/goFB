@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbCheck" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="genE" Comment="">
+				<With Var="genDat"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="acceptE" Comment=""></Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="genDat" Type="INT" InitialValue="1" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="comp" Type="INT" InitialValue="10" Comment=""></VarDeclaration>
+			<VarDeclaration Name="i" Type="INT" Comment=""></VarDeclaration>
+		</InternalVars>
+		<ECC>
+			<ECState Name="start" Comment="" x="" y=""></ECState>
+			<ECState Name="run" Comment="" x="" y="">
+				<ECAction Output="acceptE"></ECAction>
+				<ECAction Algorithm="run_alg0"></ECAction>
+			</ECState>
+			<ECTransition Source="start" Destination="run" Condition="genDat &gt; comp" x="" y=""></ECTransition>
+			<ECTransition Source="run" Destination="start" Condition="true" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="run_alg0" Comment="">
+			<Other Language="ST" Text="&#xA;                if genDat &gt; (comp + 5) then&#xA;                    for i := 0 to 10 by 2 do&#xA;                        comp := comp + genDat;&#xA;                    end_for;&#xA;                    printf(&#34;comp increased to:%d\n&#34;, comp);&#xA;                end_if;&#xA;            "></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

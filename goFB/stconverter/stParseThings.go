@@ -113,6 +113,7 @@ out:
 	}
 	//now we're done!
 	if len(stack) != 1 {
+		fmt.Println(stack)
 		return nil, t.error(ErrBadExpression)
 	}
 	s := stack[0]

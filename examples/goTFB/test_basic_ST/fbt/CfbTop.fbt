@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="CfbTop" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs></EventInputs>
+		<EventOutputs></EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<FBNetwork>
+		<FB Name="check" Type="BfbCheck" x="" y=""></FB>
+		<FB Name="gen" Type="BfbGen" x="" y=""></FB>
+		<EventConnections>
+			<Connection Source="gen.genE" Destination="check.genE" dx1=""></Connection>
+		</EventConnections>
+		<DataConnections>
+			<Connection Source="gen.genDat" Destination="check.genDat" dx1=""></Connection>
+		</DataConnections>
+	</FBNetwork>
+</FBType>

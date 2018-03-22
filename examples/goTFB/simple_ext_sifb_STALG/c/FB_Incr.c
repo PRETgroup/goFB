@@ -116,12 +116,16 @@ void Incr_run(Incr_t  *me) {
 	if(me->_trigger == true) {
 		switch(me->_state) {
 		case STATE_Incr_start:
-			printf("Incr: [Entered State start]\n");
+			#ifdef PRINT_STATES
+				printf("Incr: [Entered State start]\n");
+			#endif
 			
 			break;
 
 		case STATE_Incr_run:
-			printf("Incr: [Entered State run]\n");
+			#ifdef PRINT_STATES
+				printf("Incr: [Entered State run]\n");
+			#endif
 			me->outputEvents.event.tx = 1;
 			Incr_run_alg0(me);
 			

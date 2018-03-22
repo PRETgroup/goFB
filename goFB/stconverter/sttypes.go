@@ -128,6 +128,7 @@ type STForLoop struct {
 	Sequence      []STInstruction
 }
 
+//FindCounterName will return the variable name assigned to in the ForAssignment, if one can easily be found
 func (f STForLoop) FindCounterName() string {
 	if f.ForAssignment == nil {
 		return ""

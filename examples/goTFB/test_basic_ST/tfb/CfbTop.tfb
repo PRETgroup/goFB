@@ -1,0 +1,16 @@
+compositeFB CfbTop;
+
+interface of CfbTop {}
+
+architecture of CfbTop{
+	instance BfbCheck check;
+    instance BfbGen gen;
+
+	events {
+		check.genE <- gen.genE;
+	}
+
+	data {
+		check.genDat <- gen.genDat;
+	}
+}

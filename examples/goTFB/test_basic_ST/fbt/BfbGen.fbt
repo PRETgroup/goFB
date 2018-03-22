@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbGen" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs></EventInputs>
+		<EventOutputs>
+			<Event Name="genE" Comment="">
+				<With Var="genDat"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars>
+			<VarDeclaration Name="genDat" Type="INT" InitialValue="1" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="start" Comment="" x="" y=""></ECState>
+			<ECState Name="run" Comment="" x="" y="">
+				<ECAction Output="genE"></ECAction>
+				<ECAction Algorithm="run_alg0"></ECAction>
+			</ECState>
+			<ECTransition Source="start" Destination="run" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="run" Destination="run" Condition="true" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="run_alg0" Comment="">
+			<Other Language="ST" Text="genDat := genDat + 1;"></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

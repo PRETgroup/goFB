@@ -43,8 +43,8 @@ const cTemplate = `
 
 {{define "forloop"}}{{$fc := .FindCounterName}}{{/*
 	*/}}for({{if .ForAssignment}}{{template "expression" .ForAssignment}}{{end}}; {{/*
-		*/}}{{if .ToValue}}{{if $fc}}{{$fc}} <= {{end}}{{template "expression" .ToValue}}{{end}}; {{/*
-		*/}}{{if .ByIncrement}}{{if $fc}}{{$fc}} += {{end}}{{template "expression" .ByIncrement}}{{else}}{{if $fc}}{{$fc}}++{{end}}{{end}}) { 
+		*/}}{{if .ToValue}}{{if $fc}}{{if isKnownVar $fc}}me->{{end}}{{$fc}} <= {{end}}{{template "expression" .ToValue}}{{end}}; {{/*
+		*/}}{{if .ByIncrement}}{{if $fc}}{{if isKnownVar $fc}}me->{{end}}{{$fc}} += {{end}}{{template "expression" .ByIncrement}}{{else}}{{if $fc}}{{$fc}}++{{end}}{{end}}) { 
 		{{compileSequence .Sequence}}
 	} {{/*
 */}}{{end}}

@@ -55,7 +55,9 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 	if(me->_trigger == true) {
 		switch(me->_state) {
 		{{range $curStateIndex, $curState := $basicFB.States}}case STATE_{{$block.Name}}_{{$curState.Name}}:
-			printf("{{$block.Name}}: [Entered State {{$curState.Name}}]\n");
+			#ifdef PRINT_STATES
+				printf("{{$block.Name}}: [Entered State {{$curState.Name}}]\n");
+			#endif
 			{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$block.Name}}_{{$action.Algorithm}}(me);
 			{{end}}{{if $action.Output}}{{if $eventQueue}}PushEvent(me->myInstanceID, {{getOutputEventPortID $block $action.Output}}); /*i'm emitting {{$action.Output}}*/{{else}}me->outputEvents.event.{{$action.Output}} = 1;{{end}}
 			{{end}}{{end}}
