@@ -13,8 +13,8 @@ const cTemplate = `
 			*/}}{{$args := .GetArguments}}{{$a := index $args 1}}{{$b := index $args 0}}{{$curPrec := $operator.GetPrecedence}}{{$aop := $a.HasOperator}}{{$bop := $b.HasOperator}}{{/*
 			*/}}{{if $aop}}{{if gt $aop.GetPrecedence $curPrec}}({{end}}{{end}}{{template "expression" index $args 1}}{{if $aop}}{{if gt $aop.GetPrecedence $curPrec}}){{end}}{{end}} {{translateOperatorToken $operator.GetToken}} {{if $bop}}{{if gt $bop.GetPrecedence $curPrec}}({{end}}{{end}}{{template "expression" index $args 0}}{{if $bop}}{{if gt $bop.GetPrecedence $curPrec}}){{end}}{{end}}{{/*
 		*/}}{{else}}{{/* //print name, opening bracket, then arguments separated by commas
-			*/}}{{translateOperatorToken $operator.GetToken}}{{if not (tokenIsFunctionCall $operator.GetToken)}} ({{end}}{{/*
-			*/}}{{range $ind, $arg := .GetArguments}}{{if $ind}}, {{end}}{{template "expression" $arg}}{{end}}){{/*
+			*/}}{{translateOperatorToken $operator.GetToken}}{{/*
+			*/}}{{range $ind, $arg := .GetArguments}}{{if $ind}}, {{end}}{{template "expression" $arg}}{{end}}{{if tokenIsFunctionCall $operator.GetToken}}){{end}}{{/*
 		*/}}{{end}}{{/*
 	*/}}{{end}}{{/*}}
 */}}{{end}}
@@ -47,6 +47,18 @@ const cTemplate = `
 		*/}}{{if .ByIncrement}}{{if $fc}}{{$fc}} += {{end}}{{template "expression" .ByIncrement}}{{else}}{{if $fc}}{{$fc}}++{{end}}{{end}}) { 
 		{{compileSequence .Sequence}}
 	} {{/*
+*/}}{{end}}
+
+{{define "whileloop"}}{{/*
+	*/}}while({{template "expression" .WhileExpression}}) {
+		{{compileSequence .Sequence}}
+	} {{/*
+*/}}{{end}}
+
+{{define "repeatloop"}}{{/*
+	*/}}do {
+		{{compileSequence .Sequence}}
+	} while({{if .UntilExpression}}!({{template "expression" .UntilExpression}}){{else}}1{{end}}); {{/*
 */}}{{end}}`
 
 func cTokenIsFunctionCall(token string) bool {

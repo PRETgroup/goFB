@@ -470,6 +470,12 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: `
+		while(i >= 1) {
+			print(i);
+			i = i - 1;
+			break;
+		}`,
 	},
 	{
 		name: "bad while loop 1",
@@ -528,6 +534,11 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: `
+		do {
+			print(i);
+			i = i - 1;
+		} while(!(i != 5));`,
 	},
 
 	{
@@ -552,6 +563,12 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: `
+		do {
+			print(i);
+			break;
+		} while(1);
+		`,
 	},
 }
 

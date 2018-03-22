@@ -41,9 +41,9 @@ func CCompileSequence(sequence []STInstruction) string {
 		case STForLoop:
 			panicOnErr(cTemplates.ExecuteTemplate(output, "forloop", inst))
 		case STWhileLoop:
-			panic("Not yet supporting this type")
+			panicOnErr(cTemplates.ExecuteTemplate(output, "whileloop", inst))
 		case STRepeatLoop:
-			panic("Not yet supporting this type")
+			panicOnErr(cTemplates.ExecuteTemplate(output, "repeatloop", inst))
 		}
 	}
 	return output.String()
