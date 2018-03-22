@@ -1,6 +1,8 @@
 package stconverter
 
 import (
+	"fmt"
+
 	"github.com/PRETgroup/goFB/goFB/postfix"
 )
 
@@ -40,7 +42,6 @@ var disallowedExpressionKeywords = []string{
 	stEndIf,
 	stCase,
 	stOf,
-	stComma,
 	stColon,
 	stEndCase,
 	stFor,
@@ -76,6 +77,7 @@ out:
 		//check if s is a disallowed instruction (any of the other keywords)
 		for _, kw := range disallowedExpressionKeywords {
 			if s == kw {
+				fmt.Println("here")
 				return nil, t.errorUnexpectedToken(s)
 			}
 		}

@@ -10,6 +10,7 @@ var cTemplateFuncMap = template.FuncMap{
 	"tokenIsFunctionCall":    cTokenIsFunctionCall,
 	"compileSequence":        CCompileSequence,
 	"isKnownVar":             isKnownVar,
+	"reverseArgs":            reverseArgs,
 }
 
 var (
@@ -31,6 +32,13 @@ func init() {
 //SetKnownVarNames sets the names of known variables for the compiler
 func SetKnownVarNames(varNames []string) {
 	knownVarNames = varNames
+}
+
+func reverseArgs(s []STExpression) []STExpression {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
 }
 
 func isKnownVar(name string) bool {

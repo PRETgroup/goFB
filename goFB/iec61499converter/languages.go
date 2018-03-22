@@ -76,6 +76,8 @@ var (
 
 var (
 	vhdlTemplateFuncMap = template.FuncMap{
+		//"compileAlgorithm":				vhdlCompileAlgorithm,
+
 		"getVhdlType":                   getVhdlType,
 		"getVhdlECCTransitionCondition": getVhdlECCTransitionCondition,
 		"renameDoneSignal":              renameDoneSignal,
@@ -98,6 +100,8 @@ var (
 	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/vhdl/*"))
 
 	cTemplateFuncMap = template.FuncMap{
+		"compileAlgorithm": cCompileAlgorithm,
+
 		"getCECCTransitionCondition":      getCECCTransitionCondition,
 		"findBlockDefinitionForType":      findBlockDefinitionForType,
 		"renameCEventDestinationLocation": renameCEventDestinationLocation,

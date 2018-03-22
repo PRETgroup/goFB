@@ -1,0 +1,71 @@
+basicFB Incr;
+
+interface of Incr {
+	in event rx;
+	out event tx;
+
+	out int initial 1 txdat with tx;
+} 
+
+architecture of Incr {
+	states {
+		start {
+			-> run on rx;
+		}
+
+		run {
+			emit tx;
+			run in "ST" `txdat := txdat + 1;`;
+			
+			-> run on rx;
+		}
+	}
+}
+
+serviceFB Emitr compileheader "Emitr.h";
+
+interface of Emitr {
+	out event e;
+}
+
+basicFB Printr;
+
+interface of Printr {
+	in event p;
+	in int pDat with p; 
+}
+
+architecture of Printr {
+	states {
+		start {
+			-> run on p;
+		}
+
+		run {
+			run Printr_Print;
+			-> run on p;
+		}
+	}
+
+	algorithm Printr_Print in "ST" `printf("val: %i\n", pDat);`;
+}
+
+compositeFB Netw;
+
+interface of Netw {}
+
+architecture of Netw{
+	instance Incr incrr;
+	instance Emitr emitrr;
+	instance Printr printrr;
+
+	events {
+		incrr.rx <- emitrr.e;
+
+		printrr.p <- incrr.tx; 
+	}
+
+	data {
+		printrr.pDat <- incrr.txdat;
+	}
+}

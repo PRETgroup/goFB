@@ -94,6 +94,25 @@ func (fb *FB) SetXMLName() {
 	fb.XMLName = xml.Name{Space: "", Local: "FBType"}
 }
 
+//GetAllVarNames gets all input, output, and internal (if available) var names on an FB
+func (fb *FB) GetAllVarNames() []string {
+	var names []string
+	for _, e := range fb.InputVars {
+		names = append(names, e.Name)
+	}
+
+	for _, e := range fb.OutputVars {
+		names = append(names, e.Name)
+	}
+
+	if fb.BasicFB != nil {
+		for _, e := range fb.BasicFB.InternalVars {
+			names = append(names, e.Name)
+		}
+	}
+	return names
+}
+
 //NameUseCounter will search all name fields {events,data,states,etc} of a FB to check to see if a given name is used anywhere and increment each time it is
 func (fb *FB) NameUseCounter(name string) int {
 	usages := 0

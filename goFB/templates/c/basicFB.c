@@ -10,7 +10,7 @@
 {{range $algIndex, $alg := $basicFB.Algorithms}}
 void {{$block.Name}}_{{$alg.Name}}({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartSPM}}_SPM{{end}} *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
-{{$alg.Other.Text}}
+{{compileAlgorithm $block $alg}}
 }
 {{end}}
 {{else}}//no algorithms were present for this function block

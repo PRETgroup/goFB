@@ -109,7 +109,7 @@ func validateFB(fb FB, otherFbs []FB) *ValidateError {
 	return nil
 }
 
-//fbTypeNamesUnique makes sure each
+//fbTypeNamesUnique makes sure each overall fb name is unique
 func fbTypeNamesUnique(fb FB, otherFbs []FB) *ValidateError {
 	for _, oFb := range otherFbs {
 		if oFb.Name == fb.Name {

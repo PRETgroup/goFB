@@ -65,6 +65,20 @@ var stTestCases = []stTestCase{
 		compC: "print(\"hi\");",
 	},
 	{
+		name:       "basic function call 2",
+		progString: `printf("%d\n", i);`,
+		prog: []STInstruction{
+			STExpressionOperator{
+				Operator: findOp("printf<2>"),
+				Arguments: []STExpression{
+					STExpressionValue{`i`},
+					STExpressionValue{`"%d\n"`},
+				},
+			},
+		},
+		compC: `printf("%d\n", i);`,
+	},
+	{
 		name:       "if/then 1",
 		progString: "if y > x then y := x; end_if;",
 		prog: []STInstruction{
@@ -546,15 +560,16 @@ var stTestCases = []stTestCase{
 		name: "repeat loop 2",
 		progString: "" +
 			"repeat\n" +
-			"	print(i);\n" +
+			"	printf(\"%d\n\", i);\n" +
 			"	exit;\n" +
 			"end_repeat;",
 		prog: []STInstruction{
 			STRepeatLoop{
 				Sequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp("print<1>"),
+						Operator: findOp("printf<2>"),
 						Arguments: []STExpression{
+							STExpressionValue{"\"%d\n\""},
 							STExpressionValue{"i"},
 						},
 					},
@@ -566,7 +581,7 @@ var stTestCases = []stTestCase{
 		},
 		compC: `
 		do {
-			print(i);
+			printf("%d", i);
 			break;
 		} while(1);
 		`,
@@ -604,7 +619,8 @@ var stTestCases = []stTestCase{
 }
 
 func TestCases(t *testing.T) {
-	for i := 0; i < len(stTestCases); i++ {
+	//for i := 0; i < len(stTestCases); i++ {
+	for i := 3; i < 4; i++ {
 		SetKnownVarNames(stTestCases[i].knownNames)
 		prog, err := ParseString(stTestCases[i].name, stTestCases[i].progString)
 		if err != nil && stTestCases[i].err != nil {

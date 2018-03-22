@@ -6,8 +6,24 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/PRETgroup/goFB/goFB/stconverter"
 	"github.com/PRETgroup/goFB/iec61499"
 )
+
+func cCompileAlgorithm(block iec61499.FB, algorithm iec61499.Algorithm) string {
+	//if it's ST we know how to compile that! :)
+	if algorithm.Other.Language == "ST" {
+		stconverter.SetKnownVarNames(block.GetAllVarNames())
+		instrs, err := stconverter.ParseString(block.Name+"_"+algorithm.Name, algorithm.Other.Text)
+		if err != nil {
+			panic(err)
+		}
+		comp := stconverter.CCompileSequence(instrs)
+		return comp
+	}
+	//can't do much otherwise...
+	return algorithm.Other.Language
+}
 
 //CECCTransition is used with getCECCTransitionCondition to return results to the template
 type CECCTransition struct {

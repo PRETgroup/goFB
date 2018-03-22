@@ -134,6 +134,10 @@ var tests = []postfixTest{
 		out: []string{"\"hello\"", "print<1>"},
 	},
 	{
+		in:  []string{"printf", "(", "\"hello\"", ",", "i", ")"},
+		out: []string{"\"hello\"", "i", "printf<2>"},
+	},
+	{
 		in:  []string{"-", "1", "+", "-", "2"}, //this one takes some thinking about, but is correct if you consider there to be an invisible zero off the stack
 		out: []string{"1", "-", "+", "2", "-"},
 	},

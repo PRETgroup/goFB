@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Printr" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="p" Comment="">
+				<With Var="pDat"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs></EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="pDat" Type="INT" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="start" Comment="" x="" y=""></ECState>
+			<ECState Name="run" Comment="" x="" y="">
+				<ECAction Algorithm="Printr_Print"></ECAction>
+			</ECState>
+			<ECTransition Source="start" Destination="run" Condition="p" x="" y=""></ECTransition>
+			<ECTransition Source="run" Destination="run" Condition="p" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="Printr_Print" Comment="">
+			<Other Language="ST" Text="printf(&#34;val: %i\n&#34;, pDat);"></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>
