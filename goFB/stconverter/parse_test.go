@@ -385,6 +385,7 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: "for(i = 1; i <= 10; i += 2) { print(i); }",
 	},
 	{
 		name: "for loop 2",
@@ -424,6 +425,7 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+		compC: "for(i = 1; i <= (2 + 10) * 5; i++) { print(i); }",
 	},
 	{
 		name: "while loop 1",

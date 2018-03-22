@@ -128,6 +128,23 @@ type STForLoop struct {
 	Sequence      []STInstruction
 }
 
+func (f STForLoop) FindCounterName() string {
+	if f.ForAssignment == nil {
+		return ""
+	}
+	faop := f.ForAssignment.HasOperator()
+	if faop == nil {
+		return ""
+	}
+	if faop.GetToken() != stAssignment {
+		return ""
+	}
+	if len(f.ForAssignment.GetArguments()) < 2 {
+		return ""
+	}
+	return f.ForAssignment.GetArguments()[1].HasValue()
+}
+
 //STWhileLoop is used for while loops
 //Example:
 /*

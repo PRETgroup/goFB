@@ -10,8 +10,8 @@ const cTemplate = `
 		*/}}{{$value}}{{/*
 	*/}}{{else if $operator}}{{/* //then we need to determine how to print this operator
 		*/}}{{if $operator.LeftAssociative}}{{/* //print first argument, operator string, then remaining arguments
-			*/}}{{$args := .GetArguments}}{{/*
-			*/}}{{template "expression" index $args 1}} {{translateOperatorToken $operator.GetToken}} {{template "expression" index $args 0}}{{/*
+			*/}}{{$args := .GetArguments}}{{$a := index $args 1}}{{$b := index $args 0}}{{$curPrec := $operator.GetPrecedence}}{{$aop := $a.HasOperator}}{{$bop := $b.HasOperator}}{{/*
+			*/}}{{if $aop}}{{if gt $aop.GetPrecedence $curPrec}}({{end}}{{end}}{{template "expression" index $args 1}}{{if $aop}}{{if gt $aop.GetPrecedence $curPrec}}){{end}}{{end}} {{translateOperatorToken $operator.GetToken}} {{if $bop}}{{if gt $bop.GetPrecedence $curPrec}}({{end}}{{end}}{{template "expression" index $args 0}}{{if $bop}}{{if gt $bop.GetPrecedence $curPrec}}){{end}}{{end}}{{/*
 		*/}}{{else}}{{/* //print name, opening bracket, then arguments separated by commas
 			*/}}{{translateOperatorToken $operator.GetToken}}{{if not (tokenIsFunctionCall $operator.GetToken)}} ({{end}}{{/*
 			*/}}{{range $ind, $arg := .GetArguments}}{{if $ind}}, {{end}}{{template "expression" $arg}}{{end}}){{/*
@@ -38,6 +38,14 @@ const cTemplate = `
 		{{compileSequence .ElseSequence}}
 		break;
 	{{end}}
+	} {{/*
+*/}}{{end}}
+
+{{define "forloop"}}{{$fc := .FindCounterName}}{{/*
+	*/}}for({{if .ForAssignment}}{{template "expression" .ForAssignment}}{{end}}; {{/*
+		*/}}{{if .ToValue}}{{if $fc}}{{$fc}} <= {{end}}{{template "expression" .ToValue}}{{end}}; {{/*
+		*/}}{{if .ByIncrement}}{{if $fc}}{{$fc}} += {{end}}{{template "expression" .ByIncrement}}{{else}}{{if $fc}}{{$fc}}++{{end}}{{end}}) { 
+		{{compileSequence .Sequence}}
 	} {{/*
 */}}{{end}}`
 
