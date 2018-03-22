@@ -9,9 +9,13 @@ var cTemplateFuncMap = template.FuncMap{
 	"translateOperatorToken": cTranslateOperatorToken,
 	"tokenIsFunctionCall":    cTokenIsFunctionCall,
 	"compileSequence":        CCompileSequence,
+	"isKnownVar":             isKnownVar,
 }
 
-var cTemplates *template.Template
+var (
+	cTemplates    *template.Template
+	knownVarNames []string
+)
 
 func panicOnErr(err error) {
 	if err != nil {
@@ -22,6 +26,20 @@ func panicOnErr(err error) {
 //init runs to initialise the package
 func init() {
 	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).Parse(cTemplate))
+}
+
+//SetKnownVarNames sets the names of known variables for the compiler
+func SetKnownVarNames(varNames []string) {
+	knownVarNames = varNames
+}
+
+func isKnownVar(name string) bool {
+	for _, n := range knownVarNames {
+		if n == name {
+			return true
+		}
+	}
+	return false
 }
 
 //CCompileSequence will take a sequence of STInstructions and compile them to their equivalent C codes using the

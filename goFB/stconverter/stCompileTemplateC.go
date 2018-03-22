@@ -7,7 +7,7 @@ import (
 const cTemplate = `
 {{define "expression"}}{{$value := .HasValue}}{{$operator := .HasOperator}}{{/*
 	*/}}{{if $value}}{{/*
-		*/}}{{$value}}{{/*
+		*/}}{{if isKnownVar $value}}me->{{end}}{{$value}}{{/*
 	*/}}{{else if $operator}}{{/* //then we need to determine how to print this operator
 		*/}}{{if $operator.LeftAssociative}}{{/* //print first argument, operator string, then remaining arguments
 			*/}}{{$args := .GetArguments}}{{$a := index $args 1}}{{$b := index $args 0}}{{$curPrec := $operator.GetPrecedence}}{{$aop := $a.HasOperator}}{{$bop := $b.HasOperator}}{{/*

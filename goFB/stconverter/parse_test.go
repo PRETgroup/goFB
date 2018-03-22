@@ -13,6 +13,7 @@ type stTestCase struct {
 	prog       []STInstruction
 	compC      string
 	err        error
+	knownNames []string
 }
 
 var stTestCases = []stTestCase{
@@ -570,10 +571,41 @@ var stTestCases = []stTestCase{
 		} while(1);
 		`,
 	},
+	{
+		name:       "known names test",
+		progString: "if y > 5 then y := x; end_if;",
+		prog: []STInstruction{
+			STIfElsIfElse{
+				IfThens: []STIfThen{
+					{
+						IfExpression: STExpressionOperator{
+							Operator: findOp(stGreaterThan),
+							Arguments: []STExpression{
+								STExpressionValue{"5"},
+								STExpressionValue{"y"},
+							},
+						},
+						ThenSequence: []STInstruction{
+							STExpressionOperator{
+								Operator: findOp(stAssignment),
+								Arguments: []STExpression{
+									STExpressionValue{"x"},
+									STExpressionValue{"y"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		compC:      "if(me->y > 5) { me->y = me->x; }",
+		knownNames: []string{"x", "y"},
+	},
 }
 
 func TestCases(t *testing.T) {
 	for i := 0; i < len(stTestCases); i++ {
+		SetKnownVarNames(stTestCases[i].knownNames)
 		prog, err := ParseString(stTestCases[i].name, stTestCases[i].progString)
 		if err != nil && stTestCases[i].err != nil {
 			if stTestCases[i].err.Error() != err.Err.Error() {
@@ -604,6 +636,7 @@ func TestCases(t *testing.T) {
 	}
 }
 
+//standardizeSpaces makes all whitespace gaps in a given string become a single space character
 func standardizeSpaces(s string) string {
 	return strings.Join(strings.Fields(s), " ")
 }
