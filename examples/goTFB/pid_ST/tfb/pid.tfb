@@ -47,10 +47,10 @@ architecture of PIDController {
 
     algorithm PIDTick in "ST" `
         //calculate proportional error
-        currentError := DesiredValue - ActualValue;
+        currentError := DesiredValue - CurrentValue;
 
         //calculate integrationError (with WindupGuard clamp)
-        integrationError += currentError;
+        integrationError := integrationError + currentError;
         if integrationError < -WindupGuard then
             integrationError := -WindupGuard;
         elsif integrationError > WindupGuard then
@@ -66,10 +66,10 @@ architecture of PIDController {
         dTerm := DGain * differentialError;
 
         // output the summation of terms
-        Control := pTerm + iTerm + dTerm;
+        ControlValue := pTerm + iTerm + dTerm;
 
         // save current error as previous error for next iteration
-        previousError = currentError;
+        previousError := currentError;
     `;
 
     algorithm PIDZero in "ST" `
