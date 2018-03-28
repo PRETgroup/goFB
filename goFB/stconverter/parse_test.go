@@ -52,6 +52,25 @@ var stTestCases = []stTestCase{
 		compC: "y = x + 2;",
 	},
 	{
+		name:       "assignment 3",
+		progString: "integrationError := -WindupGuard;",
+		prog: []STInstruction{
+			STExpressionOperator{
+				Operator: findOp(stAssignment),
+				Arguments: []STExpression{
+					STExpressionOperator{
+						Operator: findOp(stNegative),
+						Arguments: []STExpression{
+							STExpressionValue{"WindupGuard"},
+						},
+					},
+					STExpressionValue{"integrationError"},
+				},
+			},
+		},
+		compC: "integrationError = -WindupGuard;",
+	},
+	{
 		name:       "basic function call",
 		progString: "print(\"hi\");",
 		prog: []STInstruction{
@@ -106,6 +125,45 @@ var stTestCases = []stTestCase{
 			},
 		},
 		compC: "if(y > x) { y = x; }",
+	},
+	{
+		name:       "if/then 2",
+		progString: "if y < -x then y := -x; end_if;",
+		prog: []STInstruction{
+			STIfElsIfElse{
+				IfThens: []STIfThen{
+					{
+						IfExpression: STExpressionOperator{
+							Operator: findOp(stLessThan),
+							Arguments: []STExpression{
+								STExpressionOperator{
+									Operator: findOp(stNegative),
+									Arguments: []STExpression{
+										STExpressionValue{"x"},
+									},
+								},
+								STExpressionValue{"y"},
+							},
+						},
+						ThenSequence: []STInstruction{
+							STExpressionOperator{
+								Operator: findOp(stAssignment),
+								Arguments: []STExpression{
+									STExpressionOperator{
+										Operator: findOp(stNegative),
+										Arguments: []STExpression{
+											STExpressionValue{"x"},
+										},
+									},
+									STExpressionValue{"y"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		compC: "if(y < -x) { y = -x; }",
 	},
 	{
 		name: "if/elsif/else 1",
@@ -203,6 +261,75 @@ var stTestCases = []stTestCase{
 			"	print(\"hi\");\n" +
 			"	print(\"yes\");\n" +
 			"}",
+	},
+	{
+		name: "if/elsif/else 2",
+		progString: `
+		if integrationError < -WindupGuard then
+			integrationError := -WindupGuard;
+		elsif integrationError > WindupGuard then
+			integrationError := WindupGuard;
+		end_if;
+		`,
+		prog: []STInstruction{
+			STIfElsIfElse{
+				IfThens: []STIfThen{
+					{
+						IfExpression: STExpressionOperator{
+							Operator: findOp(stLessThan),
+							Arguments: []STExpression{
+								STExpressionOperator{
+									Operator: findOp(stNegative),
+									Arguments: []STExpression{
+										STExpressionValue{"WindupGuard"},
+									},
+								},
+								STExpressionValue{"integrationError"},
+							},
+						},
+						ThenSequence: []STInstruction{
+							STExpressionOperator{
+								Operator: findOp(stAssignment),
+								Arguments: []STExpression{
+									STExpressionOperator{
+										Operator: findOp(stNegative),
+										Arguments: []STExpression{
+											STExpressionValue{"WindupGuard"},
+										},
+									},
+									STExpressionValue{"integrationError"},
+								},
+							},
+						},
+					},
+					{
+						IfExpression: STExpressionOperator{
+							Operator: findOp(stGreaterThan),
+							Arguments: []STExpression{
+								STExpressionValue{"WindupGuard"},
+								STExpressionValue{"integrationError"},
+							},
+						},
+						ThenSequence: []STInstruction{
+							STExpressionOperator{
+								Operator: findOp(stAssignment),
+								Arguments: []STExpression{
+									STExpressionValue{"WindupGuard"},
+									STExpressionValue{"integrationError"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		compC: `
+		if(integrationError < -WindupGuard) {
+			integrationError = -WindupGuard;
+		} else if(integrationError > WindupGuard) {
+			integrationError = WindupGuard;
+		}
+		`,
 	},
 	{
 		name: "switchcase 1",
@@ -555,12 +682,11 @@ var stTestCases = []stTestCase{
 			i = i - 1;
 		} while(!(i != 5));`,
 	},
-
-	{
+	/*{ //test removed: "until" statement is now compulsory
 		name: "repeat loop 2",
 		progString: "" +
 			"repeat\n" +
-			"	printf(\"%d\n\", i);\n" +
+			"	printf(\"%d\", i);\n" +
 			"	exit;\n" +
 			"end_repeat;",
 		prog: []STInstruction{
@@ -585,7 +711,7 @@ var stTestCases = []stTestCase{
 			break;
 		} while(1);
 		`,
-	},
+	},*/
 	{
 		name:       "known names test",
 		progString: "if y > 5 then y := x; end_if;",
@@ -619,8 +745,10 @@ var stTestCases = []stTestCase{
 }
 
 func TestCases(t *testing.T) {
-	//for i := 0; i < len(stTestCases); i++ {
-	for i := 3; i < 4; i++ {
+	for i := 0; i < len(stTestCases); i++ {
+		//for i := 5; i < 6; i++ {
+		t.Logf("Running test %d (%s)\n", i, stTestCases[i].name)
+
 		SetKnownVarNames(stTestCases[i].knownNames)
 		prog, err := ParseString(stTestCases[i].name, stTestCases[i].progString)
 		if err != nil && stTestCases[i].err != nil {

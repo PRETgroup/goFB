@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="PIDController" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="UpdateConfig" Comment="">
+				<With Var="PGain"></With>
+				<With Var="IGain"></With>
+				<With Var="DGain"></With>
+				<With Var="WindupGuard"></With>
+			</Event>
+			<Event Name="Reset" Comment="">
+				<With Var="PGain"></With>
+				<With Var="IGain"></With>
+				<With Var="DGain"></With>
+				<With Var="WindupGuard"></With>
+			</Event>
+			<Event Name="Tick" Comment="">
+				<With Var="DesiredValue"></With>
+				<With Var="CurrentValue"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="ControlChanged" Comment="">
+				<With Var="ControlValue"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="PGain" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="IGain" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="DGain" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="WindupGuard" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="DesiredValue" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="CurrentValue" Type="REAL" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="ControlValue" Type="REAL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="pTerm" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="iTerm" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="dTerm" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="previousError" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="currentError" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="integrationError" Type="REAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="differentialError" Type="REAL" Comment=""></VarDeclaration>
+		</InternalVars>
+		<ECC>
+			<ECState Name="start" Comment="" x="" y=""></ECState>
+			<ECState Name="update" Comment="" x="" y="">
+				<ECAction Output="ControlChanged"></ECAction>
+				<ECAction Algorithm="PIDTick"></ECAction>
+			</ECState>
+			<ECState Name="reset" Comment="" x="" y="">
+				<ECAction Algorithm="PIDZero"></ECAction>
+			</ECState>
+			<ECTransition Source="start" Destination="reset" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="update" Destination="reset" Condition="Reset" x="" y=""></ECTransition>
+			<ECTransition Source="update" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+			<ECTransition Source="reset" Destination="reset" Condition="Reset" x="" y=""></ECTransition>
+			<ECTransition Source="reset" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="PIDTick" Comment="">
+			<Other Language="ST" Text="&#xA;        //calculate proportional error&#xA;        currentError := DesiredValue - ActualValue;&#xA;&#xA;        //calculate integrationError (with WindupGuard clamp)&#xA;        integrationError += currentError;&#xA;        if integrationError &lt; -WindupGuard then&#xA;            integrationError := -WindupGuard;&#xA;        elsif integrationError &gt; -WindupGuard then&#xA;            integrationError := WindupGuard;&#xA;        end_if;&#xA;&#xA;        //calculate differentation error&#xA;        differentialError := currentError - previousError;&#xA;&#xA;        // scaling&#xA;        pTerm := PGain * currentError;&#xA;        iTerm := IGain * integrationError;&#xA;        dTerm := DGain * differentialError;&#xA;&#xA;        // output the summation of terms&#xA;        Control := pTerm + iTerm + dTerm;&#xA;&#xA;        // save current error as previous error for next iteration&#xA;        previousError = currentError;&#xA;    "></Other>
+		</Algorithm>
+		<Algorithm Name="PIDZero" Comment="">
+			<Other Language="ST" Text="&#xA;        //reset the only persistent internal variables to zero the PID&#xA;        previousError := 0;&#xA;        integrationError := 0;&#xA;    "></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

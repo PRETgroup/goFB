@@ -1,0 +1,91 @@
+basicFB PIDController;
+
+interface of PIDController {
+    in event UpdateConfig;
+    in event Reset;
+    in event Tick;
+    
+    in real PGain, IGain, DGain with UpdateConfig, Reset;
+    in real WindupGuard with UpdateConfig, Reset;
+
+    in real DesiredValue, CurrentValue with Tick;
+
+    out event ControlChanged;
+    out real ControlValue with ControlChanged;
+}
+
+architecture of PIDController {
+    internals {
+        real pTerm, iTerm, dTerm;
+        
+        real previousError; // the last error, used in D component
+        real currentError;  // the current proportional error
+        
+        real integrationError;  // the integration error over time
+        real differentialError; // the differential error 
+    }
+
+    states {
+        start {
+            -> reset;
+        }
+
+        update {
+            emit ControlChanged;
+            run PIDTick;
+
+            -> reset on Reset;
+            -> update on Tick;
+        }
+
+        reset {
+            run PIDZero;
+            -> reset on Reset;
+            -> update on Tick;
+        }
+    }
+
+    algorithm PIDTick in "ST" `
+        //calculate proportional error
+        currentError := DesiredValue - ActualValue;
+
+        //calculate integrationError (with WindupGuard clamp)
+        integrationError += currentError;
+        if integrationError < -WindupGuard then
+            integrationError := -WindupGuard;
+        elsif integrationError > WindupGuard then
+            integrationError := WindupGuard;
+        end_if;
+
+        //calculate differentation error
+        differentialError := currentError - previousError;
+
+        // scaling
+        pTerm := PGain * currentError;
+        iTerm := IGain * integrationError;
+        dTerm := DGain * differentialError;
+
+        // output the summation of terms
+        Control := pTerm + iTerm + dTerm;
+
+        // save current error as previous error for next iteration
+        previousError = currentError;
+    `;
+
+    algorithm PIDZero in "ST" `
+        //reset the only persistent internal variables to zero the PID
+        previousError := 0;
+        integrationError := 0;
+    `;
+}
+
+
+
+   
+    
+ 
+   
+ 
+    
+ 
+    

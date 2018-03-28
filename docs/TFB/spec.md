@@ -396,7 +396,9 @@ Here's an example:
 enforcerFB AEIEnforcer;
 
 interface of AEIEnforcer {
-	enforce event AS, VS, AP, VP;
+	enforce in event AS, VS; //in here means that they're going from PLANT to CONTROLLER
+	enforce out event AP, VP;//out here means that they're going from CONTROLLER to PLANT
+
 	in ulint AEI_ns default "900000000";
 }
 
@@ -409,7 +411,8 @@ architecture of AEIEnforcer {
 
 	states {
 		s0 {
-			-> s1 on (VS or VP); 
+			-> s1 on (VS or VP), 
+				settime tAEI; 
 		}
 
 		s1 {

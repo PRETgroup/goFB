@@ -35,6 +35,7 @@ func (s stOp) LeftAssociative() bool {
 const (
 	stAssignment         = ":="
 	stNot                = "not"
+	stNegative           = "`" //this is not actually in code, but we convert "negation" operators to it (i.e. "3 + -4 = -1" would become 3 + `4 = `1)
 	stExponentiation     = "**"
 	stMultiply           = "*"
 	stDivide             = "/"
@@ -54,6 +55,7 @@ const (
 
 var ops = []Operator{
 	stOp{stNot, 0, 1, AssociationRight},
+	stOp{stNegative, 0, 1, AssociationRight},
 	stOp{stExponentiation, 1, 2, AssociationRight},
 	stOp{stMultiply, 2, 2, AssociationLeft},
 	stOp{stDivide, 2, 2, AssociationLeft},
@@ -138,14 +140,18 @@ var tests = []postfixTest{
 		out: []string{"\"hello\"", "i", "printf<2>"},
 	},
 	{
-		in:  []string{"-", "1", "+", "-", "2"}, //this one takes some thinking about, but is correct if you consider there to be an invisible zero off the stack
-		out: []string{"1", "-", "+", "2", "-"},
+		in:  []string{"`", "1"},
+		out: []string{"1", "`"},
+	},
+	{
+		in:  []string{"`", "1", "+", "`", "2"},
+		out: []string{"1", "`", "2", "`", "+"},
 	},
 }
 
 func TestPostfix(t *testing.T) {
 	c := NewConverter(ops)
-	for i := 0; i < len(tests); i++ {
+	for i := 0; i < 1; /*len(tests)*/ i++ {
 		pOut := c.ToPostfix(tests[i].in)
 		if !reflect.DeepEqual(tests[i].out, pOut) {
 			t.Errorf("Failed test %d\nInput:   %+v\nReqOut:  %+v\ngaveOut: %+v\n", i, tests[i].in, tests[i].out, pOut)

@@ -252,7 +252,6 @@ func (c *Converter) ToPostfix(nftokens []string) []string {
 					(topOp.GetPrecedence() == tokOp.GetPrecedence() && topOp.GetAssociation() != AssociationLeft) {
 					break
 				}
-				//fmt.Printf("appending\n")
 				postfix = append(postfix, top)
 				stack.Pop()
 			}
@@ -268,4 +267,23 @@ func (c *Converter) ToPostfix(nftokens []string) []string {
 	//TODO: scan the completed postfix and check for errors
 
 	return postfix
+}
+
+//ConvertMinusToNegationTokenInInfixExpr scans through an Infix Expression and converts minuses that should be negatives to negatives
+// (i.e. "2 + -3" becomes "2 + [minus]3")
+func (c *Converter) ConvertMinusToNegationTokenInInfixExpr(minusOpToken string, negationOpToken string, infix []string) []string {
+	for i := 0; i < len(infix)-1; i++ {
+		if infix[i] == minusOpToken {
+			//check if previous value is number or not
+			if i == 0 {
+				infix[i] = negationOpToken
+			}
+			isOp, _ := c.IsOperator(infix[i-1])
+			if (infix[i-1] != ")") && isOp {
+				infix[i] = negationOpToken
+			}
+			continue
+		}
+	}
+	return infix
 }

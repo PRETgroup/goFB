@@ -77,7 +77,6 @@ out:
 		//check if s is a disallowed instruction (any of the other keywords)
 		for _, kw := range disallowedExpressionKeywords {
 			if s == kw {
-				fmt.Println("here")
 				return nil, t.errorUnexpectedToken(s)
 			}
 		}
@@ -87,6 +86,7 @@ out:
 
 	//convert to postfix notation
 	postfixConverter := postfix.NewConverter(stOps)
+	infixExprString = postfixConverter.ConvertMinusToNegationTokenInInfixExpr(stSubtract, stNegative, infixExprString)
 	postfixExprString := postfixConverter.ToPostfix(infixExprString)
 
 	//now go through the postfix expression and convert to function tree
@@ -106,6 +106,11 @@ out:
 		var e STExpression
 		stEOp.Operator = op
 		for j := 0; j < op.GetNumOperands(); j++ {
+			if len(stack) == 0 {
+				fmt.Printf("was looking at %v\n", op.GetToken())
+				fmt.Printf("%v", t.getCurrentDebugInfo())
+				panic("stack at zero")
+			}
 			e, stack = stack[len(stack)-1], stack[:len(stack)-1]
 			stEOp.Arguments = append(stEOp.Arguments, e)
 		}
@@ -113,6 +118,7 @@ out:
 	}
 	//now we're done!
 	if len(stack) != 1 {
+		fmt.Println(postfixExprString)
 		fmt.Println(stack)
 		return nil, t.error(ErrBadExpression)
 	}

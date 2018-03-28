@@ -16,6 +16,7 @@ const (
 
 	//stOpValue              = ""
 	stNot                = "not"
+	stNegative           = "`" //this is not actually in code, but we convert "negation" operators to it (i.e. "3 + -4 = -1" would become 3 + `4 = `1)
 	stExponentiation     = "**"
 	stMultiply           = "*"
 	stDivide             = "/"

@@ -89,6 +89,8 @@ func cTranslateOperatorToken(token string) string {
 		return "return"
 	case stNot:
 		return "!"
+	case stNegative:
+		return "-"
 	case stExponentiation:
 		//todo: we need to roll a custom exponentiation function
 		panic("exponentiation not supported in C!")
