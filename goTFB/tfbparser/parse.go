@@ -38,8 +38,9 @@ const (
 	pFBarchitecture = "architecture"
 	pOf             = "of"
 
-	pIn  = "in"
-	pOut = "out"
+	pEnforce = "enforce"
+	pIn      = "in"
+	pOut     = "out"
 
 	pWith = "with"
 
@@ -72,13 +73,13 @@ const (
 )
 
 //enforceFB-specific string constants
-const (
-	pViolation = "violation"
-	pAfter     = "after"
-	pBefore    = "before"
-	pUntil     = "until"
-	pSetTime   = "settime"
-)
+// const (
+// 	pViolation = "violation"
+// 	pAfter     = "after"
+// 	pBefore    = "before"
+// 	pUntil     = "until"
+// 	pSetTime   = "settime"
+// )
 
 //ParseString takes an input string (i.e. filename) and input and returns all FBs in that string
 func ParseString(name string, input string) ([]iec61499.FB, *ParseError) {
@@ -296,5 +297,9 @@ func (t *tfbParse) parseFBarchitecture() *ParseError {
 		return t.parseHFBarchitecture(fbIndex)
 	}
 
-	return t.error(errors.New("Can't parse unknown architecture type"))
+	if t.fbs[fbIndex].EnforceFB != nil {
+		return t.parseEFBarchitecture(fbIndex)
+	}
+
+	return t.error(errors.New("can't parse unknown architecture type"))
 }

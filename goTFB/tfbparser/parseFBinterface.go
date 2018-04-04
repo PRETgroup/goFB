@@ -25,7 +25,7 @@ func (t *tfbParse) parseFBinterface() *ParseError {
 	//now we run until closed brace
 	for {
 		//inside the interface, we have
-		//in|out event|bool|byte|word|dword|lword|sint|usint|int|uint|dint|udint|lint|ulint|real|lreal|time|any (name[, name]) [on (name[, name]) - non-event types only]; //(comments)
+		//[enforce] in|out event|bool|byte|word|dword|lword|sint|usint|int|uint|dint|udint|lint|ulint|real|lreal|time|any (name[, name]) [on (name[, name]) - non-event types only]; //(comments)
 		//repeated over and over again
 		s = t.pop()
 		if s == "" {
@@ -34,8 +34,14 @@ func (t *tfbParse) parseFBinterface() *ParseError {
 		if s == pCloseBrace {
 			return nil //we're done here
 		}
+		enforce := false
+		if s == pEnforce {
+			enforce = true
+			s = t.pop()
+		}
+
 		if s == pIn || s == pOut {
-			if err := t.addFBio(s == pIn, fbIndex); err != nil {
+			if err := t.addFBio(enforce, s == pIn, fbIndex); err != nil {
 				return err
 			}
 		}
@@ -44,7 +50,10 @@ func (t *tfbParse) parseFBinterface() *ParseError {
 
 //addFBio adds a line of in/out event/data [with arraysize, triggers, default] to the FB interface
 // some error checking is done
-func (t *tfbParse) addFBio(isInput bool, fbIndex int) *ParseError {
+//isEnforced: set to TRUE if you want the ENFORCE mode I/O (i.e. to have an emitted version as well as a captured version)
+//isInput: set to TRUE if you want to add this to the Inputs rather than the Outputs
+//fbIndex: the index of the FB we are working on inside t
+func (t *tfbParse) addFBio(isEnforced bool, isInput bool, fbIndex int) *ParseError {
 	fb := &t.fbs[fbIndex]
 
 	//next s is type
@@ -138,6 +147,23 @@ func (t *tfbParse) addFBio(isInput bool, fbIndex int) *ParseError {
 	//we now have everything we need to add the io to the interface
 	//was it an event?
 	if typ == pEvent {
+		//ENFORCE io works differently, we need to create both an input and an output for it
+		//(the in/out specifier now specifies what direction the data is coming from)
+		//IN means that the data is going from PLANT to CONTROLLER
+		//OUT means the data is going from CONTROLLER to PLANT
+		if isEnforced {
+			fb.AddEventInputNames(intNames, t.getCurrentDebugInfo())
+			emitNames := make([]string, len(intNames))
+			for i, n := range intNames {
+				if isInput {
+					emitNames[i] = n + "_to_controller"
+				} else {
+					emitNames[i] = n + "_to_plant"
+				}
+			}
+			fb.AddEventOutputNames(emitNames, t.getCurrentDebugInfo())
+		}
+
 		if isInput { //was it an input?
 			fb.AddEventInputNames(intNames, t.getCurrentDebugInfo())
 		} else {
@@ -147,6 +173,8 @@ func (t *tfbParse) addFBio(isInput bool, fbIndex int) *ParseError {
 	}
 	//no, it was a data connection
 	if isInput { //was it an input?
+		//TODO: enforced data lines
+
 		if _, err := fb.AddDataInputs(intNames, intTriggers, typ, size, initialValue, t.getCurrentDebugInfo()); err != nil {
 			return t.errorWithArg(ErrUndefinedEvent, err.Arg)
 		}

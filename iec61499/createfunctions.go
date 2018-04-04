@@ -80,6 +80,7 @@ func NewHybridFB(name string) *FB {
 	return &fb
 }
 
+//NewEnforceFB returns an EnforceFB with default fields filled
 func NewEnforceFB(name string) *FB {
 	fb := FB{}
 	fb.Name = name
@@ -212,6 +213,10 @@ func Must(f *FB, err *FBError) *FB {
 	return f
 }
 
+/***********************************************************************************************************************************
+ *                                               INTERFACE OF FB CREATION FUNCTIONS                                                *
+ ***********************************************************************************************************************************/
+
 //AddDataInputs adds data inputs to an FB
 // it will return an error message if a trigger can't be found
 func (fb *FB) AddDataInputs(intNames []string, intTriggers []string, typ string, size string, initialValue string, debug DebugInfo) (*FB, *FBError) {
@@ -272,8 +277,16 @@ func (fb *FB) AddxFBDataInternals(intNames []string, typ string, size string, in
 		fb.HybridFB.AddDataInternals(intNames, typ, size, initialValue, debug)
 		return fb, nil
 	}
+	if fb.EnforceFB != nil {
+		fb.EnforceFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+		return fb, nil
+	}
 	return nil, errors.New("AddxFBDataInternals may only be called on HFBs or BFBs")
 }
+
+/***********************************************************************************************************************************
+ *                                                  BASIC FB CREATION FUNCTIONS                                                    *
+ ***********************************************************************************************************************************/
 
 //AddBFBDataInternals adds data internals to an fb's bfb without performing error checking
 func (fb *FB) AddBFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *FB {
@@ -345,6 +358,10 @@ func (bfb *BasicFB) AddTransition(source string, dest string, cond string, debug
 	})
 	return bfb
 }
+
+/***********************************************************************************************************************************
+ *                                               COMPOSITE FB CREATION FUNCTIONS                                                   *
+ ***********************************************************************************************************************************/
 
 //AddCFBInstances adds an instance to a fb cfb without performing error checking
 func (fb *FB) AddCFBInstances(fbTypeName string, fbInstNames []string, debug DebugInfo) *FB {
@@ -421,6 +438,10 @@ func (cfb *CompositeFB) AddNetworkParameter(param string, fbInstName string, por
 	return nil, newError(ErrFbInstNameUndefined, fbInstName)
 }
 
+/***********************************************************************************************************************************
+ *                                          SERVICE INTERFACE FB CREATION FUNCTIONS                                                *
+ ***********************************************************************************************************************************/
+
 //AddSIFBParams adds all parameters to an SIFB. It returns no error
 func (fb *FB) AddSIFBParams(lang string, arbitrary string, inStruct string, preInit string, init string, run string, shutdown string, debug DebugInfo) *FB {
 	fb.ServiceFB.AddParams(lang, arbitrary, inStruct, preInit, init, run, shutdown, debug)
@@ -440,6 +461,10 @@ func (sifb *ServiceFB) AddParams(lang string, arbitrary string, inStruct string,
 	sifb.Autogenerate.DebugInfo = debug
 	return sifb
 }
+
+/***********************************************************************************************************************************
+ *                                                 HYBRID FB CREATION FUNCTIONS                                                    *
+ ***********************************************************************************************************************************/
 
 //AddHFBDataInternals adds data internals to an fb's bfb without performing error checking
 func (fb *FB) AddHFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *FB {
@@ -510,4 +535,83 @@ func (hfb *HybridFB) AddTransition(source string, dest string, cond string, debu
 		DebugInfo: debug,
 	})
 	return hfb
+}
+
+/***********************************************************************************************************************************
+ *                                               ENFORCER FB CREATION FUNCTIONS                                                    *
+ ***********************************************************************************************************************************/
+
+//AddEFBDataInternals adds data internals to an fb's efb without performing error checking
+func (fb *FB) AddEFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *FB {
+	fb.EnforceFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+	return fb
+}
+
+//AddDataInternals adds data internals to a efb, and adds the InternalVars section if it is nil
+func (efb *EnforceFB) AddDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *EnforceFB {
+
+	for _, iname := range intNames {
+		efb.InternalVars = append(efb.InternalVars, Variable{Name: iname, Type: typ, ArraySize: size, InitialValue: initialValue, DebugInfo: debug})
+	}
+	return efb
+}
+
+// //AddEFBAlgorithm adds algorithm to an fb's bfb without performing error checking
+// func (fb *FB) AddEFBAlgorithm(name string, lang string, prog string, debug DebugInfo) *FB {
+// 	fb.EnforceFB.AddAlgorithm(name, lang, prog, debug)
+// 	return fb
+// }
+
+// //AddAlgorithm adds an algorithm to a bfb
+// // it will return an error message if the block is not a basicFB
+// func (efb *EnforceFB) AddAlgorithm(name string, lang string, prog string, debug DebugInfo) *EnforceFB {
+
+// 	efb.Algorithms = append(efb.Algorithms, Algorithm{
+// 		Name: name,
+// 		Other: OtherLanguage{
+// 			Language: lang,
+// 			Text:     prog,
+// 		},
+// 		DebugInfo: debug,
+// 	})
+
+// 	return efb
+// }
+
+//AddEFBState adds state to an fb's bfb without performing error checking
+func (fb *FB) AddEFBState(name string, actions []Action, debug DebugInfo) *FB {
+	fb.EnforceFB.AddState(name, actions, debug)
+	return fb
+}
+
+//AddState adds a state to a bfb
+func (efb *EnforceFB) AddState(name string, actions []Action, debug DebugInfo) *EnforceFB {
+	efb.States = append(efb.States, EFBState{
+		ECState: ECState{
+			Name:      name,
+			ECActions: actions,
+			DebugInfo: debug,
+		},
+	})
+	return efb
+}
+
+//AddEFBTransition adds a transition to an fb's bfb without performing error checking
+func (fb *FB) AddEFBTransition(source string, dest string, cond string, debug DebugInfo) *FB {
+	fb.EnforceFB.AddTransition(source, dest, cond, debug)
+	return fb
+}
+
+//AddTransition adds a state transition to a bfb
+func (efb *EnforceFB) AddTransition(source string, dest string, cond string, debug DebugInfo) *EnforceFB {
+	efb.Transitions = append(efb.Transitions, EFBTransition{
+		ECTransition: ECTransition{
+			Source:      source,
+			Destination: dest,
+			Condition:   cond,
+
+			DebugInfo: debug,
+		},
+	})
+	return efb
 }

@@ -3,7 +3,7 @@ package tfbparser
 import (
 	"testing"
 
-	"github.com/kiwih/goFB/iec61499"
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 var interfaceTests = []ParseTest{
@@ -258,6 +258,26 @@ var interfaceTests = []ParseTest{
 						in event inEvent2;
 						out int initial`,
 		Err: ErrUnexpectedValue,
+	},
+	{
+		Name: "enforce data default in/out 1",
+		Input: `basicFB testBlock;
+					interface of testBlock {
+						enforce in event inEvent1, inEvent2;
+						enforce in lreal inData1, inData2 with inEvent1, inEvent2;
+						enforce out event outEvent1, outEvent2;
+						enforce	out lreal outData1, outData2 with outEvent1, outEvent2;
+					}`,
+		Output: []iec61499.FB{
+			*iec61499.Must(
+				iec61499.Must(
+					iec61499.NewBasicFB("testBlock").
+						AddEventInputNames([]string{"inEvent1", "inEvent2"}, d).
+						AddEventOutputNames([]string{"outEvent1", "outEvent2"}, d).
+						AddDataInputs([]string{"inData1", "inData2"}, []string{"inEvent1", "inEvent2"}, "lreal", "", "", d)).
+					AddDataOutputs([]string{"outData1", "outData2"}, []string{"outEvent1", "outEvent2"}, "lreal", "", "", d)),
+		},
+		Err: nil,
 	},
 }
 

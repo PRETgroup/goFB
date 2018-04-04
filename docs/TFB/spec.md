@@ -399,7 +399,10 @@ interface of AEIEnforcer {
 	enforce in event AS, VS; //in here means that they're going from PLANT to CONTROLLER
 	enforce out event AP, VP;//out here means that they're going from CONTROLLER to PLANT
 
-	in ulint AEI_ns default "900000000";
+	in ulint AEI_ns default 900000000;
+
+	in event current_ns_change;
+	in ulint current_ns with current_ns_change;
 }
 
 architecture of AEIEnforcer {
@@ -411,15 +414,13 @@ architecture of AEIEnforcer {
 
 	states {
 		s0 {
-			-> s1 on (VS or VP), 
-				settime tAEI; 
+			//-> <destination> [on guard] [: output expression][, output expression...] ;
+			-> s1 on (VS or VP): tAEI := current_ns;
 		}
 
 		s1 {
-			settime tAEI;
-
 			-> s1 on (AS or AP);
-			-> violation on (AEI_time after tAEI);
+			-> violation on (tAEI + AEI_ns > current_ns);
 		}
 	} 
 }

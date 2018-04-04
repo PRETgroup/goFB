@@ -3,7 +3,7 @@ package tfbparser
 import (
 	"testing"
 
-	"github.com/kiwih/goFB/iec61499"
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 var sifbArchitectureTests = []ParseTest{
@@ -33,7 +33,7 @@ var sifbArchitectureTests = []ParseTest{
 						AddEventOutputNames([]string{"outEvent"}, d).
 						AddDataInputs([]string{"inData"}, []string{"inEvent"}, "lreal", "", "", d)).
 					AddDataOutputs([]string{"outData"}, []string{"outEvent"}, "lreal", "", "", d)).
-				AddSIFBParams("C", "//0", "//1", "//2", "//3", "//4", d),
+				AddSIFBParams("C", "//0", "//1", "//2", "//3", "//4", "//5", d),
 		},
 		Err: nil,
 	},

@@ -37,8 +37,8 @@ type FB struct {
 	BasicFB     *BasicFB     `xml:",omitempty"`
 	CompositeFB *CompositeFB `xml:",omitempty"`
 	ServiceFB   *ServiceFB   `xml:",omitempty"`
-	HybridFB    *HybridFB    `xml:"-"` //don't ever export HybridFBs, convert them to BFBs first
-	EnforceFB   *EnforceFB   `xml:"-"` //don't ever export EnforceFBs, convert them to BFBs first
+	HybridFB    *HybridFB    `xml:"-"`          //don't ever export HybridFBs, convert them to BFBs first
+	EnforceFB   *EnforceFB   `xml:",omitempty"` //EnforceFB can be converted to equivalent BasicFB
 
 	NumChildren int `xml:"-"` //this is useful when using the event queue as we use it to assign unique blockInstanceIDs, it stores the recursive number of children a block has
 	DebugInfo   `xml:"-"`
@@ -137,15 +137,20 @@ type HFBInvariant struct {
 
 //EnforceFB is used for specifying policies that must be kept
 type EnforceFB struct {
-	InternalVars []Variable     `xml:"InternalVars>VarDeclaration,omitempty"`
-	States       []EFBState     `xml:"ECC>ECState"`
-	Transitions  []ECTransition `xml:"ECC>ECTransition,omitempty"`
+	InternalVars []Variable      `xml:"InternalVars>VarDeclaration,omitempty"`
+	States       []EFBState      `xml:"ECC>ECState"`
+	Transitions  []EFBTransition `xml:"ECC>ECTransition,omitempty"`
 }
 
 //EFBState is a state in the policy specification of an enforcerFB
 type EFBState struct {
 	ECState
-	SetTimers []string //names of timers to set on entry to this state
+}
+
+//EFBTransition is a transition between EFBStates in an EnforceFB (mealy machine transitions)
+type EFBTransition struct {
+	ECTransition
+	Expressions []string //expressions associated with this transition
 }
 
 //ECState is a state in the ECC (Execution control chart) of a BasicFB
