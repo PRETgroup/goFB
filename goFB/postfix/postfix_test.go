@@ -151,7 +151,7 @@ var tests = []postfixTest{
 
 func TestPostfix(t *testing.T) {
 	c := NewConverter(ops)
-	for i := 0; i < 1; /*len(tests)*/ i++ {
+	for i := 0; i < len(tests); i++ {
 		pOut := c.ToPostfix(tests[i].in)
 		if !reflect.DeepEqual(tests[i].out, pOut) {
 			t.Errorf("Failed test %d\nInput:   %+v\nReqOut:  %+v\ngaveOut: %+v\n", i, tests[i].in, tests[i].out, pOut)

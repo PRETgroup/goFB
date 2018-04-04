@@ -73,5 +73,13 @@ There are other examples, not recommended for casual use:
 
 `examples/vhdl` provides networks used in the experimentation for IEC61499-to-vhdl compilation.
 
+## Internal packages
 
+* *iec61499converter*: This is responsible for converting IEC61499 xml into C (or in some cases, VHDL) code.
+* *postfix*: This is a tiny package which converts math expressions from infix notation (i.e. 2+3) into postfix notation (i.e. 2 3 +).
+* *stconverter*: This package converts a subset of IEC61131-3 Structured Text into C (or in some cases, VHDL) code.
+
+Other directores:
+
+* *templates*: This stores templates for iec61499converter.
 
