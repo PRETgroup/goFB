@@ -32,28 +32,28 @@ g: green
 
 
 	out event RiChange;
-	out bool initial false RiReq with RiChange;
+	out bool RiReq with RiChange := false;
 
 	out event RnChange;
 	out bool inital false RnReq with RnChange;
 
 	out event RsChange;
-	out bool initial false RsReq with RsChange;
+	out bool RsReq with RsChange := false;
 
 	out event DwiChange;
-    out bool initial false DwiPrs with DwiChange;
+    out bool DwiPrs with DwiChange := false;
 
     out event DwoChange;
-    out bool initial false DwoPrs with DwoChange;
+    out bool DwoPrs with DwoChange := false;
 
     out event DwnChange;
-    out bool initial false DwnPrs with DwnChange;
+    out bool DwnPrs with DwnChange := false;
 
     out event DwsChange;
-    out bool initial false DwsPrs with DwsChange;
+    out bool DwsPrs with DwsChange := false;
 
     out event DnChange;
-    out bool initial false DnPrs with DnChange;
+    out bool DnPrs with DnChange := false;
 
     out event DsChange;
-    out bool initial false DsPrs with DsChange;
+    out bool DsPrs with DsChange := false;

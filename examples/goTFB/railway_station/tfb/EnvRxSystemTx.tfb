@@ -1,24 +1,24 @@
 serviceFB EnvRxSystemTx;
 interface of EnvRxSystemTx {
     in event SChange;
-    in bool initial false SiGrn with SChange;
-    in bool initial false SoGrn with SChange;
-    in bool initial false SnGrn with SChange;
-    in bool initial false SsGrn with SChange;
+    in bool SiGrn with SChange := false;
+    in bool SoGrn with SChange := false;
+    in bool SnGrn with SChange := false;
+    in bool SsGrn with SChange := false;
 
     in event WChange;
-    in bool initial false WiDvrg with WChange;
-    in bool initial false WoDvrg with WChange;
-    in bool initial false WnDvrg with WChange;
-    in bool initial false WsDvrg with WChange;
+    in bool WiDvrg with WChange := false;
+    in bool WoDvrg with WChange := false;
+    in bool WnDvrg with WChange := false;
+    in bool WsDvrg with WChange := false;
 
     in event DChangeD; //D for Display
-    in bool initial false DwiPrsD with DChangeD;
-    in bool initial false DwoPrsD with DChangeD;
-    in bool initial false DwnPrsD with DChangeD;
-    in bool initial false DwsPrsD with DChangeD;
-    in bool initial false DnPrsD with DChangeD;
-    in bool initial false DsPrsD with DChangeD;
+    in bool DwiPrsD with DChangeD := false;
+    in bool DwoPrsD with DChangeD := false;
+    in bool DwnPrsD with DChangeD := false;
+    in bool DwsPrsD with DChangeD := false;
+    in bool DnPrsD with DChangeD := false;
+    in bool DsPrsD with DChangeD := false;
 }
 
 architecture of EnvRxSystemTx {

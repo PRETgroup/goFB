@@ -1,26 +1,26 @@
 enforcerFB EnvRxEnforcerProp;
 interface of EnvRxEnforcerProp {
 	in event SoChange;
-    in bool initial false SoGrn with SoChange;
+    in bool SoGrn with SoChange := false;
 
     enforce event SChange; //enforce types will create both inputs and outputs and internals
-    enforce bool initial false SiGrn with SChange;
-    enforce bool initial false SnGrn with SChange;
-    enforce bool initial false SsGrn with SChange;
+    enforce bool SiGrn with SChange := false;
+    enforce bool SnGrn with SChange := false;
+    enforce bool SsGrn with SChange := false;
 
     enforce event WChange;
-    enforce bool initial false WiDvrg with WChange;
-    enforce bool initial false WoDvrg with WChange;
-    enforce bool initial false WnDvrg with WChange;
-    enforce bool initial false WsDvrg with WChange;
+    enforce bool WiDvrg with WChange := false;
+    enforce bool WoDvrg with WChange := false;
+    enforce bool WnDvrg with WChange := false;
+    enforce bool WsDvrg with WChange := false;
 
     in event DChange_in; 
-    in bool initial false DwiPrs with DChange;
-    in bool initial false DwoPrs with DChange;
-    in bool initial false DwnPrs with DChange;
-    in bool initial false DwsPrs with DChange;
-    in bool initial false DnPrs with DChange;
-    in bool initial false DsPrs with DChange;
+    in bool DwiPrs with DChange := false;
+    in bool DwoPrs with DChange := false;
+    in bool DwnPrs with DChange := false;
+    in bool DwsPrs with DChange := false;
+    in bool DnPrs with DChange := false;
+    in bool DsPrs with DChange := false;
 
 	out event EnforcerAbortedAction; //let the controller know it done bad
 }
@@ -37,7 +37,7 @@ architecture of EnvRxEnforcerProp {
 
 	//our own modifiable copies of the inputs
 	//we'll make sure we're happy with these before we pass them to the outputs
-	internal bool initial false SiGrn, SnGrn, SsGrn, WiDvrg, WoDvrg, WnDvrg, WsDvrg;
+	internal bool SiGrn, SnGrn, SsGrn, WiDvrg, WoDvrg, WnDvrg, WsDvrg := false;
 
 	//we have two ways of dealing with failures
 	//some failures are recoverable, where we make a change to the inputs and then try another pass

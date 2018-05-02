@@ -67,4 +67,8 @@ typedef char FBstring[STRING_LENGTH];
 typedef FBstring STRING;
 typedef FBstring WSTRING;
 
+
+#define PushEvent(...) (void)0
+
+
 #endif // FBTYPES_H_

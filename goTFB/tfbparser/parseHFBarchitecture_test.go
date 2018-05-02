@@ -1,8 +1,6 @@
 package tfbparser
 
 import (
-	"testing"
-
 	"github.com/PRETgroup/goFB/iec61499"
 )
 
@@ -62,6 +60,6 @@ var hfbArchitectureTests = []ParseTest{
 	},
 }
 
-func TestParseHFBArchitecture(t *testing.T) {
-	runParseTests(t, hfbArchitectureTests)
-}
+// func TestParseHFBArchitecture(t *testing.T) {
+// 	runParseTests(t, hfbArchitectureTests)
+// }

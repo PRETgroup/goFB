@@ -1,16 +1,15 @@
 package tfbparser
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/PRETgroup/goFB/iec61499"
 )
 
-//parseEFBarchitecture shall only be called once we have already parsed the
+//parsePFBarchitecture shall only be called once we have already parsed the
 // "architecture of [blockname]" part of the definition
 // so, we are up to the brace
-func (t *tfbParse) parseEFBarchitecture(fbIndex int) *ParseError {
+func (t *tfbParse) parsePFBarchitecture(fbIndex int) *ParseError {
 	if s := t.pop(); s != pOpenBrace {
 		return t.errorUnexpectedWithExpected(s, pOpenBrace)
 	}
@@ -30,11 +29,11 @@ func (t *tfbParse) parseEFBarchitecture(fbIndex int) *ParseError {
 			//this is the end of the architecture
 			break
 		} else if s == pInternal || s == pInternals { //we actually care about { vs not-{, and so either internal or internals are valid prefixes for both situations
-			if err := t.parsePossibleArrayInto(fbIndex, (*tfbParse).parseEFBInternal); err != nil {
+			if err := t.parsePossibleArrayInto(fbIndex, (*tfbParse).parsePFBInternal); err != nil {
 				return err
 			}
 		} else if s == pState || s == pStates {
-			if err := t.parsePossibleArrayInto(fbIndex, (*tfbParse).parseEFBState); err != nil {
+			if err := t.parsePossibleArrayInto(fbIndex, (*tfbParse).parsePFBState); err != nil {
 				return err
 			}
 		}
@@ -43,8 +42,8 @@ func (t *tfbParse) parseEFBarchitecture(fbIndex int) *ParseError {
 	return nil
 }
 
-//parseEFBInternal parses a single internal and adds it to fb identified by fbIndex
-func (t *tfbParse) parseEFBInternal(fbIndex int) *ParseError {
+//parsePFBInternal parses a single internal and adds it to fb identified by fbIndex
+func (t *tfbParse) parsePFBInternal(fbIndex int) *ParseError {
 	//the beginning of this is very similar to parseFBio, but different enough that it should be another function
 	fb := &t.fbs[fbIndex]
 
@@ -73,9 +72,23 @@ func (t *tfbParse) parseEFBInternal(fbIndex int) *ParseError {
 		t.pop() //get rid of close bracket
 	}
 
+	for {
+		name := t.pop()
+
+		intNames = append(intNames, name)
+		if t.peek() == pComma {
+			t.pop() //get rid of the pComma
+			continue
+		}
+		if t.peek() == pInitEq {
+			break
+		}
+		break
+	}
+
 	//there might be a default value next
 	initialValue := ""
-	if t.peek() == pInitial {
+	if t.peek() == pInitEq {
 		t.pop() //get rid of pInitial
 
 		s := t.pop()           //this might be an openbracket
@@ -100,17 +113,6 @@ func (t *tfbParse) parseEFBInternal(fbIndex int) *ParseError {
 		}
 	}
 
-	for {
-		name := t.pop()
-
-		intNames = append(intNames, name)
-		if t.peek() == pComma {
-			t.pop() //get rid of the pComma
-			continue
-		}
-		break
-	}
-
 	if t.peek() == pWith { //special error case to be helpful
 		return t.errorWithArgAndReason(ErrUnexpectedAssociation, "with", "Internals cannot be associated with events")
 	}
@@ -131,16 +133,15 @@ func (t *tfbParse) parseEFBInternal(fbIndex int) *ParseError {
 	return nil
 }
 
-//parseEFBState parses a single state and adds it to fb identified by fbIndex
+//parsePFBState parses a single state and adds it to fb identified by fbIndex
 // most things in this function are validated later in the iec61499 package
-func (t *tfbParse) parseEFBState(fbIndex int) *ParseError {
+func (t *tfbParse) parsePFBState(fbIndex int) *ParseError {
 	fb := &t.fbs[fbIndex]
 
 	//next is name of state
 	name := t.pop()
-	anonAlgIndex := 0 //used to count anonymous algorithms (to give them unique names)
 
-	for _, st := range fb.BasicFB.States {
+	for _, st := range fb.PolicyFB.States {
 		if st.Name == name {
 			return t.errorWithArg(ErrNameAlreadyInUse, name)
 		}
@@ -152,11 +153,8 @@ func (t *tfbParse) parseEFBState(fbIndex int) *ParseError {
 		return t.errorUnexpectedWithExpected(s, pOpenBrace)
 	}
 
-	//now we have an unknown number of runs, emits, and ->s
-
-	var runs []iec61499.Action
-	var emits []iec61499.Action
-
+	//now we have an unknown number of ->s
+	// format is -> <destination> [on guard] [: output expression][, output expression...] ;
 	for {
 		s := t.pop()
 		if s == "" {
@@ -166,50 +164,13 @@ func (t *tfbParse) parseEFBState(fbIndex int) *ParseError {
 			break
 		}
 		if s == pRun {
-			//capture any number of comma-separated algorithms to run
-			for {
-				r := t.pop()
+			//PFBs don't have algorithms
+			return t.errorWithArgAndReason(ErrUnexpectedValue, pRun, "PFBs don't have algorithms")
 
-				if r == pIn {
-					//we have an anonymous algorithm here (introduced by the keyword pIn)
-					anonAlgName := name + "_alg" + strconv.Itoa(anonAlgIndex)
-					anonAlgIndex++
-					lang, prog, err := t.getAlgorithmParts()
-					if err != nil {
-						return err
-					}
-					//we're done here, add the algorithm to the block
-					fb.BasicFB.AddAlgorithm(anonAlgName, lang, prog, debug)
-					//replace keyword pIn with the name of the new anon algorithm so it can be joined properly
-					r = anonAlgName
-				}
-
-				runs = append(runs, iec61499.Action{Algorithm: r, DebugInfo: t.getCurrentDebugInfo()})
-				if t.peek() == pComma {
-					t.pop()
-					continue
-				}
-				break
-
-			}
-			if s := t.pop(); s != pSemicolon {
-				return t.errorUnexpectedWithExpected(s, pSemicolon)
-			}
 		}
 		if s == pEmit {
-			//capture any number of comma-separated events to emit
-			for {
-				e := t.pop()
-				emits = append(emits, iec61499.Action{Output: e, DebugInfo: t.getCurrentDebugInfo()})
-				if t.peek() == pComma {
-					t.pop()
-					continue
-				}
-				break
-			}
-			if s := t.pop(); s != pSemicolon {
-				return t.errorUnexpectedWithExpected(s, pSemicolon)
-			}
+			//PFBs don't emit
+			return t.errorWithArgAndReason(ErrUnexpectedValue, pEmit, "PFBs don't emit")
 		}
 		if s == pTrans {
 
@@ -218,21 +179,19 @@ func (t *tfbParse) parseEFBState(fbIndex int) *ParseError {
 			debug := t.getCurrentDebugInfo()
 
 			var condComponents []string
-
 			//next is on if we have a condition
 			if t.peek() == pOn {
-				if s := t.pop(); s != pOn {
-					return t.errorUnexpectedWithExpected(s, pOn)
-				}
+				t.pop() //clear the pOn
 
 				//now we have an unknown number of condition components, terminated by a semicolon
 				for {
-					s := t.pop()
+					if t.peek() == pColon || t.peek() == pSemicolon {
+						break
+					}
+
+					s = t.pop()
 					if s == "" {
 						return t.error(ErrUnexpectedEOF)
-					}
-					if s == pSemicolon {
-						break
 					}
 
 					//if any condComponent is "and" then turn it into &&
@@ -251,13 +210,54 @@ func (t *tfbParse) parseEFBState(fbIndex int) *ParseError {
 				condComponents = append(condComponents, "true")
 			}
 
+			var expressions []iec61499.PFBExpression
+			var expressionComponents []string
+			var expressionVar string
+			//if we broke on a colon, then we now have timer/expression controls
+			if t.peek() == pColon {
+				t.pop() //clear the pColon
+				for {
+					if t.peek() == pSemicolon {
+						break
+					}
+					s = t.pop()
+					if s == "" {
+						return t.error(ErrUnexpectedEOF)
+					}
+					if s == pComma {
+						//finish the previous expression and start the next one
+						expressions = append(expressions, iec61499.PFBExpression{
+							VarName: expressionVar,
+							Value:   strings.Join(expressionComponents, " "),
+						})
+						expressionVar = ""
+						continue
+					}
+					if expressionVar == "" { //we've not yet started the expression, so here's the "VARIABLE :=" part
+						expressionVar = s
+						s = t.pop()
+						if s != pAssigment {
+							return t.errorUnexpectedWithExpected(s, pAssigment)
+						}
+						continue
+					} else {
+						//now here's the condition components
+						expressionComponents = append(expressionComponents, s)
+					}
+				}
+			}
+
+			if t.peek() != pSemicolon {
+				return t.errorUnexpectedWithExpected(t.peek(), pSemicolon)
+			}
+			t.pop() //pop the pSemicolon
 			//save the transition
-			fb.BasicFB.AddTransition(name, destState, strings.Join(condComponents, " "), debug)
+			fb.PolicyFB.AddTransition(name, destState, strings.Join(condComponents, " "), expressions, debug)
 		}
 	}
 
 	//everything is parsed, add it to the state machine
-	fb.BasicFB.AddState(name, append(emits, runs...), debug)
+	fb.PolicyFB.AddState(name, debug)
 
 	return nil
 }

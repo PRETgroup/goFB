@@ -1,39 +1,39 @@
 compositeFB EnvRxDummyEnforcer;
 interface of EnvRxDummyEnforcer {
     in event SoChange;
-    in bool initial false SoGrn;
+    in bool SoGrn := false;
 
     in event SChange_in;
-    in bool initial false SiGrn_in;
-    in bool initial false SnGrn_in;
-    in bool initial false SsGrn_in;
+    in bool SiGrn_in := false;
+    in bool SnGrn_in := false;
+    in bool SsGrn_in := false;
 
     in event WChange_in;
-    in bool initial false WiDvrg_in;
-    in bool initial false WoDvrg_in;
-    in bool initial false WnDvrg_in;
-    in bool initial false WsDvrg_in;
+    in bool WiDvrg_in := false;
+    in bool WoDvrg_in := false;
+    in bool WnDvrg_in := false;
+    in bool WsDvrg_in := false;
 
     in event DChange_in; 
-    in bool initial false DwiPrs_in;
-    in bool initial false DwoPrs_in;
-    in bool initial false DwnPrs_in;
-    in bool initial false DwsPrs_in;
-    in bool initial false DnPrs_in;
-    in bool initial false DsPrs_in;
+    in bool DwiPrs_in := false;
+    in bool DwoPrs_in := false;
+    in bool DwnPrs_in := false;
+    in bool DwsPrs_in := false;
+    in bool DnPrs_in := false;
+    in bool DsPrs_in := false;
 
 	out event EnforcerAbortedAction; //let the controller know it done bad
 
 	out event SChange_out;
-    out bool initial false SiGrn_out;
-    out bool initial false SnGrn_out;
-    out bool initial false SsGrn_out;
+    out bool SiGrn_out := false;
+    out bool SnGrn_out := false;
+    out bool SsGrn_out := false;
 
     out event WChange_out;
-    out bool initial false WiDvrg_out;
-    out bool initial false WoDvrg_out;
-    out bool initial false WnDvrg_out;
-    out bool initial false WsDvrg_out;
+    out bool WiDvrg_out := false;
+    out bool WoDvrg_out := false;
+    out bool WnDvrg_out := false;
+    out bool WsDvrg_out := false;
 }
 
 architecture of EnvRxDummyEnforcer {

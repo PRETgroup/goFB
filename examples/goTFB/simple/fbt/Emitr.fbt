@@ -13,6 +13,6 @@
 		<OutputVars></OutputVars>
 	</InterfaceList>
 	<Service>
-		<Autogenerate Language="C" InStructText="" PreInitText="" InitText="" RunText="me-&gt;outputEvents.event.e = 1;" ShutdownText=""></Autogenerate>
+		<Autogenerate Language="C" ArbitraryText="" InStructText="" PreInitText="" InitText="" RunText="me-&gt;outputEvents.event.e = 1;" ShutdownText=""></Autogenerate>
 	</Service>
 </FBType>

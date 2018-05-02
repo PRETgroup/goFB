@@ -10,7 +10,7 @@
 
 
 
-//This is a BFB, so we need an enum type for the state machine
+//This is a BFB with states, so we need an enum type for the state machine
 enum Printr_states { STATE_Printr_start, STATE_Printr_run };
 
 
@@ -33,7 +33,7 @@ typedef struct {
 	
 
     //input vars
-	int pDat;
+	INT pDat;
     
     //output vars
 	
@@ -48,6 +48,7 @@ typedef struct {
 	//state and trigger (BFBs only)
 	enum Printr_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
+	
 	
 	
 } Printr_t;

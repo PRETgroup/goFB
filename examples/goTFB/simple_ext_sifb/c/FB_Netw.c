@@ -21,36 +21,35 @@
  * It sets all I/O values to zero.
  */
 int Netw_preinit(Netw_t  *me) {
-	//if there are input events, reset them
 	
-	//if there are output events, reset them
+
 	
-	//if there are input vars with default values, set them
 	
-	//if there are output vars with default values, set them
+	//set any input vars with default values
 	
-	//if there are internal vars with default values, set them (BFBs only)
+	//set any output vars with default values
 	
-	//if there are resource vars with default values, set them
 	
-	//if there are resources with set parameters, set them
+	
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(Incr_preinit(&me->incrr) != 0) {
 		return 1;
 	}
+	
 	if(Emitr_preinit(&me->emitrr) != 0) {
 		return 1;
 	}
+	
 	if(Printr_preinit(&me->printrr) != 0) {
 		return 1;
 	}
 	
 	
-
 	
 
-	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
+	
+	
 	
 
 	return 0;
@@ -154,12 +153,14 @@ void Netw_syncInputData(Netw_t  *me) {
 	
 	//sync for incrr (of type Incr) which is a BFB
 	
-	//sync for emitrr (of Type Emitr) which is a CFB
+	
+	//sync for emitrr (of type Emitr) which is a BFB
+	
 	
 	//sync for printrr (of type Printr) which is a BFB
 	
-	if(me->printrr.inputEvents.event.p == 1) { 
-		me->printrr.pDat = me->incrr.txdat;
+	if(me->printrr.inputEvents.event.p == 1) { me->printrr.pDat = me->incrr.txdat;
+		
 	} 
 	
 	
@@ -175,9 +176,17 @@ void Netw_syncInputData(Netw_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void Netw_run(Netw_t  *me) {
+	
+	
 	Incr_run(&me->incrr);
+	
 	Emitr_run(&me->emitrr);
+	
 	Printr_run(&me->printrr);
 	
 }
+
+
+
+
 

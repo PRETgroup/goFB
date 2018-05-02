@@ -12,7 +12,7 @@
 		</EventInputs>
 		<EventOutputs></EventOutputs>
 		<InputVars>
-			<VarDeclaration Name="pDat" Type="int" Comment=""></VarDeclaration>
+			<VarDeclaration Name="pDat" Type="INT" Comment=""></VarDeclaration>
 		</InputVars>
 		<OutputVars></OutputVars>
 	</InterfaceList>

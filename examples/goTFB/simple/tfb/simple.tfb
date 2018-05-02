@@ -4,7 +4,7 @@ interface of Incr {
 	in event rx;
 	out event tx;
 
-	out int initial 1 txdat with tx;
+	out int txdat with tx := 1;
 } 
 
 architecture of Incr {

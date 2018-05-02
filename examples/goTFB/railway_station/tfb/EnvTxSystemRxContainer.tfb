@@ -1,34 +1,34 @@
 compositeFB EnvTxSystemRxContainer;
 interface of EnvTxSystemRxContainer {
     out event RiChange;
-    out bool initial false RiReq;
+    out bool RiReq := false;
 
     out event RnChange;
-    out bool initial false RnReq;
+    out bool RnReq := false;
 
     out event RsChange;
-    out bool initial false RsReq;
+    out bool RsReq := false;
 
     out event DwiChange;
-    out bool initial false DwiPrs;
+    out bool DwiPrs := false;
 
     out event DwoChange;
-    out bool initial false DwoPrs;
+    out bool DwoPrs := false;
 
     out event DwnChange;
-    out bool initial false DwnPrs;
+    out bool DwnPrs := false;
 
     out event DwsChange;
-    out bool initial false DwsPrs;
+    out bool DwsPrs := false;
 
     out event DnChange;
-    out bool initial false DnPrs;
+    out bool DnPrs := false;
 
     out event DsChange;
-    out bool initial false DsPrs;
+    out bool DsPrs := false;
 
     out event SoChange;
-    out bool initial false SoGrn;
+    out bool SoGrn := false;
 
     out event SysReady;
 }

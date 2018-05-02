@@ -19,11 +19,12 @@ var sifbArchitectureTests = []ParseTest{
 				architecture of testBlock {
 					in "C";
 
-					in_struct ` + "`" + `//0` + "`" + `;
-					pre_init ` + "`" + `//1` + "`" + `;
-					init ` + "`" + `//2` + "`" + `;
-					run ` + "`" + `//3` + "`" + `;
-					shutdown ` + "`" + `//4` + "`" + `;
+					arbitrary ` + "`" + `//0` + "`" + `;
+					in_struct ` + "`" + `//1` + "`" + `;
+					pre_init ` + "`" + `//2` + "`" + `;
+					init ` + "`" + `//3` + "`" + `;
+					run ` + "`" + `//4` + "`" + `;
+					shutdown ` + "`" + `//5` + "`" + `;
 				}`,
 		Output: []iec61499.FB{
 			*iec61499.Must(

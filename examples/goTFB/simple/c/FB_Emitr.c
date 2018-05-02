@@ -4,35 +4,34 @@
 // This file represents the implementation of the Basic Function Block for Emitr
 #include "FB_Emitr.h"
 
+/* Arbitrary code section from SIFB */
+
+
 
 /* Emitr_preinit() is required to be called to 
  * initialise an instance of Emitr. 
  * It sets all I/O values to zero.
  */
 int Emitr_preinit(Emitr_t  *me) {
-	//if there are input events, reset them
 	
-	//if there are output events, reset them
+
+	
+	//reset the output events
 	me->outputEvents.event.e = 0;
 	
-	//if there are input vars with default values, set them
+	//set any input vars with default values
 	
-	//if there are output vars with default values, set them
+	//set any output vars with default values
 	
-	//if there are internal vars with default values, set them (BFBs only)
 	
-	//if there are resource vars with default values, set them
 	
-	//if there are resources with set parameters, set them
 	
-	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
 
 	//Code provided in SIFB
 	
-
-	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
+	
 	
 
 	return 0;
@@ -68,8 +67,15 @@ int Emitr_init(Emitr_t  *me) {
  * instance of Emitr. As it is a SIFB, the execution code is provided
  */
 void Emitr_run(Emitr_t  *me) {
+
+	me->outputEvents.event.e = 0;
+	
+
 	//Code provided in SIFB
 	me->outputEvents.event.e = 1;
+
+	//Ensure input events are cleared
+	
 }
 
 

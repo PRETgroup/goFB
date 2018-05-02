@@ -80,12 +80,12 @@ func NewHybridFB(name string) *FB {
 	return &fb
 }
 
-//NewEnforceFB returns an EnforceFB with default fields filled
-func NewEnforceFB(name string) *FB {
+//NewPolicyFB returns an PolicyFB with default fields filled
+func NewPolicyFB(name string) *FB {
 	fb := FB{}
 	fb.Name = name
 	fb.Identification.Standard = "61499-2"
-	fb.EnforceFB = new(EnforceFB)
+	fb.PolicyFB = new(PolicyFB)
 	fb.SetXMLName()
 	return &fb
 }
@@ -277,8 +277,8 @@ func (fb *FB) AddxFBDataInternals(intNames []string, typ string, size string, in
 		fb.HybridFB.AddDataInternals(intNames, typ, size, initialValue, debug)
 		return fb, nil
 	}
-	if fb.EnforceFB != nil {
-		fb.EnforceFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+	if fb.PolicyFB != nil {
+		fb.PolicyFB.AddDataInternals(intNames, typ, size, initialValue, debug)
 		return fb, nil
 	}
 	return nil, errors.New("AddxFBDataInternals may only be called on HFBs or BFBs")
@@ -541,14 +541,14 @@ func (hfb *HybridFB) AddTransition(source string, dest string, cond string, debu
  *                                               ENFORCER FB CREATION FUNCTIONS                                                    *
  ***********************************************************************************************************************************/
 
-//AddEFBDataInternals adds data internals to an fb's efb without performing error checking
-func (fb *FB) AddEFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *FB {
-	fb.EnforceFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+//AddPFBDataInternals adds data internals to an fb's efb without performing error checking
+func (fb *FB) AddPFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *FB {
+	fb.PolicyFB.AddDataInternals(intNames, typ, size, initialValue, debug)
 	return fb
 }
 
 //AddDataInternals adds data internals to a efb, and adds the InternalVars section if it is nil
-func (efb *EnforceFB) AddDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *EnforceFB {
+func (efb *PolicyFB) AddDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *PolicyFB {
 
 	for _, iname := range intNames {
 		efb.InternalVars = append(efb.InternalVars, Variable{Name: iname, Type: typ, ArraySize: size, InitialValue: initialValue, DebugInfo: debug})
@@ -556,15 +556,15 @@ func (efb *EnforceFB) AddDataInternals(intNames []string, typ string, size strin
 	return efb
 }
 
-// //AddEFBAlgorithm adds algorithm to an fb's bfb without performing error checking
-// func (fb *FB) AddEFBAlgorithm(name string, lang string, prog string, debug DebugInfo) *FB {
-// 	fb.EnforceFB.AddAlgorithm(name, lang, prog, debug)
+// //AddPFBAlgorithm adds algorithm to an fb's bfb without performing error checking
+// func (fb *FB) AddPFBAlgorithm(name string, lang string, prog string, debug DebugInfo) *FB {
+// 	fb.PolicyFB.AddAlgorithm(name, lang, prog, debug)
 // 	return fb
 // }
 
 // //AddAlgorithm adds an algorithm to a bfb
 // // it will return an error message if the block is not a basicFB
-// func (efb *EnforceFB) AddAlgorithm(name string, lang string, prog string, debug DebugInfo) *EnforceFB {
+// func (efb *PolicyFB) AddAlgorithm(name string, lang string, prog string, debug DebugInfo) *PolicyFB {
 
 // 	efb.Algorithms = append(efb.Algorithms, Algorithm{
 // 		Name: name,
@@ -578,33 +578,30 @@ func (efb *EnforceFB) AddDataInternals(intNames []string, typ string, size strin
 // 	return efb
 // }
 
-//AddEFBState adds state to an fb's bfb without performing error checking
-func (fb *FB) AddEFBState(name string, actions []Action, debug DebugInfo) *FB {
-	fb.EnforceFB.AddState(name, actions, debug)
+//AddPFBState adds state to an fb's bfb without performing error checking
+func (fb *FB) AddPFBState(name string, debug DebugInfo) *FB {
+	fb.PolicyFB.AddState(name, debug)
 	return fb
 }
 
 //AddState adds a state to a bfb
-func (efb *EnforceFB) AddState(name string, actions []Action, debug DebugInfo) *EnforceFB {
-	efb.States = append(efb.States, EFBState{
-		ECState: ECState{
-			Name:      name,
-			ECActions: actions,
-			DebugInfo: debug,
-		},
+func (efb *PolicyFB) AddState(name string, debug DebugInfo) *PolicyFB {
+	efb.States = append(efb.States, PFBState{
+		Name:      name,
+		DebugInfo: debug,
 	})
 	return efb
 }
 
-//AddEFBTransition adds a transition to an fb's bfb without performing error checking
-func (fb *FB) AddEFBTransition(source string, dest string, cond string, debug DebugInfo) *FB {
-	fb.EnforceFB.AddTransition(source, dest, cond, debug)
+//AddPFBTransition adds a transition to an fb's bfb without performing error checking
+func (fb *FB) AddPFBTransition(source string, dest string, cond string, expressions []PFBExpression, debug DebugInfo) *FB {
+	fb.PolicyFB.AddTransition(source, dest, cond, expressions, debug)
 	return fb
 }
 
 //AddTransition adds a state transition to a bfb
-func (efb *EnforceFB) AddTransition(source string, dest string, cond string, debug DebugInfo) *EnforceFB {
-	efb.Transitions = append(efb.Transitions, EFBTransition{
+func (efb *PolicyFB) AddTransition(source string, dest string, cond string, expressions []PFBExpression, debug DebugInfo) *PolicyFB {
+	efb.Transitions = append(efb.Transitions, PFBTransition{
 		ECTransition: ECTransition{
 			Source:      source,
 			Destination: dest,
@@ -612,6 +609,7 @@ func (efb *EnforceFB) AddTransition(source string, dest string, cond string, deb
 
 			DebugInfo: debug,
 		},
+		Expressions: expressions,
 	})
 	return efb
 }

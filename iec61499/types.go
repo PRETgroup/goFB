@@ -38,7 +38,7 @@ type FB struct {
 	CompositeFB *CompositeFB `xml:",omitempty"`
 	ServiceFB   *ServiceFB   `xml:",omitempty"`
 	HybridFB    *HybridFB    `xml:"-"`          //don't ever export HybridFBs, convert them to BFBs first
-	EnforceFB   *EnforceFB   `xml:",omitempty"` //EnforceFB can be converted to equivalent BasicFB
+	PolicyFB    *PolicyFB    `xml:",omitempty"` //PolicyFB can be converted to equivalent BasicFB
 
 	NumChildren int `xml:"-"` //this is useful when using the event queue as we use it to assign unique blockInstanceIDs, it stores the recursive number of children a block has
 	DebugInfo   `xml:"-"`
@@ -135,22 +135,29 @@ type HFBInvariant struct {
 	DebugInfo
 }
 
-//EnforceFB is used for specifying policies that must be kept
-type EnforceFB struct {
+//PolicyFB is used for specifying policies that must be kept
+type PolicyFB struct {
 	InternalVars []Variable      `xml:"InternalVars>VarDeclaration,omitempty"`
-	States       []EFBState      `xml:"ECC>ECState"`
-	Transitions  []EFBTransition `xml:"ECC>ECTransition,omitempty"`
+	States       []PFBState      `xml:"ECC>ECState"`
+	Transitions  []PFBTransition `xml:"ECC>ECTransition,omitempty"`
 }
 
-//EFBState is a state in the policy specification of an enforcerFB
-type EFBState struct {
-	ECState
+//PFBState is a state in the policy specification of an enforcerFB
+type PFBState struct {
+	Name      string
+	DebugInfo `xml:"-"`
 }
 
-//EFBTransition is a transition between EFBStates in an EnforceFB (mealy machine transitions)
-type EFBTransition struct {
+//PFBTransition is a transition between PFBStates in an PolicyFB (mealy machine transitions)
+type PFBTransition struct {
 	ECTransition
-	Expressions []string //expressions associated with this transition
+	Expressions []PFBExpression //expressions associated with this transition
+}
+
+//PFBExpression is used to assign a var a value based on a PFBTransitions
+type PFBExpression struct {
+	VarName string
+	Value   string
 }
 
 //ECState is a state in the ECC (Execution control chart) of a BasicFB

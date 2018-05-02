@@ -22,7 +22,7 @@ func cCompileAlgorithm(block iec61499.FB, algorithm iec61499.Algorithm) string {
 		return comp
 	}
 	//can't do much otherwise...
-	return algorithm.Other.Language
+	return algorithm.Other.Text
 }
 
 //CECCTransition is used with getCECCTransitionCondition to return results to the template

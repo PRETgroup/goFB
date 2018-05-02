@@ -15,7 +15,7 @@ const (
 	pCompositeFB = "compositeFB"
 	pServiceFB   = "serviceFB"
 	pHybridFB    = "hybridFB"
-	pEnforceFB   = "enforceFB"
+	pPolicyFB    = "policyFB"
 
 	pCompilerInfoHeader = "compileheader"
 
@@ -31,16 +31,16 @@ const (
 	pCloseBracket = "]"
 	pComma        = ","
 	pSemicolon    = ";"
-	pInitial      = "initial"
+	pColon        = ":"
 	pInitEq       = ":="
+	pAssigment    = ":="
 
 	pFBinterface    = "interface"
 	pFBarchitecture = "architecture"
 	pOf             = "of"
 
-	pEnforce = "enforce"
-	pIn      = "in"
-	pOut     = "out"
+	pIn  = "in"
+	pOut = "out"
 
 	pWith = "with"
 
@@ -110,8 +110,7 @@ func scanString(name string, input string) []string {
 		items = append(items, s.TokenText())
 	}
 
-	//combine -> and <- and := operators
-
+	//combine multi-character operators
 	for i := 0; i < len(items)-1; i++ {
 		if items[i] == "<" && items[i+1] == "-" {
 			items[i] = "<-"
@@ -162,7 +161,7 @@ func parseItems(name string, items []string) ([]iec61499.FB, *ParseError) {
 			break
 		}
 		//have we defined a basicFB or compositeFB
-		if s == pBasicFB || s == pCompositeFB || s == pServiceFB || s == pEnforceFB {
+		if s == pBasicFB || s == pCompositeFB || s == pServiceFB || s == pPolicyFB {
 			if err := t.parseFB(s); err != nil {
 				return nil, err
 			}
@@ -209,6 +208,8 @@ func isValidType(s string) bool {
 		s == "real" ||
 		s == "lreal" ||
 		s == "time" ||
+		s == "dtimer" ||
+		s == "rtimer" ||
 		s == "any" {
 		return true
 	}
@@ -232,8 +233,8 @@ func (t *tfbParse) parseFB(fbType string) *ParseError {
 			fbs = append(fbs, *iec61499.NewServiceFB(name))
 		} else if fbType == pHybridFB {
 			fbs = append(fbs, *iec61499.NewHybridFB(name))
-		} else if fbType == pEnforceFB {
-			fbs = append(fbs, *iec61499.NewEnforceFB(name))
+		} else if fbType == pPolicyFB {
+			fbs = append(fbs, *iec61499.NewPolicyFB(name))
 		} else {
 			return t.errorWithReason(ErrInternal, "I can't parse fbType "+fbType)
 		}
@@ -297,8 +298,8 @@ func (t *tfbParse) parseFBarchitecture() *ParseError {
 		return t.parseHFBarchitecture(fbIndex)
 	}
 
-	if t.fbs[fbIndex].EnforceFB != nil {
-		return t.parseEFBarchitecture(fbIndex)
+	if t.fbs[fbIndex].PolicyFB != nil {
+		return t.parsePFBarchitecture(fbIndex)
 	}
 
 	return t.error(errors.New("can't parse unknown architecture type"))

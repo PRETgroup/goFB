@@ -34,14 +34,9 @@ func (t *tfbParse) parseFBinterface() *ParseError {
 		if s == pCloseBrace {
 			return nil //we're done here
 		}
-		enforce := false
-		if s == pEnforce {
-			enforce = true
-			s = t.pop()
-		}
 
 		if s == pIn || s == pOut {
-			if err := t.addFBio(enforce, s == pIn, fbIndex); err != nil {
+			if err := t.addFBio(s == pIn, fbIndex); err != nil {
 				return err
 			}
 		}
@@ -50,10 +45,9 @@ func (t *tfbParse) parseFBinterface() *ParseError {
 
 //addFBio adds a line of in/out event/data [with arraysize, triggers, default] to the FB interface
 // some error checking is done
-//isEnforced: set to TRUE if you want the ENFORCE mode I/O (i.e. to have an emitted version as well as a captured version)
 //isInput: set to TRUE if you want to add this to the Inputs rather than the Outputs
 //fbIndex: the index of the FB we are working on inside t
-func (t *tfbParse) addFBio(isEnforced bool, isInput bool, fbIndex int) *ParseError {
+func (t *tfbParse) addFBio(isInput bool, fbIndex int) *ParseError {
 	fb := &t.fbs[fbIndex]
 
 	//next s is type
@@ -77,36 +71,6 @@ func (t *tfbParse) addFBio(isEnforced bool, isInput bool, fbIndex int) *ParseErr
 			return t.errorUnexpectedWithExpected(s, pCloseBracket)
 		}
 		t.pop() //get rid of close bracket
-	}
-
-	//there might be a default value next
-	initialValue := ""
-	if t.peek() == pInitial {
-		if typ == pEvent { //events can't have sizes
-			return t.errorWithReason(ErrInvalidIOMeta, "Events cannot have initial values")
-		}
-		t.pop() //get rid of pInitial
-
-		s := t.pop()           //this might be an openbracket
-		if s == pOpenBracket { //for arrays
-			initialValue += s //we need to keep the brackets in
-			for {
-				s := t.pop()
-				if s == "" {
-					return t.error(ErrUnexpectedEOF)
-				}
-				if s == pSemicolon {
-					return t.errorUnexpectedWithExpected(s, pOpenBracket)
-				}
-				if s == pCloseBracket {
-					initialValue += s //we need to keep the brackets in
-					break
-				}
-				initialValue += s
-			}
-		} else { //wasn't an open bracket, must just be value
-			initialValue = s
-		}
 	}
 
 	//this could be an array of names, so we'll loop while we are finding commas
@@ -139,6 +103,36 @@ func (t *tfbParse) addFBio(isEnforced bool, isInput bool, fbIndex int) *ParseErr
 		}
 	}
 
+	//there might be a default value next
+	initialValue := ""
+	if t.peek() == pInitEq {
+		if typ == pEvent { //events can't have sizes
+			return t.errorWithReason(ErrInvalidIOMeta, "Events cannot have initial values")
+		}
+		t.pop() //get rid of pInitial
+
+		s := t.pop()           //this might be an openbracket
+		if s == pOpenBracket { //for arrays
+			initialValue += s //we need to keep the brackets in
+			for {
+				s := t.pop()
+				if s == "" {
+					return t.error(ErrUnexpectedEOF)
+				}
+				if s == pSemicolon {
+					return t.errorUnexpectedWithExpected(s, pOpenBracket)
+				}
+				if s == pCloseBracket {
+					initialValue += s //we need to keep the brackets in
+					break
+				}
+				initialValue += s
+			}
+		} else { //wasn't an open bracket, must just be value
+			initialValue = s
+		}
+	}
+
 	//clear out last semicolon
 	if s := t.pop(); s != pSemicolon {
 		return t.errorUnexpectedWithExpected(s, pSemicolon)
@@ -147,22 +141,23 @@ func (t *tfbParse) addFBio(isEnforced bool, isInput bool, fbIndex int) *ParseErr
 	//we now have everything we need to add the io to the interface
 	//was it an event?
 	if typ == pEvent {
+		// HAMMOND: THIS WAS REMOVED (ENFORCEFBS BECAME POLICYFBS), BUT WILL LEAVE IT HERE FOR NOW
 		//ENFORCE io works differently, we need to create both an input and an output for it
 		//(the in/out specifier now specifies what direction the data is coming from)
 		//IN means that the data is going from PLANT to CONTROLLER
 		//OUT means the data is going from CONTROLLER to PLANT
-		if isEnforced {
-			fb.AddEventInputNames(intNames, t.getCurrentDebugInfo())
-			emitNames := make([]string, len(intNames))
-			for i, n := range intNames {
-				if isInput {
-					emitNames[i] = n + "_to_controller"
-				} else {
-					emitNames[i] = n + "_to_plant"
-				}
-			}
-			fb.AddEventOutputNames(emitNames, t.getCurrentDebugInfo())
-		}
+		// if isEnforced {
+		// 	fb.AddEventInputNames(intNames, t.getCurrentDebugInfo())
+		// 	emitNames := make([]string, len(intNames))
+		// 	for i, n := range intNames {
+		// 		if isInput {
+		// 			emitNames[i] = n + "_to_controller"
+		// 		} else {
+		// 			emitNames[i] = n + "_to_plant"
+		// 		}
+		// 	}
+		// 	fb.AddEventOutputNames(emitNames, t.getCurrentDebugInfo())
+		// }
 
 		if isInput { //was it an input?
 			fb.AddEventInputNames(intNames, t.getCurrentDebugInfo())

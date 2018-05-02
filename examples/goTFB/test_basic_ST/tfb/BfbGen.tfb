@@ -3,7 +3,7 @@ basicFB BfbGen;
 interface of BfbGen {
 	out event genE;
 
-	out int initial 1 genDat with genE;
+	out int genDat with genE := 1;
 } 
 
 architecture of BfbGen {

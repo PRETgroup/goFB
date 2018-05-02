@@ -3,50 +3,50 @@ interface of TrainCtrl {
     in event SysReady;
     
     in event RiChange;
-    in bool initial false RiReq with RiChange;
+    in bool RiReq with RiChange := false;
 
     in event RnChange;
-    in bool initial false RnReq with RnChange;
+    in bool RnReq with RnChange := false;
 
     in event RsChange;
-    in bool initial false RsReq with RsChange;
+    in bool RsReq with RsChange := false;
 
     in event DwiChange;
-    in bool initial false DwiPrs with DwiChange;
+    in bool DwiPrs with DwiChange := false;
 
     in event DwoChange;
-    in bool initial false DwoPrs with DwoChange;
+    in bool DwoPrs with DwoChange := false;
 
     in event DwnChange;
-    in bool initial false DwnPrs with DwnChange;
+    in bool DwnPrs with DwnChange := false;
 
     in event DwsChange;
-    in bool initial false DwsPrs with DwsChange;
+    in bool DwsPrs with DwsChange := false;
 
     in event DnChange;
-    in bool initial false DnPrs with DnChange;
+    in bool DnPrs with DnChange := false;
 
     in event DsChange;
-    in bool initial false DsPrs with DsChange;
+    in bool DsPrs with DsChange := false;
 
     out event SChange;
-    out bool initial false SiGrn with SChange;
-    out bool initial false SnGrn with SChange;
-    out bool initial false SsGrn with SChange;
+    out bool SiGrn with SChange := false;
+    out bool SnGrn with SChange := false;
+    out bool SsGrn with SChange := false;
 
     out event WChange;
-    out bool initial false WiDvrg with WChange;
-    out bool initial false WoDvrg with WChange;
-    out bool initial false WnDvrg with WChange;
-    out bool initial false WsDvrg with WChange;
+    out bool WiDvrg with WChange := false;
+    out bool WoDvrg with WChange := false;
+    out bool WnDvrg with WChange := false;
+    out bool WsDvrg with WChange := false;
 
     in event abort;
 }
 
 architecture of TrainCtrl {
 
-    internal bool initial false busyN;
-    internal bool initial false busyS;
+    internal bool busyN := false;
+    internal bool busyS := false;
 
     state init {
         -> idle on SysReady;

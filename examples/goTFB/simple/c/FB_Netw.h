@@ -46,6 +46,7 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
+	
 } Netw_t;
 
 //all FBs get a preinit function

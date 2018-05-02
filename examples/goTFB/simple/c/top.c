@@ -6,30 +6,33 @@
 #include "FB_Netw.h"
 #include <sys/time.h>
 
-#ifndef MAX_TICKS
-#define MAX_TICKS 100
-#endif
+// #ifndef MAX_TICKS
+// #define MAX_TICKS 100
+// #endif
+
+
 
 //put a copy of the top level block into global memory
-Netw_t myNetw;
+Netw_t Netw;
 
 int main() {
+	if(Netw_preinit(&Netw) != 0) {
+		printf("Failed to preinitialize.");
+		return 1;
+	}
+	if(Netw_init(&Netw) != 0) {
+		printf("Failed to initialize.");
+		return 1;
+	}
+	printf("\n");
+	
+//this is executing with synchronous semantics
 	//printf("\n\n\n");
 	//printf("\nTop: %20s   Size: %lu\n", "Netw", sizeof(myNetw));
 
 	#ifdef PRINT_VALS
 	printf("Simulation time,");
 	#endif
-
-	if(Netw_preinit(&myNetw) != 0) {
-		printf("Failed to preinitialize.");
-		return 1;
-	}
-	if(Netw_init(&myNetw) != 0) {
-		printf("Failed to initialize.");
-		return 1;
-	}
-	printf("\n");
 	
 	struct timeval tv1, tv2;
 	gettimeofday(&tv1, NULL);
@@ -39,17 +42,22 @@ int main() {
 		#ifdef PRINT_VALS
 			printf("%f,",(double)tickNum*0.01);
 		#endif
-		Netw_syncOutputEvents(&myNetw);
-		Netw_syncInputEvents(&myNetw);
+		Netw_syncOutputEvents(&Netw);
+		Netw_syncInputEvents(&Netw);
 
-		Netw_syncOutputData(&myNetw);
-		Netw_syncInputData(&myNetw);
+		Netw_syncOutputData(&Netw);
+		Netw_syncInputData(&Netw);
 		
-		Netw_run(&myNetw);
+		Netw_run(&Netw);
 		#ifdef PRINT_VALS
 			printf("\n");
 		#endif
-	} while(tickNum++ < MAX_TICKS);
+	} 
+	#ifdef MAX_TICKS
+		while(tickNum++ < MAX_TICKS);
+	#else
+		while(1);
+	#endif
 	gettimeofday(&tv2, NULL);
 	#ifdef PRINT_TIME
 	printf ("Total time = %f seconds\n",
@@ -57,5 +65,8 @@ int main() {
          (double) (tv2.tv_sec - tv1.tv_sec));
 	#endif
 	return 0;
+
 }
+
+
 

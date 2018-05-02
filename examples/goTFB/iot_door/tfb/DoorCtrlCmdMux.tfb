@@ -18,7 +18,7 @@ interface of DoorCtrlCmdMux {
 //Event muxes aren't super great
 //We have an internal variable that saves the state of the local control signals when we go into internet control mode
 architecture of DoorCtrlCmdMux {
-    internal byte initial 0 lcl_stat;
+    internal byte lcl_stat := 0;
     states {
         init {
             -> inet_stay_open on inet_op_stay_open;

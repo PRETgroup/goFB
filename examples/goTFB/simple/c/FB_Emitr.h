@@ -45,6 +45,7 @@ typedef struct {
 	//state and trigger (BFBs only)
 	//Code provided in SIFB
 	
+	
 } Emitr_t;
 
 //all FBs get a preinit function

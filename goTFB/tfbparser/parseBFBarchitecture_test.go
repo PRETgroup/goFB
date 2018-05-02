@@ -78,7 +78,7 @@ var bfbArchitectureTests = []ParseTest{
 				architecture of testBlock {
 					internals {
 						byte[3] internalData1, internalData2;
-						int initial "word" internalData3, internalData4;
+						int internalData3, internalData4 := "word";
 					}
 				}`,
 		Output: []iec61499.FB{
@@ -99,9 +99,9 @@ var bfbArchitectureTests = []ParseTest{
 				architecture of testBlock {
 					internals {
 						byte[3] internalData1, internalData2;
-						int initial 3 internalData3, internalData4;
+						int internalData3, internalData4 := 3;
 					}
-					internal lint[2] initial [0,1] otherInternal;
+					internal lint[2] otherInternal := [0,1];
 				}`,
 		Output: []iec61499.FB{
 			*iec61499.NewBasicFB("testBlock").
@@ -122,7 +122,7 @@ var bfbArchitectureTests = []ParseTest{
 				architecture of testBlock {
 					internals {
 						byte[3] internalData1, internalData2;
-						int initial "word" internalData3, internalData4;
+						int internalData3, internalData4 := "word";
 					
 				}`,
 		Err: ErrUnexpectedEOF, //missing closing brace
@@ -187,7 +187,7 @@ var bfbArchitectureTests = []ParseTest{
 				}
 				architecture of testBlock {
 					internals{
-						int initial nameInUse;
+						int nameInUse :=;
 					} 
 				}`,
 		Err: ErrUnexpectedValue, //initial should have quote marks

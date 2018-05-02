@@ -3,38 +3,38 @@ interface of Environment {
     out event SysReady;
 
     out event RiChange;
-    out bool initial false RiReq;
+    out bool RiReq := false;
     out event RnChange;
-    out bool initial false RnReq;
+    out bool RnReq := false;
     out event RsChange;
-    out bool initial false RsReq;
+    out bool RsReq := false;
 
     out event DwiChange;
-    out bool initial false DwiPrs;
+    out bool DwiPrs := false;
     out event DwoChange;
-    out bool initial false DwoPrs;
+    out bool DwoPrs := false;
     out event DwnChange;
-    out bool initial false DwnPrs;
+    out bool DwnPrs := false;
     out event DwsChange;
-    out bool initial false DwsPrs;
+    out bool DwsPrs := false;
     out event DnChange;
-    out bool initial false DnPrs;
+    out bool DnPrs := false;
     out event DsChange;
-    out bool initial false DsPrs;
+    out bool DsPrs := false;
 
     out event SoChange;
-    out bool initial false SoGrn;
+    out bool SoGrn := false;
 
     in event SChange;
-    in bool initial false SiGrn;
-	in bool initial false SnGrn;
-    in bool initial false SsGrn;
+    in bool SiGrn := false;
+	in bool SnGrn := false;
+    in bool SsGrn := false;
 
     in event WChange;
-    in bool initial false WiDvrg;
-    in bool initial false WoDvrg;
-    in bool initial false WnDvrg;
-    in bool initial false WsDvrg;
+    in bool WiDvrg := false;
+    in bool WoDvrg := false;
+    in bool WnDvrg := false;
+    in bool WsDvrg := false;
 }
 
 architecture of Environment {

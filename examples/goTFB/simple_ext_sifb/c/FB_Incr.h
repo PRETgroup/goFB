@@ -10,7 +10,7 @@
 
 
 
-//This is a BFB, so we need an enum type for the state machine
+//This is a BFB with states, so we need an enum type for the state machine
 enum Incr_states { STATE_Incr_start, STATE_Incr_run };
 
 
@@ -40,7 +40,7 @@ typedef struct {
     //input vars
 	
     //output vars
-	int txdat;
+	INT txdat;
     
 	//any internal vars (BFBs only)
     
@@ -53,6 +53,7 @@ typedef struct {
 	//state and trigger (BFBs only)
 	enum Incr_states _state; //stores current state
 	BOOL _trigger; //indicates if a state transition has occured this tick
+	
 	
 	
 } Incr_t;

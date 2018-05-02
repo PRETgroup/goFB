@@ -389,25 +389,22 @@ architecture of AlphabetEnforcer {
 }
 ```
 
-## EFB v2 example
+## PFB v2 example
 
 Here's an example:
 ```
-enforcerFB AEIEnforcer;
+policyFB AEIPolicy;
 
-interface of AEIEnforcer {
-	enforce in event AS, VS; //in here means that they're going from PLANT to CONTROLLER
-	enforce out event AP, VP;//out here means that they're going from CONTROLLER to PLANT
+interface of AEIPolicy {
+	in event AS, VS; //in here means that they're going from PLANT to CONTROLLER
+	out event AP, VP;//out here means that they're going from CONTROLLER to PLANT
 
 	in ulint AEI_ns default 900000000;
-
-	in event current_ns_change;
-	in ulint current_ns with current_ns_change;
 }
 
 architecture of AEIEnforcer {
 	internals {
-		ulint tAEI;
+		dtimer tAEI; //DTIMER increases in DISCRETE TIME continuously
 	}
 
 	//P3: AS or AP must be true within AEI after a ventricular event VS or VP.
@@ -415,12 +412,12 @@ architecture of AEIEnforcer {
 	states {
 		s0 {
 			//-> <destination> [on guard] [: output expression][, output expression...] ;
-			-> s1 on (VS or VP): tAEI := current_ns;
+			-> s1 on (VS or VP): tAEI := 0;
 		}
 
 		s1 {
 			-> s1 on (AS or AP);
-			-> violation on (tAEI + AEI_ns > current_ns);
+			-> violation on (tAEI > AEI_ns);
 		}
 	} 
 }

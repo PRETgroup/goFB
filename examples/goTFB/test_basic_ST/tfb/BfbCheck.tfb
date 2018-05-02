@@ -3,14 +3,14 @@ basicFB BfbCheck;
 interface of BfbCheck {
 	in event genE;
 
-	in int initial 1 genDat with genE;
+	in int genDat with genE := 1;
 
     out event acceptE;
 } 
 
 architecture of BfbCheck {
     internal {
-        int initial 10 comp;
+        int comp := 10;
         int i;
     }
 	states {

@@ -77,9 +77,24 @@ func (t *tfbParse) parseBFBInternal(fbIndex int) *ParseError {
 		t.pop() //get rid of close bracket
 	}
 
+	for {
+		name := t.pop()
+
+		intNames = append(intNames, name)
+		if t.peek() == pComma {
+			t.pop() //get rid of the pComma
+			continue
+		}
+		break
+	}
+
+	if t.peek() == pWith { //special error case to be helpful
+		return t.errorWithArgAndReason(ErrUnexpectedAssociation, "with", "Internals cannot be associated with events")
+	}
+
 	//there might be a default value next
 	initialValue := ""
-	if t.peek() == pInitial {
+	if t.peek() == pInitEq {
 		t.pop() //get rid of pInitial
 
 		s := t.pop()           //this might be an openbracket
@@ -102,21 +117,6 @@ func (t *tfbParse) parseBFBInternal(fbIndex int) *ParseError {
 		} else { //wasn't an open bracket, must just be value
 			initialValue = s
 		}
-	}
-
-	for {
-		name := t.pop()
-
-		intNames = append(intNames, name)
-		if t.peek() == pComma {
-			t.pop() //get rid of the pComma
-			continue
-		}
-		break
-	}
-
-	if t.peek() == pWith { //special error case to be helpful
-		return t.errorWithArgAndReason(ErrUnexpectedAssociation, "with", "Internals cannot be associated with events")
 	}
 
 	//clear out last semicolon

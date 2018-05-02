@@ -15,7 +15,7 @@
 		</EventOutputs>
 		<InputVars></InputVars>
 		<OutputVars>
-			<VarDeclaration Name="txdat" Type="int" InitialValue="1" Comment=""></VarDeclaration>
+			<VarDeclaration Name="txdat" Type="INT" InitialValue="1" Comment=""></VarDeclaration>
 		</OutputVars>
 	</InterfaceList>
 	<BasicFB>

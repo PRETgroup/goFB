@@ -67,8 +67,13 @@ var interfaceTests = []ParseTest{
 						in bool inData with inEvent;
 						out event outEvent;
 					}`,
-		Output: []iec61499.FB{*iec61499.Must(iec61499.NewBasicFB("testBlock").AddEventInputNames([]string{"inEvent"}, d).AddEventOutputNames([]string{"outEvent"}, d).AddDataInputs([]string{"inData"}, []string{"inEvent"}, "bool", "", "", d))},
-		Err:    nil,
+		Output: []iec61499.FB{
+			*iec61499.Must(iec61499.NewBasicFB("testBlock").
+				AddEventInputNames([]string{"inEvent"}, d).
+				AddEventOutputNames([]string{"outEvent"}, d).
+				AddDataInputs([]string{"inData"}, []string{"inEvent"}, "bool", "", "", d)),
+		},
+		Err: nil,
 	},
 	{
 		Name: "data input 2",
@@ -96,7 +101,7 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in bool[3] initial [0,1,0] inData with inEvent; 
+						in bool[3] inData with inEvent := [0,1,0]; 
 						out event outEvent;
 					}`,
 		Output: []iec61499.FB{*iec61499.Must(iec61499.NewBasicFB("testBlock").AddEventInputNames([]string{"inEvent"}, d).AddEventOutputNames([]string{"outEvent"}, d).AddDataInputs([]string{"inData"}, []string{"inEvent"}, "bool", "3", "[0,1,0]", d))},
@@ -107,7 +112,7 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in bool[3] initial 0,1,0 inData with inEvent;
+						in bool[3] inData with inEvent := 0,1,0;
 						out event outEvent;
 					}`,
 		Err: ErrUnexpectedValue,
@@ -234,7 +239,7 @@ var interfaceTests = []ParseTest{
 					interface of testBlock {
 						in event inEvent;
 						in event inEvent2;
-						out event initial 1 outEvent;
+						out event outEvent := 1;
 						out lreal outData with outEvent;
 					}`,
 		Err: ErrInvalidIOMeta,
@@ -256,7 +261,7 @@ var interfaceTests = []ParseTest{
 					interface of testBlock {
 						in event inEvent;
 						in event inEvent2;
-						out int initial`,
+						out int `,
 		Err: ErrUnexpectedValue,
 	},
 	{
