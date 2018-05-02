@@ -9,7 +9,7 @@ basicFB (blockname) [compilerheader "(filename"];
 
 interface of (blockname) {
 	< 
-	in|out event|bool|byte|word|dword|lword|sint|usint|int|uint|dint|udint|lint|ulint|real|lreal|time|any[[size]] (name[, name]) [with (name[, name]) - non-event types only] [:= "default"]; //(comments) 
+	in|out [with (name[, name])] event|bool|byte|word|dword|lword|sint|usint|int|uint|dint|udint|lint|ulint|real|lreal|time|any[[size]] (name[, name]) - non-event types only] [:= "default"]; //(comments) 
 	>
 }
 

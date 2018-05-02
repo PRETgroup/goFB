@@ -185,6 +185,8 @@ func (t *tfbParse) parsePFBState(fbIndex int) *ParseError {
 
 				//now we have an unknown number of condition components, terminated by a semicolon
 				for {
+					//pColon means that there are EXPRESSIONS that follow, but we're done here
+					//pSemicolon means that there is NOTHING that follows, and we're done here
 					if t.peek() == pColon || t.peek() == pSemicolon {
 						break
 					}
@@ -213,26 +215,33 @@ func (t *tfbParse) parsePFBState(fbIndex int) *ParseError {
 			var expressions []iec61499.PFBExpression
 			var expressionComponents []string
 			var expressionVar string
-			//if we broke on a colon, then we now have timer/expression controls
+			//if we broke on a colon, then we now have EXPRESSIONS to parse
 			if t.peek() == pColon {
 				t.pop() //clear the pColon
+				//the format is
+				// VARIABLE := EXPRESSION [, VARIABLE := EXPRESSION]
+				expressionVar = ""
 				for {
-					if t.peek() == pSemicolon {
+					if t.peek() == pSemicolon || t.peek() == pComma {
+						//finish the previous expression (if possible, indicated by expressionVar) and start the next one (if available, indicated by a comma)
+						if expressionVar != "" {
+							expressions = append(expressions, iec61499.PFBExpression{
+								VarName: expressionVar,
+								Value:   strings.Join(expressionComponents, " "),
+							})
+							expressionVar = ""
+						}
+						if t.peek() == pComma {
+							t.pop()
+							continue
+						}
 						break
 					}
 					s = t.pop()
 					if s == "" {
 						return t.error(ErrUnexpectedEOF)
 					}
-					if s == pComma {
-						//finish the previous expression and start the next one
-						expressions = append(expressions, iec61499.PFBExpression{
-							VarName: expressionVar,
-							Value:   strings.Join(expressionComponents, " "),
-						})
-						expressionVar = ""
-						continue
-					}
+					//we already dealt with case where it's a comma or a semicolon in the peek section above
 					if expressionVar == "" { //we've not yet started the expression, so here's the "VARIABLE :=" part
 						expressionVar = s
 						s = t.pop()

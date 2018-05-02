@@ -1,6 +1,8 @@
 package tfbparser
 
 import (
+	"testing"
+
 	"github.com/PRETgroup/goFB/iec61499"
 )
 
@@ -25,9 +27,9 @@ var efbArchitectureTests = []ParseTest{
 					in event AS, VS; //in here means that they're going from PLANT to CONTROLLER
 					out event AP, VP;//out here means that they're going from CONTROLLER to PLANT
 				
-					in ulint AEI_ns default 900000000;
+					in ulint AEI_ns := 900000000;
 				}
-				architecture of AEIEnforcer {
+				architecture of AEIPolicy {
 					internals {
 						dtimer tAEI; //DTIMER increases in DISCRETE TIME continuously
 					}
@@ -35,12 +37,12 @@ var efbArchitectureTests = []ParseTest{
 					//P3: AS or AP must be true within AEI after a ventricular event VS or VP.
 				
 					states {
-						s0 {
+						s1 {
 							//-> <destination> [on guard] [: output expression][, output expression...] ;
-							-> s1 on (VS or VP): tAEI := 0;
+							-> s2 on (VS or VP): tAEI := 0;
 						}
 				
-						s1 {
+						s2 {
 							-> s1 on (AS or AP);
 							-> violation on (tAEI > AEI_ns);
 						}
@@ -54,13 +56,14 @@ var efbArchitectureTests = []ParseTest{
 					AddDataInputs([]string{"AEI_ns"}, []string{}, "ulint", "", "900000000", d)).
 				AddPFBState("s1", d).
 				AddPFBState("s2", d).
-				AddPFBTransition("s1", "s2", "(VS or VP)", []iec61499.PFBExpression{{VarName: "tAEI", Value: "0"}}, d).
-				AddPFBTransition("s1", "s2", "(AS or AP)", []iec61499.PFBExpression{}, d).
-				AddPFBTransition("s2", "s1", "(tAEI > AEI_ns)", []iec61499.PFBExpression{}, d),
+				AddPFBDataInternals([]string{"tAEI"}, "DTIMER", "", "", d).
+				AddPFBTransition("s1", "s2", "( VS || VP )", []iec61499.PFBExpression{{VarName: "tAEI", Value: "0"}}, d).
+				AddPFBTransition("s2", "s1", "( AS || AP )", nil, d).
+				AddPFBTransition("s2", "violation", "( tAEI > AEI_ns )", nil, d),
 		},
 	},
 }
 
-// func TestParsePFBArchitecture(t *testing.T) {
-// 	runParseTests(t, efbArchitectureTests)
-// }
+func TestParsePFBArchitecture(t *testing.T) {
+	runParseTests(t, efbArchitectureTests)
+}

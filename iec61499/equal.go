@@ -35,6 +35,10 @@ func FBsEqual(a FB, b FB) bool {
 		return siFbsSame(*a.ServiceFB, *b.ServiceFB)
 	}
 
+	if a.PolicyFB != nil && b.PolicyFB != nil {
+		return policyFbsSame(*a.PolicyFB, *b.PolicyFB)
+	}
+
 	if a.HybridFB != nil && b.HybridFB != nil {
 		fmt.Printf("I don't know how to test hybridfb equivalence")
 		return false
@@ -118,6 +122,29 @@ func basicFbsSame(a BasicFB, b BasicFB) bool {
 			if a.States[i].ECActions[j] != b.States[i].ECActions[j] {
 				return false
 			}
+		}
+	}
+	return true
+}
+
+func policyFbsSame(a PolicyFB, b PolicyFB) bool {
+	if len(a.Transitions) != len(b.Transitions) {
+		return false
+	}
+	if len(a.States) != len(b.States) {
+		return false
+	}
+	for i := 0; i < len(a.Transitions); i++ {
+		//make the debugInfo match so that DeepEqual is ok with it
+		a.Transitions[i].DebugInfo = d
+		b.Transitions[i].DebugInfo = d
+	}
+	if !reflect.DeepEqual(a.Transitions, b.Transitions) {
+		return false
+	}
+	for i := 0; i < len(a.States); i++ {
+		if a.States[i].Name != b.States[i].Name {
+			return false
 		}
 	}
 	return true
