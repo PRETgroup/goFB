@@ -1,39 +1,39 @@
 basicFB EnvRxEnforcer;
 interface of EnvRxEnforcer {
 	in event SoChange;
-    in bool SoGrn with SoChange := false;
+    in with SoChange bool SoGrn := false;
 
     in event SChange_in;
-    in bool SiGrn_in with SChange_in := false;
-    in bool SnGrn_in with SChange_in := false;
-    in bool SsGrn_in with SChange_in := false;
+    in with SChange_in bool SiGrn_in := false;
+    in with SChange_in bool SnGrn_in := false;
+    in with SChange_in bool SsGrn_in := false;
 
     in event WChange_in;
-    in bool WiDvrg_in with WChange_in := false;
-    in bool WoDvrg_in with WChange_in := false;
-    in bool WnDvrg_in with WChange_in := false;
-    in bool WsDvrg_in with WChange_in := false;
+    in with WChange_in bool WiDvrg_in := false;
+    in with WChange_in bool WoDvrg_in := false;
+    in with WChange_in bool WnDvrg_in := false;
+    in with WChange_in bool WsDvrg_in := false;
 
     in event DChange_in; 
-    in bool DwiPrs_in with DChange_in := false;
-    in bool DwoPrs_in with DChange_in := false;
-    in bool DwnPrs_in with DChange_in := false;
-    in bool DwsPrs_in with DChange_in := false;
-    in bool DnPrs_in with DChange_in := false;
-    in bool DsPrs_in with DChange_in := false;
+    in with DChange_in bool DwiPrs_in := false;
+    in with DChange_in bool DwoPrs_in := false;
+    in with DChange_in bool DwnPrs_in := false;
+    in with DChange_in bool DwsPrs_in := false;
+    in with DChange_in bool DnPrs_in := false;
+    in with DChange_in bool DsPrs_in := false;
 
 	out event EnforcerAbortedAction; //let the controller know it done bad
 
 	out event SChange_out;
-    out bool SiGrn_out with SChange_out := false;
-    out bool SnGrn_out with SChange_out := false;
-    out bool SsGrn_out with SChange_out := false;
+    out with SChange_out bool SiGrn_out := false;
+    out with SChange_out bool SnGrn_out := false;
+    out with SChange_out bool SsGrn_out := false;
 
     out event WChange_out;
-    out bool WiDvrg_out with WChange_out := false;
-    out bool WoDvrg_out with WChange_out := false;
-    out bool WnDvrg_out with WChange_out := false;
-    out bool WsDvrg_out with WChange_out := false;
+    out with WChange_out bool WiDvrg_out := false;
+    out with WChange_out bool WoDvrg_out := false;
+    out with WChange_out bool WnDvrg_out := false;
+    out with WChange_out bool WsDvrg_out := false;
 }
 
 architecture of EnvRxEnforcer {

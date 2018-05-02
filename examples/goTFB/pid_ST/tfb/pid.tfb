@@ -5,13 +5,13 @@ interface of PIDController {
     in event Reset;
     in event Tick;
     
-    in real PGain, IGain, DGain with UpdateConfig, Reset;
-    in real WindupGuard with UpdateConfig, Reset;
+    in with UpdateConfig, Reset real PGain, IGain, DGain;
+    in with UpdateConfig, Reset real WindupGuard;
 
-    in real DesiredValue, CurrentValue with Tick;
+    in with Tick real DesiredValue, CurrentValue;
 
     out event ControlChanged;
-    out real ControlValue with ControlChanged;
+    out with ControlChanged real ControlValue;
 }
 
 architecture of PIDController {

@@ -12,9 +12,9 @@ var bfbArchitectureTests = []ParseTest{
 		Input: `basicFB testBlock;
 				interface of testBlock {
 					in event inEvent;
-					in lreal inData with inEvent;
+					in with inEvent lreal inData;
 					out event outEvent;
-					out lreal outData with outEvent;
+					out with outEvent lreal outData;
 				}
 				architecture of testBlock {
 					internal lint internalData;
@@ -132,9 +132,9 @@ var bfbArchitectureTests = []ParseTest{
 		Input: `basicFB testBlock;
 				interface of testBlock {
 					in event inEvent;
-					in lreal inData with inEvent;
+					in with inEvent lreal inData;
 					out event outEvent;
-					out lreal outData with outEvent;
+					out with outEvent lreal outData;
 				}
 				architecture of testBlock {
 					internal lint internalData with outEvent;
@@ -146,9 +146,9 @@ var bfbArchitectureTests = []ParseTest{
 		Input: `basicFB testBlock;
 				interface of testBlock {
 					in event inEvent;
-					in lreal inData with inEvent;
+					in with inEvent lreal inData;
 					out event outEvent;
-					out lreal outData with outEvent;
+					out with outEvent lreal outData;
 				}
 				architecture of testBlock {
 					internal event internalData;

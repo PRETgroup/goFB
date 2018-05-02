@@ -3,42 +3,42 @@ interface of TrainCtrl {
     in event SysReady;
     
     in event RiChange;
-    in bool RiReq with RiChange := false;
+    in with RiChange bool RiReq := false;
 
     in event RnChange;
-    in bool RnReq with RnChange := false;
+    in with RnChange bool RnReq := false;
 
     in event RsChange;
-    in bool RsReq with RsChange := false;
+    in with RsChange bool RsReq := false;
 
     in event DwiChange;
-    in bool DwiPrs with DwiChange := false;
+    in with DwiChange bool DwiPrs := false;
 
     in event DwoChange;
-    in bool DwoPrs with DwoChange := false;
+    in with DwoChange bool DwoPrs := false;
 
     in event DwnChange;
-    in bool DwnPrs with DwnChange := false;
+    in with DwnChange bool DwnPrs := false;
 
     in event DwsChange;
-    in bool DwsPrs with DwsChange := false;
+    in with DwsChange bool DwsPrs := false;
 
     in event DnChange;
-    in bool DnPrs with DnChange := false;
+    in with DnChange bool DnPrs := false;
 
     in event DsChange;
-    in bool DsPrs with DsChange := false;
+    in with DsChange bool DsPrs := false;
 
     out event SChange;
-    out bool SiGrn with SChange := false;
-    out bool SnGrn with SChange := false;
-    out bool SsGrn with SChange := false;
+    out with SChange bool SiGrn := false;
+    out with SChange bool SnGrn := false;
+    out with SChange bool SsGrn := false;
 
     out event WChange;
-    out bool WiDvrg with WChange := false;
-    out bool WoDvrg with WChange := false;
-    out bool WnDvrg with WChange := false;
-    out bool WsDvrg with WChange := false;
+    out with WChange bool WiDvrg := false;
+    out with WChange bool WoDvrg := false;
+    out with WChange bool WnDvrg := false;
+    out with WChange bool WsDvrg := false;
 
     in event abort;
 }

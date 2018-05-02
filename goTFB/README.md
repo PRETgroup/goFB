@@ -32,8 +32,8 @@ interface of echo {
 	in event rx;
 	out event tx;
 	
-	in byte rxDat with rx;
-	out byte txDat with tx;
+	in with rx byte rxDat;
+	out with tx byte txDat;
 }
 
 architecture of echo {

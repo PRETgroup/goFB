@@ -1,7 +1,7 @@
 enforcerFB EnvRxEnforcerProp;
 interface of EnvRxEnforcerProp {
 	in event SoChange;
-    in bool SoGrn with SoChange := false;
+    in with SoChange bool SoGrn := false;
 
     enforce event SChange; //enforce types will create both inputs and outputs and internals
     enforce bool SiGrn with SChange := false;
@@ -15,12 +15,12 @@ interface of EnvRxEnforcerProp {
     enforce bool WsDvrg with WChange := false;
 
     in event DChange_in; 
-    in bool DwiPrs with DChange := false;
-    in bool DwoPrs with DChange := false;
-    in bool DwnPrs with DChange := false;
-    in bool DwsPrs with DChange := false;
-    in bool DnPrs with DChange := false;
-    in bool DsPrs with DChange := false;
+    in with DChange bool DwiPrs := false;
+    in with DChange bool DwoPrs := false;
+    in with DChange bool DwnPrs := false;
+    in with DChange bool DwsPrs := false;
+    in with DChange bool DnPrs := false;
+    in with DChange bool DsPrs := false;
 
 	out event EnforcerAbortedAction; //let the controller know it done bad
 }

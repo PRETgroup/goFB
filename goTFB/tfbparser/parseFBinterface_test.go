@@ -54,7 +54,7 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in asdasd inData with inEvent;
+						in with inEvent asdasd inData;
 						out event outEvent;
 					}`,
 		Err: ErrInvalidType,
@@ -64,7 +64,7 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in bool inData with inEvent;
+						in with inEvent bool inData;
 						out event outEvent;
 					}`,
 		Output: []iec61499.FB{
@@ -80,7 +80,7 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in bool[3] inData with inEvent;
+						in with inEvent bool[3] inData;
 						out event outEvent;
 					}`,
 		Output: []iec61499.FB{*iec61499.Must(iec61499.NewBasicFB("testBlock").AddEventInputNames([]string{"inEvent"}, d).AddEventOutputNames([]string{"outEvent"}, d).AddDataInputs([]string{"inData"}, []string{"inEvent"}, "bool", "3", "", d))},
@@ -101,7 +101,7 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in bool[3] inData with inEvent := [0,1,0]; 
+						in with inEvent bool[3] inData := [0,1,0]; 
 						out event outEvent;
 					}`,
 		Output: []iec61499.FB{*iec61499.Must(iec61499.NewBasicFB("testBlock").AddEventInputNames([]string{"inEvent"}, d).AddEventOutputNames([]string{"outEvent"}, d).AddDataInputs([]string{"inData"}, []string{"inEvent"}, "bool", "3", "[0,1,0]", d))},
@@ -112,7 +112,7 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in bool[3] inData with inEvent := 0,1,0;
+						in with inEvent bool[3] inData := 0,1,0;
 						out event outEvent;
 					}`,
 		Err: ErrUnexpectedValue,
@@ -122,9 +122,9 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in lreal inData with inEvent;
+						in with inEvent lreal inData;
 						out event outEvent;
-						out lreal outData with outEvent;
+						out with outEvent lreal outData;
 					}`,
 		Output: []iec61499.FB{
 			*iec61499.Must(
@@ -142,9 +142,9 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent1, inEvent2;
-						in lreal inData1, inData2 with inEvent1, inEvent2;
+						in with inEvent1, inEvent2 lreal inData1, inData2;
 						out event outEvent1, outEvent2;
-						out lreal outData1, outData2 with outEvent1, outEvent2;
+						out with outEvent1, outEvent2 lreal outData1, outData2;
 					}`,
 		Output: []iec61499.FB{
 			*iec61499.Must(
@@ -161,10 +161,10 @@ var interfaceTests = []ParseTest{
 		Name: "data bad triggers 1",
 		Input: `basicFB testBlock;
 					interface of testBlock {
-						in lreal inData with inEvent;
+						in with inEvent lreal inData;
 						in event inEvent;
 						out event outEvent;
-						out lreal outData with outEvent;
+						out with outEvent lreal outData;
 					}`,
 		Err: ErrUndefinedEvent,
 	},
@@ -173,9 +173,9 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in lreal inData with inEvent;
+						in with inEvent lreal inData;
 						out event outEvent;
-						out lreal outData with inEvent;
+						out with inEvent lreal outData;
 					}`,
 		Err: ErrUndefinedEvent,
 	},
@@ -184,9 +184,9 @@ var interfaceTests = []ParseTest{
 	// 	Input: `compositeFB testBlock;
 	// 				interface of testBlock {
 	// 					in event inEvent;
-	// 					in lreal inData with inEvent;
+	// 					in with inEvent lreal inData;
 	// 					out event outEvent;
-	// 					out lreal outData with outEvent;
+	// 					out with outEvent lreal outData;
 	// 				}`,
 	// 	Err: iec61499.ErrOnlyBasicFBsGetTriggers,
 	// },
@@ -195,9 +195,9 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in lreal inData with asdasdasdasd;
+						in with asdasdasdasd lreal inData;
 						out event outEvent;
-						out lreal outData with outEvent;
+						out with outEvent lreal outData;
 					}`,
 		Err: ErrUndefinedEvent,
 	},
@@ -206,8 +206,8 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in lreal inData with inEvent;
-						out lreal outData with outEvent;
+						in with inEvent lreal inData;
+						out with outEvent lreal outData;
 					}`,
 		Err: ErrUndefinedEvent,
 	},
@@ -216,9 +216,9 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						in event inEvent;
-						in event inEvent2 with inEvent;
+						in with inEvent event inEvent2;
 						out event outEvent;
-						out lreal outData with outEvent;
+						out with outEvent lreal outData;
 					}`,
 		Err: ErrUnexpectedAssociation,
 	},
@@ -229,7 +229,7 @@ var interfaceTests = []ParseTest{
 						in event inEvent;
 						in event[3] inEvent2;
 						out event outEvent;
-						out lreal outData with outEvent;
+						out with outEvent lreal outData;
 					}`,
 		Err: ErrInvalidIOMeta,
 	},
@@ -240,7 +240,7 @@ var interfaceTests = []ParseTest{
 						in event inEvent;
 						in event inEvent2;
 						out event outEvent := 1;
-						out lreal outData with outEvent;
+						out with outEvent lreal outData;
 					}`,
 		Err: ErrInvalidIOMeta,
 	},
@@ -251,7 +251,7 @@ var interfaceTests = []ParseTest{
 	// 					in event inEvent;
 	// 					in event inEvent;
 	// 					out event outEvent;
-	// 					out lreal outData with outEvent;
+	// 					out with outEvent lreal outData;
 	// 				}`,
 	// 	Err: ErrNameAlreadyInUse,
 	// },
@@ -269,9 +269,9 @@ var interfaceTests = []ParseTest{
 		Input: `basicFB testBlock;
 					interface of testBlock {
 						enforce in event inEvent1, inEvent2;
-						enforce in lreal inData1, inData2 with inEvent1, inEvent2;
+						enforce in with inEvent1, inEvent2 lreal inData1, inData2;
 						enforce out event outEvent1, outEvent2;
-						enforce	out lreal outData1, outData2 with outEvent1, outEvent2;
+						enforce	out with outEvent1, outEvent2 lreal outData1, outData2;
 					}`,
 		Output: []iec61499.FB{
 			*iec61499.Must(

@@ -62,7 +62,7 @@ A single TFB file can contain one or many function blocks.
 
 * All block definitions should be camelCase with the first letter capitilised.
 * All block instances should be camelCase with the first letter lower case.
-* For simple BFBs, the internal architecture should be in the order `initials`, `states`, and `algorithms`.
+* For simple BFBs, the internal architecture should be in the order `internals`, `states`, and `algorithms`.
 * For simple CFBs, the internal architecture should be in the order `instances`, `events`, and `data`.
 
 ## Block declaration
@@ -113,8 +113,8 @@ basicFB FirstBasic;
 interface of FirstBasic {
     in event a;
     out event b;
-    in int c with a;
-    out int d with c;
+    in with a int c;
+    out with c int d;
 }
 ```
 
@@ -145,10 +145,10 @@ Likewise, `num5` and `num6` are both associated to both `a` and `b`.
 basicFB FirstBasic;
 interface of FirstBasic {
     in event a, b, c, d;
-    in int num1 with a;
-    in int num2 with b, c;
-    in int num3, num4 with d;
-    in int num5, num6, with a, b;
+    in with a int num1;
+    in with b, c int num2;
+    in with d int num3, num4;
+    in with a, b int num5, num6,;
 }
 ```
 
@@ -195,7 +195,7 @@ Initial values can also be specified on any valid data type. For instance, the f
 basicFB FirstBasic;
 interface of FirstBasic {
     in event a;
-    in int initial 0 z with a;
+    in with a int z := 0;
 }
 ```
 When initial values are not provided, they will default to some implementation-specific value.
@@ -206,7 +206,7 @@ If multiple values are presented on that line, all will be given that default va
 basicFB FirstBasic;
 interface of FirstBasic {
     in event a;
-    in int initial 0 y,z with a;
+    in with a int y,z := 0;
 }
 ```
 
@@ -216,7 +216,7 @@ Initial values can also be provided for arrays. These should be surrounded by sq
 basicFB FirstBasic;
 interface of FirstBasic {
     in event a;
-    in int[3] initial [0,1,2] z with a;
+    in with a int[3] z := [0,1,2];
 }
 ```
 
@@ -232,14 +232,14 @@ interface of Dog {
     in event tick; //we call this to update the Dog's behaviour periodically
 
     in event feed;
-    in int initial 0 foodweight_g with feed; //the amount the Dog will eat, in grams
+    in with feed int foodweight_g := 0 ; //the amount the Dog will eat, in grams
     in event walk;
-    in int initial 0 walkDistance_m with walk; //the distance the Dog will walk, in metres
+    in  with walk int walkDistance_m := 0; //the distance the Dog will walk, in metres
 
     out event bark; //emit this when the Dog barks
    
     out event weightChange;
-    out int initial 7500 dogweight_g with weightChange; //the Dogs weight in grams
+    out with weightChange int dogweight_g := 7500; //the Dogs weight in grams
 }
 ```
 
@@ -260,8 +260,8 @@ basicFB FirstBasic;
 interface of FirstBasic {
     in event a;
     out event b;
-    in int x with a;
-    out int y with b;
+    in with a int x;
+    out with b int y;
 }
 architecture of FirstBasic {
     internals {
@@ -284,7 +284,7 @@ Internals have the same syntax as interface data lines, except that they have no
 ...
 architecture of FirstBasic {
     internals {
-        int initial 0 p,q;
+        int p,q := 0;
         bool t;
     }
 }
@@ -295,7 +295,7 @@ We can express these individually as well, using `internal` instead of `internal
 ```
 ...
 architecture of FirstBasic {
-    internal int initial 0 p,q;
+    internal int p,q := 0;
     internal bool t;
 }
 ```
@@ -435,18 +435,18 @@ interface of Dog {
     in event tick; //we call this to update the Dog's behaviour periodically
 
     in event feed;
-    in int initial 0 foodweight_g with feed; //the amount the Dog will eat, in grams
+    in with feed int foodweight_g := 0 ; //the amount the Dog will eat, in grams
     in event walk;
-    in int initial 0 walkDistance_m with walk; //the distance the Dog will walk, in metres
+    in  with walk int walkDistance_m := 0; //the distance the Dog will walk, in metres
 
     out event bark; //emit this when the Dog barks
    
     out event weightChange;
-    out int initial 7500 Dogweight_g with weightChange; //the Dogs weight in grams
+    out with weightChange int dogweight_g := 7500; //the Dogs weight in grams
 }
 
 architecture of Dog {
-    internal int initial 0 tickCount;
+    internal int tickCount := 0;
 
     states {
         st_wait {
@@ -509,7 +509,7 @@ When writing the \*.c and \*.h files, refer to the documentation of your compile
 serviceFB Counter compileheader "SIFB_counter.h";
 interface of Counter {
 	out event countup;
-	out int count_value with countup; 
+	out with countup int count_value; 
 }
 ```
 
@@ -521,7 +521,7 @@ Here is an empty example of a SIFB in the TFB language for the SIFB format that 
 serviceFB Counter;
 interface of Counter {
 	out event countup;
-	out int count_value with countup;
+	out with countup int count_value;
 }
 
 architecture of Counter {
@@ -553,7 +553,7 @@ An example of an implemented counter, which simply emits a new count every updat
 serviceFB Counter;
 interface of Counter {
 	out event countup;
-	out int initial 0 count_value with countup;
+	out with countup int count_value := 0;
 }
 
 architecture of Counter {
@@ -585,11 +585,11 @@ interface of Conveyor {
     in lreal maxSpeed;
 
     out event dChange;
-    out lreal initial 0 d with dChange;
+    out with dChange lreal d := 0;
 }
 
 architecture of Conveyor {
-    internal lreal initial 0 x;
+    internal lreal x := 0;
     
     locations {
         l_start {
@@ -653,8 +653,8 @@ basicFB FirstBasic;
 interface of FirstBasic {
     in event a;
     out event b;
-    in int x with a;
-    out int y with b;
+    in with a int x;
+    out with b int y;
 }
 
 ...

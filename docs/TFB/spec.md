@@ -9,13 +9,13 @@ basicFB (blockname) [compilerheader "(filename"];
 
 interface of (blockname) {
 	< 
-	in|out event|bool|byte|word|dword|lword|sint|usint|int|uint|dint|udint|lint|ulint|real|lreal|time|any[[size]] [initial "default"] (name[, name]) [with (name[, name]) - non-event types only]; //(comments) 
+	in|out event|bool|byte|word|dword|lword|sint|usint|int|uint|dint|udint|lint|ulint|real|lreal|time|any[[size]] (name[, name]) [with (name[, name]) - non-event types only] [:= "default"]; //(comments) 
 	>
 }
 
 architecture of (blockname) {
 	< 
-	internal bool|byte|word|dword|lword|sint|usint|int|uint|dint|udint|lint|ulint|real|lreal|time [initial "default"] (name[, name]); //(comments) 
+	internal bool|byte|word|dword|lword|sint|usint|int|uint|dint|udint|lint|ulint|real|lreal|time (name[, name]) [:= "default"] ; //(comments) 
 	>
 
 	states {
@@ -51,11 +51,11 @@ interface of InjectorMotorController {
 	in event ConveyorStoppedForInject;
 	in event PumpFinished;
 
-	in bool EmergencyStop with EmergencyStopChanged;
+	in with EmergencyStopChanged bool EmergencyStop;
 
 	out event StartPump, InjectDone, InjectorPositionChanged, InjectRunning; //listing things is permissible in all interface locations
 
-	out byte InjectorPosition with InjectorPositionChanged;
+	out with InjectorPositionChanged byte InjectorPosition;
 }
 
 architecture of InjectorMotorController {

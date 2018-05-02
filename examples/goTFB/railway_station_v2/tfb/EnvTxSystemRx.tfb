@@ -1,34 +1,34 @@
 serviceFB EnvTxSystemRx;
 interface of EnvTxSystemRx {
     out event RiChange;
-    out bool RiReq with RiChange := false;
+    out with RiChange bool RiReq := false;
 
     out event RnChange;
-    out bool RnReq with RnChange := false;
+    out with RnChange bool RnReq := false;
 
     out event RsChange;
-    out bool RsReq with RsChange := false;
+    out with RsChange bool RsReq := false;
 
     out event DwiChange;
-    out bool DwiPrs with DwiChange := false;
+    out with DwiChange bool DwiPrs := false;
 
     out event DwoChange;
-    out bool DwoPrs with DwoChange := false;
+    out with DwoChange bool DwoPrs := false;
 
     out event DwnChange;
-    out bool DwnPrs with DwnChange := false;
+    out with DwnChange bool DwnPrs := false;
 
     out event DwsChange;
-    out bool DwsPrs with DwsChange := false;
+    out with DwsChange bool DwsPrs := false;
 
     out event DnChange;
-    out bool DnPrs with DnChange := false;
+    out with DnChange bool DnPrs := false;
 
     out event DsChange;
-    out bool DsPrs with DsChange := false;
+    out with DsChange bool DsPrs := false;
 
     out event SoChange;
-    out bool SoGrn with SoChange := false;
+    out with SoChange bool SoGrn := false;
 
     out event SysReady;
 }

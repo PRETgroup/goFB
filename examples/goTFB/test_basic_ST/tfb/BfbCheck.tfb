@@ -3,7 +3,7 @@ basicFB BfbCheck;
 interface of BfbCheck {
 	in event genE;
 
-	in int genDat with genE := 1;
+	in with genE int genDat := 1;
 
     out event acceptE;
 } 

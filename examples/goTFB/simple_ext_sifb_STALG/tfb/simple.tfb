@@ -4,7 +4,7 @@ interface of Incr {
 	in event rx;
 	out event tx;
 
-	out int txdat with tx := 1;
+	out with tx int txdat := 1;
 } 
 
 architecture of Incr {
@@ -32,7 +32,7 @@ basicFB Printr;
 
 interface of Printr {
 	in event p;
-	in int pDat with p; 
+	in with p int pDat; 
 }
 
 architecture of Printr {

@@ -12,9 +12,9 @@ var cfbArchitectureTests = []ParseTest{
 		Input: `compositeFB testBlock;
 				interface of testBlock {
 					in event inEvent;
-					in lreal inData with inEvent;
+					in with inEvent lreal inData;
 					out event outEvent;
-					out lreal outData with outEvent;
+					out with outEvent lreal outData;
 				}
 				architecture of testBlock {
 					instance Incr incr;
@@ -36,9 +36,9 @@ var cfbArchitectureTests = []ParseTest{
 		Input: `compositeFB testBlock;
 				interface of testBlock {
 					in event inEvent;
-					in lreal inData with inEvent;
+					in with inEvent lreal inData;
 					out event outEvent;
-					out lreal outData with outEvent;
+					out with outEvent lreal outData;
 				}
 				architecture of testBlock {
 					instance Incr incr1, incr2;
@@ -70,9 +70,9 @@ var cfbArchitectureTests = []ParseTest{
 		Input: `compositeFB testBlock;
 				interface of testBlock {
 					in event inEvent;
-					in lreal inData with inEvent;
+					in with inEvent lreal inData;
 					out event outEvent;
-					out lreal outData with outEvent;
+					out with outEvent lreal outData;
 				}
 				architecture of testBlock {
 					instance Incr incr1, incr2;

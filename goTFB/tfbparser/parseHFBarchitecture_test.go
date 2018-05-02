@@ -14,7 +14,7 @@ var hfbArchitectureTests = []ParseTest{
 			in lreal deltaTime; //compulsory input for hybridFBs.
 			in lreal maxSpeed;
 			out event dChange;
-			out lreal initial 0 d with dChange;
+			out with dChange lreal initial 0 d;
 		}
 
 		architecture of Conveyor {

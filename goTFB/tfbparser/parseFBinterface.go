@@ -50,14 +50,33 @@ func (t *tfbParse) parseFBinterface() *ParseError {
 func (t *tfbParse) addFBio(isInput bool, fbIndex int) *ParseError {
 	fb := &t.fbs[fbIndex]
 
+	//next s is with, if available
+	var intTriggers []string
+	if t.peek() == pWith { //this input has an update association
+		t.pop() //get rid of the on
+
+		//this could be an array of names, so we'll loop while we are finding commas
+		for {
+			intTriggers = append(intTriggers, t.pop())
+			if t.peek() == pComma {
+				t.pop() //get rid of the pComma
+				continue
+			}
+			break
+		}
+	}
+
 	//next s is type
 	typ := t.pop()
 	if !isValidType(typ) {
 		return t.errorWithArgAndReason(ErrInvalidType, typ, "Expected valid type")
 	}
 
+	if typ == pEvent && len(intTriggers) != 0 { //input conditions aren't for events
+		return t.errorWithArgAndReason(ErrUnexpectedAssociation, "with", "Events are always updated")
+	}
+
 	var intNames []string
-	var intTriggers []string
 
 	//there might be an array size next
 	size := ""
@@ -83,24 +102,6 @@ func (t *tfbParse) addFBio(isInput bool, fbIndex int) *ParseError {
 			continue
 		}
 		break
-	}
-
-	if t.peek() == pWith { //this input has an update association
-		t.pop() //get rid of the on
-
-		if typ == pEvent { //input conditions aren't for events
-			return t.errorWithArgAndReason(ErrUnexpectedAssociation, "with", "Events are always updated")
-		}
-
-		//this could be an array of names, so we'll loop while we are finding commas
-		for {
-			intTriggers = append(intTriggers, t.pop())
-			if t.peek() == pComma {
-				t.pop() //get rid of the pComma
-				continue
-			}
-			break
-		}
 	}
 
 	//there might be a default value next
