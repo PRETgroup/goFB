@@ -46,10 +46,30 @@ architecture of AEIPolicyEnforcer {
 		dtimer tAEI; //DTIMER increases in DISCRETE TIME continuously
 	}
 
+	//ISSUE: the various signals need to always be propogated. Unless we set this up with a number of blocks, this is going to be a mess.
+	//(I.e. a parent CFB, then a block to resolve signal conflicts, etc.)
+
 	states {
+
 		s1 {
-			-> s1 on (VS or VP);
-			run
+			run in 'ST' `tAEI := tAEI + 1;` //DTIMERS added to EVERY STATE that they are not INCREMENTED IN
+			-> s2_e on (VS_poci_in or VP_pico_in);
+		}
+		s2_e {								//ENTRY states for EVERY PFBTRANSITION with EXPRESSIONS
+			run in 'ST' `tAEI := 0;`		//DTIMERS might be RESET in an ENTRY STATE
+			-> s1_e on (AS_poci_in or AP_pico_in);
+			-> s2_recovery_0 on (tAEI > AEI_ns);	//VIOLATION transitions go to RECOVERY states (unique for each transition)
+			-> s2;
+		}
+		s2 {
+			run in 'ST' `tAEI := tAEI + 1;`
+			-> s1_e on (AS_poci_in or AP_pico_in);
+			-> s2_recovery_0 on (tAEI > AEI_ns);	//VIOLATION transitions go to RECOVERY states (unique for each transition)
+		}
+
+		s2_recovery_0 {
+			emit AP_pico_out;					//The RECOVERY algorithm
+			//run in 'ST' `AP_pico_out`
 		}
 	}
 }
