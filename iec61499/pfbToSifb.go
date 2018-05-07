@@ -101,6 +101,48 @@ In s1, if v >= 5, that doesn't mean a violation _has_ to occur, because a !A cou
 
 WE CONVERT THESE TO ENFORCERS
 
+every violation potential must be associated with a non-violating transition
+//-> s0 on (!A): v := 0;
+//-> s1 on (A): v := 0;
+//-> violation on (!A or A);
+s0 {
+	if(!A) { 			//violation potential "(!A)"
+						//auto-selected non-violating transition "-> s0 on (!A)", no edits required
+	}
+
+	if(A) {				//violation potential
+						//auto-selected non-violating transition "-> s1 on (A)", no edits required
+	}
+}
+
+//-> s1 on (!A and v < 5);
+//-> s0 on (!A);
+//-> violation on ((v >= 5) or (A));
+s1 {
+	if(v >= 5) { 		//violation potential "(v >= 5)"
+		A = 0;			//auto-selected non-violating transition "-> s0 on (!A)", edit might be required
+	}
+	if(A) { 			//violation potential "(A)"
+		A = 0;			//auto-selected non-violating transition "-> s0 on (!A)", edit might be required
+	}
+}
+
+OUTPUT:
+
+//-> violation on ((!A and B) or (A and B));
+s0 {
+	-> s0 on (!A and !B): v := 0;
+	-> s1 on (A and !B): v := 0;
+	-> violation on ((!A and B) or (A and B));
+}
+
+s1 {
+	-> s1 on (!A and !B and v < 5);
+	-> s0 on (!A and B);
+	-> violation on ((v >= 5) or (A and B) or (A and !B));
+}
+
+
 */
 
 //TranslatePFBtoSIFB will take a Policy Function Block and compile it to its enforcer as a
