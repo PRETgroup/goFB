@@ -34,34 +34,37 @@ architecture of AB5Policy {
 	}
 }
 
-CAN DERIVE TO INPUT POLICY (Remember, replace all outputs and things that depend on outputs with TRUE)
-
-policyFB AB5Policy_INPUT;
-interface of AB5Policy_INPUT {
+policyFB AB5Policy;
+interface of AB5Policy {
 	in event A;  //in here means that they're going from PLANT to CONTROLLER
+	out event B; //out here means that they're going from CONTROLLER to PLANT
 }
 
-architecture of AB5Policy_INPUT {
+architecture of AB5Policy {
 	internals {
 		dtimer v;
 	}
 
 	states {
-		s0 {
-			-> s0 on (!A and (true)): v := 0;
-			-> s1 on (A and (true)): v := 0;
-			-> violation on ((!A and (true)) or (A and (true)));
+		s0 {														//first state is initial, and represents "We're waiting for an A"
+			-> s0 on (!A and !B): v := 0;							//if we receive neither A nor B, do nothing
+			-> s1 on (A and !B): v := 0;							//if we receive an A only, head to state s1
+			-> violation on (!A and B);
+			-> violation on (A and B);
 		}
 
-		s1 {
-			-> s1 on (!A and (true) and v < 5);
-			-> s0 on (!A and (true));
-			-> violation on ((v >= 5) or (A and (true)) or (A and (true)));
+		s1 {														//s1 is "we're waiting for a B, and it needs to get here within 5 ticks"
+			-> s1 on (!A and !B and v < 5);							//if we receive nothing, and we aren't over-time, then we do nothing
+			-> s0 on (!A and B);									//if we receive a B only, head to state s0
+			-> violation on (v >= 5);
+			-> violation on (A and B);
+			-> violation on (A and !B);
 		}
 	}
 }
 
-IS EQUIVALENT TO
+
+CAN DERIVE TO INPUT POLICY (Remember, replace all outputs and things that depend on outputs with TRUE)
 
 policyFB AB5Policy_INPUT;
 interface of AB5Policy_INPUT {
@@ -77,13 +80,16 @@ architecture of AB5Policy_INPUT {
 		s0 {
 			-> s0 on (!A): v := 0;
 			-> s1 on (A): v := 0;
-			-> violation on (!A or A);
+			-> violation on (!A);
+			-> violation on (A);
 		}
 
 		s1 {
 			-> s1 on (!A and v < 5);
 			-> s0 on (!A);
-			-> violation on ((v >= 5) or (A));
+			-> violation on (v >= 5);
+			-> violation on (A);
+			-> violation on (A);
 		}
 	}
 }
@@ -104,7 +110,8 @@ WE CONVERT THESE TO ENFORCERS
 every violation potential must be associated with a non-violating transition
 // -> s0 on (!A): v := 0;
 // -> s1 on (A): v := 0;
-// -> violation on (!A or A);
+// -> violation on (!A);
+// -> violation on (A);
 s0 {
 	if(!A) { 			//violation potential "(!A)"
 						//auto-selected non-violating transition "-> s0 on (!A)", no edits required
@@ -115,9 +122,11 @@ s0 {
 	}
 }
 
-// -> s1 on (!A and v < 5);
-// -> s0 on (!A);
-// -> violation on ((v >= 5) or (A));
+-> s1 on (!A and v < 5);
+-> s0 on (!A);
+-> violation on (v >= 5);
+-> violation on (A);
+-> violation on (A);
 s1 {
 	if(v >= 5) { 		//violation potential "(v >= 5)"
 		A = 0;			//auto-selected non-violating transition "-> s0 on (!A)", edit might be required
@@ -129,16 +138,17 @@ s1 {
 
 OUTPUT:
 
-// -> s0 on (!A and !B): v := 0;
-// -> s1 on (A and !B): v := 0;
-// -> violation on ((!A and B) or (A and B));
+// -> s0 on (!A and !B): v := 0; 	//-> s0 on (!B)
+// -> s1 on (A and !B): v := 0;		//-> s1 on (!B)
+// -> violation on (!A and B);
+// -> violation on (A and B);
 s0 {
 	//perform edits first
-	if(!A and B) {		//violation potential "(!A and B)"
-		B = 0;			//auto-selected non-violating transition "-> s0 on (!A and !B)", edit might be required
+	if(!A and B) {
+		B = 0;			//auto-selected non-violating transition "-> s0 on (!B)", edit might be required
 	}
-	if(A and B) {		//violation potential "(A and B)"
-		B = 0;			//auto-selected non-violating transition "-> s1 on (A and !B)", edit might be required
+	if(A and B) {
+		B = 0;			//auto-selected non-violating transition "-> s0 on (!B)", edit might be required
 	}
 
 	//now advance state
@@ -152,19 +162,29 @@ s0 {
 	}
 }
 
-// -> s1 on (!A and !B and v < 5);
-// -> s0 on (!A and B);
-// -> violation on ((v >= 5) or (A and B) or (A and !B));
+// -> s1 on (!A and !B and v < 5);	//-> s1 on (!B and v < 5);
+// -> s0 on (!A and B);				//-> s0 on (B);
+// -> violation on (v >= 5);
+// -> violation on (A and B);
+// -> violation on (A and !B);
 s1 {
 	//perform edits first
 	if(v >= 5) {		//violation potential "(v >= 5)"
-		B = 1;			//auto selected non-time non-violating transition "-> s0 on (!A and B)", edit might be required
+		B = 1;			//auto selected non-time non-violating transition "-> s0 on (B)", edit might be required
 	}
-	if(A and B) {		//violation potential "(A and B)"
-		B = 0;			//auto selected non-time non-violating transition "-> s0 on (!A and B)", edit might be required
+	if(A and B) {
+						//auto selected non-time non-violating transition "-> s0 on (B)", no edit required (this will be fixed by the INPUT automata :) )
 	}
 	if(A and !B) {
+		B = 1;			//auto selected non-time non-violating transition "-> s0 on (B)", edit might be required
+	}
 
+	//now advance state
+	if(!A and !B and v < 5) {
+		state = s1;
+	}
+	if(!A and B) {
+		state = s0;
 	}
 }
 
