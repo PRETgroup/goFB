@@ -57,7 +57,8 @@ func CCompileSequence(sequence []STInstruction) string {
 	for _, untypedInst := range sequence {
 		switch inst := untypedInst.(type) {
 		case STExpression:
-			panicOnErr(cTemplates.ExecuteTemplate(output, "expression", inst))
+			_, err := output.WriteString(CCompileExpression(inst)) //we have a special function for CCompileExpression because we might want to call it separately for 61499 guards
+			panicOnErr(err)
 			panicOnErr(output.WriteByte(';'))
 			panicOnErr(output.WriteByte('\n'))
 		case STIfElsIfElse:
@@ -72,5 +73,14 @@ func CCompileSequence(sequence []STInstruction) string {
 			panicOnErr(cTemplates.ExecuteTemplate(output, "repeatloop", inst))
 		}
 	}
+	return output.String()
+}
+
+//CCompileExpression will compile an STExpression to its equivalent C codes using the
+//	c templates stored in cTemplates
+func CCompileExpression(expr STExpression) string {
+	output := &bytes.Buffer{}
+	panicOnErr(cTemplates.ExecuteTemplate(output, "expression", expr))
+
 	return output.String()
 }

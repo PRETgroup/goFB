@@ -65,9 +65,13 @@ func (t *stParse) parseExpressionTerminatesWith(terminates ...string) (STExpress
 out:
 	for {
 		if t.done() {
-			return nil, t.error(ErrUnexpectedEOF)
+			break out
+			//return nil, t.error(ErrUnexpectedEOF)
 		}
 		s := t.peek()
+		if s == "" {
+			break out
+		}
 		//determine if s terminates
 		for _, te := range terminates {
 			if s == te {
@@ -82,6 +86,10 @@ out:
 		}
 		t.pop()
 		infixExprString = append(infixExprString, s)
+	}
+
+	if len(infixExprString) == 0 {
+		return nil, t.error(ErrUnexpectedEOF)
 	}
 
 	//convert to postfix notation

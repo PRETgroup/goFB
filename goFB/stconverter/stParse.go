@@ -1,7 +1,5 @@
 package stconverter
 
-import "github.com/PRETgroup/goFB/iec61499"
-
 //stParse is the containing struct for the parsing code
 type stParse struct {
 	instructions []STInstruction
@@ -13,9 +11,15 @@ type stParse struct {
 	currentFile string
 }
 
+//DebugInfo is used for File/Line debugging info
+type DebugInfo struct {
+	SourceLine int
+	SourceFile string
+}
+
 //getCurrentDebugInfo returns the debug info for the last popped item
-func (t *stParse) getCurrentDebugInfo() iec61499.DebugInfo {
-	return iec61499.DebugInfo{
+func (t *stParse) getCurrentDebugInfo() DebugInfo {
+	return DebugInfo{
 		SourceLine: t.currentLine,
 		SourceFile: t.currentFile,
 	}

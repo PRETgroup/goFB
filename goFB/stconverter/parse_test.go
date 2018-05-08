@@ -8,15 +8,25 @@ import (
 )
 
 type stTestCase struct {
-	name       string
-	progString string
-	prog       []STInstruction
-	compC      string
-	err        error
-	knownNames []string
+	name           string
+	progString     string
+	prog           []STInstruction
+	compC          string
+	expressionOnly bool
+	err            error
+	knownNames     []string
 }
 
 var stTestCases = []stTestCase{
+	{
+		name:       "basic 1",
+		progString: "1",
+		prog: []STInstruction{
+			STExpressionValue{"1"},
+		},
+		compC:          "1",
+		expressionOnly: true,
+	},
 	{
 		name:       "assignment 1",
 		progString: "x := 1;",
@@ -770,7 +780,13 @@ func TestCases(t *testing.T) {
 			t.Errorf("Test %d (%s) PARSING FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, expected, received)
 		}
 		//now check if the compiled version matches
-		recvProg := standardizeSpaces(CCompileSequence(prog))
+		var recvProg string
+		if stTestCases[i].expressionOnly {
+			recvProg = standardizeSpaces(CCompileExpression(prog[0].(STExpression)))
+		} else {
+			recvProg = standardizeSpaces(CCompileSequence(prog))
+		}
+
 		//convert to have equivalent whitespaces
 		desrProg := standardizeSpaces(stTestCases[i].compC)
 
