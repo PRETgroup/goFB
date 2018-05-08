@@ -12,7 +12,7 @@ var efbArchitectureTests = []ParseTest{
 		Input: `policyFB testBlock;
 				interface of testBlock{
 				}
-				architecture of testBlock {
+				policy of testBlock {
 					states {
 						s1 
 
@@ -22,14 +22,14 @@ var efbArchitectureTests = []ParseTest{
 	},
 	{
 		Name: "AEIPolicy",
-		Input: `policyFB AEIPolicy;
+		Input: `basicFB AEIPolicy;
 				interface of AEIPolicy {
 					in event AS, VS; //in here means that they're going from PLANT to CONTROLLER
 					out event AP, VP;//out here means that they're going from CONTROLLER to PLANT
 				
 					in ulint AEI_ns := 900000000;
 				}
-				architecture of AEIPolicy {
+				policy AEI of AEIPolicy {
 					internals {
 						dtimer tAEI; //DTIMER increases in DISCRETE TIME continuously
 					}
@@ -50,10 +50,11 @@ var efbArchitectureTests = []ParseTest{
 				}`,
 		Output: []iec61499.FB{
 			*iec61499.Must(
-				iec61499.NewPolicyFB("AEIPolicy").
+				iec61499.NewBasicFB("AEIPolicy").
 					AddEventInputNames([]string{"AS", "VS"}, d).
 					AddEventOutputNames([]string{"AP", "VP"}, d).
 					AddDataInputs([]string{"AEI_ns"}, []string{}, "ulint", "", "900000000", d)).
+				AddPolicy("AEI").
 				AddPFBState("s1", d).
 				AddPFBState("s2", d).
 				AddPFBDataInternals([]string{"tAEI"}, "DTIMER", "", "", d).

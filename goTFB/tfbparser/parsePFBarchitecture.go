@@ -126,9 +126,7 @@ func (t *tfbParse) parsePFBInternal(fbIndex int) *ParseError {
 
 	//while this can return an error,
 	//the only permissible error is "wrong block type" and we have already ensured we are operating on a basicFB
-	if _, err := fb.AddxFBDataInternals(intNames, typ, size, initialValue, debug); err != nil {
-		return t.error(err)
-	}
+	fb.Policies[len(fb.Policies)-1].AddDataInternals(intNames, typ, size, initialValue, debug)
 
 	return nil
 }
@@ -141,7 +139,7 @@ func (t *tfbParse) parsePFBState(fbIndex int) *ParseError {
 	//next is name of state
 	name := t.pop()
 
-	for _, st := range fb.PolicyFB.States {
+	for _, st := range fb.Policies[len(fb.Policies)-1].States {
 		if st.Name == name {
 			return t.errorWithArg(ErrNameAlreadyInUse, name)
 		}
@@ -261,12 +259,12 @@ func (t *tfbParse) parsePFBState(fbIndex int) *ParseError {
 			}
 			t.pop() //pop the pSemicolon
 			//save the transition
-			fb.PolicyFB.AddTransition(name, destState, strings.Join(condComponents, " "), expressions, debug)
+			fb.Policies[len(fb.Policies)-1].AddTransition(name, destState, strings.Join(condComponents, " "), expressions, debug)
 		}
 	}
 
 	//everything is parsed, add it to the state machine
-	fb.PolicyFB.AddState(name, debug)
+	fb.Policies[len(fb.Policies)-1].AddState(name, debug)
 
 	return nil
 }

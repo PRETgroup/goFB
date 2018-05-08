@@ -38,7 +38,7 @@ type FB struct {
 	CompositeFB *CompositeFB `xml:",omitempty"`
 	ServiceFB   *ServiceFB   `xml:",omitempty"`
 	HybridFB    *HybridFB    `xml:"-"`          //don't ever export HybridFBs, convert them to BFBs first
-	PolicyFB    *PolicyFB    `xml:",omitempty"` //PolicyFB can be converted to equivalent BasicFB
+	Policies    []PolicyFB   `xml:",omitempty"` //PolicyFB can wrap the execution of a given block
 
 	NumChildren int `xml:"-"` //this is useful when using the event queue as we use it to assign unique blockInstanceIDs, it stores the recursive number of children a block has
 	DebugInfo   `xml:"-"`
@@ -137,6 +137,7 @@ type HFBInvariant struct {
 
 //PolicyFB is used for specifying policies that must be kept
 type PolicyFB struct {
+	Name         string
 	InternalVars []Variable      `xml:"InternalVars>VarDeclaration,omitempty"`
 	States       []PFBState      `xml:"ECC>ECState"`
 	Transitions  []PFBTransition `xml:"ECC>ECTransition,omitempty"`

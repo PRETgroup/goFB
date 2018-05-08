@@ -15,7 +15,6 @@ const (
 	pCompositeFB = "compositeFB"
 	pServiceFB   = "serviceFB"
 	pHybridFB    = "hybridFB"
-	pPolicyFB    = "policyFB"
 
 	pCompilerInfoHeader = "compileheader"
 
@@ -37,6 +36,7 @@ const (
 
 	pFBinterface    = "interface"
 	pFBarchitecture = "architecture"
+	pFBpolicy       = "policy"
 	pOf             = "of"
 
 	pIn  = "in"
@@ -161,7 +161,7 @@ func parseItems(name string, items []string) ([]iec61499.FB, *ParseError) {
 			break
 		}
 		//have we defined a basicFB or compositeFB
-		if s == pBasicFB || s == pCompositeFB || s == pServiceFB || s == pPolicyFB {
+		if s == pBasicFB || s == pCompositeFB || s == pServiceFB {
 			if err := t.parseFB(s); err != nil {
 				return nil, err
 			}
@@ -177,8 +177,8 @@ func parseItems(name string, items []string) ([]iec61499.FB, *ParseError) {
 		}
 
 		//is this defining an architecture for an fb
-		if s == pFBarchitecture {
-			if err := t.parseFBarchitecture(); err != nil {
+		if s == pFBarchitecture || s == pFBpolicy {
+			if err := t.parseFBarchitecture(s); err != nil {
 				return nil, err
 			}
 			continue
@@ -233,8 +233,8 @@ func (t *tfbParse) parseFB(fbType string) *ParseError {
 			fbs = append(fbs, *iec61499.NewServiceFB(name))
 		} else if fbType == pHybridFB {
 			fbs = append(fbs, *iec61499.NewHybridFB(name))
-		} else if fbType == pPolicyFB {
-			fbs = append(fbs, *iec61499.NewPolicyFB(name))
+			// } else if fbType == pPolicyFB {
+			// 	fbs = append(fbs, *iec61499.NewPolicyFB(name))
 		} else {
 			return t.errorWithReason(ErrInternal, "I can't parse fbType "+fbType)
 		}
@@ -266,8 +266,16 @@ func (t *tfbParse) parseFB(fbType string) *ParseError {
 	return nil
 }
 
-func (t *tfbParse) parseFBarchitecture() *ParseError {
+func (t *tfbParse) parseFBarchitecture(archType string) *ParseError {
 	var s string
+	var pName string
+
+	//if this is a policy, the name is here
+	if archType == pFBpolicy {
+		s = t.pop()
+		pName = s
+	}
+
 	//first word should be of
 	s = t.pop()
 	if s != pOf {
@@ -279,6 +287,11 @@ func (t *tfbParse) parseFBarchitecture() *ParseError {
 	fbIndex := t.getFBIndexFromName(s)
 	if fbIndex == -1 {
 		return t.errorWithArg(ErrUndefinedFB, s)
+	}
+
+	if archType == pFBpolicy {
+		t.fbs[fbIndex].AddPolicy(pName)
+		return t.parsePFBarchitecture(fbIndex)
 	}
 
 	//detect type of FB and parse as appropriate
@@ -296,10 +309,6 @@ func (t *tfbParse) parseFBarchitecture() *ParseError {
 
 	if t.fbs[fbIndex].HybridFB != nil {
 		return t.parseHFBarchitecture(fbIndex)
-	}
-
-	if t.fbs[fbIndex].PolicyFB != nil {
-		return t.parsePFBarchitecture(fbIndex)
 	}
 
 	return t.error(errors.New("can't parse unknown architecture type"))

@@ -188,16 +188,15 @@ s1 {
 	}
 }
 
-
 */
 
 //TranslatePFBtoSIFB will take a Policy Function Block and compile it to its enforcer as a
 // Service Interface Function Block
 //It operates according to the algorithm specified in [TODO: Paper link]
 func (f *FB) TranslatePFBtoSIFB() error {
-	if f.PolicyFB == nil {
-		return errors.New("TranslatePFBtoBFB can only be called on an PolicyFB")
-	}
+	// if f.PolicyFB == nil {
+	// 	return errors.New("TranslatePFBtoBFB can only be called on an PolicyFB")
+	// }
 
 	return errors.New("Not yet implemented")
 }

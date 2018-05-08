@@ -80,16 +80,6 @@ func NewHybridFB(name string) *FB {
 	return &fb
 }
 
-//NewPolicyFB returns an PolicyFB with default fields filled
-func NewPolicyFB(name string) *FB {
-	fb := FB{}
-	fb.Name = name
-	fb.Identification.Standard = "61499-2"
-	fb.PolicyFB = new(PolicyFB)
-	fb.SetXMLName()
-	return &fb
-}
-
 //SetXMLName sets an appropriate name for the xml block type
 func (fb *FB) SetXMLName() {
 	fb.XMLName = xml.Name{Space: "", Local: "FBType"}
@@ -277,10 +267,10 @@ func (fb *FB) AddxFBDataInternals(intNames []string, typ string, size string, in
 		fb.HybridFB.AddDataInternals(intNames, typ, size, initialValue, debug)
 		return fb, nil
 	}
-	if fb.PolicyFB != nil {
-		fb.PolicyFB.AddDataInternals(intNames, typ, size, initialValue, debug)
-		return fb, nil
-	}
+	// if fb.PolicyFB != nil {
+	// 	fb.PolicyFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+	// 	return fb, nil
+	// }
 	return nil, errors.New("AddxFBDataInternals may only be called on HFBs or BFBs")
 }
 
@@ -541,9 +531,15 @@ func (hfb *HybridFB) AddTransition(source string, dest string, cond string, debu
  *                                               ENFORCER FB CREATION FUNCTIONS                                                    *
  ***********************************************************************************************************************************/
 
+//AddPolicy adds a PolicyFB to an FB
+func (fb *FB) AddPolicy(name string) *FB {
+	fb.Policies = append(fb.Policies, PolicyFB{Name: name})
+	return fb
+}
+
 //AddPFBDataInternals adds data internals to an fb's efb without performing error checking
 func (fb *FB) AddPFBDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *FB {
-	fb.PolicyFB.AddDataInternals(intNames, typ, size, initialValue, debug)
+	fb.Policies[len(fb.Policies)-1].AddDataInternals(intNames, typ, size, initialValue, debug)
 	return fb
 }
 
@@ -580,7 +576,7 @@ func (efb *PolicyFB) AddDataInternals(intNames []string, typ string, size string
 
 //AddPFBState adds state to an fb's bfb without performing error checking
 func (fb *FB) AddPFBState(name string, debug DebugInfo) *FB {
-	fb.PolicyFB.AddState(name, debug)
+	fb.Policies[len(fb.Policies)-1].AddState(name, debug)
 	return fb
 }
 
@@ -595,7 +591,7 @@ func (efb *PolicyFB) AddState(name string, debug DebugInfo) *PolicyFB {
 
 //AddPFBTransition adds a transition to an fb's bfb without performing error checking
 func (fb *FB) AddPFBTransition(source string, dest string, cond string, expressions []PFBExpression, debug DebugInfo) *FB {
-	fb.PolicyFB.AddTransition(source, dest, cond, expressions, debug)
+	fb.Policies[len(fb.Policies)-1].AddTransition(source, dest, cond, expressions, debug)
 	return fb
 }
 

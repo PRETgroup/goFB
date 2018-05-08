@@ -23,20 +23,42 @@ func FBsEqual(a FB, b FB) bool {
 		return false
 	}
 
+	if len(a.Policies) != len(b.Policies) {
+		return false
+	}
+
+	for i := 0; i < len(a.Policies); i++ {
+		if !policyFbsSame(a.Policies[i], b.Policies[i]) {
+			return false
+		}
+	}
+
+	if (a.BasicFB == nil) != (b.BasicFB == nil) {
+		return false
+	}
+
 	if a.BasicFB != nil && b.BasicFB != nil {
 		return basicFbsSame(*a.BasicFB, *b.BasicFB)
+	}
+
+	if (a.CompositeFB == nil) != (b.CompositeFB == nil) {
+		return false
 	}
 
 	if a.CompositeFB != nil && b.CompositeFB != nil {
 		return compositeFbsSame(*a.CompositeFB, *b.CompositeFB)
 	}
 
+	if (a.ServiceFB == nil) != (b.ServiceFB == nil) {
+		return false
+	}
+
 	if a.ServiceFB != nil && b.ServiceFB != nil {
 		return siFbsSame(*a.ServiceFB, *b.ServiceFB)
 	}
 
-	if a.PolicyFB != nil && b.PolicyFB != nil {
-		return policyFbsSame(*a.PolicyFB, *b.PolicyFB)
+	if (a.HybridFB == nil) != (b.HybridFB == nil) {
+		return false
 	}
 
 	if a.HybridFB != nil && b.HybridFB != nil {
@@ -128,6 +150,9 @@ func basicFbsSame(a BasicFB, b BasicFB) bool {
 }
 
 func policyFbsSame(a PolicyFB, b PolicyFB) bool {
+	if a.Name != b.Name {
+		return false
+	}
 	if len(a.Transitions) != len(b.Transitions) {
 		return false
 	}
