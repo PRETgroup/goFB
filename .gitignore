@@ -6,3 +6,4 @@
 *.out.json
 *.swp
 EasyEnforcer
+.vscode

@@ -29,6 +29,8 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 	{{end}}{{end}}// this method seems to be having trouble on the t-crest SPM memory*/}}
 	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs}}me->outputEvents.event.{{$event.Name}} = 0;
 	{{end}}{{end}}
+	
+	{{if $block.Policies}}{{template "_policyIn" $block}}{{end}}
 
 	{{if $runOnECC}}
 {{$block.Name}}_runOn:{{end}}
@@ -70,6 +72,8 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 	}
 
 	me->_trigger = false;
+
+	{{if $block.Policies}}{{template "_policyOut" $block}}{{end}}
 
 	//Ensure input events are cleared
 	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs}}me->inputEvents.event.{{$event.Name}} = 0;

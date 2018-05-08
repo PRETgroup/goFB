@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="AB5Policy" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="A" Comment=""></Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="B" Comment=""></Event>
+		</EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC></ECC>
+	</BasicFB>
+	<Policies>
+		<Name>AB5</Name>
+		<InternalVars>
+			<VarDeclaration Name="v" Type="dtimer" Comment=""></VarDeclaration>
+		</InternalVars>
+		<ECC>
+			<ECState>
+				<Name>s0</Name>
+			</ECState>
+			<ECState>
+				<Name>s1</Name>
+			</ECState>
+			<ECTransition Source="s0" Destination="s0" Condition="( ! A &amp;&amp; ! B )" x="" y="">
+				<Expressions>
+					<VarName>v</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</ECTransition>
+			<ECTransition Source="s0" Destination="s1" Condition="( A &amp;&amp; ! B )" x="" y="">
+				<Expressions>
+					<VarName>v</VarName>
+					<Value>0</Value>
+				</Expressions>
+			</ECTransition>
+			<ECTransition Source="s0" Destination="violation" Condition="( ( ! A &amp;&amp; B ) || ( A &amp;&amp; B ) )" x="" y=""></ECTransition>
+			<ECTransition Source="s1" Destination="s1" Condition="( ! A &amp;&amp; ! B &amp;&amp; v &lt; 5 )" x="" y=""></ECTransition>
+			<ECTransition Source="s1" Destination="s0" Condition="( ! A &amp;&amp; B )" x="" y=""></ECTransition>
+			<ECTransition Source="s1" Destination="violation" Condition="( ( v &gt; = 5 ) || ( A &amp;&amp; B ) || ( A &amp;&amp; ! B ) )" x="" y=""></ECTransition>
+		</ECC>
+	</Policies>
+</FBType>

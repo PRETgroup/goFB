@@ -149,11 +149,13 @@ int main() {
 		#ifdef PRINT_VALS
 			printf("%f,",(double)tickNum*0.01);
 		#endif
+		{{if or $block.Resources $block.CompositeFB}}
 		{{$block.Name}}_syncOutputEvents(&{{$block.Name}});
 		{{$block.Name}}_syncInputEvents(&{{$block.Name}});
 
 		{{$block.Name}}_syncOutputData(&{{$block.Name}});
 		{{$block.Name}}_syncInputData(&{{$block.Name}});
+		{{end}}
 		
 		{{$block.Name}}_run(&{{$block.Name}});
 		#ifdef PRINT_VALS
