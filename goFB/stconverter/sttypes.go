@@ -1,7 +1,7 @@
 package stconverter
 
 import (
-	"github.com/PRETgroup/goFB/goFB/postfix"
+	"github.com/PRETgroup/goFB/iec61499/postfix"
 )
 
 //STExpression is an interface defining an assignments and comparison function tree

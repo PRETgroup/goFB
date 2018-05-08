@@ -3,7 +3,7 @@ package stconverter
 import (
 	"fmt"
 
-	"github.com/PRETgroup/goFB/goFB/postfix"
+	"github.com/PRETgroup/goFB/iec61499/postfix"
 )
 
 func (t *stParse) parseNext() (STInstruction, *STParseError) {
