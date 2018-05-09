@@ -102,7 +102,7 @@ out:
 	var stack []STExpression
 	for i := 0; i < len(postfixExprString); i++ {
 		token := postfixExprString[i]
-		op := findOp(token)
+		op := FindOp(token)
 		if op == nil {
 			stack = append(stack, STExpressionValue{token})
 			continue

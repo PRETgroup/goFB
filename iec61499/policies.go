@@ -1,7 +1,6 @@
 package iec61499
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/PRETgroup/goFB/goFB/stconverter"
@@ -81,10 +80,12 @@ func SplitPFBSTTransitions(cTrans []PFBSTTransition) []PFBSTTransition {
 	return brTrans
 }
 
+//SplitExpressionsOnOr will take a given STExpression and return a slice of STExpressions which are
+//split over the "or" operators, e.g.
 //[a] should become [a]
 //[or a b] should become [a] [b]
 //[or a [b and c]] should become [a] [b and c]
-func traverse(expr stconverter.STExpression) []stconverter.STExpression {
+func SplitExpressionsOnOr(expr stconverter.STExpression) []stconverter.STExpression {
 	//IF IS OR
 	//	BREAK APART
 	//IF IS VALUE
@@ -98,15 +99,16 @@ func traverse(expr stconverter.STExpression) []stconverter.STExpression {
 	// }
 
 	op := expr.HasOperator()
-	if op == nil {
+	if op == nil { //if it's just a value, return
 		return []stconverter.STExpression{expr}
 	}
-	if op.GetToken() == "or" {
+	if op.GetToken() == "or" { //if it's an "or", return the arguments
 		return expr.GetArguments()
 	}
+
 	//otherwise, things are more interesting
 
-	//the thing we're returning
+	//make the thing we're returning
 	rets := make([]stconverter.STExpressionOperator, 0)
 
 	//build a new expression
@@ -121,24 +123,37 @@ func traverse(expr stconverter.STExpression) []stconverter.STExpression {
 
 	//each argument should be only one value, and we can check that by calling traverse again
 	for i, arg := range args {
-		argT := traverse(arg)
-		//if argT has more than one value, it indicates that this argument was "broken", and we should return two nExpr, one with each argument
-		//if we need more rets
-		for len(argT) > len(rets) {
-			rets = append(rets, rets[len(rets)-1])
+		argT := SplitExpressionsOnOr(arg)
+
+		//if argT has more than one value, it indicates that this argument was "split", and we should return two nExpr, one with each argument
+		//we will increase the size of rets by a multiplyFactor, which is the size of argT
+		//i.e. if we receive two arguments, and we already had two elements in rets, it indicates we need to return 4 values
+		//for instance, if our original command was "(a or b) and (c or d)" we'd need to return 4 elements (a and c) (a and d) (b and c) (b and d)
+		multiplyFactor := len(argT)
+		for z := 1; z < multiplyFactor; z++ {
+			//for each factor in multiply factor, insert duplicate into slice
+			//e.g. [1 2 3] becomes [1 1 2 2 3 3]
+			for y := 0; y < len(rets); y++ {
+				var newElem stconverter.STExpressionOperator
+				copyElem := rets[y]
+				newElem.Operator = copyElem.Operator
+				newElem.Arguments = make([]stconverter.STExpression, len(copyElem.Arguments))
+				copy(newElem.Arguments, copyElem.Arguments)
+
+				rets = append(rets, stconverter.STExpressionOperator{})
+				copy(rets[y+1:], rets[y:])
+				rets[y] = newElem
+				y++
+			}
 		}
-		c := 0 //keep track of how many times we updated
-		for j, at := range argT {
-			fmt.Printf("at:%v, i:%v, len(rets):%v\n", at, i, len(rets))
-			fmt.Printf("appending %v\n", at)
-			rets[j].Arguments[i] = at
-			bytes, _ := json.MarshalIndent(rets, "", "\t")
-			fmt.Printf("%s", bytes)
-			c++
-		}
-		//fill in any remaining spaces with the first element of argT
-		for j := c; j < len(rets); j++ {
-			rets[j].Arguments[i] = argT[len(argT)-1]
+
+		//for each argument, copy it into the return elements at the appropriate locations
+		//(if we have multiple arguments, they will be chosen in a round-robin fashion)
+		for j := 0; j < len(argT); j++ {
+			at := argT[j]
+			for k := j; k < len(rets); k += len(argT) {
+				rets[k].Arguments[i] = at
+			}
 		}
 	}
 

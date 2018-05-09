@@ -32,7 +32,7 @@ var stTestCases = []stTestCase{
 		progString: "x := 1;",
 		prog: []STInstruction{
 			STExpressionOperator{
-				Operator: findOp(stAssignment),
+				Operator: FindOp(stAssignment),
 				Arguments: []STExpression{
 					STExpressionValue{"1"},
 					STExpressionValue{"x"},
@@ -46,10 +46,10 @@ var stTestCases = []stTestCase{
 		progString: "y := x + 2;",
 		prog: []STInstruction{
 			STExpressionOperator{
-				Operator: findOp(stAssignment),
+				Operator: FindOp(stAssignment),
 				Arguments: []STExpression{
 					STExpressionOperator{
-						Operator: findOp(stAdd),
+						Operator: FindOp(stAdd),
 						Arguments: []STExpression{
 							STExpressionValue{"2"},
 							STExpressionValue{"x"},
@@ -66,10 +66,10 @@ var stTestCases = []stTestCase{
 		progString: "integrationError := -WindupGuard;",
 		prog: []STInstruction{
 			STExpressionOperator{
-				Operator: findOp(stAssignment),
+				Operator: FindOp(stAssignment),
 				Arguments: []STExpression{
 					STExpressionOperator{
-						Operator: findOp(stNegative),
+						Operator: FindOp(stNegative),
 						Arguments: []STExpression{
 							STExpressionValue{"WindupGuard"},
 						},
@@ -85,7 +85,7 @@ var stTestCases = []stTestCase{
 		progString: "print(\"hi\");",
 		prog: []STInstruction{
 			STExpressionOperator{
-				Operator: findOp("print<1>"),
+				Operator: FindOp("print<1>"),
 				Arguments: []STExpression{
 					STExpressionValue{"\"hi\""},
 				},
@@ -98,7 +98,7 @@ var stTestCases = []stTestCase{
 		progString: `printf("%d\n", i);`,
 		prog: []STInstruction{
 			STExpressionOperator{
-				Operator: findOp("printf<2>"),
+				Operator: FindOp("printf<2>"),
 				Arguments: []STExpression{
 					STExpressionValue{`i`},
 					STExpressionValue{`"%d\n"`},
@@ -115,7 +115,7 @@ var stTestCases = []stTestCase{
 				IfThens: []STIfThen{
 					{
 						IfExpression: STExpressionOperator{
-							Operator: findOp(stGreaterThan),
+							Operator: FindOp(stGreaterThan),
 							Arguments: []STExpression{
 								STExpressionValue{"x"},
 								STExpressionValue{"y"},
@@ -123,7 +123,7 @@ var stTestCases = []stTestCase{
 						},
 						ThenSequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionValue{"x"},
 									STExpressionValue{"y"},
@@ -144,10 +144,10 @@ var stTestCases = []stTestCase{
 				IfThens: []STIfThen{
 					{
 						IfExpression: STExpressionOperator{
-							Operator: findOp(stLessThan),
+							Operator: FindOp(stLessThan),
 							Arguments: []STExpression{
 								STExpressionOperator{
-									Operator: findOp(stNegative),
+									Operator: FindOp(stNegative),
 									Arguments: []STExpression{
 										STExpressionValue{"x"},
 									},
@@ -157,10 +157,10 @@ var stTestCases = []stTestCase{
 						},
 						ThenSequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionOperator{
-										Operator: findOp(stNegative),
+										Operator: FindOp(stNegative),
 										Arguments: []STExpression{
 											STExpressionValue{"x"},
 										},
@@ -192,7 +192,7 @@ var stTestCases = []stTestCase{
 				IfThens: []STIfThen{
 					{
 						IfExpression: STExpressionOperator{
-							Operator: findOp(stGreaterThan),
+							Operator: FindOp(stGreaterThan),
 							Arguments: []STExpression{
 								STExpressionValue{"x"},
 								STExpressionValue{"y"},
@@ -200,14 +200,14 @@ var stTestCases = []stTestCase{
 						},
 						ThenSequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionValue{"x"},
 									STExpressionValue{"y"},
 								},
 							},
 							STExpressionOperator{
-								Operator: findOp("print<1>"),
+								Operator: FindOp("print<1>"),
 								Arguments: []STExpression{
 									STExpressionValue{"\"hello\""},
 								},
@@ -216,7 +216,7 @@ var stTestCases = []stTestCase{
 					},
 					{
 						IfExpression: STExpressionOperator{
-							Operator: findOp(stLessThanEqualTo),
+							Operator: FindOp(stLessThanEqualTo),
 							Arguments: []STExpression{
 								STExpressionValue{"x"},
 								STExpressionValue{"y"},
@@ -224,13 +224,13 @@ var stTestCases = []stTestCase{
 						},
 						ThenSequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionOperator{
-										Operator: findOp(stAdd),
+										Operator: FindOp(stAdd),
 										Arguments: []STExpression{
 											STExpressionOperator{
-												Operator: findOp(stMultiply),
+												Operator: FindOp(stMultiply),
 												Arguments: []STExpression{
 													STExpressionValue{"3"},
 													STExpressionValue{"2"},
@@ -247,13 +247,13 @@ var stTestCases = []stTestCase{
 				},
 				ElseSequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp("print<1>"),
+						Operator: FindOp("print<1>"),
 						Arguments: []STExpression{
 							STExpressionValue{"\"hi\""},
 						},
 					},
 					STExpressionOperator{
-						Operator: findOp("print<1>"),
+						Operator: FindOp("print<1>"),
 						Arguments: []STExpression{
 							STExpressionValue{"\"yes\""},
 						},
@@ -286,10 +286,10 @@ var stTestCases = []stTestCase{
 				IfThens: []STIfThen{
 					{
 						IfExpression: STExpressionOperator{
-							Operator: findOp(stLessThan),
+							Operator: FindOp(stLessThan),
 							Arguments: []STExpression{
 								STExpressionOperator{
-									Operator: findOp(stNegative),
+									Operator: FindOp(stNegative),
 									Arguments: []STExpression{
 										STExpressionValue{"WindupGuard"},
 									},
@@ -299,10 +299,10 @@ var stTestCases = []stTestCase{
 						},
 						ThenSequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionOperator{
-										Operator: findOp(stNegative),
+										Operator: FindOp(stNegative),
 										Arguments: []STExpression{
 											STExpressionValue{"WindupGuard"},
 										},
@@ -314,7 +314,7 @@ var stTestCases = []stTestCase{
 					},
 					{
 						IfExpression: STExpressionOperator{
-							Operator: findOp(stGreaterThan),
+							Operator: FindOp(stGreaterThan),
 							Arguments: []STExpression{
 								STExpressionValue{"WindupGuard"},
 								STExpressionValue{"integrationError"},
@@ -322,7 +322,7 @@ var stTestCases = []stTestCase{
 						},
 						ThenSequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionValue{"WindupGuard"},
 									STExpressionValue{"integrationError"},
@@ -354,7 +354,7 @@ var stTestCases = []stTestCase{
 		prog: []STInstruction{
 			STSwitchCase{
 				SwitchOn: STExpressionOperator{
-					Operator: findOp(stAdd),
+					Operator: FindOp(stAdd),
 					Arguments: []STExpression{
 						STExpressionValue{"1"},
 						STExpressionValue{"x"},
@@ -365,13 +365,13 @@ var stTestCases = []stTestCase{
 						CaseValues: []string{"1"},
 						Sequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp("print<1>"),
+								Operator: FindOp("print<1>"),
 								Arguments: []STExpression{
 									STExpressionValue{"\"hello\""},
 								},
 							},
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionValue{"2"},
 									STExpressionValue{"y"},
@@ -383,7 +383,7 @@ var stTestCases = []stTestCase{
 						CaseValues: []string{"2", "3"},
 						Sequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp("print<1>"),
+								Operator: FindOp("print<1>"),
 								Arguments: []STExpression{
 									STExpressionValue{"\"many\""},
 								},
@@ -393,10 +393,10 @@ var stTestCases = []stTestCase{
 				},
 				ElseSequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp(stAssignment),
+						Operator: FindOp(stAssignment),
 						Arguments: []STExpression{
 							STExpressionOperator{
-								Operator: findOp(stAdd),
+								Operator: FindOp(stAdd),
 								Arguments: []STExpression{
 									STExpressionValue{"2"},
 									STExpressionValue{"2"},
@@ -437,7 +437,7 @@ var stTestCases = []stTestCase{
 		prog: []STInstruction{
 			STSwitchCase{
 				SwitchOn: STExpressionOperator{
-					Operator: findOp(stAdd),
+					Operator: FindOp(stAdd),
 					Arguments: []STExpression{
 						STExpressionValue{"1"},
 						STExpressionValue{"x"},
@@ -448,13 +448,13 @@ var stTestCases = []stTestCase{
 						CaseValues: []string{"1"},
 						Sequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp("print<1>"),
+								Operator: FindOp("print<1>"),
 								Arguments: []STExpression{
 									STExpressionValue{"\"hello\""},
 								},
 							},
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionValue{"2"},
 									STExpressionValue{"y"},
@@ -469,7 +469,7 @@ var stTestCases = []stTestCase{
 						CaseValues: []string{"3"},
 						Sequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp("print<1>"),
+								Operator: FindOp("print<1>"),
 								Arguments: []STExpression{
 									STExpressionValue{"\"many\""},
 								},
@@ -479,10 +479,10 @@ var stTestCases = []stTestCase{
 				},
 				ElseSequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp(stAssignment),
+						Operator: FindOp(stAssignment),
 						Arguments: []STExpression{
 							STExpressionOperator{
-								Operator: findOp(stAdd),
+								Operator: FindOp(stAdd),
 								Arguments: []STExpression{
 									STExpressionValue{"2"},
 									STExpressionValue{"2"},
@@ -519,7 +519,7 @@ var stTestCases = []stTestCase{
 		prog: []STInstruction{
 			STForLoop{
 				ForAssignment: STExpressionOperator{
-					Operator: findOp(stAssignment),
+					Operator: FindOp(stAssignment),
 					Arguments: []STExpression{
 						STExpressionValue{"1"},
 						STExpressionValue{"i"},
@@ -529,7 +529,7 @@ var stTestCases = []stTestCase{
 				ByIncrement: STExpressionValue{"2"},
 				Sequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp("print<1>"),
+						Operator: FindOp("print<1>"),
 						Arguments: []STExpression{
 							STExpressionValue{"i"},
 						},
@@ -548,18 +548,18 @@ var stTestCases = []stTestCase{
 		prog: []STInstruction{
 			STForLoop{
 				ForAssignment: STExpressionOperator{
-					Operator: findOp(stAssignment),
+					Operator: FindOp(stAssignment),
 					Arguments: []STExpression{
 						STExpressionValue{"1"},
 						STExpressionValue{"i"},
 					},
 				},
 				ToValue: STExpressionOperator{
-					Operator: findOp(stMultiply),
+					Operator: FindOp(stMultiply),
 					Arguments: []STExpression{
 						STExpressionValue{"5"},
 						STExpressionOperator{
-							Operator: findOp(stAdd),
+							Operator: FindOp(stAdd),
 							Arguments: []STExpression{
 								STExpressionValue{"10"},
 								STExpressionValue{"2"},
@@ -569,7 +569,7 @@ var stTestCases = []stTestCase{
 				},
 				Sequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp("print<1>"),
+						Operator: FindOp("print<1>"),
 						Arguments: []STExpression{
 							STExpressionValue{"i"},
 						},
@@ -590,7 +590,7 @@ var stTestCases = []stTestCase{
 		prog: []STInstruction{
 			STWhileLoop{
 				WhileExpression: STExpressionOperator{
-					Operator: findOp(stGreaterThanEqualTo),
+					Operator: FindOp(stGreaterThanEqualTo),
 					Arguments: []STExpression{
 						STExpressionValue{"1"},
 						STExpressionValue{"i"},
@@ -598,16 +598,16 @@ var stTestCases = []stTestCase{
 				},
 				Sequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp("print<1>"),
+						Operator: FindOp("print<1>"),
 						Arguments: []STExpression{
 							STExpressionValue{"i"},
 						},
 					},
 					STExpressionOperator{
-						Operator: findOp(stAssignment),
+						Operator: FindOp(stAssignment),
 						Arguments: []STExpression{
 							STExpressionOperator{
-								Operator: findOp(stSubtract),
+								Operator: FindOp(stSubtract),
 								Arguments: []STExpression{
 									STExpressionValue{"1"},
 									STExpressionValue{"i"},
@@ -617,7 +617,7 @@ var stTestCases = []stTestCase{
 						},
 					},
 					STExpressionOperator{
-						Operator: findOp(stExit),
+						Operator: FindOp(stExit),
 					},
 				},
 			},
@@ -657,7 +657,7 @@ var stTestCases = []stTestCase{
 		prog: []STInstruction{
 			STRepeatLoop{
 				UntilExpression: STExpressionOperator{
-					Operator: findOp(stInequal),
+					Operator: FindOp(stInequal),
 					Arguments: []STExpression{
 						STExpressionValue{"5"},
 						STExpressionValue{"i"},
@@ -665,16 +665,16 @@ var stTestCases = []stTestCase{
 				},
 				Sequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp("print<1>"),
+						Operator: FindOp("print<1>"),
 						Arguments: []STExpression{
 							STExpressionValue{"i"},
 						},
 					},
 					STExpressionOperator{
-						Operator: findOp(stAssignment),
+						Operator: FindOp(stAssignment),
 						Arguments: []STExpression{
 							STExpressionOperator{
-								Operator: findOp(stSubtract),
+								Operator: FindOp(stSubtract),
 								Arguments: []STExpression{
 									STExpressionValue{"1"},
 									STExpressionValue{"i"},
@@ -703,14 +703,14 @@ var stTestCases = []stTestCase{
 			STRepeatLoop{
 				Sequence: []STInstruction{
 					STExpressionOperator{
-						Operator: findOp("printf<2>"),
+						Operator: FindOp("printf<2>"),
 						Arguments: []STExpression{
 							STExpressionValue{"\"%d\n\""},
 							STExpressionValue{"i"},
 						},
 					},
 					STExpressionOperator{
-						Operator: findOp(stExit),
+						Operator: FindOp(stExit),
 					},
 				},
 			},
@@ -730,7 +730,7 @@ var stTestCases = []stTestCase{
 				IfThens: []STIfThen{
 					{
 						IfExpression: STExpressionOperator{
-							Operator: findOp(stGreaterThan),
+							Operator: FindOp(stGreaterThan),
 							Arguments: []STExpression{
 								STExpressionValue{"5"},
 								STExpressionValue{"y"},
@@ -738,7 +738,7 @@ var stTestCases = []stTestCase{
 						},
 						ThenSequence: []STInstruction{
 							STExpressionOperator{
-								Operator: findOp(stAssignment),
+								Operator: FindOp(stAssignment),
 								Arguments: []STExpression{
 									STExpressionValue{"x"},
 									STExpressionValue{"y"},

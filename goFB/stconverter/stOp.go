@@ -58,7 +58,8 @@ var stOps = []postfix.Operator{
 	stOp{stAssignment, 6, 2, postfix.AssociationLeft},
 }
 
-func findOp(op string) postfix.Operator {
+//FindOp finds a given operator for a given token
+func FindOp(op string) postfix.Operator {
 	for i := 0; i < len(stOps); i++ {
 		if stOps[i].GetToken() == op {
 			return stOps[i]

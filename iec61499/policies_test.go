@@ -2,7 +2,7 @@ package iec61499
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"reflect"
 	"testing"
 
 	"github.com/PRETgroup/goFB/goFB/stconverter"
@@ -34,8 +34,24 @@ var aeiFB = *Must(
 
 // }
 
-func TestTraverse(t *testing.T) {
+func TestTraverse1(t *testing.T) {
 	guard, err := FBECCGuardToSTExpression("test 1", "a and (b or c)")
+	testOut := []stconverter.STExpression{
+		stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp("and"),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "c"},
+				stconverter.STExpressionValue{Value: "a"},
+			},
+		},
+		stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp("and"),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "b"},
+				stconverter.STExpressionValue{Value: "a"},
+			},
+		},
+	}
 	if err != nil {
 		t.Fatalf("Got an error and shouldn't have: %v", err.Error())
 	}
@@ -44,6 +60,106 @@ func TestTraverse(t *testing.T) {
 		t.Fatalf("Got an error and shouldn't have: couldn't cast expression")
 	}
 	rets := traverse(stconverter.STExpression(expr))
-	bytes, _ := json.MarshalIndent(rets, "", "\t")
-	ioutil.WriteFile("test_guard.out.json", bytes, 0644)
+
+	if !reflect.DeepEqual(rets, testOut) {
+		expected, _ := json.MarshalIndent(testOut, "\t", "\t")
+		received, _ := json.MarshalIndent(rets, "\t", "\t")
+		t.Errorf("Test PARSING FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", expected, received)
+	}
+}
+
+func TestTraverse2(t *testing.T) {
+	guard, err := FBECCGuardToSTExpression("test 1", "(a or c) and (b or d)")
+	var testOut []stconverter.STExpression
+	testOut = []stconverter.STExpression{
+		stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp("and"),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "d"},
+				stconverter.STExpressionValue{Value: "c"},
+			},
+		},
+		stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp("and"),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "d"},
+				stconverter.STExpressionValue{Value: "a"},
+			},
+		},
+		stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp("and"),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "b"},
+				stconverter.STExpressionValue{Value: "c"},
+			},
+		},
+		stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp("and"),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "b"},
+				stconverter.STExpressionValue{Value: "a"},
+			},
+		},
+	}
+	if err != nil {
+		t.Fatalf("Got an error and shouldn't have: %v", err.Error())
+	}
+	expr, ok := guard[0].(stconverter.STExpression)
+	if !ok {
+		t.Fatalf("Got an error and shouldn't have: couldn't cast expression")
+	}
+	rets := traverse(stconverter.STExpression(expr))
+
+	if !reflect.DeepEqual(rets, testOut) {
+		expected, _ := json.MarshalIndent(testOut, "\t", "\t")
+		received, _ := json.MarshalIndent(rets, "\t", "\t")
+		t.Errorf("Test PARSING FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", expected, received)
+	}
+}
+
+func TestTraverse3(t *testing.T) {
+	guard, err := FBECCGuardToSTExpression("test 1", "a and c and (b or d)")
+	var testOut []stconverter.STExpression
+	testOut = []stconverter.STExpression{
+		stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp("and"),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "d"},
+				stconverter.STExpressionOperator{
+					Operator: stconverter.FindOp("and"),
+					Arguments: []stconverter.STExpression{
+						stconverter.STExpressionValue{Value: "c"},
+						stconverter.STExpressionValue{Value: "a"},
+					},
+				},
+			},
+		},
+		stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp("and"),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "b"},
+				stconverter.STExpressionOperator{
+					Operator: stconverter.FindOp("and"),
+					Arguments: []stconverter.STExpression{
+						stconverter.STExpressionValue{Value: "c"},
+						stconverter.STExpressionValue{Value: "a"},
+					},
+				},
+			},
+		},
+	}
+	if err != nil {
+		t.Fatalf("Got an error and shouldn't have: %v", err.Error())
+	}
+	expr, ok := guard[0].(stconverter.STExpression)
+	if !ok {
+		t.Fatalf("Got an error and shouldn't have: couldn't cast expression")
+	}
+	rets := traverse(stconverter.STExpression(expr))
+
+	if !reflect.DeepEqual(rets, testOut) {
+		expected, _ := json.MarshalIndent(testOut, "\t", "\t")
+		received, _ := json.MarshalIndent(rets, "\t", "\t")
+		t.Errorf("Test PARSING FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", expected, received)
+	}
 }
