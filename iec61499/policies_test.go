@@ -2,7 +2,6 @@ package iec61499
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -22,21 +21,21 @@ var aeiFB = *Must(
 	AddPFBTransition("s2", "s1", "( AS or AP )", nil, d).
 	AddPFBTransition("s2", "violation", "( tAEI > AEI_ns )", nil, d)
 
-func TestPoliciesSTGuards(t *testing.T) {
-	stGuards, err := aeiFB.Policies[0].GetPFBSTTransitions()
-	if err != nil {
-		t.Fatalf("Got an error and shouldn't have: %v", err.Error())
-	}
-	for i, g := range stGuards {
-		rets := traverse(g.STGuard)
-		bytes, _ := json.MarshalIndent(rets, "", "\t")
-		ioutil.WriteFile(fmt.Sprintf("test_actual.%v.out.json", i), bytes, 0644)
-	}
+// func TestPoliciesSTGuards(t *testing.T) {
+// 	stGuards, err := aeiFB.Policies[0].GetPFBSTTransitions()
+// 	if err != nil {
+// 		t.Fatalf("Got an error and shouldn't have: %v", err.Error())
+// 	}
+// 	for i, g := range stGuards {
+// 		rets := traverse(g.STGuard)
+// 		bytes, _ := json.MarshalIndent(rets, "", "\t")
+// 		ioutil.WriteFile(fmt.Sprintf("test_actual.%v.out.json", i), bytes, 0644)
+// 	}
 
-}
+// }
 
 func TestTraverse(t *testing.T) {
-	guard, err := FBECCGuardToSTExpression("test 1", "(a or b) and (c or d)")
+	guard, err := FBECCGuardToSTExpression("test 1", "a and (b or c)")
 	if err != nil {
 		t.Fatalf("Got an error and shouldn't have: %v", err.Error())
 	}

@@ -1,6 +1,7 @@
 package iec61499
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/PRETgroup/goFB/goFB/stconverter"
@@ -131,6 +132,8 @@ func traverse(expr stconverter.STExpression) []stconverter.STExpression {
 			fmt.Printf("at:%v, i:%v, len(rets):%v\n", at, i, len(rets))
 			fmt.Printf("appending %v\n", at)
 			rets[j].Arguments[i] = at
+			bytes, _ := json.MarshalIndent(rets, "", "\t")
+			fmt.Printf("%s", bytes)
 			c++
 		}
 		//fill in any remaining spaces with the first element of argT
