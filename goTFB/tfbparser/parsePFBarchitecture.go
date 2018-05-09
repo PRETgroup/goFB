@@ -194,13 +194,13 @@ func (t *tfbParse) parsePFBState(fbIndex int) *ParseError {
 						return t.error(ErrUnexpectedEOF)
 					}
 
-					//if any condComponent is "and" then turn it into &&
-					if s == "and" {
-						s = "&&"
+					//if any condComponent is "&&" then turn it into and
+					if s == "&&" {
+						s = "and"
 					}
-					//if any condComponint is "or" then turn it into ||
-					if s == "or" {
-						s = "||"
+					//if any condComponint is "||" then turn it into or
+					if s == "||" {
+						s = "or"
 					}
 					condComponents = append(condComponents, s)
 

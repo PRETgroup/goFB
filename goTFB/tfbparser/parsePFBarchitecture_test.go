@@ -58,8 +58,8 @@ var efbArchitectureTests = []ParseTest{
 				AddPFBState("s1", d).
 				AddPFBState("s2", d).
 				AddPFBDataInternals([]string{"tAEI"}, "DTIMER", "", "", d).
-				AddPFBTransition("s1", "s2", "( VS || VP )", []iec61499.PFBExpression{{VarName: "tAEI", Value: "0"}}, d).
-				AddPFBTransition("s2", "s1", "( AS || AP )", nil, d).
+				AddPFBTransition("s1", "s2", "( VS or VP )", []iec61499.PFBExpression{{VarName: "tAEI", Value: "0"}}, d).
+				AddPFBTransition("s2", "s1", "( AS or AP )", nil, d).
 				AddPFBTransition("s2", "violation", "( tAEI > AEI_ns )", nil, d),
 		},
 	},

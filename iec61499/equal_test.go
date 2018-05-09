@@ -1,9 +1,16 @@
 package iec61499
 
-import "testing"
+import (
+	"encoding/xml"
+	"testing"
+)
 
 var testBfb = FB{
 	Name: "testingFB",
+	XMLName: xml.Name{
+		Space: "",
+		Local: "FBType",
+	},
 	Identification: Identification{
 		Standard: "61499-2",
 	},
@@ -30,7 +37,7 @@ var testBfb = FB{
 	InputVars: []Variable{
 		{
 			Name:         "inDat1",
-			Type:         "bool",
+			Type:         "BOOL",
 			ArraySize:    "2",
 			InitialValue: "[0,0]",
 		},
@@ -38,7 +45,7 @@ var testBfb = FB{
 	OutputVars: []Variable{
 		{
 			Name:         "outDat1",
-			Type:         "bool",
+			Type:         "BOOL",
 			ArraySize:    "2",
 			InitialValue: "[0,0]",
 		},
@@ -47,7 +54,7 @@ var testBfb = FB{
 		InternalVars: []Variable{
 			{
 				Name:         "inVar1",
-				Type:         "bool",
+				Type:         "BOOL",
 				ArraySize:    "2",
 				InitialValue: "[0,0]",
 			},
