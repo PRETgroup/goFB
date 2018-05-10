@@ -133,6 +133,9 @@ var (
 		"parseOdeRunAlgo":         parseOdeRunAlgo,
 		"fixOdeVarNameInF":        fixOdeVarNameInF,
 
+		//policies functions
+		"getPolicyEnfInfo": getPolicyEnfInfo,
+
 		"div":   div,
 		"add":   add,
 		"mod":   mod,

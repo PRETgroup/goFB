@@ -83,7 +83,11 @@ void AB5Policy_run(AB5Policy_t  *me) {
 	
 	
 	
-//input policies
+	//input policies
+	
+	//{{[{A  [] {0 }}] [{B  [] {0 }}] [] []} AB5 {[{v dtimer    {0 }}] [{s0 {0 }} {s1 {0 }}] [{{{s0 s0 not (A) and not (B)   {0 }} [{v 0}]} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {{not 0 1 1} [{B}]}]}} {{{s0 s1 A and not (B)   {0 }} [{v 0}]} {{and 5 2 -1} [{A} {{not 0 1 1} [{B}]}]}} {{{s0 violation not (A) and B   {0 }} []} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {B}]}} {{{s0 violation A and B   {0 }} []} {{and 5 2 -1} [{A} {B}]}} {{{s1 s1 not (A) and not (B) and v < 5   {0 }} []} {{and 5 2 -1} [{{and 5 2 -1} [{{not 0 1 1} [{A}]} {{not 0 1 1} [{B}]}]} {{< 4 2 -1} [{v} {5}]}]}} {{{s1 s0 not (A) and B   {0 }} []} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {B}]}} {{{s1 violation v >= 5   {0 }} []} {{>= 4 2 -1} [{v} {5}]}} {{{s1 violation A and B   {0 }} []} {{and 5 2 -1} [{A} {B}]}} {{{s1 violation A and not (B)   {0 }} []} {{and 5 2 -1} [{A} {{not 0 1 1} [{B}]}]}}]} {[{v dtimer    {0 }}] [{s0 {0 }} {s1 {0 }}] [{{{s0 s0 not (A)   {0 }} [{v 0}]} {{not 0 1 1} [{A}]}} {{{s0 s1 A   {0 }} [{v 0}]} {A}} {{{s0 violation not (A)   {0 }} []} {{not 0 1 1} [{A}]}} {{{s0 violation A   {0 }} []} {A}} {{{s1 s1 5 < v and not (A)   {0 }} []} {{and 5 2 -1} [{{< 4 2 -1} [{5} {v}]} {{not 0 1 1} [{A}]}]}} {{{s1 s0 not (A)   {0 }} []} {{not 0 1 1} [{A}]}} {{{s1 violation 5 >= v   {0 }} []} {{>= 4 2 -1} [{5} {v}]}} {{{s1 violation A   {0 }} []} {A}}]}}
+	
+	
 
 
 	

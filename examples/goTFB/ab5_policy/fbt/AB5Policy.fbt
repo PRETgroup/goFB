@@ -30,22 +30,22 @@
 			<ECState>
 				<Name>s1</Name>
 			</ECState>
-			<ECTransition Source="s0" Destination="s0" Condition="( ! A &amp;&amp; ! B )" x="" y="">
+			<ECTransition Source="s0" Destination="s0" Condition="( !A and !B )" x="" y="">
 				<Expressions>
 					<VarName>v</VarName>
 					<Value>0</Value>
 				</Expressions>
 			</ECTransition>
-			<ECTransition Source="s0" Destination="s1" Condition="( A &amp;&amp; ! B )" x="" y="">
+			<ECTransition Source="s0" Destination="s1" Condition="( A and !B )" x="" y="">
 				<Expressions>
 					<VarName>v</VarName>
 					<Value>0</Value>
 				</Expressions>
 			</ECTransition>
-			<ECTransition Source="s0" Destination="violation" Condition="( ( ! A &amp;&amp; B ) || ( A &amp;&amp; B ) )" x="" y=""></ECTransition>
-			<ECTransition Source="s1" Destination="s1" Condition="( ! A &amp;&amp; ! B &amp;&amp; v &lt; 5 )" x="" y=""></ECTransition>
-			<ECTransition Source="s1" Destination="s0" Condition="( ! A &amp;&amp; B )" x="" y=""></ECTransition>
-			<ECTransition Source="s1" Destination="violation" Condition="( ( v &gt; = 5 ) || ( A &amp;&amp; B ) || ( A &amp;&amp; ! B ) )" x="" y=""></ECTransition>
+			<ECTransition Source="s0" Destination="violation" Condition="( ( !A and B ) or ( A and B ) )" x="" y=""></ECTransition>
+			<ECTransition Source="s1" Destination="s1" Condition="( !A and !B and v &lt; 5 )" x="" y=""></ECTransition>
+			<ECTransition Source="s1" Destination="s0" Condition="( !A and B )" x="" y=""></ECTransition>
+			<ECTransition Source="s1" Destination="violation" Condition="( ( v &gt;= 5 ) or ( A and B ) or ( A and !B ) )" x="" y=""></ECTransition>
 		</ECC>
 	</Policies>
 </FBType>

@@ -439,3 +439,12 @@ func instIDToName(instanceID int, instG []InstanceNode) string {
 
 	return name
 }
+
+//getPolicyEnfInfo will get a PFBEnforcer for a given policy
+func getPolicyEnfInfo(block iec61499.FB, policyIndex int) *iec61499.PFBEnforcer {
+	enfPol, err := iec61499.MakePFBEnforcer(block.InterfaceList, block.Policies[policyIndex])
+	if err != nil {
+		return nil
+	}
+	return enfPol
+}

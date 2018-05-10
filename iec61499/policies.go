@@ -116,18 +116,6 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 	op := expr.HasOperator()
 	if op == nil { //if it's just a value, return if that value
 		if il.HasOutput(expr.HasValue()) {
-			// return stconverter.STExpressionOperator{
-			// 	Operator: stconverter.FindOp("or"),
-			// 	Arguments: []stconverter.STExpression{
-			// 		stconverter.STExpressionOperator{
-			// 			Operator: stconverter.FindOp("not"),
-			// 			Arguments: []stconverter.STExpression{
-			// 				stconverter.STExpressionValue{Value: "true"},
-			// 			},
-			// 		},
-			// 		stconverter.STExpressionValue{Value: "true"},
-			// 	},
-			// }
 			return nil
 		}
 		return expr
@@ -137,13 +125,17 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 	acceptableArgIs := make([]bool, 0)
 	numAcceptable := 0
 	acceptableArgs := make([]stconverter.STExpression, 0)
+	//for each argument, we want to check if it is "acceptable", which here means
+	//"is not a value that is an output var"
+	//and
+	//"if it is an operator, convert it via this function, and see if it is acceptable"
 	for i := 0; i < len(args); i++ {
 		arg := args[i]
 		argOp := arg.HasOperator()
 
 		if argOp == nil {
+			//it is a value, see if it is acceptable
 			if il.HasOutput(arg.HasValue()) {
-				//this is an output, so this whole expression is ruined
 				acceptableArgIs = append(acceptableArgIs, false)
 				acceptableArgs = append(acceptableArgs, nil)
 			} else {
@@ -153,7 +145,7 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 			}
 			continue
 		} else {
-
+			//it is an operator, run the operator through this function and see if it is acceptable
 			convArg := ConvertSTExpressionForInputPolicy(il, args[i])
 			if convArg != nil {
 				acceptableArgIs = append(acceptableArgIs, true)
@@ -166,8 +158,12 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 		}
 	}
 
+	//now we need to come up with a new STExpression to represent this expression and its arguments
+
 	if numAcceptable < len(args) {
-		//if only one argument is acceptable it is easy
+		//if less than the total args are acceptable, and only one argument is acceptable, then it is easy,
+		//we can just return that one argument as an independent value
+		//e.g. "(a and b)" becomes "a"
 		if numAcceptable == 1 {
 			for i := 0; i < len(acceptableArgIs); i++ {
 				if acceptableArgIs[i] == true {
@@ -177,11 +173,13 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 		}
 	}
 	if numAcceptable == 0 {
-		//if nothing is acceptable it is easy
+		//if nothing at all is acceptable then it is easy, we just return nil
 		return nil
 	}
 
-	//make a best-effort
+	//if we are still here, then it means that there is no easy answer, so we'll just make a new
+	//STExpressionOperator, which has the same operator as we're currently examining
+	//then, all unacceptable (i.e. nil) arguments should be replaced with simple value "true"
 	actualArgs := make([]stconverter.STExpression, len(acceptableArgs))
 	for i := 0; i < len(actualArgs); i++ {
 		if acceptableArgs[i] != nil {
@@ -196,13 +194,7 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 		Arguments: actualArgs,
 	}
 
-	fmt.Printf("Best effort: %v, numAcceptable:%v\r\n", ret, numAcceptable)
-
 	return ret
-
-	//retArgs := make
-	//for
-
 }
 
 //GetPFBSTTransitions will convert all internal PFBTransitions into PFBSTTransitions (i.e. PFBTransitions with a ST symbolic tree condition)
