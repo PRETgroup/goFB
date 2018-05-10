@@ -48,6 +48,21 @@ type InterfaceList struct {
 	OutputVars   []Variable `xml:"InterfaceList>OutputVars>VarDeclaration,omitempty"`
 }
 
+//HasOutput will check a given InterfaceList to see if it has an output of that name
+func (il InterfaceList) HasOutput(s string) bool {
+	for i := 0; i < len(il.EventOutputs); i++ {
+		if il.EventOutputs[i].Name == s {
+			return true
+		}
+	}
+	for i := 0; i < len(il.OutputVars); i++ {
+		if il.OutputVars[i].Name == s {
+			return true
+		}
+	}
+	return false
+}
+
 //IsSIFB returns true if the FB is an interface only (i.e. is a SIFB)
 func (f FB) IsSIFB() bool {
 	if f.BasicFB == nil && f.CompositeFB == nil && len(f.ResourceVars) == 0 && len(f.Resources) == 0 {

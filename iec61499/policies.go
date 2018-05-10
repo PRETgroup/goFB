@@ -28,28 +28,102 @@ type PFBEnforcerPolicy struct {
 type PFBEnforcer struct {
 	interfaceList InterfaceList
 	Name          string
-	OutputPolicy  PFBEnforcerPolicy
-	InputPolicy   PFBEnforcerPolicy
+	Policy        PFBEnforcerPolicy
 }
 
 //MakePFBEnforcer will convert a given policy to an enforcer for that policy
-func MakePFBEnforcer(i InterfaceList, p PolicyFB) (*PFBEnforcer, error) {
+func MakePFBEnforcer(il InterfaceList, p PolicyFB) (*PFBEnforcer, error) {
 	//make the enforcer
-	enf := &PFBEnforcer{interfaceList: i, Name: p.Name}
+	enf := &PFBEnforcer{interfaceList: il, Name: p.Name}
 	//first, convert policy transitions
 	outpTr, err := p.GetPFBSTTransitions()
 	if err != nil {
 		return nil, err
 	}
 	splOutpTr := SplitPFBSTTransitions(outpTr)
-	enf.OutputPolicy = PFBEnforcerPolicy{
+	enf.Policy = PFBEnforcerPolicy{
 		InternalVars: p.InternalVars,
 		States:       p.States,
 		Transitions:  splOutpTr,
 	}
+	//enf.InputPolicy = DeriveInputEnforcerPolicy(il, enf.OutputPolicy)
 
 	return enf, nil
 }
+
+/*//DeriveInputEnforcerPolicy will derive an Input Policy from a given Output Policy
+func DeriveInputEnforcerPolicy(il InterfaceList, outPol PFBEnforcerPolicy) PFBEnforcerPolicy {
+	inpEnf := PFBEnforcerPolicy{
+		InternalVars: outPol.InternalVars,
+		States:       outPol.States,
+	}
+
+	for i := 0; i < len(outPol.Transitions); i++ {
+		inpEnf.Transitions = append(inpEnf.Transitions, ConvertPFBSTTransitionForInputPolicy(il, outPol.Transitions[i]))
+	}
+
+	return inpEnf
+}
+
+//ConvertPFBSTTransitionForInputPolicy will convert a single PFBSTTransition from an Output Policy to its Input Policy Deriviation
+func ConvertPFBSTTransitionForInputPolicy(il InterfaceList, outpTrans PFBSTTransition) PFBSTTransition {
+	retSTGuard := ConvertSTExpressionForInputPolicy(il, outpTrans.STGuard)
+	retTrans := outpTrans
+	retTrans.STGuard = retSTGuard
+	retTrans.Condition = stconverter.STCompileExpression(retSTGuard)
+	return retTrans
+}
+
+//ConvertSTExpressionForInputPolicy will convert a single STExpression from an Output Policy transition guard to its Input Policy transition guard's Deriviation
+//a == input
+//b == output
+//"a" becomes "a"
+//"b" becomes "true" (technically becomes "true or not true")
+//"a and b" becomes "a"
+//"func(a, b)" becomes "func(a, true)"
+//"!b" becomes "true" (technically becomes "not(true or not true)")
+func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpression) stconverter.STExpression {
+	//options
+	//1. It is just a value
+	//	  --if input or value, return
+	//    --if output, return true
+	//2. It is an operator
+	//    Foreach arg
+	//	      If arg
+
+	op := expr.HasOperator()
+	if op == nil { //if it's just a value, return if that value
+		if il.HasOutput(expr.HasValue()) {
+			return stconverter.STExpressionOperator{
+				Operator: stconverter.FindOp("or"),
+				Arguments: []stconverter.STExpression{
+					stconverter.STExpressionOperator{
+						Operator: stconverter.FindOp("not"),
+						Arguments: []stconverter.STExpression{
+							stconverter.STExpressionValue{Value: "true"},
+						},
+					},
+					stconverter.STExpressionValue{Value: "true"},
+				},
+			}
+		}
+		return expr
+	}
+
+	args := expr.GetArguments()
+	for i := 0; i < len(args); i++ {
+		args[i] = ConvertSTExpressionForInputPolicy(il, args[i])
+	}
+
+	return stconverter.STExpressionOperator{
+		Operator:  op,
+		Arguments: args,
+	}
+
+	//retArgs := make
+	//for
+
+}*/
 
 //GetPFBSTTransitions will convert all internal PFBTransitions into PFBSTTransitions (i.e. PFBTransitions with a ST symbolic tree condition)
 func (p *PolicyFB) GetPFBSTTransitions() ([]PFBSTTransition, error) {

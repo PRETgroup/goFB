@@ -17,6 +17,7 @@ var stTemplateFuncMap = template.FuncMap{
 	"translateOperatorToken": stTranslateOperatorToken,
 	"tokenIsFunctionCall":    stTokenIsFunctionCall,
 	//	"compileSequence":        STCompileSequence,
+	"gte":         gte,
 	"isKnownVar":  isKnownVar,
 	"reverseArgs": reverseArgs,
 }
@@ -37,6 +38,10 @@ func panicOnErr(err error) {
 func init() {
 	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).Parse(cTemplate))
 	stTemplates = template.Must(template.New("").Funcs(stTemplateFuncMap).Parse(stTemplate))
+}
+
+func gte(a, b int) bool {
+	return a >= b
 }
 
 //SetKnownVarNames sets the names of known variables for the compiler
