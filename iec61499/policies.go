@@ -2,6 +2,7 @@ package iec61499
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/PRETgroup/goFB/goFB/stconverter"
 )
@@ -28,7 +29,8 @@ type PFBEnforcerPolicy struct {
 type PFBEnforcer struct {
 	interfaceList InterfaceList
 	Name          string
-	Policy        PFBEnforcerPolicy
+	OutputPolicy  PFBEnforcerPolicy
+	InputPolicy   PFBEnforcerPolicy
 }
 
 //MakePFBEnforcer will convert a given policy to an enforcer for that policy
@@ -41,17 +43,33 @@ func MakePFBEnforcer(il InterfaceList, p PolicyFB) (*PFBEnforcer, error) {
 		return nil, err
 	}
 	splOutpTr := SplitPFBSTTransitions(outpTr)
-	enf.Policy = PFBEnforcerPolicy{
+	enf.OutputPolicy = PFBEnforcerPolicy{
 		InternalVars: p.InternalVars,
 		States:       p.States,
 		Transitions:  splOutpTr,
 	}
-	//enf.InputPolicy = DeriveInputEnforcerPolicy(il, enf.OutputPolicy)
+	enf.OutputPolicy.RemoveDuplicateTransitions()
+
+	enf.InputPolicy = DeriveInputEnforcerPolicy(il, enf.OutputPolicy)
+	enf.InputPolicy.RemoveDuplicateTransitions()
 
 	return enf, nil
 }
 
-/*//DeriveInputEnforcerPolicy will derive an Input Policy from a given Output Policy
+//RemoveDuplicateTransitions will do a search through a policies transitions and remove any that are simple duplicates
+//(i.e. every field the same and in the same order).
+func (pol *PFBEnforcerPolicy) RemoveDuplicateTransitions() {
+	for i := 0; i < len(pol.Transitions); i++ {
+		for j := i + 1; j < len(pol.Transitions); j++ {
+			if reflect.DeepEqual(pol.Transitions[i], pol.Transitions[j]) {
+				pol.Transitions = append(pol.Transitions[:j], pol.Transitions[j+1:]...)
+				j--
+			}
+		}
+	}
+}
+
+//DeriveInputEnforcerPolicy will derive an Input Policy from a given Output Policy
 func DeriveInputEnforcerPolicy(il InterfaceList, outPol PFBEnforcerPolicy) PFBEnforcerPolicy {
 	inpEnf := PFBEnforcerPolicy{
 		InternalVars: outPol.InternalVars,
@@ -91,39 +109,101 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 	//    Foreach arg
 	//	      If arg
 
+	//consider not(b)
+	//op == not, args == []{b}
+	//should return "true"
+
 	op := expr.HasOperator()
 	if op == nil { //if it's just a value, return if that value
 		if il.HasOutput(expr.HasValue()) {
-			return stconverter.STExpressionOperator{
-				Operator: stconverter.FindOp("or"),
-				Arguments: []stconverter.STExpression{
-					stconverter.STExpressionOperator{
-						Operator: stconverter.FindOp("not"),
-						Arguments: []stconverter.STExpression{
-							stconverter.STExpressionValue{Value: "true"},
-						},
-					},
-					stconverter.STExpressionValue{Value: "true"},
-				},
-			}
+			// return stconverter.STExpressionOperator{
+			// 	Operator: stconverter.FindOp("or"),
+			// 	Arguments: []stconverter.STExpression{
+			// 		stconverter.STExpressionOperator{
+			// 			Operator: stconverter.FindOp("not"),
+			// 			Arguments: []stconverter.STExpression{
+			// 				stconverter.STExpressionValue{Value: "true"},
+			// 			},
+			// 		},
+			// 		stconverter.STExpressionValue{Value: "true"},
+			// 	},
+			// }
+			return nil
 		}
 		return expr
 	}
 
 	args := expr.GetArguments()
+	acceptableArgIs := make([]bool, 0)
+	numAcceptable := 0
+	acceptableArgs := make([]stconverter.STExpression, 0)
 	for i := 0; i < len(args); i++ {
-		args[i] = ConvertSTExpressionForInputPolicy(il, args[i])
+		arg := args[i]
+		argOp := arg.HasOperator()
+
+		if argOp == nil {
+			if il.HasOutput(arg.HasValue()) {
+				//this is an output, so this whole expression is ruined
+				acceptableArgIs = append(acceptableArgIs, false)
+				acceptableArgs = append(acceptableArgs, nil)
+			} else {
+				acceptableArgIs = append(acceptableArgIs, true)
+				acceptableArgs = append(acceptableArgs, arg)
+				numAcceptable++
+			}
+			continue
+		} else {
+
+			convArg := ConvertSTExpressionForInputPolicy(il, args[i])
+			if convArg != nil {
+				acceptableArgIs = append(acceptableArgIs, true)
+				acceptableArgs = append(acceptableArgs, convArg)
+				numAcceptable++
+			} else {
+				acceptableArgIs = append(acceptableArgIs, false)
+				acceptableArgs = append(acceptableArgs, nil)
+			}
+		}
 	}
 
-	return stconverter.STExpressionOperator{
-		Operator:  op,
-		Arguments: args,
+	if numAcceptable < len(args) {
+		//if only one argument is acceptable it is easy
+		if numAcceptable == 1 {
+			for i := 0; i < len(acceptableArgIs); i++ {
+				if acceptableArgIs[i] == true {
+					return acceptableArgs[i]
+				}
+			}
+		}
 	}
+	if numAcceptable == 0 {
+		//if nothing is acceptable it is easy
+		return nil
+	}
+
+	//make a best-effort
+	actualArgs := make([]stconverter.STExpression, len(acceptableArgs))
+	for i := 0; i < len(actualArgs); i++ {
+		if acceptableArgs[i] != nil {
+			actualArgs[i] = acceptableArgs[i]
+		} else {
+			actualArgs[i] = stconverter.STExpressionValue{Value: "true"}
+		}
+	}
+
+	ret := stconverter.STExpressionOperator{
+		Operator:  op,
+		Arguments: actualArgs,
+	}
+
+	fmt.Printf("Best effort: %v, numAcceptable:%v\r\n", ret, numAcceptable)
+
+	return ret
 
 	//retArgs := make
 	//for
 
-}*/
+}
 
 //GetPFBSTTransitions will convert all internal PFBTransitions into PFBSTTransitions (i.e. PFBTransitions with a ST symbolic tree condition)
 func (p *PolicyFB) GetPFBSTTransitions() ([]PFBSTTransition, error) {
