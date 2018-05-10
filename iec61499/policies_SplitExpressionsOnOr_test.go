@@ -34,7 +34,7 @@ var aeiFB = *Must(
 
 // }
 
-func TestTraverse1(t *testing.T) {
+func TestSplitExpressionsOnOr1(t *testing.T) {
 	guard, err := FBECCGuardToSTExpression("test 1", "a and (b or c)")
 	testOut := []stconverter.STExpression{
 		stconverter.STExpressionOperator{
@@ -68,7 +68,7 @@ func TestTraverse1(t *testing.T) {
 	}
 }
 
-func TestTraverse2(t *testing.T) {
+func TestSplitExpressionsOnOr2(t *testing.T) {
 	guard, err := FBECCGuardToSTExpression("test 1", "(a or c) and (b or d)")
 	var testOut []stconverter.STExpression
 	testOut = []stconverter.STExpression{
@@ -117,7 +117,7 @@ func TestTraverse2(t *testing.T) {
 	}
 }
 
-func TestTraverse3(t *testing.T) {
+func TestSplitExpressionsOnOr3(t *testing.T) {
 	guard, err := FBECCGuardToSTExpression("test 1", "a and c and (b or d)")
 	var testOut []stconverter.STExpression
 	testOut = []stconverter.STExpression{
@@ -164,7 +164,7 @@ func TestTraverse3(t *testing.T) {
 	}
 }
 
-func TestTraverse4(t *testing.T) {
+func TestSplitExpressionsOnOr4(t *testing.T) {
 	guard, err := FBECCGuardToSTExpression("test 1", "a or b or c or d")
 	var testOut []stconverter.STExpression
 	testOut = []stconverter.STExpression{
@@ -218,7 +218,7 @@ func TestTraverse5(t *testing.T) {
 	}
 }
 
-func TestTraverse6(t *testing.T) {
+func TestSplitExpressionsOnOr6(t *testing.T) {
 	guard, err := FBECCGuardToSTExpression("test 1", "(a or b) and (c or d) and (e or f or g)")
 	var testOut []stconverter.STExpression
 	testOut = []stconverter.STExpression{
@@ -395,7 +395,7 @@ func TestTraverse6(t *testing.T) {
 	}
 }
 
-func TestTraverse7(t *testing.T) {
+func TestSplitExpressionsOnOr7(t *testing.T) {
 	guard, err := FBECCGuardToSTExpression("test 1", "a and (b or c or d)")
 	var testOut []stconverter.STExpression
 	testOut = []stconverter.STExpression{
