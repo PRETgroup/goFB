@@ -13,8 +13,17 @@ var cTemplateFuncMap = template.FuncMap{
 	"reverseArgs":            reverseArgs,
 }
 
+var stTemplateFuncMap = template.FuncMap{
+	"translateOperatorToken": stTranslateOperatorToken,
+	"tokenIsFunctionCall":    stTokenIsFunctionCall,
+	//	"compileSequence":        STCompileSequence,
+	"isKnownVar":  isKnownVar,
+	"reverseArgs": reverseArgs,
+}
+
 var (
 	cTemplates    *template.Template
+	stTemplates   *template.Template
 	knownVarNames []string
 )
 
@@ -27,6 +36,7 @@ func panicOnErr(err error) {
 //init runs to initialise the package
 func init() {
 	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).Parse(cTemplate))
+	stTemplates = template.Must(template.New("").Funcs(stTemplateFuncMap).Parse(stTemplate))
 }
 
 //SetKnownVarNames sets the names of known variables for the compiler
@@ -81,6 +91,15 @@ func CCompileSequence(sequence []STInstruction) string {
 func CCompileExpression(expr STExpression) string {
 	output := &bytes.Buffer{}
 	panicOnErr(cTemplates.ExecuteTemplate(output, "expression", expr))
+
+	return output.String()
+}
+
+//STCompileExpression will compile an STExpression to its equivalent C codes using the
+//	c templates stored in cTemplates
+func STCompileExpression(expr STExpression) string {
+	output := &bytes.Buffer{}
+	panicOnErr(stTemplates.ExecuteTemplate(output, "expression", expr))
 
 	return output.String()
 }

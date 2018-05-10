@@ -17,8 +17,41 @@ type PFBSTTransition struct {
 	STGuard stconverter.STExpression
 }
 
-//GetPFBSTTransitions will scan a PolicyFB for violation transitions where the guard has multiple clauses separated by ORs
-//Where found, it will break them into two transitions
+//A PFBEnforcerPolicy is what goes inside a PFBEnforcer, it is derived from a Policy
+type PFBEnforcerPolicy struct {
+	InternalVars []Variable
+	States       []PFBState
+	Transitions  []PFBSTTransition
+}
+
+//A PFBEnforcer will store a given input and output policy and can derive the enforcers required to uphold them
+type PFBEnforcer struct {
+	interfaceList InterfaceList
+	Name          string
+	OutputPolicy  PFBEnforcerPolicy
+	InputPolicy   PFBEnforcerPolicy
+}
+
+//MakePFBEnforcer will convert a given policy to an enforcer for that policy
+func MakePFBEnforcer(i InterfaceList, p PolicyFB) (*PFBEnforcer, error) {
+	//make the enforcer
+	enf := &PFBEnforcer{interfaceList: i, Name: p.Name}
+	//first, convert policy transitions
+	outpTr, err := p.GetPFBSTTransitions()
+	if err != nil {
+		return nil, err
+	}
+	splOutpTr := SplitPFBSTTransitions(outpTr)
+	enf.OutputPolicy = PFBEnforcerPolicy{
+		InternalVars: p.InternalVars,
+		States:       p.States,
+		Transitions:  splOutpTr,
+	}
+
+	return enf, nil
+}
+
+//GetPFBSTTransitions will convert all internal PFBTransitions into PFBSTTransitions (i.e. PFBTransitions with a ST symbolic tree condition)
 func (p *PolicyFB) GetPFBSTTransitions() ([]PFBSTTransition, error) {
 	stTrans := make([]PFBSTTransition, len(p.Transitions))
 	for i := 0; i < len(p.Transitions); i++ {
@@ -43,37 +76,23 @@ func (p *PolicyFB) GetPFBSTTransitions() ([]PFBSTTransition, error) {
 
 //SplitPFBSTTransitions will take a slice of PFBSTTRansitions and then split transitions which have OR clauses
 //into multiple transitions
+//it relies on the SplitExpressionsOnOr function below
 func SplitPFBSTTransitions(cTrans []PFBSTTransition) []PFBSTTransition {
 	brTrans := make([]PFBSTTransition, 0)
-	//"a or (b and c)" should become "a", "(b and c)"
-	//"a and (b or c)" should become "a and b", "a and c"
-	//[and a, [or b, c]]
-	//ROOT = and
+
 	for i := 0; i < len(cTrans); i++ {
 		cTran := cTrans[i]
-		createGuards := make([]stconverter.STExpression, 0)
-		createGuards = append(createGuards, cTran.STGuard)
+		splitTrans := SplitExpressionsOnOr(cTran.STGuard)
+		for j := 0; j < len(splitTrans); j++ {
+			newTrans := PFBSTTransition{
+				PFBTransition: cTran.PFBTransition,
+			}
+			//recompile the condition
+			newTrans.PFBTransition.Condition = stconverter.STCompileExpression(splitTrans[len(splitTrans)-j-1])
+			newTrans.STGuard = splitTrans[len(splitTrans)-j-1]
 
-		// for i := 0; i < len(createGuards); i++ {
-		// 	guard := createGuards[i]
-		// 	op := guard.HasOperator()
-		// 	for {
-		// 		if op == nil {
-		// 			continue
-		// 		}
-		// 		if guard.GetArguments()
-
-		// 		if op.GetToken() == "or" { //todo: this should be const defined somewhere
-		// 			//break either side of the or
-		// 			arg1
-		// 		}
-		// 	}
-		// }
-		//
-		// for the expression
-		//	if value, done
-		//	if not or, enter the subentry
-		//	if or, break and copy
+			brTrans = append(brTrans, newTrans)
+		}
 	}
 
 	//reformat all the guards based off the transactions

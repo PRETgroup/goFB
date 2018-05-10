@@ -26,10 +26,7 @@ type FB struct {
 		Classdef string `xml:"classdef,attr"`
 	}
 	//interface
-	EventInputs  []Event    `xml:"InterfaceList>EventInputs>Event,omitempty"`
-	EventOutputs []Event    `xml:"InterfaceList>EventOutputs>Event,omitempty"`
-	InputVars    []Variable `xml:"InterfaceList>InputVars>VarDeclaration,omitempty"`
-	OutputVars   []Variable `xml:"InterfaceList>OutputVars>VarDeclaration,omitempty"`
+	InterfaceList
 
 	ResourceVars []Variable    `xml:"VarDeclaration"` //used in resource I/O
 	Resources    []FBReference `xml:"Resource"`       //used in devices
@@ -42,6 +39,13 @@ type FB struct {
 
 	NumChildren int `xml:"-"` //this is useful when using the event queue as we use it to assign unique blockInstanceIDs, it stores the recursive number of children a block has
 	DebugInfo   `xml:"-"`
+}
+
+type InterfaceList struct {
+	EventInputs  []Event    `xml:"InterfaceList>EventInputs>Event,omitempty"`
+	EventOutputs []Event    `xml:"InterfaceList>EventOutputs>Event,omitempty"`
+	InputVars    []Variable `xml:"InterfaceList>InputVars>VarDeclaration,omitempty"`
+	OutputVars   []Variable `xml:"InterfaceList>OutputVars>VarDeclaration,omitempty"`
 }
 
 //IsSIFB returns true if the FB is an interface only (i.e. is a SIFB)

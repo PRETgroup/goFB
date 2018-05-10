@@ -14,7 +14,7 @@ var testBfb = FB{
 	Identification: Identification{
 		Standard: "61499-2",
 	},
-	EventInputs: []Event{
+	InterfaceList: InterfaceList{EventInputs: []Event{
 		{
 			Name: "inEv1",
 			With: []With{
@@ -24,30 +24,31 @@ var testBfb = FB{
 			},
 		},
 	},
-	EventOutputs: []Event{
-		{
-			Name: "outEv2",
-			With: []With{
-				{
-					Var: "outDat1",
+		EventOutputs: []Event{
+			{
+				Name: "outEv2",
+				With: []With{
+					{
+						Var: "outDat1",
+					},
 				},
 			},
 		},
-	},
-	InputVars: []Variable{
-		{
-			Name:         "inDat1",
-			Type:         "BOOL",
-			ArraySize:    "2",
-			InitialValue: "[0,0]",
+		InputVars: []Variable{
+			{
+				Name:         "inDat1",
+				Type:         "BOOL",
+				ArraySize:    "2",
+				InitialValue: "[0,0]",
+			},
 		},
-	},
-	OutputVars: []Variable{
-		{
-			Name:         "outDat1",
-			Type:         "BOOL",
-			ArraySize:    "2",
-			InitialValue: "[0,0]",
+		OutputVars: []Variable{
+			{
+				Name:         "outDat1",
+				Type:         "BOOL",
+				ArraySize:    "2",
+				InitialValue: "[0,0]",
+			},
 		},
 	},
 	BasicFB: &BasicFB{

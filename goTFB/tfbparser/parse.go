@@ -132,8 +132,18 @@ func scanString(name string, input string) []string {
 			items = append(items[:i+1], items[i+2:]...)
 		}
 
-		if items[i] == "!" && items[i+1] == "=" {
-			items[i] = "!="
+		if items[i] == ">" && items[i+1] == "=" {
+			items[i] = ">="
+			items = append(items[:i+1], items[i+2:]...)
+		}
+
+		if items[i] == "<" && items[i+1] == "=" {
+			items[i] = "<="
+			items = append(items[:i+1], items[i+2:]...)
+		}
+
+		if items[i] == "!" {
+			items[i] = "!" + items[i+1]
 			items = append(items[:i+1], items[i+2:]...)
 		}
 

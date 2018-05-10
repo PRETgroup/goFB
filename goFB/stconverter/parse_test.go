@@ -61,6 +61,31 @@ var stTestCases = []stTestCase{
 		},
 		compC: "y = x + 2;",
 	},
+	{ //strictly speaking this might be invalid ST, not sure if they use ! as NOT
+		name:       "assignment 2!",
+		progString: "y := !x + 2;",
+		prog: []STInstruction{
+			STExpressionOperator{
+				Operator: FindOp(stAssignment),
+				Arguments: []STExpression{
+					STExpressionOperator{
+						Operator: FindOp(stAdd),
+						Arguments: []STExpression{
+							STExpressionValue{"2"},
+							STExpressionOperator{
+								Operator: FindOp(stNot),
+								Arguments: []STExpression{
+									STExpressionValue{"x"},
+								},
+							},
+						},
+					},
+					STExpressionValue{"y"},
+				},
+			},
+		},
+		compC: "y = !x + 2;",
+	},
 	{
 		name:       "assignment 3",
 		progString: "integrationError := -WindupGuard;",

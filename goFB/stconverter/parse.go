@@ -16,6 +16,7 @@ const (
 
 	//stOpValue              = ""
 	stNot                = "not"
+	stExclamationNot     = "!"
 	stNegative           = "`" //this is not actually in code, but we convert "negation" operators to it (i.e. "3 + -4 = -1" would become 3 + `4 = `1)
 	stExponentiation     = "**"
 	stMultiply           = "*"
@@ -110,6 +111,20 @@ func scanString(name string, input string) []string {
 
 		if items[i] == "<" && items[i+1] == ">" {
 			items[i] = "<>"
+			items = append(items[:i+1], items[i+2:]...)
+		}
+
+		if items[i] == stExclamationNot {
+			items[i] = stNot
+		}
+
+		if items[i] == "|" && items[i+1] == "|" {
+			items[i] = stOr
+			items = append(items[:i+1], items[i+2:]...)
+		}
+
+		if items[i] == "&" && items[i+1] == "&" {
+			items[i] = stAnd
 			items = append(items[:i+1], items[i+2:]...)
 		}
 	}

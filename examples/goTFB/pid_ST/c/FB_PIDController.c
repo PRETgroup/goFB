@@ -112,6 +112,8 @@ void PIDController_run(PIDController_t  *me) {
 	
 	me->outputEvents.event.ControlChanged = 0;
 	
+	
+	
 
 	
 	//next state logic
@@ -182,6 +184,8 @@ void PIDController_run(PIDController_t  *me) {
 	}
 
 	me->_trigger = false;
+
+	
 
 	//Ensure input events are cleared
 	me->inputEvents.event.UpdateConfig = 0;

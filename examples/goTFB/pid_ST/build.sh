@@ -6,7 +6,7 @@ goTFB -i=tfb -o=fbt
 
 #compile fbt to c
 echo "Compiling FBTs to C..."
-goFB -i=./fbt -o=./c -l=c -t=CfbTop
+goFB -i=./fbt -o=./c -l=c -t=PIDController
 
 #compile
 echo "Compiling C to binary..."
