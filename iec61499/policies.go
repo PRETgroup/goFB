@@ -85,6 +85,7 @@ func SplitPFBSTTransitions(cTrans []PFBSTTransition) []PFBSTTransition {
 //[a] should become [a]
 //[or a b] should become [a] [b]
 //[or a [b and c]] should become [a] [b and c]
+//[[a or b] and [c or d]] should become [a and c] [a and d] [b and c] [b and d]
 func SplitExpressionsOnOr(expr stconverter.STExpression) []stconverter.STExpression {
 	//IF IS OR
 	//	BREAK APART
@@ -103,7 +104,18 @@ func SplitExpressionsOnOr(expr stconverter.STExpression) []stconverter.STExpress
 		return []stconverter.STExpression{expr}
 	}
 	if op.GetToken() == "or" { //if it's an "or", return the arguments
-		return expr.GetArguments()
+		rets := make([]stconverter.STExpression, 0)
+		args := expr.GetArguments()
+		for i := 0; i < len(args); i++ { //for each argument of the "or", return it, unless it is itself an "or" (in which case, expand further)
+			arg := args[i]
+			argOp := arg.HasOperator()
+			if argOp == nil || argOp.GetToken() != "or" {
+				rets = append(rets, arg)
+				continue
+			}
+			args = append(args, arg.GetArguments()...)
+		}
+		return rets
 	}
 
 	//otherwise, things are more interesting
@@ -120,20 +132,21 @@ func SplitExpressionsOnOr(expr stconverter.STExpression) []stconverter.STExpress
 	nExpr.Arguments = make([]stconverter.STExpression, len(args))
 
 	rets = append(rets, nExpr)
-
-	//each argument should be only one value, and we can check that by calling traverse again
+	//for each argument in the expression operator
 	for i, arg := range args {
+		//get arguments to operator by calling SplitExpressionsOnOr again
 		argT := SplitExpressionsOnOr(arg)
-
 		//if argT has more than one value, it indicates that this argument was "split", and we should return two nExpr, one with each argument
 		//we will increase the size of rets by a multiplyFactor, which is the size of argT
 		//i.e. if we receive two arguments, and we already had two elements in rets, it indicates we need to return 4 values
 		//for instance, if our original command was "(a or b) and (c or d)" we'd need to return 4 elements (a and c) (a and d) (b and c) (b and d)
 		multiplyFactor := len(argT)
-		for z := 1; z < multiplyFactor; z++ {
-			//for each factor in multiply factor, insert duplicate into slice
-			//e.g. [1 2 3] becomes [1 1 2 2 3 3]
-			for y := 0; y < len(rets); y++ {
+		//for each factor in multiplyFactor, duplicate rets[n]
+		//e.g. multiplyFactor 2 on [1 2 3] becomes [1 1 2 2 3 3]
+		//e.g. multiplyFactor 3 on [1 2 3] becomes [1 1 1 2 2 2 3 3 3]
+		for y := 0; y < len(rets); y++ {
+			for z := 1; z < multiplyFactor; z++ {
+
 				var newElem stconverter.STExpressionOperator
 				copyElem := rets[y]
 				newElem.Operator = copyElem.Operator
@@ -155,6 +168,9 @@ func SplitExpressionsOnOr(expr stconverter.STExpression) []stconverter.STExpress
 				rets[k].Arguments[i] = at
 			}
 		}
+
+		//expected, _ := json.MarshalIndent(rets, "\t", "\t")
+		//fmt.Printf("Current:\n\t%s\n\n", expected)
 	}
 
 	//conversion for returning
@@ -164,16 +180,4 @@ func SplitExpressionsOnOr(expr stconverter.STExpression) []stconverter.STExpress
 	}
 	return actualRets
 
-}
-
-//breakIfOr: the goal of this is to recreate the expression exactly, but if it has an "or", break it into two
-func breakIfOr(expr stconverter.STExpression) []stconverter.STExpression {
-	op := expr.HasOperator()
-	if op == nil {
-		return []stconverter.STExpression{expr}
-	}
-	if op.GetToken() != "or" {
-		return []stconverter.STExpression{expr}
-	}
-	return expr.GetArguments()
 }
