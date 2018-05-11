@@ -67,6 +67,9 @@ typedef char FBstring[STRING_LENGTH];
 typedef FBstring STRING;
 typedef FBstring WSTRING;
 
+// DTimer
+typedef long long DTIMER;
+
 
 #define PushEvent(...) (void)0
 

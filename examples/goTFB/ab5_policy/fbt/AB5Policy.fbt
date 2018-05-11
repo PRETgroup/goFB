@@ -21,7 +21,7 @@
 	<Policies>
 		<Name>AB5</Name>
 		<InternalVars>
-			<VarDeclaration Name="v" Type="dtimer" Comment=""></VarDeclaration>
+			<VarDeclaration Name="v" Type="DTIMER" Comment=""></VarDeclaration>
 		</InternalVars>
 		<ECC>
 			<ECState>

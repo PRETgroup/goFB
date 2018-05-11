@@ -76,6 +76,9 @@ typedef char FBstring[STRING_LENGTH];
 typedef FBstring STRING;
 typedef FBstring WSTRING;
 
+// DTimer
+typedef long long DTIMER;
+
 {{if .EventQueue}}
 typedef struct {
 	short InstanceID;

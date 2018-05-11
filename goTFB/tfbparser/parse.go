@@ -201,6 +201,7 @@ func parseItems(name string, items []string) ([]iec61499.FB, *ParseError) {
 
 //isValidType returns true if string s is one of the valid IEC61499 event/data types
 func isValidType(s string) bool {
+	s = strings.ToLower(s)
 	if s == "event" ||
 		s == "bool" ||
 		s == "byte" ||

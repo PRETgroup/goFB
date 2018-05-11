@@ -545,7 +545,7 @@ func (fb *FB) AddPFBDataInternals(intNames []string, typ string, size string, in
 
 //AddDataInternals adds data internals to a efb, and adds the InternalVars section if it is nil
 func (efb *PolicyFB) AddDataInternals(intNames []string, typ string, size string, initialValue string, debug DebugInfo) *PolicyFB {
-
+	typ = strings.ToUpper(typ)
 	for _, iname := range intNames {
 		efb.InternalVars = append(efb.InternalVars, Variable{Name: iname, Type: typ, ArraySize: size, InitialValue: initialValue, DebugInfo: debug})
 	}

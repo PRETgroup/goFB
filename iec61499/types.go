@@ -41,6 +41,7 @@ type FB struct {
 	DebugInfo   `xml:"-"`
 }
 
+//InterfaceList is a container for all the IO ports of a Function Block
 type InterfaceList struct {
 	EventInputs  []Event    `xml:"InterfaceList>EventInputs>Event,omitempty"`
 	EventOutputs []Event    `xml:"InterfaceList>EventOutputs>Event,omitempty"`

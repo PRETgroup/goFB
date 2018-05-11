@@ -72,24 +72,42 @@ func (pol *PFBEnforcerPolicy) RemoveDuplicateTransitions() {
 //DeriveInputEnforcerPolicy will derive an Input Policy from a given Output Policy
 func DeriveInputEnforcerPolicy(il InterfaceList, outPol PFBEnforcerPolicy) PFBEnforcerPolicy {
 	inpEnf := PFBEnforcerPolicy{
-		InternalVars: outPol.InternalVars,
-		States:       outPol.States,
+		States: outPol.States,
 	}
 
+	inpEnf.InternalVars = make([]Variable, len(outPol.InternalVars))
+	copy(inpEnf.InternalVars, outPol.InternalVars)
+
+	//convert transitions and internal var names in transitions
 	for i := 0; i < len(outPol.Transitions); i++ {
-		inpEnf.Transitions = append(inpEnf.Transitions, ConvertPFBSTTransitionForInputPolicy(il, outPol.Transitions[i]))
+		inpEnf.Transitions = append(inpEnf.Transitions, ConvertPFBSTTransitionForInputPolicy(il, inpEnf.InternalVars, outPol.Transitions[i]))
+	}
+
+	//convert internal var names on enforcer policy
+	for i := 0; i < len(inpEnf.InternalVars); i++ {
+		inpEnf.InternalVars[i].Name = inpEnf.InternalVars[i].Name + "_i"
 	}
 
 	return inpEnf
 }
 
 //ConvertPFBSTTransitionForInputPolicy will convert a single PFBSTTransition from an Output Policy to its Input Policy Deriviation
-func ConvertPFBSTTransitionForInputPolicy(il InterfaceList, outpTrans PFBSTTransition) PFBSTTransition {
-	retSTGuard := ConvertSTExpressionForInputPolicy(il, outpTrans.STGuard)
+func ConvertPFBSTTransitionForInputPolicy(il InterfaceList, intl []Variable, outpTrans PFBSTTransition) PFBSTTransition {
+	retSTGuard := ConvertSTExpressionForInputPolicy(il, intl, outpTrans.STGuard)
 	retTrans := outpTrans
 	retTrans.STGuard = retSTGuard
 	retTrans.Condition = stconverter.STCompileExpression(retSTGuard)
 	return retTrans
+}
+
+//VariablesContain returns true if a list of variables contains a given name
+func VariablesContain(vars []Variable, name string) bool {
+	for i := 0; i < len(vars); i++ {
+		if vars[i].Name == name {
+			return true
+		}
+	}
+	return false
 }
 
 //ConvertSTExpressionForInputPolicy will convert a single STExpression from an Output Policy transition guard to its Input Policy transition guard's Deriviation
@@ -100,7 +118,7 @@ func ConvertPFBSTTransitionForInputPolicy(il InterfaceList, outpTrans PFBSTTrans
 //"a and b" becomes "a"
 //"func(a, b)" becomes "func(a, true)"
 //"!b" becomes "true" (technically becomes "not(true or not true)")
-func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpression) stconverter.STExpression {
+func ConvertSTExpressionForInputPolicy(il InterfaceList, intl []Variable, expr stconverter.STExpression) stconverter.STExpression {
 	//options
 	//1. It is just a value
 	//	  --if input or value, return
@@ -118,6 +136,9 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 		if il.HasOutput(expr.HasValue()) {
 			return nil
 		}
+		if VariablesContain(intl, expr.HasValue()) {
+			return stconverter.STExpressionValue{Value: expr.HasValue() + "_i"}
+		}
 		return expr
 	}
 
@@ -134,19 +155,24 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, expr stconverter.STExpr
 		argOp := arg.HasOperator()
 
 		if argOp == nil {
-			//it is a value, see if it is acceptable
-			if il.HasOutput(arg.HasValue()) {
+			//it is a value
+			argV := stconverter.STExpressionValue{Value: arg.HasValue()}
+			//see if it is acceptable
+			if il.HasOutput(argV.HasValue()) {
 				acceptableArgIs = append(acceptableArgIs, false)
 				acceptableArgs = append(acceptableArgs, nil)
 			} else {
+				if VariablesContain(intl, argV.HasValue()) {
+					argV.Value = argV.Value + "_i"
+				}
 				acceptableArgIs = append(acceptableArgIs, true)
-				acceptableArgs = append(acceptableArgs, arg)
+				acceptableArgs = append(acceptableArgs, argV)
 				numAcceptable++
 			}
 			continue
 		} else {
 			//it is an operator, run the operator through this function and see if it is acceptable
-			convArg := ConvertSTExpressionForInputPolicy(il, args[i])
+			convArg := ConvertSTExpressionForInputPolicy(il, intl, args[i])
 			if convArg != nil {
 				acceptableArgIs = append(acceptableArgIs, true)
 				acceptableArgs = append(acceptableArgs, convArg)
