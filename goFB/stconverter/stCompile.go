@@ -50,10 +50,11 @@ func SetKnownVarNames(varNames []string) {
 }
 
 func reverseArgs(s []STExpression) []STExpression {
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		s[i], s[j] = s[j], s[i]
+	r := make([]STExpression, len(s))
+	for i := 0; i < len(s); i++ {
+		r[i] = s[len(s)-1-i]
 	}
-	return s
+	return r
 }
 
 func isKnownVar(name string) bool {

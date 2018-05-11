@@ -3,6 +3,7 @@ package iec61499
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/PRETgroup/goFB/goFB/stconverter"
 )
@@ -25,6 +26,18 @@ type PFBEnforcerPolicy struct {
 	Transitions  []PFBSTTransition
 }
 
+//GetDTimers returns all DTIMERS in a PFBEnforcerPolicy
+func (pol PFBEnforcerPolicy) GetDTimers() []Variable {
+	dTimers := make([]Variable, 0)
+	for _, v := range pol.InternalVars {
+		if strings.ToLower(v.Type) == "dtimer" {
+			dTimers = append(dTimers, v)
+		}
+	}
+
+	return dTimers
+}
+
 //GetViolationTransitions returns a slice of all transitions in this PFBEnforcerPolicy
 //that have their destinations set to "violation", ie. are violation transitions
 func (pol PFBEnforcerPolicy) GetViolationTransitions() []PFBSTTransition {
@@ -35,6 +48,18 @@ func (pol PFBEnforcerPolicy) GetViolationTransitions() []PFBSTTransition {
 		}
 	}
 	return violTrans
+}
+
+//GetNonViolationTransitions returns a slice of all transitions in this PFBEnforcerPolicy
+//that have their destinations not set to "violation", ie. are not violation transitions
+func (pol PFBEnforcerPolicy) GetNonViolationTransitions() []PFBSTTransition {
+	nviolTrans := make([]PFBSTTransition, 0)
+	for _, tr := range pol.Transitions {
+		if tr.Destination != "violation" {
+			nviolTrans = append(nviolTrans, tr)
+		}
+	}
+	return nviolTrans
 }
 
 //A PFBEnforcer will store a given input and output policy and can derive the enforcers required to uphold them
@@ -87,8 +112,11 @@ func DeriveInputEnforcerPolicy(il InterfaceList, outPol PFBEnforcerPolicy) PFBEn
 		States: outPol.States,
 	}
 
-	inpEnf.InternalVars = make([]Variable, len(outPol.InternalVars))
-	copy(inpEnf.InternalVars, outPol.InternalVars)
+	inpEnf.InternalVars = nil
+	//just realised that theres no internalVars that can't be managed by externalVars?
+	// inpEnf.InternalVars = make([]Variable, 0)
+	// for i := 0; i < len(outPol.InternalVars; i++) {}
+	// copy(inpEnf.InternalVars, outPol.InternalVars)
 
 	//convert transitions and internal var names in transitions
 	for i := 0; i < len(outPol.Transitions); i++ {
@@ -108,7 +136,7 @@ func ConvertPFBSTTransitionForInputPolicy(il InterfaceList, intl []Variable, out
 	retSTGuard := ConvertSTExpressionForInputPolicy(il, intl, outpTrans.STGuard)
 	retTrans := outpTrans
 	retTrans.STGuard = retSTGuard
-	retTrans.Condition = stconverter.STCompileExpression(retSTGuard)
+	retTrans.Condition = stconverter.CCompileExpression(retSTGuard)
 	return retTrans
 }
 
@@ -272,7 +300,7 @@ func SplitPFBSTTransitions(cTrans []PFBSTTransition) []PFBSTTransition {
 				PFBTransition: cTran.PFBTransition,
 			}
 			//recompile the condition
-			newTrans.PFBTransition.Condition = stconverter.STCompileExpression(splitTrans[len(splitTrans)-j-1])
+			newTrans.PFBTransition.Condition = stconverter.CCompileExpression(splitTrans[len(splitTrans)-j-1])
 			newTrans.STGuard = splitTrans[len(splitTrans)-j-1]
 
 			brTrans = append(brTrans, newTrans)

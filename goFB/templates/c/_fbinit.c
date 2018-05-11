@@ -69,7 +69,7 @@ int {{$block.Name}}_preinit({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} 
 
 	{{if $block.Policies}}//this block has policies
 	{{range $polI, $pol := $block.Policies}}
-	me->_states _policy_{{$pol.Name}}_state = {{if $pol.States}}POLICY_STATE_{{$block.Name}}_{{$pol.Name}}_{{(index $pol.States 0).Name}}{{else}}POLICY_STATE_{{$block.Name}}_{{$pol.Name}}_unknown{{end}};
+	me->_policy_{{$pol.Name}}_state = {{if $pol.States}}POLICY_STATE_{{$block.Name}}_{{$pol.Name}}_{{(index $pol.States 0).Name}}{{else}}POLICY_STATE_{{$block.Name}}_{{$pol.Name}}_unknown{{end}};
 	{{$pfbEnf := getPolicyEnfInfo $block $polI}}{{if not $pfbEnf}}//Policy is broken!{{else}}//input policy internal vars
 	{{range $vari, $var := $pfbEnf.InputPolicy.InternalVars}}
 	{{$initialArray := $var.GetInitialArray}}{{if $initialArray}}{{range $initialIndex, $initialValue := $initialArray}}me->{{$var.Name}}[{{$initialIndex}}] = {{$initialValue}};

@@ -116,11 +116,11 @@ func cTranslateOperatorToken(token string) string {
 	case stInequal:
 		return "!="
 	case stAnd:
-		return "&"
+		return "&&"
 	case stExlusiveOr:
 		return "^"
 	case stOr:
-		return "|"
+		return "||"
 	case stAssignment:
 		return "="
 	}

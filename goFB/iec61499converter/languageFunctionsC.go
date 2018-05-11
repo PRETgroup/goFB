@@ -48,7 +48,10 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 
 	//re1: add whitespace around operators
 	retVal = re1.ReplaceAllStringFunc(retVal, func(in string) string {
-		return " " + in + " "
+		if in != "!" {
+			return " " + in + " "
+		}
+		return " !"
 	})
 
 	//re2: add "me->" where appropriate
@@ -104,6 +107,18 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 		if block.BasicFB != nil && block.BasicFB.InternalVars != nil {
 			for _, Var := range block.BasicFB.InternalVars {
 				if Var.Name == in {
+					return "me->" + in
+				}
+			}
+		}
+
+		//check to see if it is a policy internal var
+		for i := 0; i < len(block.Policies); i++ {
+			for _, Var := range block.Policies[i].InternalVars {
+				if Var.Name == in {
+					return "me->" + in
+				}
+				if Var.Name+"_i" == in {
 					return "me->" + in
 				}
 			}

@@ -40,11 +40,8 @@ int AB5Policy_preinit(AB5Policy_t  *me) {
 
 	//this block has policies
 	
-	me->_states _policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s0;
+	me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s0;
 	//input policy internal vars
-	
-	me->v_i = 0;
-	
 	//output policy internal vars
 	
 	me->v = 0;
@@ -100,27 +97,30 @@ void AB5Policy_run(AB5Policy_t  *me) {
 	
 	//input policies
 	
-	//{{[{A  [] {0 }}] [{B  [] {0 }}] [] []} AB5 {[{v DTIMER    {0 }}] [{s0 {0 }} {s1 {0 }}] [{{{s0 s0 not (A) and not (B)   {0 }} [{v 0}]} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {{not 0 1 1} [{B}]}]}} {{{s0 s1 A and not (B)   {0 }} [{v 0}]} {{and 5 2 -1} [{A} {{not 0 1 1} [{B}]}]}} {{{s0 violation not (A) and B   {0 }} []} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {B}]}} {{{s0 violation A and B   {0 }} []} {{and 5 2 -1} [{A} {B}]}} {{{s1 s1 not (A) and not (B) and v < 5   {0 }} []} {{and 5 2 -1} [{{and 5 2 -1} [{{not 0 1 1} [{A}]} {{not 0 1 1} [{B}]}]} {{< 4 2 -1} [{v} {5}]}]}} {{{s1 s0 not (A) and B   {0 }} []} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {B}]}} {{{s1 violation v >= 5   {0 }} []} {{>= 4 2 -1} [{v} {5}]}} {{{s1 violation A and B   {0 }} []} {{and 5 2 -1} [{A} {B}]}} {{{s1 violation A and not (B)   {0 }} []} {{and 5 2 -1} [{A} {{not 0 1 1} [{B}]}]}}]} {[{v_i DTIMER    {0 }}] [{s0 {0 }} {s1 {0 }}] [{{{s0 s0 not (A)   {0 }} [{v 0}]} {{not 0 1 1} [{A}]}} {{{s0 s1 A   {0 }} [{v 0}]} {A}} {{{s0 violation not (A)   {0 }} []} {{not 0 1 1} [{A}]}} {{{s0 violation A   {0 }} []} {A}} {{{s1 s1 5 < v_i and not (A)   {0 }} []} {{and 5 2 -1} [{{< 4 2 -1} [{5} {v_i}]} {{not 0 1 1} [{A}]}]}} {{{s1 s0 not (A)   {0 }} []} {{not 0 1 1} [{A}]}} {{{s1 violation 5 >= v_i   {0 }} []} {{>= 4 2 -1} [{5} {v_i}]}} {{{s1 violation A   {0 }} []} {A}}]}}
-		static DTIMER v_i =  {0};
+	//INPUT POLICY AB5 BEGIN 
 		
-		
-		if(not (A)) {
-
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+			( !me->inputEvents.event.A)) {
+			//select a transition to solve the problem
 		}
 		
-		if(A) {
-
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+			(me->inputEvents.event.A)) {
+			//select a transition to solve the problem
 		}
 		
-		if(5 >= v_i) {
-
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			(me->v >= 5)) {
+			//select a transition to solve the problem
 		}
 		
-		if(A) {
-
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			(me->inputEvents.event.A)) {
+			//select a transition to solve the problem
 		}
 		
 	
+	//INPUT POLICY AB5 END
 	
 
 
@@ -129,6 +129,8 @@ void AB5Policy_run(AB5Policy_t  *me) {
 	if(me->_trigger == false) {
 		switch(me->_state) {
 		
+		default: 
+			break;
 		}
 	}
 
@@ -136,13 +138,80 @@ void AB5Policy_run(AB5Policy_t  *me) {
 	if(me->_trigger == true) {
 		switch(me->_state) {
 		
+		default: 
+			break;
 		}
 	}
 
 	me->_trigger = false;
 
 	
-//output policies
+	//output policies
+	
+	//OUTPUT POLICY AB5 BEGIN 
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+			( !me->inputEvents.event.A && me->outputEvents.event.B)) {
+			//select a transition to solve the problem
+		}
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+			(me->inputEvents.event.A && me->outputEvents.event.B)) {
+			//select a transition to solve the problem
+		}
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			(me->v >= 5)) {
+			//select a transition to solve the problem
+		}
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			(me->inputEvents.event.A && me->outputEvents.event.B)) {
+			//select a transition to solve the problem
+		}
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			(me->inputEvents.event.A && !me->outputEvents.event.B)) {
+			//select a transition to solve the problem
+		}
+		
+
+		//advance timers
+		
+		me->v++;
+
+		//select transition to advance state
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+			( !me->inputEvents.event.A && !me->outputEvents.event.B)) {
+			//transition s0 -> s0 on !A && !B
+			me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s0;
+		}
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+			(me->inputEvents.event.A && !me->outputEvents.event.B)) {
+			//transition s0 -> s1 on A && !B
+			me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s1;
+		}
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			( !me->inputEvents.event.A && !me->outputEvents.event.B && me->v < 5)) {
+			//transition s1 -> s1 on !A && !B && v < 5
+			me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s1;
+		}
+		
+		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			( !me->inputEvents.event.A && me->outputEvents.event.B)) {
+			//transition s1 -> s0 on !A && B
+			me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s0;
+		}
+		
+
+		
+
+	
+	//OUTPUT POLICY AB5 END
+	
 
 
 	//Ensure input events are cleared

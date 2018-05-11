@@ -50,6 +50,8 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 			{{end}}{{if $basicFB.GetTransitionsForState $curState.Name}}};{{end}}
 			break;
 		{{end}}
+		default: 
+			break;
 		}
 	}
 
@@ -66,8 +68,9 @@ void {{$block.Name}}_run({{$block.Name}}_t {{if or $tcrestUsingSPM $tcrestSmartS
 			{{if $runOnECC}}me->_trigger = false;
 			goto {{$block.Name}}_runOn;
 			{{end}}break;
-
 		{{end}}
+		default: 
+			break;
 		}
 	}
 
