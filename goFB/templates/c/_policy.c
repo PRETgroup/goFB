@@ -5,6 +5,11 @@
 	{{else}}{{/* this is where the policy comes in */}}//{{$pfbEnf}}
 		{{range $vari, $var := $pfbEnf.InputPolicy.InternalVars}}static {{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}} = {{if $var.InitialValue}}{{$var.InitialValue}}{{else}} {0};{{end}}
 		{{end}}
+		{{range $tri, $tr := $pfbEnf.InputPolicy.GetViolationTransitions}}
+		if({{$tr.Condition}}) {
+
+		}
+		{{end}}
 	{{end}}
 	{{end}}
 {{end}}

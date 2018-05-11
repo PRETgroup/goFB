@@ -14,6 +14,11 @@
 enum AB5Policy_states { STATE_AB5Policy_unknown };
 
 
+//This is an FB with policies, so we need an enum type for the state machine of each policy
+
+enum AB5Policy_policy_AB5_states { POLICY_STATE_AB5Policy_AB5_s0, POLICY_STATE_AB5Policy_AB5_s1 };
+
+
 union AB5PolicyInputEvents {
 	struct {
 		UDINT A;
@@ -55,6 +60,17 @@ typedef struct {
 	
 	
 	
+
+	//this block has policies
+	enum AB5Policy_policy_AB5_states _policy_AB5_state;
+	//input vars
+	DTIMER v_i;
+	//output vars
+	DTIMER v;
+	
+	
+	
+
 } AB5Policy_t;
 
 //all FBs get a preinit function

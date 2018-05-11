@@ -25,6 +25,18 @@ type PFBEnforcerPolicy struct {
 	Transitions  []PFBSTTransition
 }
 
+//GetViolationTransitions returns a slice of all transitions in this PFBEnforcerPolicy
+//that have their destinations set to "violation", ie. are violation transitions
+func (pol PFBEnforcerPolicy) GetViolationTransitions() []PFBSTTransition {
+	violTrans := make([]PFBSTTransition, 0)
+	for _, tr := range pol.Transitions {
+		if tr.Destination == "violation" {
+			violTrans = append(violTrans, tr)
+		}
+	}
+	return violTrans
+}
+
 //A PFBEnforcer will store a given input and output policy and can derive the enforcers required to uphold them
 type PFBEnforcer struct {
 	interfaceList InterfaceList

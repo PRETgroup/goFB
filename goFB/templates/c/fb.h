@@ -22,6 +22,11 @@
 enum {{$block.Name}}_states { {{if len $block.BasicFB.States}}{{range $index, $state := $block.BasicFB.States}}{{if $index}}, {{end}}STATE_{{$block.Name}}_{{$state.Name}}{{end}}{{else}}STATE_{{$block.Name}}_unknown{{end}} };
 {{end}}
 
+{{if $block.Policies}}//This is an FB with policies, so we need an enum type for the state machine of each policy
+{{range $polI, $pol := $block.Policies}}
+enum {{$block.Name}}_policy_{{$pol.Name}}_states { {{if len $pol.States}}{{range $index, $state := $pol.States}}{{if $index}}, {{end}}POLICY_STATE_{{$block.Name}}_{{$pol.Name}}_{{$state.Name}}{{end}}{{else}}POLICY_STATE_{{$block.Name}}_{{$pol.Name}}_unknown{{end}} };
+{{end}}{{end}}
+
 {{if $block.EventInputs}}union {{$block.Name}}InputEvents {
 	struct {
 	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs}}	UDINT {{$event.Name}};
@@ -82,6 +87,17 @@ typedef struct {
 	{{$block.ServiceFB.Autogenerate.InStructText}}{{end}}{{end}}
 	{{if .EventQueue}}//because we're using an event queue, rather than the synchronous MoC, all blocks need a unique instanceID
 	short myInstanceID;{{end}}
+
+	{{if $block.Policies}}//this block has policies
+	{{range $polI, $pol := $block.Policies}}enum {{$block.Name}}_policy_{{$pol.Name}}_states _policy_{{$pol.Name}}_state;
+	{{$pfbEnf := getPolicyEnfInfo $block $polI}}{{if not $pfbEnf}}//Policy is broken!{{else}}//input vars
+	{{range $vari, $var := $pfbEnf.InputPolicy.InternalVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
+	{{end}}//output vars
+	{{range $vari, $var := $pfbEnf.OutputPolicy.InternalVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
+	{{end}}{{end}}
+	{{end}}
+	{{end}}
+
 } {{$block.Name}}_t;
 
 //all FBs get a preinit function

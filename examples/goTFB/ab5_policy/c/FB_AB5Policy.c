@@ -38,6 +38,21 @@ int AB5Policy_preinit(AB5Policy_t  *me) {
 	
 	
 
+	//this block has policies
+	
+	me->_states _policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s0;
+	//input policy internal vars
+	
+	me->v_i = 0;
+	
+	//output policy internal vars
+	
+	me->v = 0;
+	
+	
+	
+	
+
 	return 0;
 }
 
@@ -87,6 +102,23 @@ void AB5Policy_run(AB5Policy_t  *me) {
 	
 	//{{[{A  [] {0 }}] [{B  [] {0 }}] [] []} AB5 {[{v DTIMER    {0 }}] [{s0 {0 }} {s1 {0 }}] [{{{s0 s0 not (A) and not (B)   {0 }} [{v 0}]} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {{not 0 1 1} [{B}]}]}} {{{s0 s1 A and not (B)   {0 }} [{v 0}]} {{and 5 2 -1} [{A} {{not 0 1 1} [{B}]}]}} {{{s0 violation not (A) and B   {0 }} []} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {B}]}} {{{s0 violation A and B   {0 }} []} {{and 5 2 -1} [{A} {B}]}} {{{s1 s1 not (A) and not (B) and v < 5   {0 }} []} {{and 5 2 -1} [{{and 5 2 -1} [{{not 0 1 1} [{A}]} {{not 0 1 1} [{B}]}]} {{< 4 2 -1} [{v} {5}]}]}} {{{s1 s0 not (A) and B   {0 }} []} {{and 5 2 -1} [{{not 0 1 1} [{A}]} {B}]}} {{{s1 violation v >= 5   {0 }} []} {{>= 4 2 -1} [{v} {5}]}} {{{s1 violation A and B   {0 }} []} {{and 5 2 -1} [{A} {B}]}} {{{s1 violation A and not (B)   {0 }} []} {{and 5 2 -1} [{A} {{not 0 1 1} [{B}]}]}}]} {[{v_i DTIMER    {0 }}] [{s0 {0 }} {s1 {0 }}] [{{{s0 s0 not (A)   {0 }} [{v 0}]} {{not 0 1 1} [{A}]}} {{{s0 s1 A   {0 }} [{v 0}]} {A}} {{{s0 violation not (A)   {0 }} []} {{not 0 1 1} [{A}]}} {{{s0 violation A   {0 }} []} {A}} {{{s1 s1 5 < v_i and not (A)   {0 }} []} {{and 5 2 -1} [{{< 4 2 -1} [{5} {v_i}]} {{not 0 1 1} [{A}]}]}} {{{s1 s0 not (A)   {0 }} []} {{not 0 1 1} [{A}]}} {{{s1 violation 5 >= v_i   {0 }} []} {{>= 4 2 -1} [{5} {v_i}]}} {{{s1 violation A   {0 }} []} {A}}]}}
 		static DTIMER v_i =  {0};
+		
+		
+		if(not (A)) {
+
+		}
+		
+		if(A) {
+
+		}
+		
+		if(5 >= v_i) {
+
+		}
+		
+		if(A) {
+
+		}
 		
 	
 	
