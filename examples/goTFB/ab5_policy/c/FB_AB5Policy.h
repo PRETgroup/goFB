@@ -63,7 +63,6 @@ typedef struct {
 
 	//this block has policies
 	enum AB5Policy_policy_AB5_states _policy_AB5_state;
-	//input vars
 	//output vars
 	DTIMER v;
 	

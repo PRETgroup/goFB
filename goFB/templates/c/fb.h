@@ -90,9 +90,9 @@ typedef struct {
 
 	{{if $block.Policies}}//this block has policies
 	{{range $polI, $pol := $block.Policies}}enum {{$block.Name}}_policy_{{$pol.Name}}_states _policy_{{$pol.Name}}_state;
-	{{$pfbEnf := getPolicyEnfInfo $block $polI}}{{if not $pfbEnf}}//Policy is broken!{{else}}//input vars
+	{{$pfbEnf := getPolicyEnfInfo $block $polI}}{{if not $pfbEnf}}//Policy is broken!{{else}}{{/* //input vars
 	{{range $vari, $var := $pfbEnf.InputPolicy.InternalVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
-	{{end}}//output vars
+	{{end}}*/}}//output vars
 	{{range $vari, $var := $pfbEnf.OutputPolicy.InternalVars}}{{$var.Type}} {{$var.Name}}{{if $var.ArraySize}}[{{$var.ArraySize}}]{{end}};
 	{{end}}{{end}}
 	{{end}}

@@ -98,27 +98,35 @@ void AB5Policy_run(AB5Policy_t  *me) {
 	//input policies
 	
 	//INPUT POLICY AB5 BEGIN 
-		
 		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
 			( !me->inputEvents.event.A)) {
+			//transition s0 -> violation on !A
 			//select a transition to solve the problem
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+			
+			//Selected non-violation transition "s0 -> s0 on !A" which has an equivalent guard, so no action is required
+			
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
 			(me->inputEvents.event.A)) {
+			//transition s0 -> violation on A
 			//select a transition to solve the problem
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			
+			//Selected non-violation transition "s0 -> s1 on A" which has an equivalent guard, so no action is required
+			
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->v >= 5)) {
+			//transition s1 -> violation on v >= 5
 			//select a transition to solve the problem
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			
+			//Selected non-violation transition "s1 -> s0 on !A" and action is required
+			// !me->inputEvents.event.A
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->inputEvents.event.A)) {
+			//transition s1 -> violation on A
 			//select a transition to solve the problem
-		}
-		
+			
+			//Selected non-violation transition "s1 -> s0 on !A" and action is required
+			// !me->inputEvents.event.A
+		} 
 	
 	//INPUT POLICY AB5 END
 	
@@ -149,63 +157,65 @@ void AB5Policy_run(AB5Policy_t  *me) {
 	//output policies
 	
 	//OUTPUT POLICY AB5 BEGIN 
-		
 		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
 			( !me->inputEvents.event.A && me->outputEvents.event.B)) {
+			//transition s0 -> violation on !A && B
 			//select a transition to solve the problem
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+			
+			//Selected non-violation transition "s0 -> s0 on !A && !B" and action is required
+			// !me->inputEvents.event.A && !me->outputEvents.event.B
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
 			(me->inputEvents.event.A && me->outputEvents.event.B)) {
+			//transition s0 -> violation on A && B
 			//select a transition to solve the problem
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			
+			//Selected non-violation transition "s0 -> s0 on !A && !B" and action is required
+			// !me->inputEvents.event.A && !me->outputEvents.event.B
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->v >= 5)) {
+			//transition s1 -> violation on v >= 5
 			//select a transition to solve the problem
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			
+			//Selected non-violation transition "s1 -> s0 on !A && B" and action is required
+			// !me->inputEvents.event.A && me->outputEvents.event.B
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->inputEvents.event.A && me->outputEvents.event.B)) {
+			//transition s1 -> violation on A && B
 			//select a transition to solve the problem
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+			
+			//Selected non-violation transition "s1 -> s0 on !A && B" and action is required
+			// !me->inputEvents.event.A && me->outputEvents.event.B
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->inputEvents.event.A && !me->outputEvents.event.B)) {
+			//transition s1 -> violation on A && !B
 			//select a transition to solve the problem
-		}
-		
+			
+			//Selected non-violation transition "s1 -> s0 on !A && B" and action is required
+			// !me->inputEvents.event.A && me->outputEvents.event.B
+		} 
 
 		//advance timers
 		
 		me->v++;
 
 		//select transition to advance state
-		
 		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
 			( !me->inputEvents.event.A && !me->outputEvents.event.B)) {
 			//transition s0 -> s0 on !A && !B
 			me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s0;
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
 			(me->inputEvents.event.A && !me->outputEvents.event.B)) {
 			//transition s0 -> s1 on A && !B
 			me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s1;
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			( !me->inputEvents.event.A && !me->outputEvents.event.B && me->v < 5)) {
 			//transition s1 -> s1 on !A && !B && v < 5
 			me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s1;
-		}
-		
-		if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
+		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			( !me->inputEvents.event.A && me->outputEvents.event.B)) {
 			//transition s1 -> s0 on !A && B
 			me->_policy_AB5_state = POLICY_STATE_AB5Policy_AB5_s0;
-		}
-		
+		} 
 
 		
 

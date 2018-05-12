@@ -34,7 +34,6 @@ func (pol PFBEnforcerPolicy) GetDTimers() []Variable {
 			dTimers = append(dTimers, v)
 		}
 	}
-
 	return dTimers
 }
 
@@ -60,6 +59,20 @@ func (pol PFBEnforcerPolicy) GetNonViolationTransitions() []PFBSTTransition {
 		}
 	}
 	return nviolTrans
+}
+
+//DoesExpressionInvolveTime returns true if a given expression uses time
+func (pol PFBEnforcerPolicy) DoesExpressionInvolveTime(expr stconverter.STExpression) bool {
+	op := expr.HasOperator()
+	if op == nil {
+		return VariablesContain(pol.GetDTimers(), expr.HasValue())
+	}
+	for _, arg := range expr.GetArguments() {
+		if pol.DoesExpressionInvolveTime(arg) {
+			return true
+		}
+	}
+	return false
 }
 
 //A PFBEnforcer will store a given input and output policy and can derive the enforcers required to uphold them
@@ -106,27 +119,70 @@ func (pol *PFBEnforcerPolicy) RemoveDuplicateTransitions() {
 	}
 }
 
+//STExpressionSolution stores a solution to a violation transition
+type STExpressionSolution struct {
+	Expression string
+	Comment    string
+}
+
+//SolveViolationTransition will attempt to solve a given transition
+//TODO: consider where people have been too explicit with their time variables, and have got non-violating time-based transitions
+//1. Check to see if there is a non-violating transition with an equivalent guard to the violating transition
+//2. Select first solution
+func (pol *PFBEnforcerPolicy) SolveViolationTransition(tr PFBSTTransition) STExpressionSolution {
+	posSolTrs := make([]PFBSTTransition, 0) //possible Solution Transitions
+	for _, propTr := range pol.Transitions {
+		if propTr.Destination == "violation" {
+			continue
+		}
+		if propTr.Source != tr.Source {
+			continue
+		}
+		if pol.DoesExpressionInvolveTime(propTr.STGuard) {
+			continue
+		}
+		posSolTrs = append(posSolTrs, propTr)
+	}
+
+	// Make sure there's at least one solution
+	if len(posSolTrs) == 0 {
+		return STExpressionSolution{Expression: "", Comment: "No possible solutions!"}
+	}
+
+	//1. Check to see if there is a non-violating transition with an equivalent guard to the violating transition
+	for _, posSolTr := range posSolTrs {
+		if reflect.DeepEqual(tr.STGuard, posSolTr.STGuard) {
+			return STExpressionSolution{Expression: "", Comment: fmt.Sprintf("Selected non-violation transition \"%s -> %s on %s\" which has an equivalent guard, so no action is required", posSolTr.Source, posSolTr.Destination, posSolTr.Condition)}
+		}
+	}
+
+	//2. Select first solution
+	posSolTr := posSolTrs[0]
+	return STExpressionSolution{Expression: posSolTr.Condition, Comment: fmt.Sprintf("Selected non-violation transition \"%s -> %s on %s\" and action is required", posSolTr.Source, posSolTr.Destination, posSolTr.Condition)}
+
+}
+
 //DeriveInputEnforcerPolicy will derive an Input Policy from a given Output Policy
 func DeriveInputEnforcerPolicy(il InterfaceList, outPol PFBEnforcerPolicy) PFBEnforcerPolicy {
 	inpEnf := PFBEnforcerPolicy{
 		States: outPol.States,
 	}
 
-	inpEnf.InternalVars = nil
+	//inpEnf.InternalVars = nil
 	//just realised that theres no internalVars that can't be managed by externalVars?
-	// inpEnf.InternalVars = make([]Variable, 0)
+	inpEnf.InternalVars = make([]Variable, len(outPol.InternalVars))
 	// for i := 0; i < len(outPol.InternalVars; i++) {}
-	// copy(inpEnf.InternalVars, outPol.InternalVars)
+	copy(inpEnf.InternalVars, outPol.InternalVars)
 
 	//convert transitions and internal var names in transitions
 	for i := 0; i < len(outPol.Transitions); i++ {
 		inpEnf.Transitions = append(inpEnf.Transitions, ConvertPFBSTTransitionForInputPolicy(il, inpEnf.InternalVars, outPol.Transitions[i]))
 	}
 
-	//convert internal var names on enforcer policy
-	for i := 0; i < len(inpEnf.InternalVars); i++ {
-		inpEnf.InternalVars[i].Name = inpEnf.InternalVars[i].Name + "_i"
-	}
+	// //convert internal var names on enforcer policy
+	// for i := 0; i < len(inpEnf.InternalVars); i++ {
+	// 	inpEnf.InternalVars[i].Name = inpEnf.InternalVars[i].Name + "_i"
+	// }
 
 	return inpEnf
 }
@@ -176,9 +232,9 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, intl []Variable, expr s
 		if il.HasOutput(expr.HasValue()) {
 			return nil
 		}
-		if VariablesContain(intl, expr.HasValue()) {
-			return stconverter.STExpressionValue{Value: expr.HasValue() + "_i"}
-		}
+		// if VariablesContain(intl, expr.HasValue()) {
+		// 	return stconverter.STExpressionValue{Value: expr.HasValue() + "_i"}
+		// }
 		return expr
 	}
 
@@ -202,9 +258,9 @@ func ConvertSTExpressionForInputPolicy(il InterfaceList, intl []Variable, expr s
 				acceptableArgIs = append(acceptableArgIs, false)
 				acceptableArgs = append(acceptableArgs, nil)
 			} else {
-				if VariablesContain(intl, argV.HasValue()) {
-					argV.Value = argV.Value + "_i"
-				}
+				// if VariablesContain(intl, argV.HasValue()) {
+				// 	argV.Value = argV.Value + "_i"
+				// }
 				acceptableArgIs = append(acceptableArgIs, true)
 				acceptableArgs = append(acceptableArgs, argV)
 				numAcceptable++
