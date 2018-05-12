@@ -118,14 +118,14 @@ void AB5Policy_run(AB5Policy_t  *me) {
 			//select a transition to solve the problem
 			
 			//Selected non-violation transition "s1 -> s0 on !A" and action is required
-			// !me->inputEvents.event.A
+			me->inputEvents.event.A = 0;
 		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->inputEvents.event.A)) {
 			//transition s1 -> violation on A
 			//select a transition to solve the problem
 			
 			//Selected non-violation transition "s1 -> s0 on !A" and action is required
-			// !me->inputEvents.event.A
+			me->inputEvents.event.A = 0;
 		} 
 	
 	//INPUT POLICY AB5 END
@@ -163,35 +163,35 @@ void AB5Policy_run(AB5Policy_t  *me) {
 			//select a transition to solve the problem
 			
 			//Selected non-violation transition "s0 -> s0 on !A && !B" and action is required
-			// !me->inputEvents.event.A && !me->outputEvents.event.B
+			
 		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s0) && 
 			(me->inputEvents.event.A && me->outputEvents.event.B)) {
 			//transition s0 -> violation on A && B
 			//select a transition to solve the problem
 			
 			//Selected non-violation transition "s0 -> s0 on !A && !B" and action is required
-			// !me->inputEvents.event.A && !me->outputEvents.event.B
+			
 		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->v >= 5)) {
 			//transition s1 -> violation on v >= 5
 			//select a transition to solve the problem
 			
 			//Selected non-violation transition "s1 -> s0 on !A && B" and action is required
-			// !me->inputEvents.event.A && me->outputEvents.event.B
+			
 		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->inputEvents.event.A && me->outputEvents.event.B)) {
 			//transition s1 -> violation on A && B
 			//select a transition to solve the problem
 			
 			//Selected non-violation transition "s1 -> s0 on !A && B" and action is required
-			// !me->inputEvents.event.A && me->outputEvents.event.B
+			
 		} else if((me->_policy_AB5_state == POLICY_STATE_AB5Policy_AB5_s1) && 
 			(me->inputEvents.event.A && !me->outputEvents.event.B)) {
 			//transition s1 -> violation on A && !B
 			//select a transition to solve the problem
 			
 			//Selected non-violation transition "s1 -> s0 on !A && B" and action is required
-			// !me->inputEvents.event.A && me->outputEvents.event.B
+			
 		} 
 
 		//advance timers

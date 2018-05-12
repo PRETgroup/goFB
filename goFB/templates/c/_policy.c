@@ -10,7 +10,7 @@
 			//select a transition to solve the problem
 			{{$solution := $pfbEnf.InputPolicy.SolveViolationTransition $tr}}
 			{{if $solution.Comment}}//{{$solution.Comment}}{{end}}
-			{{if $solution.Expression}}//{{$sol := getCECCTransitionCondition $block $solution.Expression}}{{$sol.IfCond}}{{end}}
+			{{if $solution.Expression}}{{$sol := getCECCTransitionCondition $block $solution.Expression}}{{$sol.IfCond}};{{end}}
 		} {{end}}
 	{{end}}
 	//INPUT POLICY {{$pol.Name}} END
@@ -29,7 +29,7 @@
 			//select a transition to solve the problem
 			{{$solution := $pfbEnf.OutputPolicy.SolveViolationTransition $tr}}
 			{{if $solution.Comment}}//{{$solution.Comment}}{{end}}
-			{{if $solution.Expression}}//{{$sol := getCECCTransitionCondition $block $solution.Expression}}{{$sol.IfCond}}{{end}}
+			{{if $solution.Expression}}//{{$sol := getCECCTransitionCondition $block $solution.Expression}}{{$sol.IfCond}};{{end}}
 		} {{end}}
 
 		//advance timers

@@ -158,7 +158,9 @@ func (pol *PFBEnforcerPolicy) SolveViolationTransition(tr PFBSTTransition) STExp
 
 	//2. Select first solution
 	posSolTr := posSolTrs[0]
-	return STExpressionSolution{Expression: posSolTr.Condition, Comment: fmt.Sprintf("Selected non-violation transition \"%s -> %s on %s\" and action is required", posSolTr.Source, posSolTr.Destination, posSolTr.Condition)}
+	solution := SolveSTExpression(posSolTr.STGuard)
+
+	return STExpressionSolution{Expression: stconverter.CCompileExpression(solution), Comment: fmt.Sprintf("Selected non-violation transition \"%s -> %s on %s\" and action is required", posSolTr.Source, posSolTr.Destination, posSolTr.Condition)}
 
 }
 
@@ -214,6 +216,7 @@ func VariablesContain(vars []Variable, name string) bool {
 //"a and b" becomes "a"
 //"func(a, b)" becomes "func(a, true)"
 //"!b" becomes "true" (technically becomes "not(true or not true)")
+//TODO: a transition based only on time becomes nil?
 func ConvertSTExpressionForInputPolicy(il InterfaceList, intl []Variable, expr stconverter.STExpression) stconverter.STExpression {
 	//options
 	//1. It is just a value
@@ -467,4 +470,39 @@ func SplitExpressionsOnOr(expr stconverter.STExpression) []stconverter.STExpress
 	}
 	return actualRets
 
+}
+
+//SolveSTExpression will solve simple STExpressions
+//The top level should be one of the following
+//if VARIABLE ONLY, 			return VARIABLE = 1
+//if NOT(VARIABLE) ONLY, 		return VARIABLE = 0
+//if VARIABLE == EXPRESSION, 	return VARIABLE = VARIABLE
+//if VARIABLE > EXPRESSION, 	return VARIABLE = EXPRESSION + 1
+//if VARIABLE >= EXPRESSION, 	return VARIABLE = EXPRESSION
+//if VARIABLE < EXPRESSION, 	return VARIABLE = EXPRESSION - 1
+//if VARIABLE <= EXPRESSION, 	return VARIABLE = EXPRESSION
+//if VARIABLE != EXPRESSION,	return VARIABLE = EXPRESSION + 1
+//otherwise, return nil (can't solve)
+func SolveSTExpression(problem stconverter.STExpression) stconverter.STExpression {
+	op := problem.HasOperator()
+	if op == nil { //if VARIABLE ONLY, 			return VARIABLE = 1
+		return stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp(":="),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "1"},
+				stconverter.STExpressionValue{Value: problem.HasValue()},
+			}}
+	}
+	args := problem.GetArguments()
+
+	if op.GetToken() == "not" && len(args) == 1 { //if NOT(VARIABLE) ONLY, 		return VARIABLE = 1
+		return stconverter.STExpressionOperator{
+			Operator: stconverter.FindOp(":="),
+			Arguments: []stconverter.STExpression{
+				stconverter.STExpressionValue{Value: "0"},
+				stconverter.STExpressionValue{Value: args[0].HasValue()},
+			}}
+	}
+
+	return nil
 }
