@@ -504,5 +504,7 @@ func SolveSTExpression(problem stconverter.STExpression) stconverter.STExpressio
 			}}
 	}
 
+	fmt.Println("WARNING: I couldn't solve guard \"", stconverter.CCompileExpression(problem), "\"")
+
 	return nil
 }
