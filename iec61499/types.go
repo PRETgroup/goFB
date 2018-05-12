@@ -49,8 +49,21 @@ type InterfaceList struct {
 	OutputVars   []Variable `xml:"InterfaceList>OutputVars>VarDeclaration,omitempty"`
 }
 
-//HasOutput will check a given InterfaceList to see if it has an output of that name
-func (il InterfaceList) HasOutput(s string) bool {
+//HasIONamed will check a given InterfaceList to see if it has an output of that name
+func (il InterfaceList) HasIONamed(input bool, s string) bool {
+	if input {
+		for i := 0; i < len(il.EventInputs); i++ {
+			if il.EventInputs[i].Name == s {
+				return true
+			}
+		}
+		for i := 0; i < len(il.InputVars); i++ {
+			if il.InputVars[i].Name == s {
+				return true
+			}
+		}
+		return false
+	}
 	for i := 0; i < len(il.EventOutputs); i++ {
 		if il.EventOutputs[i].Name == s {
 			return true

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
-<FBType Name="AB5Policy" Comment="">
+<FBType Name="AB5Controller" Comment="">
 	<Identification Standard="61499-2"></Identification>
 	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
 	<CompilerInfo header="" classdef=""></CompilerInfo>

@@ -1,10 +1,14 @@
-basicFB AB5Policy;
-interface of AB5Policy {
+basicFB AB5Controller;
+interface of AB5Controller {
 	in event A;  //in here means that they're going from PLANT to CONTROLLER
 	out event B; //out here means that they're going from CONTROLLER to PLANT
 }
 
-policy AB5 of AB5Policy {
+architecture of AB5Controller {
+	//nothing, so it obviously doesn't work
+}
+
+policy AB5 of AB5Controller {
 	internals {
 		dtimer v;
 	}

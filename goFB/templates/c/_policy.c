@@ -8,7 +8,7 @@
 			({{$cond := getCECCTransitionCondition $block $tr.Condition}}{{$cond.IfCond}})) {
 			//transition {{$tr.Source}} -> {{$tr.Destination}} on {{$tr.Condition}}
 			//select a transition to solve the problem
-			{{$solution := $pfbEnf.InputPolicy.SolveViolationTransition $tr}}
+			{{$solution := $pfbEnf.SolveViolationTransition $tr true}}
 			{{if $solution.Comment}}//{{$solution.Comment}}{{end}}
 			{{if $solution.Expression}}{{$sol := getCECCTransitionCondition $block $solution.Expression}}{{$sol.IfCond}};{{end}}
 		} {{end}}
@@ -27,9 +27,9 @@
 			({{$cond := getCECCTransitionCondition $block $tr.Condition}}{{$cond.IfCond}})) {
 			//transition {{$tr.Source}} -> {{$tr.Destination}} on {{$tr.Condition}}
 			//select a transition to solve the problem
-			{{$solution := $pfbEnf.OutputPolicy.SolveViolationTransition $tr}}
+			{{$solution := $pfbEnf.SolveViolationTransition $tr false}}
 			{{if $solution.Comment}}//{{$solution.Comment}}{{end}}
-			{{if $solution.Expression}}//{{$sol := getCECCTransitionCondition $block $solution.Expression}}{{$sol.IfCond}};{{end}}
+			{{if $solution.Expression}}{{$sol := getCECCTransitionCondition $block $solution.Expression}}{{$sol.IfCond}};{{end}}
 		} {{end}}
 
 		//advance timers
