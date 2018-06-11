@@ -181,47 +181,47 @@ const trainCtrlFBT = `<?xml version="1.0" encoding="UTF-8"?>
 var trainCtrlChains = []EventChain{
 	EventChain{InputName: "SysReady",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "init", Destination: "idle", Condition: "SysReady", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "init", Destination: "idle", Condition: "SysReady"}, OutputEvents: []string{"SChange"}}}}},
 	EventChain{InputName: "RiChange",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "i_allow_train_entrance_0", Condition: "RiChange && RiReq == true", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string(nil)}, EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_0", Destination: "i_allow_train_entrance_s", Condition: "busyS == false && DsPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"WChange", "SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "i_allow_train_entrance_0", Condition: "RiChange && RiReq == true", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string(nil)}, EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_0", Destination: "i_allow_train_entrance_n", Condition: "busyN == false && DnPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"WChange", "SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "i_allow_train_entrance_0", Condition: "RiChange && RiReq == true", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string(nil)}, EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_0", Destination: "idle", Condition: "true", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "i_allow_train_entrance_0", Condition: "RiChange && RiReq == true"}, OutputEvents: []string(nil)}, EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_0", Destination: "i_allow_train_entrance_s", Condition: "busyS == false && DsPrs == false"}, OutputEvents: []string{"WChange", "SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "i_allow_train_entrance_0", Condition: "RiChange && RiReq == true"}, OutputEvents: []string(nil)}, EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_0", Destination: "i_allow_train_entrance_n", Condition: "busyN == false && DnPrs == false"}, OutputEvents: []string{"WChange", "SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "i_allow_train_entrance_0", Condition: "RiChange && RiReq == true"}, OutputEvents: []string(nil)}, EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_0", Destination: "idle", Condition: "true"}, OutputEvents: []string{"SChange"}}}}},
 	EventChain{InputName: "RnChange",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "n_allow_train_exit_0", Condition: "RnChange && RnReq == true", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"WChange", "SChange"}}}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "n_allow_train_exit_0", Condition: "RnChange && RnReq == true"}, OutputEvents: []string{"WChange", "SChange"}}}}},
 	EventChain{InputName: "RsChange",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "s_allow_train_exit_0", Condition: "RsChange && RsReq == true", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"WChange", "SChange"}}}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "idle", Destination: "s_allow_train_exit_0", Condition: "RsChange && RsReq == true"}, OutputEvents: []string{"WChange", "SChange"}}}}},
 	EventChain{InputName: "DwiChange",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_s", Destination: "i_allow_train_entrance_s_passed_first_signal", Condition: "DwiChange && DwiPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_n", Destination: "i_allow_train_entrance_n_passed_first_signal", Condition: "DwiChange && DwiPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_s", Destination: "i_allow_train_entrance_s_passed_first_signal", Condition: "DwiChange && DwiPrs == false"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_n", Destination: "i_allow_train_entrance_n_passed_first_signal", Condition: "DwiChange && DwiPrs == false"}, OutputEvents: []string{"SChange"}}}}},
 	EventChain{InputName: "DwoChange",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "n_allow_train_exit_passed_first_signal", Destination: "idle", Condition: "DwoChange && DwoPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "s_allow_train_exit_passed_first_signal", Destination: "idle", Condition: "DwoChange && DwoPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "n_allow_train_exit_passed_first_signal", Destination: "idle", Condition: "DwoChange && DwoPrs == false"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "s_allow_train_exit_passed_first_signal", Destination: "idle", Condition: "DwoChange && DwoPrs == false"}, OutputEvents: []string{"SChange"}}}}},
 	EventChain{InputName: "DwnChange",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "n_allow_train_exit_0", Destination: "n_allow_train_exit_passed_first_signal", Condition: "DwnChange && DwnPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_n_passed_first_signal", Destination: "idle", Condition: "DwnChange && DwnPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "n_allow_train_exit_0", Destination: "n_allow_train_exit_passed_first_signal", Condition: "DwnChange && DwnPrs == false"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_n_passed_first_signal", Destination: "idle", Condition: "DwnChange && DwnPrs == false"}, OutputEvents: []string{"SChange"}}}}},
 	EventChain{InputName: "DwsChange",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "s_allow_train_exit_0", Destination: "s_allow_train_exit_passed_first_signal", Condition: "DwsChange && DwsPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_s_passed_first_signal", Destination: "idle", Condition: "DwsChange && DwsPrs == false", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "s_allow_train_exit_0", Destination: "s_allow_train_exit_passed_first_signal", Condition: "DwsChange && DwsPrs == false"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_s_passed_first_signal", Destination: "idle", Condition: "DwsChange && DwsPrs == false"}, OutputEvents: []string{"SChange"}}}}},
 	EventChain{InputName: "DnChange",
 		OutputTraces: []EventTrace(nil)},
 	EventChain{InputName: "DsChange",
 		OutputTraces: []EventTrace(nil)},
 	EventChain{InputName: "abort",
 		OutputTraces: []EventTrace{
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "n_allow_train_exit_0", Destination: "idle", Condition: "abort", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "n_allow_train_exit_passed_first_signal", Destination: "idle", Condition: "abort", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "s_allow_train_exit_0", Destination: "idle", Condition: "abort", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "s_allow_train_exit_passed_first_signal", Destination: "idle", Condition: "abort", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_s", Destination: "idle", Condition: "abort", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_n", Destination: "idle", Condition: "abort", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}},
-			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_n_passed_first_signal", Destination: "idle", Condition: "abort", X: "", Y: "", DebugInfo: iec61499.DebugInfo{SourceLine: 0, SourceFile: ""}}, OutputEvents: []string{"SChange"}}}}}}
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "n_allow_train_exit_0", Destination: "idle", Condition: "abort"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "n_allow_train_exit_passed_first_signal", Destination: "idle", Condition: "abort"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "s_allow_train_exit_0", Destination: "idle", Condition: "abort"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "s_allow_train_exit_passed_first_signal", Destination: "idle", Condition: "abort"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_s", Destination: "idle", Condition: "abort"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_n", Destination: "idle", Condition: "abort"}, OutputEvents: []string{"SChange"}}},
+			EventTrace{EventTraceStep{InboundTransition: iec61499.ECTransition{Source: "i_allow_train_entrance_n_passed_first_signal", Destination: "idle", Condition: "abort"}, OutputEvents: []string{"SChange"}}}}}}
 
 func TestDeriveBFBEventChainSet(t *testing.T) {
 	trainCtrlFB := iec61499.FB{}
