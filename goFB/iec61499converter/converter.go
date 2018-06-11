@@ -8,6 +8,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/PRETgroup/goFB/goFB/eca"
 	"github.com/PRETgroup/goFB/iec61499"
 )
 
@@ -18,7 +19,7 @@ type Converter struct {
 
 	ConverterSettings
 
-	InstG []InstanceNode
+	InstG []eca.InstanceNode
 
 	outputLanguage language
 	templates      *template.Template
@@ -115,7 +116,7 @@ type OutputFile struct {
 type TemplateData struct {
 	ConverterSettings
 
-	InstG []InstanceNode
+	InstG []eca.InstanceNode
 
 	BlockIndex int
 	Blocks     []iec61499.FB
@@ -196,7 +197,7 @@ func (c *Converter) flattenFromCFB(parentCFB *iec61499.FB) error {
 
 	for i := 0; i < len(parentCFB.CompositeFB.FBs); i++ {
 		t := parentCFB.CompositeFB.FBs[i].Type
-		childFB := findBlockDefinitionForType(c.Blocks, t)
+		childFB := iec61499.FindBlockDefinitionForType(c.Blocks, t)
 		if childFB.CompositeFB != nil {
 			c.extractChildrenFromCFBChild(parentCFB, childFB, parentCFB.CompositeFB.FBs[i])
 			i--
@@ -369,12 +370,12 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 		}
 
 		if c.EventQueue {
-			err := ComputeFBChildrenCounts(c.Blocks)
+			err := eca.ComputeFBChildrenCounts(c.Blocks)
 			if err != nil {
 				return nil, err
 			}
 
-			c.InstG, err = FBToInstanceGraph(&c.Blocks[topIndex], c.Blocks, c.topName, 0, 0)
+			c.InstG, err = eca.FBToInstanceGraph(&c.Blocks[topIndex], c.Blocks, c.topName, 0, 0)
 			if err != nil {
 				return nil, err
 			}

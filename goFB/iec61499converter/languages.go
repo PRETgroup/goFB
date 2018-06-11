@@ -5,6 +5,9 @@ import (
 	"path"
 	"strings"
 	"text/template"
+
+	"github.com/PRETgroup/goFB/goFB/eca"
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 type language string
@@ -103,7 +106,7 @@ var (
 		"compileAlgorithm": cCompileAlgorithm,
 
 		"getCECCTransitionCondition":      getCECCTransitionCondition,
-		"findBlockDefinitionForType":      findBlockDefinitionForType,
+		"findBlockDefinitionForType":      iec61499.FindBlockDefinitionForType,
 		"renameCEventDestinationLocation": renameCEventDestinationLocation,
 		"renameCEventSourceLocation":      renameCEventSourceLocation,
 		"findSourceDataName":              findSourceDataName,
@@ -111,7 +114,7 @@ var (
 		"findDestsEventName":              findDestsEventName,
 		"connChildSourceOnly":             connChildSourceOnly,
 		"strToUpper":                      strToUpper,
-		"findVarDefinitionForName":        findVarDefinitionForName,
+		"findVarDefinitionForName":        iec61499.FindVarDefinitionForName,
 		"connIsOnParent":                  connIsOnParent,
 		"nextPossibleECCStates":           nextPossibleECCStates,
 		"findAlgorithmFromName":           findAlgorithmFromName,
@@ -119,8 +122,8 @@ var (
 
 		//eventMoC functions
 		"getOutputEventPortID": getOutputEventPortID,
-		"findDestinations":     findDestinations,
-		"findSources":          findSources,
+		"findDestinations":     eca.FindDestinations,
+		"findSources":          eca.FindSources,
 		"instIDToName":         instIDToName,
 		//"getInstanceGraphAsList": getInstanceGraphAsList,
 

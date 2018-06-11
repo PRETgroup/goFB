@@ -2,8 +2,6 @@ package iec61499converter
 
 import (
 	"strings"
-
-	"github.com/PRETgroup/goFB/iec61499"
 )
 
 //connChildSourceOnly is used in templates for getting rid of prefix stuff on connections
@@ -51,35 +49,6 @@ func count(a int) []int {
 	return b
 }
 
-func findBlockDefinitionForType(bs []iec61499.FB, t string) *iec61499.FB {
-	for _, b := range bs {
-		if b.Name == t {
-			return &b
-		}
-	}
-	return nil
-}
-
 func strToUpper(s string) string {
 	return strings.ToUpper(s)
-}
-
-func findVarDefinitionForName(b iec61499.FB, n string) *iec61499.Variable {
-	if b.InputVars != nil {
-		for _, varD := range b.InputVars {
-			if varD.Name == n {
-				return &varD
-			}
-		}
-	}
-
-	if b.OutputVars != nil {
-		for _, varD := range b.OutputVars {
-			if varD.Name == n {
-				return &varD
-			}
-		}
-	}
-
-	return nil
 }

@@ -1,4 +1,4 @@
-package iec61499converter
+package eca
 
 import (
 	"errors"
@@ -40,7 +40,7 @@ func GetFBChildrenCounts(fb *iec61499.FB, fbs []iec61499.FB) (int, error) {
 	}
 
 	for _, childFBRef := range children {
-		childFBType := findBlockDefinitionForType(fbs, childFBRef.Type)
+		childFBType := iec61499.FindBlockDefinitionForType(fbs, childFBRef.Type)
 		if childFBType == nil {
 			return 0, errors.New("Couldn't find instance type")
 		}
@@ -93,7 +93,7 @@ func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, 
 	instanceOffset := 1
 
 	for _, childFBRef := range children {
-		childFBType := findBlockDefinitionForType(fbs, childFBRef.Type)
+		childFBType := iec61499.FindBlockDefinitionForType(fbs, childFBRef.Type)
 		if childFBType == nil {
 			return nil, errors.New("Couldn't find instance type")
 		}
@@ -118,10 +118,10 @@ type InstanceConnection struct {
 	PortName   string //name of port on instance
 }
 
-//findDestinations : Given an instance and an output port, find the instances where that port go
-func findDestinations(fromInstanceID int, fromName string, instG []InstanceNode, fbs []iec61499.FB) []InstanceConnection {
+//FindDestinations : Given an instance and an output port, find the instances where that port go
+func FindDestinations(fromInstanceID int, fromName string, instG []InstanceNode, fbs []iec61499.FB) []InstanceConnection {
 	myInst := instG[fromInstanceID]
-	me := findBlockDefinitionForType(fbs, myInst.FBType)
+	me := iec61499.FindBlockDefinitionForType(fbs, myInst.FBType)
 	if me == nil {
 		return nil
 	}
@@ -136,7 +136,7 @@ func findDestinations(fromInstanceID int, fromName string, instG []InstanceNode,
 		var unresolvedConn InstanceConnection
 		unresolvedConn, unresolvedConns = unresolvedConns[0], unresolvedConns[1:]
 		examineInst := instG[unresolvedConn.InstanceID]
-		examineFB := findBlockDefinitionForType(fbs, examineInst.FBType)
+		examineFB := iec61499.FindBlockDefinitionForType(fbs, examineInst.FBType)
 		if examineFB == nil {
 			//whoops, something bad has happened, we can't resolve the instance ID
 			return nil
@@ -216,10 +216,10 @@ func findDestinations(fromInstanceID int, fromName string, instG []InstanceNode,
 	return destinationConns
 }
 
-//findSources : Given an instance and an input port, find the instances where that port comes from
-func findSources(toInstanceID int, toName string, instG []InstanceNode, fbs []iec61499.FB) []InstanceConnection {
+//FindSources : Given an instance and an input port, find the instances where that port comes from
+func FindSources(toInstanceID int, toName string, instG []InstanceNode, fbs []iec61499.FB) []InstanceConnection {
 	myInst := instG[toInstanceID]
-	me := findBlockDefinitionForType(fbs, myInst.FBType)
+	me := iec61499.FindBlockDefinitionForType(fbs, myInst.FBType)
 	if me == nil {
 		return nil
 	}
@@ -234,7 +234,7 @@ func findSources(toInstanceID int, toName string, instG []InstanceNode, fbs []ie
 		var unresolvedConn InstanceConnection
 		unresolvedConn, unresolvedConns = unresolvedConns[0], unresolvedConns[1:]
 		examineInst := instG[unresolvedConn.InstanceID]
-		examineFB := findBlockDefinitionForType(fbs, examineInst.FBType)
+		examineFB := iec61499.FindBlockDefinitionForType(fbs, examineInst.FBType)
 		if examineFB == nil {
 			//whoops, something bad has happened, we can't resolve the instance ID
 			return nil

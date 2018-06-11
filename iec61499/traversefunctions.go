@@ -192,6 +192,37 @@ conns:
 	return connAndTypes, nil
 }
 
+//FindBlockDefinitionForType will search a list of FBs for a given name and return that block
+func FindBlockDefinitionForType(bs []FB, t string) *FB {
+	for _, b := range bs {
+		if b.Name == t {
+			return &b
+		}
+	}
+	return nil
+}
+
+//FindVarDefinitionForName will search a given block IO vars for a given variable
+func FindVarDefinitionForName(b FB, n string) *Variable {
+	if b.InputVars != nil {
+		for _, varD := range b.InputVars {
+			if varD.Name == n {
+				return &varD
+			}
+		}
+	}
+
+	if b.OutputVars != nil {
+		for _, varD := range b.OutputVars {
+			if varD.Name == n {
+				return &varD
+			}
+		}
+	}
+
+	return nil
+}
+
 //GetGlobalConnectionList when given a network of FBs, it returns the list of all connections globally
 func GetGlobalConnectionList(blocks []FB) []ConnectionWithType {
 	return nil

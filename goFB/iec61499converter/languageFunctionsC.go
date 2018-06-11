@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/PRETgroup/goFB/goFB/eca"
 	"github.com/PRETgroup/goFB/goFB/stconverter"
 	"github.com/PRETgroup/goFB/iec61499"
 )
@@ -437,13 +438,13 @@ type InvokedEventVarCopy struct {
 	DestVar   string
 }
 
-func getInvokedEventCopyInformation(instanceID int, portID int, instG []InstanceNode, blocks []iec61499.FB) InvokedEventCopyInformation {
+func getInvokedEventCopyInformation(instanceID int, portID int, instG []eca.InstanceNode, blocks []iec61499.FB) InvokedEventCopyInformation {
 	//this is quite complicated, as we need to traverse all blocks and try and determine which blocks have inputs that source from
 	return InvokedEventCopyInformation{}
 }
 
 //instIDToName converts an instance ID into a full usable C name
-func instIDToName(instanceID int, instG []InstanceNode) string {
+func instIDToName(instanceID int, instG []eca.InstanceNode) string {
 	inst := &instG[instanceID]
 
 	name := inst.InstanceName
