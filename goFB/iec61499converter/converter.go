@@ -370,7 +370,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 		}
 
 		if c.EventQueue {
-			err := eca.ComputeFBChildrenCounts(c.Blocks)
+			err := iec61499.ComputeFBChildrenCounts(c.Blocks)
 			if err != nil {
 				return nil, err
 			}

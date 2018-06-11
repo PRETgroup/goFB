@@ -223,17 +223,51 @@ func FindVarDefinitionForName(b FB, n string) *Variable {
 	return nil
 }
 
-//GetGlobalConnectionList when given a network of FBs, it returns the list of all connections globally
-func GetGlobalConnectionList(blocks []FB) []ConnectionWithType {
+//ComputeFBChildrenCounts counts and stores all FB children in all FBtypes across the network
+func ComputeFBChildrenCounts(fbs []FB) error {
+	for i := 0; i < len(fbs); i++ {
+		fbs[i].NumChildren = -1 //mark uncounted
+	}
+
+	for i := 0; i < len(fbs); i++ {
+		_, err := GetFBChildrenCounts(&fbs[i], fbs)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
-//FindGlobalDataDestinations will find the external destinations of data to an output port connections
-func FindGlobalDataDestinations(fb FB, portName string, blocks []FB) []string {
-	return nil
-}
+//GetFBChildrenCounts recursively counts the number of fbChildren a fbtype has
+func GetFBChildrenCounts(fb *FB, fbs []FB) (int, error) {
+	if fb.NumChildren != -1 {
+		return fb.NumChildren, nil
+	}
+	count := 0
+	//define the unprocessed children
+	children := make([]FBReference, 0)
 
-//FindGlobalEventDestinations will find the external destinations for output port connections
-func FindGlobalEventDestinations(fb FB, portName string, blocks []FB) []string {
-	return nil
+	if fb.CompositeFB != nil {
+		children = append(children, fb.CompositeFB.FBs...)
+	}
+
+	if fb.Resources != nil {
+		children = append(children, fb.Resources...)
+	}
+
+	for _, childFBRef := range children {
+		childFBType := FindBlockDefinitionForType(fbs, childFBRef.Type)
+		if childFBType == nil {
+			return 0, errors.New("Couldn't find instance type")
+		}
+
+		nChi, err := GetFBChildrenCounts(childFBType, fbs)
+		if err != nil {
+			return 0, err
+		}
+		count += nChi + 1
+	}
+
+	fb.NumChildren = count
+	return count, nil
 }
