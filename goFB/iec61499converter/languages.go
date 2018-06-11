@@ -121,10 +121,10 @@ var (
 		"findEventPortForName":            findEventPortForName,
 
 		//eventMoC functions
-		"getOutputEventPortID": getOutputEventPortID,
+		"getOutputEventPortID": eca.GetOutputEventPortID,
 		"findDestinations":     eca.FindDestinations,
 		"findSources":          eca.FindSources,
-		"instIDToName":         instIDToName,
+		"instIDToName":         eca.InstIDToName,
 		//"getInstanceGraphAsList": getInstanceGraphAsList,
 
 		//cvode functions

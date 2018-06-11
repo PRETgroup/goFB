@@ -3,10 +3,8 @@ package iec61499converter
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 
-	"github.com/PRETgroup/goFB/goFB/eca"
 	"github.com/PRETgroup/goFB/goFB/stconverter"
 	"github.com/PRETgroup/goFB/iec61499"
 )
@@ -404,56 +402,6 @@ func parseOdeRunAlgo(s string) CvodeTick {
 //  function and this function only, instead, we have to refer to them using the NV_Ith_S(ode_solution, index) notation
 func fixOdeVarNameInF(curEval string, name string, index int) string {
 	return strings.Replace(curEval, "me->"+name, fmt.Sprintf("NV_Ith_S(ode_solution, %v)", index), -1)
-}
-
-//getOutputEventPortID is used in the EventMoC for calculating PortIDs when emitting output events
-func getOutputEventPortID(fb iec61499.FB, name string) string {
-	for i, oE := range fb.EventOutputs {
-		if oE.Name == name {
-			return strconv.Itoa(i)
-		}
-	}
-	return ""
-}
-
-//getInstanceGraphAsList is used in the EventMoC for flattening the instance graph for easy iteration
-// func getInstanceGraphAsList(instG InstanceGraph) []InstanceGraph {
-// 	ig := make([]InstanceGraph, 0, 1)
-// 	ig = append(ig, instG)
-// 	for _, chiIg := range instG.ChildNodes {
-// 		ig = append(ig, getInstanceGraphAsList(chiIg)...)
-// 	}
-// 	return ig
-//}
-
-//InvokedEventCopyInformation is used to provide information on all data that should be copied when a certain event is invoked
-type InvokedEventCopyInformation struct {
-	EventDestinations []string
-	VarCopies         []InvokedEventVarCopy
-}
-
-//InvokedEventVarCopy is used to provide information on data ports that are copied when a certain event is invoked
-type InvokedEventVarCopy struct {
-	SourceVar string
-	DestVar   string
-}
-
-func getInvokedEventCopyInformation(instanceID int, portID int, instG []eca.InstanceNode, blocks []iec61499.FB) InvokedEventCopyInformation {
-	//this is quite complicated, as we need to traverse all blocks and try and determine which blocks have inputs that source from
-	return InvokedEventCopyInformation{}
-}
-
-//instIDToName converts an instance ID into a full usable C name
-func instIDToName(instanceID int, instG []eca.InstanceNode) string {
-	inst := &instG[instanceID]
-
-	name := inst.InstanceName
-	for inst.ParentID != inst.InstanceID {
-		inst = &instG[inst.ParentID]
-		name = inst.InstanceName + "." + name
-	}
-
-	return name
 }
 
 //getPolicyEnfInfo will get a PFBEnforcer for a given policy

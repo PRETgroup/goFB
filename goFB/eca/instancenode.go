@@ -2,6 +2,7 @@ package eca
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 
 	"github.com/PRETgroup/goFB/iec61499"
@@ -312,4 +313,27 @@ func FindSources(toInstanceID int, toName string, instG []InstanceNode, fbs []ie
 
 	//job's done
 	return sourceConns
+}
+
+//InstIDToName converts an instance ID into a full usable C name
+func InstIDToName(instanceID int, instG []InstanceNode) string {
+	inst := &instG[instanceID]
+
+	name := inst.InstanceName
+	for inst.ParentID != inst.InstanceID {
+		inst = &instG[inst.ParentID]
+		name = inst.InstanceName + "." + name
+	}
+
+	return name
+}
+
+//GetOutputEventPortID is used in the EventMoC for calculating PortIDs when emitting output events
+func GetOutputEventPortID(fb iec61499.FB, name string) string {
+	for i, oE := range fb.EventOutputs {
+		if oE.Name == name {
+			return strconv.Itoa(i)
+		}
+	}
+	return ""
 }
