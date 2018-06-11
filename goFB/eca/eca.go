@@ -91,14 +91,14 @@ func DeriveBFBEventChainSet(fb iec61499.FB) ([]EventChain, error) {
 								}
 								if instantaneous == true {
 									if firstFound == false {
-										//this is the first finding, so add it to this searchTrace
+										//this is the first finding, so add it to this searchTrace (a linear addition to the trace)
 										searchTraces[i] = append(searchTraces[i], EventTraceStep{
 											InboundTransition: tr,
 										})
-										i--
-										firstFound = true
+										i--               //we subtract one from i here to indicate that this searchTrace isn't yet complete (so it will be rechecked on next loop iteration)
+										firstFound = true //we can only do this linear addition once, any other discovery must make a new searchTrace
 									} else {
-										//otherwise, continue on the next searchTrace
+										//otherwise, continue on the next searchTrace (this is a branching addition to the trace)
 										tempSearch := make(EventTrace, len(searchTraces[i+1])-1)
 										copy(tempSearch, searchTraces[i+1][:len(searchTraces[i+1])-1])
 										tempSearch = append(tempSearch, EventTraceStep{
