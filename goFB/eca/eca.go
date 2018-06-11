@@ -2,6 +2,7 @@ package eca
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/PRETgroup/goFB/iec61499"
@@ -90,6 +91,18 @@ func DeriveBFBEventChainSet(fb iec61499.FB) ([]EventChain, error) {
 									}
 								}
 								if instantaneous == true {
+									//check destination of transition (make sure we've not been at this state before, else we have an instantaneous self-loop / an infinite loop)
+									firstI := 0
+									if firstFound {
+										firstI = 1
+									}
+									for _, traceStep := range searchTraces[i+firstI] {
+										if traceStep.GetECStateName() == tr.Destination {
+											//we've been here before!
+											return nil, fmt.Errorf("error in Block '%s', instataneous self-loop to state '%s'", fb.Name, tr.Destination)
+										}
+									}
+
 									if firstFound == false {
 										//this is the first finding, so add it to this searchTrace (a linear addition to the trace)
 										searchTraces[i] = append(searchTraces[i], EventTraceStep{

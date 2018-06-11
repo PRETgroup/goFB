@@ -274,3 +274,22 @@ func TestDeriveBFBEventChainSet(t *testing.T) {
 		}
 	}
 }
+
+func TestDeriveBFBEventChainSet_SelfLoopError(t *testing.T) {
+	trainCtrlFB := iec61499.FB{}
+	if err := xml.Unmarshal([]byte(trainCtrlFBT), &trainCtrlFB); err != nil {
+		t.Fatal("Couldn't unmarshal test TrainCtrl XML:", err.Error())
+	}
+
+	//add a bad (infinite loop) transition
+	trainCtrlFB.BasicFB.Transitions = append(trainCtrlFB.BasicFB.Transitions, iec61499.ECTransition{
+		Source:      "i_allow_train_entrance_s",
+		Destination: "i_allow_train_entrance_0",
+		Condition:   "true",
+	})
+
+	_, err := DeriveBFBEventChainSet(trainCtrlFB)
+	if err == nil {
+		t.Fatal("Error: an instantaneous self-loop should have been detected")
+	}
+}
