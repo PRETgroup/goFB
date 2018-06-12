@@ -194,7 +194,11 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 			return nil, errors.New("Bad FB set")
 		}
 		if instFBT.BasicFB != nil {
-
+			//TODO: load the possible output events for this bfb given this input invokation
+			//TODO: Then, queue the destinations those events go to
+			//TODO: And, make sure you're tracing everything at the same time
+			//TODO: Look at how DeriveBFBEventChainSet does it for inspiration
+			//TODO: (Specifically, lines 66 onward)
 		}
 	}
 
