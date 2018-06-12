@@ -135,6 +135,25 @@ func DeriveBFBEventChainSet(fb iec61499.FB) ([]EventChain, error) {
 	return chains, nil
 }
 
+//DeriveAllBFBEventChainSets will call DeriveBFBEventChainSet on all BFBs in a set and store it in a helpful map
+func DeriveAllBFBEventChainSets(instG []InstanceNode, fbs []iec61499.FB) (map[int][]EventChain, error) {
+	allChains := make(map[int][]EventChain)
+	for instID, inst := range instG {
+		instFBT := iec61499.FindBlockDefinitionForType(fbs, inst.FBType)
+		if instFBT == nil {
+			return nil, errors.New("Bad FB set")
+		}
+		if instFBT.BasicFB != nil {
+			dat, err := DeriveBFBEventChainSet(*instFBT)
+			if err != nil {
+				return nil, err
+			}
+			allChains[instID] = dat
+		}
+	}
+	return allChains, nil
+}
+
 //ListSIFBEventSources will scan a set of blocks and an instance graph and will return a set of InstanceConnections which
 //reflect possible event sources (ie output events on SIFBs)
 func ListSIFBEventSources(instG []InstanceNode, fbs []iec61499.FB) ([]InstanceConnection, error) {
@@ -154,4 +173,30 @@ func ListSIFBEventSources(instG []InstanceNode, fbs []iec61499.FB) ([]InstanceCo
 		}
 	}
 	return conns, nil
+}
+
+//InstanceInvocationTrace provides a possible trace of events in an instance graph
+type InstanceInvocationTrace struct {
+	Events []InstanceConnection
+}
+
+//DeriveInstanceInvocationTraceSet will list all possible InstanceInvocationTraces for a given input event
+func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int][]EventChain) ([]InstanceInvocationTrace, error) {
+	destinations := FindDestinations(source.InstanceID, source.PortName, instG, fbs)
+
+	//foreach destination, match it in the BFB chain set
+	for _, destination := range destinations {
+		//all destinations in destinations should be the penultimate connection
+		//if they are BFBs, they can continue spawning events
+		destType := instG[destination.InstanceID].FBType
+		instFBT := iec61499.FindBlockDefinitionForType(fbs, destType)
+		if instFBT == nil {
+			return nil, errors.New("Bad FB set")
+		}
+		if instFBT.BasicFB != nil {
+
+		}
+	}
+
+	return nil, errors.New("Not yet implemented")
 }
