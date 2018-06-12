@@ -21,10 +21,7 @@ type FB struct {
 
 	VersionInfo VersionInfo
 
-	CompilerInfo struct {
-		Header   string `xml:"header,attr"`
-		Classdef string `xml:"classdef,attr"`
-	}
+	CompilerInfo CompilerInfo
 	//interface
 	InterfaceList
 
@@ -88,6 +85,12 @@ func (f FB) IsSIFB() bool {
 //Identification identifies what version of the standard is being used
 type Identification struct {
 	Standard string `xml:"Standard,attr"`
+}
+
+//CompilerInfo is used when compiling by some 61499 compilers (but not goFB)
+type CompilerInfo struct {
+	Header   string `xml:"header,attr"`
+	Classdef string `xml:"classdef,attr"`
 }
 
 //VersionInfo is used to provide metadata about the fb's version

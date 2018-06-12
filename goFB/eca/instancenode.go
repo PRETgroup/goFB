@@ -17,8 +17,35 @@ type InstanceNode struct {
 	ChildNodeIDs []int
 }
 
-//FBToInstanceGraph will construct the []InstanceNode for a given FB network
-func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, myInstanceID int, parentID int) ([]InstanceNode, error) {
+//CreateInstanceGraph will construct the []InstanceNode for a given FB network
+//This represents a one-dimensional slice with all hierarchical linking information stored in a convenient manner
+//It also creates a unique ID for each "instance" of a block, separate from each definition of a block
+func CreateInstanceGraph(fbs []iec61499.FB, topName string) ([]InstanceNode, error) {
+	if err := iec61499.ComputeFBChildrenCounts(fbs); err != nil {
+		return nil, err
+	}
+
+	//find the top block
+	top := -1
+	for i := 0; i < len(fbs); i++ {
+		if fbs[i].Name == topName {
+			top = i
+			break
+		}
+	}
+	if top == -1 {
+		return nil, errors.New("Couldn't find top-level block in fbs")
+	}
+
+	instG, err := fbToInstanceGraph(&fbs[top], fbs, topName, 0, 0)
+	if err != nil {
+		return nil, err
+	}
+	return instG, nil
+}
+
+//fbToInstanceGraph will construct the []InstanceNode for a given FB network
+func fbToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, myInstanceID int, parentID int) ([]InstanceNode, error) {
 	nodes := make([]InstanceNode, 0)
 
 	me := InstanceNode{
@@ -51,7 +78,7 @@ func FBToInstanceGraph(fb *iec61499.FB, fbs []iec61499.FB, instanceName string, 
 		}
 
 		childInstanceID := myInstanceID + instanceOffset
-		chi, err := FBToInstanceGraph(childFBType, fbs, childFBRef.Name, childInstanceID, myInstanceID)
+		chi, err := fbToInstanceGraph(childFBType, fbs, childFBRef.Name, childInstanceID, myInstanceID)
 		if err != nil {
 			return nil, err
 		}

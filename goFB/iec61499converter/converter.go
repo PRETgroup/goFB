@@ -370,15 +370,14 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 		}
 
 		if c.EventQueue {
-			err := iec61499.ComputeFBChildrenCounts(c.Blocks)
+			var err error
+			c.InstG, err = eca.CreateInstanceGraph(c.Blocks, c.topName)
 			if err != nil {
 				return nil, err
 			}
 
-			c.InstG, err = eca.FBToInstanceGraph(&c.Blocks[topIndex], c.Blocks, c.topName, 0, 0)
-			if err != nil {
-				return nil, err
-			}
+			dat, _ := eca.ListSIFBEventSources(c.InstG, c.Blocks)
+			fmt.Printf("\n\n%#v\n", dat)
 		}
 	}
 

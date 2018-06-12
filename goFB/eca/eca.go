@@ -134,3 +134,24 @@ func DeriveBFBEventChainSet(fb iec61499.FB) ([]EventChain, error) {
 
 	return chains, nil
 }
+
+//ListSIFBEventSources will scan a set of blocks and an instance graph and will return a set of InstanceConnections which
+//reflect possible event sources (ie output events on SIFBs)
+func ListSIFBEventSources(instG []InstanceNode, fbs []iec61499.FB) ([]InstanceConnection, error) {
+	conns := make([]InstanceConnection, 0)
+	for instID, inst := range instG {
+		instFBT := iec61499.FindBlockDefinitionForType(fbs, inst.FBType)
+		if instFBT == nil {
+			return nil, errors.New("Bad FB set")
+		}
+		if instFBT.IsSIFB() {
+			for _, outpE := range instFBT.EventOutputs {
+				conns = append(conns, InstanceConnection{
+					InstanceID: instID,
+					PortName:   outpE.Name,
+				})
+			}
+		}
+	}
+	return conns, nil
+}
