@@ -376,8 +376,33 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 				return nil, err
 			}
 
-			dat, _ := eca.ListSIFBEventSources(c.InstG, c.Blocks)
-			fmt.Printf("\n\n%#v\n", dat)
+			longestTrace, err := eca.FindLongestTrace(c.Blocks, c.InstG)
+			if err != nil {
+				return nil, err
+			}
+
+			fmt.Printf("\tLongest Trace analysis:\n")
+			count := 0
+			ringCount := 0
+			bufferCount := 0
+			for i, step := range longestTrace {
+				fmt.Printf("\t[%3d]: ", i)
+				if step.EventPortInput {
+					fmt.Printf("(i)")
+					count--
+				} else {
+					fmt.Printf("(o)")
+					count++
+					bufferCount++
+					if count > ringCount {
+						ringCount = count
+					}
+				}
+				fmt.Printf("(%s)%s.%s\n", step.FBType, step.FBInstanceName, step.EventPortName)
+			}
+			fmt.Printf("\tREQUIRED EVENT RING BUFFER SIZE: %d elements\n", ringCount)
+			fmt.Printf("\tREQUIRED EVENT LINEAR BUFFER SIZE: %d elements\n", bufferCount)
+
 		}
 	}
 

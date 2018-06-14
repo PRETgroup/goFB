@@ -489,7 +489,12 @@ func TestDeriveAllTraceSets(t *testing.T) {
 		trainStationFBs = append(trainStationFBs, fb)
 	}
 
-	trainTraces, err := DeriveAllTraceSets(trainStationFBs, "Top")
+	trainInstG, err := CreateInstanceGraph(trainStationFBs, "Top")
+	if err != nil {
+		t.Fatal("There was an error, and there shouldn't have been (#1):", err.Error())
+	}
+
+	trainTraces, err := DeriveAllTraceSets(trainStationFBs, trainInstG)
 	if err != nil {
 		t.Fatal("There was an error, and there shouldn't have been (#1):", err.Error())
 	}
@@ -510,16 +515,8 @@ func TestDeriveAllTraceSets(t *testing.T) {
 	}
 
 	/*
-		//find the longest trace
-		longestLen := 0
-		longestI := 0
-		for i, trace := range set {
-			if len(trace.Queue) > longestLen {
-				longestLen = len(trace.Queue)
-				longestI = i
-			}
-		}
 
 
-	*/
+
+	 */
 }

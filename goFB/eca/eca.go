@@ -404,14 +404,8 @@ func (source InstanceConnection) ToInvokationTraceEventLocation(instG []Instance
 
 //DeriveAllTraceSets will derive all paths through an FB network, provided the top level block, and return them
 //as a two-dimensional set of InvokationTraceEventLocation, with possible traces in the down, and trace steps in the across.
-func DeriveAllTraceSets(fbs []iec61499.FB, topName string) ([][]InvokationTraceEventLocation, error) {
-	//first derive the instance graph
-	instG, err := CreateInstanceGraph(fbs, topName)
-	if err != nil {
-		return nil, errors.New("Problem deriving Instance Graph: " + err.Error())
-	}
-
-	//now derive the sources of all events
+func DeriveAllTraceSets(fbs []iec61499.FB, instG []InstanceNode) ([][]InvokationTraceEventLocation, error) {
+	//first derive the sources of all events
 	eventSources, err := ListSIFBEventSources(instG, fbs)
 	if err != nil {
 		return nil, errors.New("Problem deriving SIFB sources: " + err.Error())
@@ -449,4 +443,25 @@ func DeriveAllTraceSets(fbs []iec61499.FB, topName string) ([][]InvokationTraceE
 		}
 	}
 	return results, nil
+}
+
+//FindLongestTrace will derive all paths through an FB network, provided the top level block, and return
+//the single longest trace
+func FindLongestTrace(fbs []iec61499.FB, instG []InstanceNode) ([]InvokationTraceEventLocation, error) {
+	//first derive all traces
+	traces, err := DeriveAllTraceSets(fbs, instG)
+	if err != nil {
+		return nil, err
+	}
+
+	//find the longest trace
+	longestLen := 0
+	longestI := 0
+	for i, trace := range traces {
+		if len(trace) > longestLen {
+			longestLen = len(trace)
+			longestI = i
+		}
+	}
+	return traces[longestI], nil
 }
