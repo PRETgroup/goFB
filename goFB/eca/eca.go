@@ -8,12 +8,6 @@ import (
 	"github.com/PRETgroup/goFB/iec61499"
 )
 
-//An EventChain is used to indicate, when given an input event to a FB, what output events can be triggered with what traces
-type EventChain struct {
-	InputName    string
-	OutputTraces []EventTrace
-}
-
 //An EventTrace is a set of instantaneous EventTraceSteps
 type EventTrace []EventTraceStep
 
@@ -29,7 +23,7 @@ func (ets EventTraceStep) GetECStateName() string {
 }
 
 //DeriveBFBEventChainSet takes an IEC61499 FB and creates a set of events for that single FB
-func DeriveBFBEventChainSet(fb iec61499.FB) ([]EventChain, error) {
+func DeriveBFBEventChainSet(fb iec61499.FB) (map[string][]EventTrace, error) {
 	//1. For each INPUT EVENT to a FB, compute the set of possible OUTPUT EVENTS.
 	//* This is done by checking states which depend upon those inputs, and executing them to their penultimate state according to event semantics.
 
@@ -37,13 +31,14 @@ func DeriveBFBEventChainSet(fb iec61499.FB) ([]EventChain, error) {
 		return nil, errors.New("Can only derive Eventchain set for BFBs")
 	}
 
-	chains := make([]EventChain, 0)
+	chains := make(map[string][]EventTrace, 0)
 
 	//for each input event
 	for _, evI := range fb.InterfaceList.EventInputs {
-		chain := EventChain{
-			InputName: evI.Name,
-		}
+		chains[evI.Name] = make([]EventTrace, 0)
+		// chain := EventChain{
+		// 	InputName: evI.Name,
+		// }
 		//fmt.Printf("Input: %s\n", evI.Name)
 
 		//find all transitions that depend upon that event
@@ -127,17 +122,17 @@ func DeriveBFBEventChainSet(fb iec61499.FB) ([]EventChain, error) {
 					}
 				}
 			}
-			chain.OutputTraces = append(chain.OutputTraces, searchTraces...)
+			chains[evI.Name] = append(chains[evI.Name], searchTraces...)
 		}
-		chains = append(chains, chain)
+		//chains = append(chains, chain)
 	}
 
 	return chains, nil
 }
 
 //DeriveAllBFBEventChainSets will call DeriveBFBEventChainSet on all BFBs in a set and store it in a helpful map
-func DeriveAllBFBEventChainSets(instG []InstanceNode, fbs []iec61499.FB) (map[int][]EventChain, error) {
-	allChains := make(map[int][]EventChain)
+func DeriveAllBFBEventChainSets(instG []InstanceNode, fbs []iec61499.FB) (map[int]map[string][]EventTrace, error) {
+	allChains := make(map[int]map[string][]EventTrace)
 	for instID, inst := range instG {
 		instFBT := iec61499.FindBlockDefinitionForType(fbs, inst.FBType)
 		if instFBT == nil {
@@ -181,13 +176,22 @@ type InstanceInvocationTrace struct {
 }
 
 //DeriveInstanceInvocationTraceSet will list all possible InstanceInvocationTraces for a given input event
-func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int][]EventChain) ([]InstanceInvocationTrace, error) {
+func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int]map[string][]EventTrace) ([]InstanceInvocationTrace, error) {
 	destinations := FindDestinations(source.InstanceID, source.PortName, instG, fbs)
 
-	//foreach destination, match it in the BFB chain set
+	traces := make([][]InstanceConnection, 0)
+
+	//start the traces by creating a set of source-destination pairs
 	for _, destination := range destinations {
-		//all destinations in destinations should be the penultimate connection
-		//if they are BFBs, they can continue spawning events
+		traces = append(traces, []InstanceConnection{source, destination})
+	}
+
+	//foreach destination, match it in the BFB chain set
+	for i := 0; i < len(traces); i++ {
+		//grab the current destination node (the end of the current trace)
+		destination := traces[i][len(traces[i])-1]
+		//all destinations in traces should be penultimate connections (ie BFBs or SIFBs, not CFBs)
+		//if they are BFBs, they could continue spawning events in the trace
 		destType := instG[destination.InstanceID].FBType
 		instFBT := iec61499.FindBlockDefinitionForType(fbs, destType)
 		if instFBT == nil {
@@ -199,6 +203,10 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 			//TODO: And, make sure you're tracing everything at the same time
 			//TODO: Look at how DeriveBFBEventChainSet does it for inspiration
 			//TODO: (Specifically, lines 66 onward)
+			// bfbChains := allEventChains[destination.InstanceID]
+			// for _, chain := range bfbChains {
+			// 	if chain.InputName ==
+			// }
 		}
 	}
 
