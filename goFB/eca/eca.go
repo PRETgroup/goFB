@@ -23,8 +23,12 @@ func (ets EventTraceStep) GetECStateName() string {
 	return ets.InboundTransition.Destination
 }
 
-//DeriveBFBEventChainSet takes an IEC61499 FB and creates a set of events for that single FB
-func DeriveBFBEventChainSet(fb iec61499.FB) (map[string][]EventTrace, error) {
+//ChainOutputs are a slice of event outputs
+type ChainOutputs []string
+
+//DeriveBFBEventTraceSet takes an IEC61499 FB and creates a set of event output traces for that single FB
+//e.g. for input "A", trace "s1->s2->s3" emits "B", "C", and trace "s1->s4_s3" also emits "B", "C"
+func DeriveBFBEventTraceSet(fb iec61499.FB) (map[string][]EventTrace, error) {
 	//1. For each INPUT EVENT to a FB, compute the set of possible OUTPUT EVENTS.
 	//* This is done by checking states which depend upon those inputs, and executing them to their penultimate state according to event semantics.
 
@@ -131,9 +135,49 @@ func DeriveBFBEventChainSet(fb iec61499.FB) (map[string][]EventTrace, error) {
 	return chains, nil
 }
 
+//DeriveBFBEventChainSet takes an IEC61499 FB and creates a set of event outputs for that single FB, removing duplicates
+//e.g. for input "A", you will emit "B", "C"
+func DeriveBFBEventChainSet(fb iec61499.FB) (map[string][]ChainOutputs, error) {
+	traces, err := DeriveBFBEventTraceSet(fb)
+	if err != nil {
+		return nil, err
+	}
+	chains := make(map[string][]ChainOutputs)
+	for input, traces := range traces {
+		chainOutputSet := make([]ChainOutputs, 0)
+		for _, trace := range traces {
+			outputs := make(ChainOutputs, 0)
+			for _, traceStep := range trace {
+				outputs = append(outputs, traceStep.OutputEvents...)
+			}
+
+			//check to make sure that no existing chainOutput with this order of output events exists
+			match := false
+			for i := 0; i < len(chainOutputSet); i++ {
+				if len(chainOutputSet[i]) != len(outputs) {
+					continue
+				}
+				for j := 0; j < len(chainOutputSet[i]); j++ {
+					if chainOutputSet[i][j] != outputs[j] {
+						continue
+					}
+				}
+				//still here? exact match
+				match = true
+				break
+			}
+			if match == false {
+				chainOutputSet = append(chainOutputSet, outputs)
+			}
+		}
+		chains[input] = chainOutputSet
+	}
+	return chains, nil
+}
+
 //DeriveAllBFBEventChainSets will call DeriveBFBEventChainSet on all BFBs in a set and store it in a helpful map
-func DeriveAllBFBEventChainSets(instG []InstanceNode, fbs []iec61499.FB) (map[int]map[string][]EventTrace, error) {
-	allChains := make(map[int]map[string][]EventTrace)
+func DeriveAllBFBEventChainSets(instG []InstanceNode, fbs []iec61499.FB) (map[int]map[string][]ChainOutputs, error) {
+	allChains := make(map[int]map[string][]ChainOutputs)
 	for instID, inst := range instG {
 		instFBT := iec61499.FindBlockDefinitionForType(fbs, inst.FBType)
 		if instFBT == nil {
@@ -171,14 +215,12 @@ func ListSIFBEventSources(instG []InstanceNode, fbs []iec61499.FB) ([]InstanceCo
 	return conns, nil
 }
 
-//InstanceInvocationTrace provides a possible trace of events in an instance graph
-type InstanceInvocationTrace struct {
-	Events []InstanceConnection
-}
-
+//An InvokationTrace is used to store a given trace of events in an execution queue,
+//as well as the current "position" of the queue (for processing)
+//once the processing is complete, position == len(queue)
 type InvokationTrace struct {
 	Queue    []InstanceConnection
-	Position int
+	position int
 }
 
 //at each "tick", we have an event queue, and a current event
@@ -197,7 +239,7 @@ tick 3:
 */
 
 //DeriveInstanceInvocationTraceSet will list all possible InstanceInvocationTraces for a given input event
-func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int]map[string][]EventTrace) ([]InvokationTrace, error) {
+func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int]map[string][]ChainOutputs) ([]InvokationTrace, error) {
 	//determine type of source, is it an input or is it an output?
 	//
 
@@ -207,7 +249,7 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 
 	traces = append(traces, InvokationTrace{
 		Queue:    []InstanceConnection{source},
-		Position: 0,
+		position: 0,
 	})
 
 	count := 0
@@ -215,11 +257,11 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 	//foreach destination, match it in the BFB chain set
 	for i := 0; i < len(traces); {
 		//grab the source node (the trace position)
-		if traces[i].Position >= len(traces[i].Queue) {
+		if traces[i].position >= len(traces[i].Queue) {
 			i++
 			continue //we're done with this trace
 		}
-		source := traces[i].Queue[traces[i].Position]
+		source := traces[i].Queue[traces[i].position]
 
 		//classify this node, is it a destination or is it a source?
 		sourceFBType := instG[source.InstanceID].FBType
@@ -234,7 +276,6 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 
 		//if the source is an output, then we need to find the destinations and add them to the trace
 		if sourceIsInput == false {
-			fmt.Println("It's an output")
 			destinations := FindDestinations(source.InstanceID, source.PortName, instG, fbs)
 
 			//add invoked ports to the trace
@@ -243,7 +284,9 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 			//}
 
 		} else { //sourceIsInput = true
-			fmt.Println("It's an input")
+
+			//TODO: ensure that we haven't had a self-loop
+			//TODO: this can be done roughly at the moment, by just making sure we don't invoke the same block twice
 			destination := source
 			//otherwise, we need to grab the possible expansions from the destinations
 
@@ -255,48 +298,44 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 				return nil, errors.New("Bad FB set")
 			}
 			if instFBT.BasicFB != nil {
-				//TODO: load the possible output events for this bfb given this input invokation
-				//TODO: Then, queue the destinations those events go to
-				//TODO: And, make sure you're tracing everything at the same time
-				//TODO: Look at how DeriveBFBEventChainSet does it for inspiration
-				//TODO: (Specifically, lines 66 onward)
-				bfbEventTraces := allEventChains[destination.InstanceID][destination.PortName]
-				//for each possible output trace based on the inputted event
-				for bfbEventTraceI, bfbEventTrace := range bfbEventTraces {
-					if bfbEventTraceI == len(bfbEventTraces)-1 {
-						//linear trace
-						for _, bfbEventTraceStep := range bfbEventTrace { //for each step in those traces
-							for _, bfbOutputEventPort := range bfbEventTraceStep.OutputEvents { //for each possible outputted port
-								//source: bfbOutputEventPort
-								//instance: destination.InstanceID
-								outSource := InstanceConnection{
-									InstanceID: destination.InstanceID,
-									PortName:   bfbOutputEventPort,
-								}
+				//load the possible output events for this bfb given this input invokation
+				//Then, queue the destinations those events go to
+				//And, make sure you're tracing everything at the same time
 
-								traces[i].Queue = append(traces[i].Queue, outSource)
+				bfbEventChains := allEventChains[destination.InstanceID][destination.PortName]
+				//for each possible output chain based on the inputted event
+				for bfbEventChainI, bfbEventChain := range bfbEventChains {
+					if bfbEventChainI == len(bfbEventChains)-1 {
+						//linear trace
+						for _, bfbOutputEventPort := range bfbEventChain { //for each possible outputted port
+							//source: bfbOutputEventPort
+							//instance: destination.InstanceID
+							outSource := InstanceConnection{
+								InstanceID: destination.InstanceID,
+								PortName:   bfbOutputEventPort,
 							}
+
+							traces[i].Queue = append(traces[i].Queue, outSource)
 						}
+
 					} else {
 						//branching trace
 						tempQueue := make([]InstanceConnection, len(traces[i].Queue))
 						copy(tempQueue, traces[i].Queue)
 						tempTrace := InvokationTrace{
 							Queue:    tempQueue,
-							Position: traces[i].Position + 1,
+							position: traces[i].position + 1,
 						}
 
-						for _, bfbEventTraceStep := range bfbEventTrace { //for each step in those traces
-							for _, bfbOutputEventPort := range bfbEventTraceStep.OutputEvents { //for each possible outputted port
-								//source: bfbOutputEventPort
-								//instance: destination.InstanceID
-								outSource := InstanceConnection{
-									InstanceID: destination.InstanceID,
-									PortName:   bfbOutputEventPort,
-								}
-
-								tempTrace.Queue = append(tempTrace.Queue, outSource)
+						for _, bfbOutputEventPort := range bfbEventChain { //for each possible outputted port
+							//source: bfbOutputEventPort
+							//instance: destination.InstanceID
+							outSource := InstanceConnection{
+								InstanceID: destination.InstanceID,
+								PortName:   bfbOutputEventPort,
 							}
+
+							tempTrace.Queue = append(tempTrace.Queue, outSource)
 						}
 
 						traces = append(traces, tempTrace)
@@ -306,18 +345,18 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 			}
 		}
 		//increment the position index
-		traces[i].Position++
-
-		bytes, _ := json.MarshalIndent(traces, "", "\t")
-		fmt.Printf("\n%s\n", bytes)
+		traces[i].position++
 
 		count++
-		if count > 3 {
+		if count > 50000 {
+			bytes, _ := json.MarshalIndent(traces, "", "\t")
+			fmt.Printf("\n%s\n", bytes)
 			fmt.Printf("Aborted")
-			break
+			return nil, errors.New("Aborted due to state space explosion")
 		}
 
 	}
+	fmt.Printf("Finished after %d iterations\n", count)
 
 	return traces, nil
 }
