@@ -240,11 +240,6 @@ tick 3:
 
 //DeriveInstanceInvocationTraceSet will list all possible InstanceInvocationTraces for a given input event
 func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int]map[string][]ChainOutputs) ([]InvokationTrace, error) {
-	//determine type of source, is it an input or is it an output?
-	//
-
-	// //check if it is input
-
 	traces := make([]InvokationTrace, 0)
 
 	traces = append(traces, InvokationTrace{
@@ -356,7 +351,102 @@ func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []Instanc
 		}
 
 	}
-	fmt.Printf("Finished after %d iterations\n", count)
+	//fmt.Printf("Finished after %d iterations\n", count)
 
 	return traces, nil
+}
+
+//DeriveInstanceInvokationTraceSets will list all possible InstanceInvocationTraces for a given set of input events
+func DeriveInstanceInvokationTraceSets(sources []InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int]map[string][]ChainOutputs) (map[InstanceConnection][]InvokationTrace, error) {
+	sets := make(map[InstanceConnection][]InvokationTrace)
+	for _, source := range sources {
+		sourceOut, err := DeriveInstanceInvocationTraceSet(source, instG, fbs, allEventChains)
+		if err != nil {
+			return nil, err
+		}
+		sets[source] = sourceOut
+
+	}
+	return sets, nil
+}
+
+//An InvokationTraceEventLocation is a reformat of a InstanceConnection that's human-understandable
+type InvokationTraceEventLocation struct {
+	FBType         string
+	FBInstanceName string
+	EventPortName  string
+	EventPortInput bool
+}
+
+//ToInvokationTraceEventLocation converts an InstanceConnection to the human-understandable InvokationTraceEventLocation
+func (source InstanceConnection) ToInvokationTraceEventLocation(instG []InstanceNode, fbs []iec61499.FB) (InvokationTraceEventLocation, error) {
+	sourceFBType := instG[source.InstanceID].FBType
+	sourceFBT := iec61499.FindBlockDefinitionForType(fbs, sourceFBType)
+	if sourceFBT == nil {
+		return InvokationTraceEventLocation{}, errors.New("Bad FB set")
+	}
+
+	//get the fully qualified instance name
+	sourceInstanceName := InstIDToName(source.InstanceID, instG)
+
+	sourceIsInput := false
+	if sourceFBT.HasEventNamed(true, source.PortName) {
+		sourceIsInput = true
+	}
+
+	return InvokationTraceEventLocation{
+		FBType:         sourceFBType,
+		FBInstanceName: sourceInstanceName,
+		EventPortName:  source.PortName,
+		EventPortInput: sourceIsInput,
+	}, nil
+}
+
+//DeriveAllTraceSets will derive all paths through an FB network, provided the top level block, and return them
+//as a two-dimensional set of InvokationTraceEventLocation, with possible traces in the down, and trace steps in the across.
+func DeriveAllTraceSets(fbs []iec61499.FB, topName string) ([][]InvokationTraceEventLocation, error) {
+	//first derive the instance graph
+	instG, err := CreateInstanceGraph(fbs, topName)
+	if err != nil {
+		return nil, errors.New("Problem deriving Instance Graph: " + err.Error())
+	}
+
+	//now derive the sources of all events
+	eventSources, err := ListSIFBEventSources(instG, fbs)
+	if err != nil {
+		return nil, errors.New("Problem deriving SIFB sources: " + err.Error())
+	}
+
+	//now derive all BFB event chain sets
+	allChains, err := DeriveAllBFBEventChainSets(instG, fbs)
+	if err != nil {
+		return nil, errors.New("Problem deriving BFB chain sets: " + err.Error())
+	}
+
+	//now derive the invokation trace sets (i.e. all possible execution paths from the SIFB event sources)
+	sets, err := DeriveInstanceInvokationTraceSets(eventSources, instG, fbs, allChains)
+	if err != nil {
+		return nil, errors.New("Problem deriving Instance Invokation Trace Sets: " + err.Error())
+	}
+
+	//finally, format the results in an easy-to-understand way
+	results := make([][]InvokationTraceEventLocation, 0)
+	for _, traces := range sets {
+		// sourceL, err := source.ToInvokationTraceEventLocation(instG, fbs)
+		// if err != nil {
+		// 	return nil, errors.New("Problem formatting trace sets: " + err.Error())
+		// }
+		for _, trace := range traces {
+			traceL := make([]InvokationTraceEventLocation, 0)
+			for _, step := range trace.Queue {
+				stepL, err := step.ToInvokationTraceEventLocation(instG, fbs)
+				if err != nil {
+					return nil, errors.New("Problem formatting trace sets: " + err.Error())
+				}
+				traceL = append(traceL, stepL)
+			}
+			results = append(results, traceL)
+		}
+	}
+	return results, nil
 }
