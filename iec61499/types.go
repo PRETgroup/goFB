@@ -48,14 +48,20 @@ type InterfaceList struct {
 
 //HasIONamed will check a given InterfaceList to see if it has an output of that name
 func (il InterfaceList) HasIONamed(input bool, s string) bool {
+	if il.HasEventNamed(input, s) {
+		return true
+	}
+	if il.HasIODataNamed(input, s) {
+		return true
+	}
+	return false
+}
+
+//HasEventNamed will check a given InterfaceList to see if it has an event of that name
+func (il InterfaceList) HasEventNamed(input bool, s string) bool {
 	if input {
 		for i := 0; i < len(il.EventInputs); i++ {
 			if il.EventInputs[i].Name == s {
-				return true
-			}
-		}
-		for i := 0; i < len(il.InputVars); i++ {
-			if il.InputVars[i].Name == s {
 				return true
 			}
 		}
@@ -65,6 +71,19 @@ func (il InterfaceList) HasIONamed(input bool, s string) bool {
 		if il.EventOutputs[i].Name == s {
 			return true
 		}
+	}
+	return false
+}
+
+//HasIODataNamed will check a given InterfaceList to see if it has an IO data var of that name
+func (il InterfaceList) HasIODataNamed(input bool, s string) bool {
+	if input {
+		for i := 0; i < len(il.InputVars); i++ {
+			if il.InputVars[i].Name == s {
+				return true
+			}
+		}
+		return false
 	}
 	for i := 0; i < len(il.OutputVars); i++ {
 		if il.OutputVars[i].Name == s {

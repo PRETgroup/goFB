@@ -1,6 +1,7 @@
 package eca
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -175,40 +176,148 @@ type InstanceInvocationTrace struct {
 	Events []InstanceConnection
 }
 
+type InvokationTrace struct {
+	Queue    []InstanceConnection
+	Position int
+}
+
+//at each "tick", we have an event queue, and a current event
+/*
+tick 0:
+	add A
+tick 1:
+	toProcess: A
+	add B, C			OR			add Q
+tick 2:
+	toProcess: B, C		OR			toProcess: Q
+	add D							add null
+tick 3:
+	toProcess: C, D		OR			DONE
+	...
+*/
+
 //DeriveInstanceInvocationTraceSet will list all possible InstanceInvocationTraces for a given input event
-func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int]map[string][]EventTrace) ([]InstanceInvocationTrace, error) {
-	destinations := FindDestinations(source.InstanceID, source.PortName, instG, fbs)
+func DeriveInstanceInvocationTraceSet(source InstanceConnection, instG []InstanceNode, fbs []iec61499.FB, allEventChains map[int]map[string][]EventTrace) ([]InvokationTrace, error) {
+	//determine type of source, is it an input or is it an output?
+	//
 
-	traces := make([][]InstanceConnection, 0)
+	// //check if it is input
 
-	//start the traces by creating a set of source-destination pairs
-	for _, destination := range destinations {
-		traces = append(traces, []InstanceConnection{source, destination})
-	}
+	traces := make([]InvokationTrace, 0)
+
+	traces = append(traces, InvokationTrace{
+		Queue:    []InstanceConnection{source},
+		Position: 0,
+	})
+
+	count := 0
 
 	//foreach destination, match it in the BFB chain set
-	for i := 0; i < len(traces); i++ {
-		//grab the current destination node (the end of the current trace)
-		destination := traces[i][len(traces[i])-1]
-		//all destinations in traces should be penultimate connections (ie BFBs or SIFBs, not CFBs)
-		//if they are BFBs, they could continue spawning events in the trace
-		destType := instG[destination.InstanceID].FBType
-		instFBT := iec61499.FindBlockDefinitionForType(fbs, destType)
-		if instFBT == nil {
-			return nil, errors.New("Bad FB set")
+	for i := 0; i < len(traces); {
+		//grab the source node (the trace position)
+		if traces[i].Position >= len(traces[i].Queue) {
+			i++
+			continue //we're done with this trace
 		}
-		if instFBT.BasicFB != nil {
-			//TODO: load the possible output events for this bfb given this input invokation
-			//TODO: Then, queue the destinations those events go to
-			//TODO: And, make sure you're tracing everything at the same time
-			//TODO: Look at how DeriveBFBEventChainSet does it for inspiration
-			//TODO: (Specifically, lines 66 onward)
-			// bfbChains := allEventChains[destination.InstanceID]
-			// for _, chain := range bfbChains {
-			// 	if chain.InputName ==
-			// }
+		source := traces[i].Queue[traces[i].Position]
+
+		//classify this node, is it a destination or is it a source?
+		sourceFBType := instG[source.InstanceID].FBType
+		sourceFBT := iec61499.FindBlockDefinitionForType(fbs, sourceFBType)
+		if sourceFBT == nil {
+			return nil, errors.New("Bad FB set (#1)")
 		}
+		sourceIsInput := false
+		if sourceFBT.HasEventNamed(true, source.PortName) {
+			sourceIsInput = true
+		}
+
+		//if the source is an output, then we need to find the destinations and add them to the trace
+		if sourceIsInput == false {
+			fmt.Println("It's an output")
+			destinations := FindDestinations(source.InstanceID, source.PortName, instG, fbs)
+
+			//add invoked ports to the trace
+			//for _, destination := range destinations {
+			traces[i].Queue = append(traces[i].Queue, destinations...)
+			//}
+
+		} else { //sourceIsInput = true
+			fmt.Println("It's an input")
+			destination := source
+			//otherwise, we need to grab the possible expansions from the destinations
+
+			//all destinations in traces should be penultimate connections (ie BFBs or SIFBs, not CFBs)
+			//if they are BFBs, they could continue spawning events in the trace
+			destType := instG[destination.InstanceID].FBType
+			instFBT := iec61499.FindBlockDefinitionForType(fbs, destType)
+			if instFBT == nil {
+				return nil, errors.New("Bad FB set")
+			}
+			if instFBT.BasicFB != nil {
+				//TODO: load the possible output events for this bfb given this input invokation
+				//TODO: Then, queue the destinations those events go to
+				//TODO: And, make sure you're tracing everything at the same time
+				//TODO: Look at how DeriveBFBEventChainSet does it for inspiration
+				//TODO: (Specifically, lines 66 onward)
+				bfbEventTraces := allEventChains[destination.InstanceID][destination.PortName]
+				//for each possible output trace based on the inputted event
+				for bfbEventTraceI, bfbEventTrace := range bfbEventTraces {
+					if bfbEventTraceI == len(bfbEventTraces)-1 {
+						//linear trace
+						for _, bfbEventTraceStep := range bfbEventTrace { //for each step in those traces
+							for _, bfbOutputEventPort := range bfbEventTraceStep.OutputEvents { //for each possible outputted port
+								//source: bfbOutputEventPort
+								//instance: destination.InstanceID
+								outSource := InstanceConnection{
+									InstanceID: destination.InstanceID,
+									PortName:   bfbOutputEventPort,
+								}
+
+								traces[i].Queue = append(traces[i].Queue, outSource)
+							}
+						}
+					} else {
+						//branching trace
+						tempQueue := make([]InstanceConnection, len(traces[i].Queue))
+						copy(tempQueue, traces[i].Queue)
+						tempTrace := InvokationTrace{
+							Queue:    tempQueue,
+							Position: traces[i].Position + 1,
+						}
+
+						for _, bfbEventTraceStep := range bfbEventTrace { //for each step in those traces
+							for _, bfbOutputEventPort := range bfbEventTraceStep.OutputEvents { //for each possible outputted port
+								//source: bfbOutputEventPort
+								//instance: destination.InstanceID
+								outSource := InstanceConnection{
+									InstanceID: destination.InstanceID,
+									PortName:   bfbOutputEventPort,
+								}
+
+								tempTrace.Queue = append(tempTrace.Queue, outSource)
+							}
+						}
+
+						traces = append(traces, tempTrace)
+					}
+				}
+
+			}
+		}
+		//increment the position index
+		traces[i].Position++
+
+		bytes, _ := json.MarshalIndent(traces, "", "\t")
+		fmt.Printf("\n%s\n", bytes)
+
+		count++
+		if count > 3 {
+			fmt.Printf("Aborted")
+			break
+		}
+
 	}
 
-	return nil, errors.New("Not yet implemented")
+	return traces, nil
 }
