@@ -87,3 +87,15 @@ func OpTokenIsComparison(opTok string) bool {
 	}
 	return false
 }
+
+//OpTokenIsCombinator takes a given operator token and returns a true if it
+//is of a combination type (e.g. "and", "or")
+func OpTokenIsCombinator(opTok string) bool {
+	if opTok == stAnd ||
+		opTok == stOr ||
+		opTok == stExlusiveOr {
+
+		return true
+	}
+	return false
+}
