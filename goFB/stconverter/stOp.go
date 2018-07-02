@@ -72,3 +72,30 @@ func FindOp(op string) postfix.Operator {
 	//still here? not an operator
 	return nil
 }
+
+//OpTokenIsComparison takes a given operator token and returns a true if it
+//is of a comparison type (e.g. ">=")
+func OpTokenIsComparison(opTok string) bool {
+	if opTok == stGreaterThan ||
+		opTok == stGreaterThanEqualTo ||
+		opTok == stLessThan ||
+		opTok == stLessThanEqualTo ||
+		opTok == stEqual ||
+		opTok == stInequal {
+
+		return true
+	}
+	return false
+}
+
+//OpTokenIsCombinator takes a given operator token and returns a true if it
+//is of a combination type (e.g. "and", "or")
+func OpTokenIsCombinator(opTok string) bool {
+	if opTok == stAnd ||
+		opTok == stOr ||
+		opTok == stExlusiveOr {
+
+		return true
+	}
+	return false
+}
