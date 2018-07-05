@@ -148,6 +148,11 @@ func CCompileExpression(expr STExpression) string {
 
 //VhdlCompileExpression will compile an STExpression to its equivalent VHDL codes using the
 //	vhdl templates stored in vhdlTemplates
+//vhdlTemplate templates make the following assumptions:
+//1) All variables are VHDL "Variables", not "signals"
+//2) All variables are integer types
+//3) Everything completes in a single cycle
+//4) loops aren't yet supported
 func VhdlCompileExpression(expr STExpression) string {
 	output := &bytes.Buffer{}
 	panicOnErr(vhdlTemplates.ExecuteTemplate(output, "expression", expr))
