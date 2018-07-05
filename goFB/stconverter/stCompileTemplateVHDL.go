@@ -4,6 +4,11 @@ import (
 	"strings"
 )
 
+//vhdlTemplate templates make the following assumptions:
+//1) All variables are VHDL "Variables", not "signals"
+//2) All variables are integer types
+//3) Everything completes in a single cycle
+//4) loops aren't yet supported
 const vhdlTemplate = `
 {{define "expression"}}{{$value := .HasValue}}{{$operator := .HasOperator}}{{/*
 	*/}}{{if $value}}{{/*

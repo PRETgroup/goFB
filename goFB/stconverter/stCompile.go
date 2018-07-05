@@ -2,6 +2,7 @@ package stconverter
 
 import (
 	"bytes"
+	"errors"
 	"text/template"
 )
 
@@ -104,6 +105,11 @@ func CCompileSequence(sequence []STInstruction) string {
 
 //VhdlCompileSequence will take a sequence of STInstructions and compile them to their equivalent VHDL codes using the
 //	vhdl templates stored in vhdlTemplates
+//vhdlTemplate templates make the following assumptions:
+//1) All variables are VHDL "Variables", not "signals"
+//2) All variables are integer types
+//3) Everything completes in a single cycle
+//4) loops aren't yet supported
 func VhdlCompileSequence(sequence []STInstruction) string {
 	output := &bytes.Buffer{}
 	for _, untypedInst := range sequence {
@@ -118,10 +124,13 @@ func VhdlCompileSequence(sequence []STInstruction) string {
 		case STSwitchCase:
 			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "switchcase", inst))
 		case STForLoop:
+			panicOnErr(errors.New("For loops not yet supported in VHDL"))
 			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "forloop", inst))
 		case STWhileLoop:
+			panicOnErr(errors.New("While loops not yet supported in VHDL"))
 			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "whileloop", inst))
 		case STRepeatLoop:
+			panicOnErr(errors.New("Repeat loops not yet supported in VHDL"))
 			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "repeatloop", inst))
 		}
 	}
