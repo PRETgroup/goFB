@@ -113,7 +113,7 @@ func verilogTranslateOperatorToken(token string) string {
 	case stOr:
 		return "||"
 	case stAssignment:
-		return "<="
+		return "="
 	}
 	//still here? panic
 	panic("unsupported token " + token)

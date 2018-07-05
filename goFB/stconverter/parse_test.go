@@ -45,7 +45,7 @@ var stTestCases = []stTestCase{
 		},
 		compC:       "x = 1;",
 		compVhdl:    "x := 1;",
-		compVerilog: "x <= 1;",
+		compVerilog: "x = 1;",
 	},
 	{
 		name:       "assignment 2",
@@ -67,7 +67,7 @@ var stTestCases = []stTestCase{
 		},
 		compC:       "y = x + 2;",
 		compVhdl:    "y := x + 2;",
-		compVerilog: "y <= x + 2;",
+		compVerilog: "y = x + 2;",
 	},
 	{ //strictly speaking this might be invalid ST, not sure if they use ! as NOT
 		name:       "assignment 2!",
@@ -94,7 +94,7 @@ var stTestCases = []stTestCase{
 		},
 		compC:       "y = !x + 2;",
 		compVhdl:    "y := not(x) + 2;",
-		compVerilog: "y <= ~x + 2;",
+		compVerilog: "y = ~x + 2;",
 	},
 	{
 		name:       "assignment 3",
@@ -115,7 +115,7 @@ var stTestCases = []stTestCase{
 		},
 		compC:       "integrationError = -WindupGuard;",
 		compVhdl:    "integrationError := -WindupGuard;",
-		compVerilog: "integrationError <= -WindupGuard;",
+		compVerilog: "integrationError = -WindupGuard;",
 	},
 	{
 		name:       "basic function call",
@@ -173,7 +173,7 @@ var stTestCases = []stTestCase{
 		},
 		compC:       "if(y > x) { y = x; }",
 		compVhdl:    "if (y > x) then y := x; end if;",
-		compVerilog: "if (y > x) begin y <= x; end",
+		compVerilog: "if (y > x) begin y = x; end",
 	},
 	{
 		name:       "if/then 2",
@@ -214,7 +214,7 @@ var stTestCases = []stTestCase{
 		},
 		compC:       "if(y < -x) { y = -x; }",
 		compVhdl:    "if (y < -x) then y := -x; end if;",
-		compVerilog: "if (y < -x) begin y <= -x; end",
+		compVerilog: "if (y < -x) begin y = -x; end",
 	},
 	{
 		name: "if/elsif/else 1",
@@ -324,10 +324,10 @@ var stTestCases = []stTestCase{
 			end if;`,
 		compVerilog: `
 			if (y > x) begin
-				y <= x;
+				y = x;
 				print("hello");
 			end else if (y <= x) begin
-				a <= 1 + 2 * 3;
+				a = 1 + 2 * 3;
 			end else begin
 				print("hi");
 				print("yes");
@@ -410,9 +410,9 @@ var stTestCases = []stTestCase{
 		`,
 		compVerilog: `
 		if (integrationError < -WindupGuard) begin
-			integrationError <= -WindupGuard;
+			integrationError = -WindupGuard;
 		end else if (integrationError > WindupGuard) begin
-			integrationError <= WindupGuard;
+			integrationError = WindupGuard;
 		end
 		`,
 	},
@@ -512,13 +512,13 @@ var stTestCases = []stTestCase{
 		case(x + 1)
 			1: begin
 				print("hello");
-				y <= 2;
+				y = 2;
 			end
 			2, 3: begin
 				print("many");
 			end
 			default: begin
-				z <= 2 + 2;
+				z = 2 + 2;
 			end
 		endcase
 		`,
@@ -624,7 +624,7 @@ var stTestCases = []stTestCase{
 		case(x + 1)
 			1: begin
 				print("hello");
-				y <= 2;
+				y = 2;
 				end
 			2: begin
 				end
@@ -632,7 +632,7 @@ var stTestCases = []stTestCase{
 				print("many");
 				end
 			default: begin
-				z <= 2 + 2;
+				z = 2 + 2;
 				end
 		endcase`,
 	},
