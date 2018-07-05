@@ -13,6 +13,14 @@ var cTemplateFuncMap = template.FuncMap{
 	"reverseArgs":            reverseArgs,
 }
 
+var vhdlTemplateFuncMap = template.FuncMap{
+	"translateOperatorToken": vhdlTranslateOperatorToken,
+	"tokenIsFunctionCall":    vhdlTokenIsFunctionCall,
+	"compileSequence":        VhdlCompileSequence,
+	"isKnownVar":             isKnownVar,
+	"reverseArgs":            reverseArgs,
+}
+
 var stTemplateFuncMap = template.FuncMap{
 	"translateOperatorToken": stTranslateOperatorToken,
 	"tokenIsFunctionCall":    stTokenIsFunctionCall,
@@ -25,6 +33,7 @@ var stTemplateFuncMap = template.FuncMap{
 var (
 	cTemplates    *template.Template
 	stTemplates   *template.Template
+	vhdlTemplates *template.Template
 	knownVarNames []string
 )
 
@@ -38,6 +47,7 @@ func panicOnErr(err error) {
 func init() {
 	cTemplates = template.Must(template.New("").Funcs(cTemplateFuncMap).Parse(cTemplate))
 	stTemplates = template.Must(template.New("").Funcs(stTemplateFuncMap).Parse(stTemplate))
+	vhdlTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).Parse(vhdlTemplate))
 }
 
 func gte(a, b int) bool {
@@ -92,11 +102,46 @@ func CCompileSequence(sequence []STInstruction) string {
 	return output.String()
 }
 
+//VhdlCompileSequence will take a sequence of STInstructions and compile them to their equivalent VHDL codes using the
+//	vhdl templates stored in vhdlTemplates
+func VhdlCompileSequence(sequence []STInstruction) string {
+	output := &bytes.Buffer{}
+	for _, untypedInst := range sequence {
+		switch inst := untypedInst.(type) {
+		case STExpression:
+			_, err := output.WriteString(VhdlCompileExpression(inst)) //we have a special function for CCompileExpression because we might want to call it separately for 61499 guards
+			panicOnErr(err)
+			panicOnErr(output.WriteByte(';'))
+			panicOnErr(output.WriteByte('\n'))
+		case STIfElsIfElse:
+			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "ifelsifelse", inst))
+		case STSwitchCase:
+			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "switchcase", inst))
+		case STForLoop:
+			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "forloop", inst))
+		case STWhileLoop:
+			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "whileloop", inst))
+		case STRepeatLoop:
+			panicOnErr(vhdlTemplates.ExecuteTemplate(output, "repeatloop", inst))
+		}
+	}
+	return output.String()
+}
+
 //CCompileExpression will compile an STExpression to its equivalent C codes using the
 //	c templates stored in cTemplates
 func CCompileExpression(expr STExpression) string {
 	output := &bytes.Buffer{}
 	panicOnErr(cTemplates.ExecuteTemplate(output, "expression", expr))
+
+	return output.String()
+}
+
+//VhdlCompileExpression will compile an STExpression to its equivalent VHDL codes using the
+//	vhdl templates stored in vhdlTemplates
+func VhdlCompileExpression(expr STExpression) string {
+	output := &bytes.Buffer{}
+	panicOnErr(vhdlTemplates.ExecuteTemplate(output, "expression", expr))
 
 	return output.String()
 }

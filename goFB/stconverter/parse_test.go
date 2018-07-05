@@ -12,6 +12,7 @@ type stTestCase struct {
 	progString     string
 	prog           []STInstruction
 	compC          string
+	compVhdl       string
 	expressionOnly bool
 	err            error
 	knownNames     []string
@@ -25,6 +26,7 @@ var stTestCases = []stTestCase{
 			STExpressionValue{"1"},
 		},
 		compC:          "1",
+		compVhdl:       "1",
 		expressionOnly: true,
 	},
 	{
@@ -39,7 +41,8 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC: "x = 1;",
+		compC:    "x = 1;",
+		compVhdl: "x := 1;",
 	},
 	{
 		name:       "assignment 2",
@@ -59,7 +62,8 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC: "y = x + 2;",
+		compC:    "y = x + 2;",
+		compVhdl: "y := x + 2;",
 	},
 	{ //strictly speaking this might be invalid ST, not sure if they use ! as NOT
 		name:       "assignment 2!",
@@ -84,7 +88,8 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC: "y = !x + 2;",
+		compC:    "y = !x + 2;",
+		compVhdl: "y := not(x) + 2;",
 	},
 	{
 		name:       "assignment 3",
@@ -103,7 +108,8 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC: "integrationError = -WindupGuard;",
+		compC:    "integrationError = -WindupGuard;",
+		compVhdl: "integrationError := -WindupGuard;",
 	},
 	{
 		name:       "basic function call",
@@ -159,7 +165,8 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC: "if(y > x) { y = x; }",
+		compC:    "if(y > x) { y = x; }",
+		compVhdl: "if (y > x) then y := x; end if;",
 	},
 	{
 		name:       "if/then 2",
@@ -198,7 +205,8 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC: "if(y < -x) { y = -x; }",
+		compC:    "if(y < -x) { y = -x; }",
+		compVhdl: "if (y < -x) then y := -x; end if;",
 	},
 	{
 		name: "if/elsif/else 1",
@@ -286,16 +294,26 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC: "" +
-			"if(y > x) {\n" +
-			"	y = x;\n" +
-			"	print(\"hello\");\n" +
-			"} else if(y <= x) {\n" +
-			"	a = 1 + 2 * 3; \n" +
-			"} else {\n" +
-			"	print(\"hi\");\n" +
-			"	print(\"yes\");\n" +
-			"}",
+		compC: `
+			if(y > x) {
+				y = x;
+				print("hello");
+			} else if(y <= x) {
+				a = 1 + 2 * 3;
+			} else {
+				print("hi");
+				print("yes");
+			}`,
+		compVhdl: `
+			if (y > x) then
+				y := x;
+				print("hello");
+			elsif (y <= x) then
+				a := 1 + 2 * 3;
+			else
+				print("hi");
+				print("yes");
+			end if;`,
 	},
 	{
 		name: "if/elsif/else 2",
@@ -364,6 +382,13 @@ var stTestCases = []stTestCase{
 		} else if(integrationError > WindupGuard) {
 			integrationError = WindupGuard;
 		}
+		`,
+		compVhdl: `
+		if (integrationError < -WindupGuard) then
+			integrationError := -WindupGuard;
+		elsif (integrationError > WindupGuard) then
+			integrationError := WindupGuard;
+		end if;
 		`,
 	},
 	{
@@ -447,6 +472,17 @@ var stTestCases = []stTestCase{
 				z = 2 + 2;
 				break;
 		}`,
+		compVhdl: `
+		case (x + 1) is
+			when 1 =>
+				print("hello");
+				y := 2;
+			when 2 | 3 =>
+				print("many");
+			when others =>
+				z := 2 + 2;
+		end case;
+		`,
 	},
 	{
 		name: "switchcase 2",
@@ -534,6 +570,17 @@ var stTestCases = []stTestCase{
 				z = 2 + 2;
 				break;
 		}`,
+		compVhdl: `
+		case (x + 1) is
+			when 1 =>
+				print("hello");
+				y := 2;
+			when 2 =>
+			when 3 =>
+				print("many");
+			when others =>
+				z := 2 + 2;
+		end case;`,
 	},
 	{
 		name: "for loop 1",
@@ -603,6 +650,10 @@ var stTestCases = []stTestCase{
 			},
 		},
 		compC: "for(i = 1; i <= (2 + 10) * 5; i++) { print(i); }",
+		// compVhdl: ` //for loops not yet supported in VHDL
+		// 	for i in 1 to (2 + 10) * 5 loop
+		// 		print(i);
+		// 	end loop;`,
 	},
 	{
 		name: "while loop 1",
@@ -804,19 +855,38 @@ func TestCases(t *testing.T) {
 			received, _ := json.MarshalIndent(prog, "\t", "\t")
 			t.Errorf("Test %d (%s) PARSING FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, expected, received)
 		}
-		//now check if the compiled version matches
-		var recvProg string
-		if stTestCases[i].expressionOnly {
-			recvProg = standardizeSpaces(CCompileExpression(prog[0].(STExpression)))
-		} else {
-			recvProg = standardizeSpaces(CCompileSequence(prog))
+
+		if stTestCases[i].compC != "" {
+			//now check if the compiled version matches
+			var recvProg string
+			if stTestCases[i].expressionOnly {
+				recvProg = standardizeSpaces(CCompileExpression(prog[0].(STExpression)))
+			} else {
+				recvProg = standardizeSpaces(CCompileSequence(prog))
+			}
+
+			//convert to have equivalent whitespaces
+			desrProg := standardizeSpaces(stTestCases[i].compC)
+
+			if recvProg != desrProg {
+				t.Errorf("Test %d (%s) C COMPILATION FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, desrProg, recvProg)
+			}
 		}
+		if stTestCases[i].compVhdl != "" {
+			//now check if the compiled version matches
+			var recvProg string
+			if stTestCases[i].expressionOnly {
+				recvProg = standardizeSpaces(VhdlCompileExpression(prog[0].(STExpression)))
+			} else {
+				recvProg = standardizeSpaces(VhdlCompileSequence(prog))
+			}
 
-		//convert to have equivalent whitespaces
-		desrProg := standardizeSpaces(stTestCases[i].compC)
+			//convert to have equivalent whitespaces
+			desrProg := standardizeSpaces(stTestCases[i].compVhdl)
 
-		if recvProg != desrProg {
-			t.Errorf("Test %d (%s) COMPILATION FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, desrProg, recvProg)
+			if recvProg != desrProg {
+				t.Errorf("Test %d (%s) VHDL COMPILATION FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, desrProg, recvProg)
+			}
 		}
 	}
 }
