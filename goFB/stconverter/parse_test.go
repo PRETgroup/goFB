@@ -13,6 +13,7 @@ type stTestCase struct {
 	prog           []STInstruction
 	compC          string
 	compVhdl       string
+	compVerilog    string
 	expressionOnly bool
 	err            error
 	knownNames     []string
@@ -27,6 +28,7 @@ var stTestCases = []stTestCase{
 		},
 		compC:          "1",
 		compVhdl:       "1",
+		compVerilog:    "1",
 		expressionOnly: true,
 	},
 	{
@@ -41,8 +43,9 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC:    "x = 1;",
-		compVhdl: "x := 1;",
+		compC:       "x = 1;",
+		compVhdl:    "x := 1;",
+		compVerilog: "x <= 1;",
 	},
 	{
 		name:       "assignment 2",
@@ -62,8 +65,9 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC:    "y = x + 2;",
-		compVhdl: "y := x + 2;",
+		compC:       "y = x + 2;",
+		compVhdl:    "y := x + 2;",
+		compVerilog: "y <= x + 2;",
 	},
 	{ //strictly speaking this might be invalid ST, not sure if they use ! as NOT
 		name:       "assignment 2!",
@@ -88,8 +92,9 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC:    "y = !x + 2;",
-		compVhdl: "y := not(x) + 2;",
+		compC:       "y = !x + 2;",
+		compVhdl:    "y := not(x) + 2;",
+		compVerilog: "y <= ~x + 2;",
 	},
 	{
 		name:       "assignment 3",
@@ -108,8 +113,9 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC:    "integrationError = -WindupGuard;",
-		compVhdl: "integrationError := -WindupGuard;",
+		compC:       "integrationError = -WindupGuard;",
+		compVhdl:    "integrationError := -WindupGuard;",
+		compVerilog: "integrationError <= -WindupGuard;",
 	},
 	{
 		name:       "basic function call",
@@ -165,8 +171,9 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC:    "if(y > x) { y = x; }",
-		compVhdl: "if (y > x) then y := x; end if;",
+		compC:       "if(y > x) { y = x; }",
+		compVhdl:    "if (y > x) then y := x; end if;",
+		compVerilog: "if (y > x) begin y <= x; end",
 	},
 	{
 		name:       "if/then 2",
@@ -205,8 +212,9 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC:    "if(y < -x) { y = -x; }",
-		compVhdl: "if (y < -x) then y := -x; end if;",
+		compC:       "if(y < -x) { y = -x; }",
+		compVhdl:    "if (y < -x) then y := -x; end if;",
+		compVerilog: "if (y < -x) begin y <= -x; end",
 	},
 	{
 		name: "if/elsif/else 1",
@@ -314,6 +322,16 @@ var stTestCases = []stTestCase{
 				print("hi");
 				print("yes");
 			end if;`,
+		compVerilog: `
+			if (y > x) begin
+				y <= x;
+				print("hello");
+			end else if (y <= x) begin
+				a <= 1 + 2 * 3;
+			end else begin
+				print("hi");
+				print("yes");
+			end`,
 	},
 	{
 		name: "if/elsif/else 2",
@@ -389,6 +407,13 @@ var stTestCases = []stTestCase{
 		elsif (integrationError > WindupGuard) then
 			integrationError := WindupGuard;
 		end if;
+		`,
+		compVerilog: `
+		if (integrationError < -WindupGuard) begin
+			integrationError <= -WindupGuard;
+		end else if (integrationError > WindupGuard) begin
+			integrationError <= WindupGuard;
+		end
 		`,
 	},
 	{
@@ -482,6 +507,20 @@ var stTestCases = []stTestCase{
 			when others =>
 				z := 2 + 2;
 		end case;
+		`,
+		compVerilog: `
+		case(x + 1)
+			1: begin
+				print("hello");
+				y <= 2;
+			end
+			2, 3: begin
+				print("many");
+			end
+			default: begin
+				z <= 2 + 2;
+			end
+		endcase
 		`,
 	},
 	{
@@ -581,6 +620,21 @@ var stTestCases = []stTestCase{
 			when others =>
 				z := 2 + 2;
 		end case;`,
+		compVerilog: `
+		case(x + 1)
+			1: begin
+				print("hello");
+				y <= 2;
+				end
+			2: begin
+				end
+			3: begin
+				print("many");
+				end
+			default: begin
+				z <= 2 + 2;
+				end
+		endcase`,
 	},
 	{
 		name: "for loop 1",
@@ -886,6 +940,22 @@ func TestCases(t *testing.T) {
 
 			if recvProg != desrProg {
 				t.Errorf("Test %d (%s) VHDL COMPILATION FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, desrProg, recvProg)
+			}
+		}
+		if stTestCases[i].compVerilog != "" {
+			//now check if the compiled version matches
+			var recvProg string
+			if stTestCases[i].expressionOnly {
+				recvProg = standardizeSpaces(VerilogCompileExpression(prog[0].(STExpression)))
+			} else {
+				recvProg = standardizeSpaces(VerilogCompileSequence(prog))
+			}
+
+			//convert to have equivalent whitespaces
+			desrProg := standardizeSpaces(stTestCases[i].compVerilog)
+
+			if recvProg != desrProg {
+				t.Errorf("Test %d (%s) VERILOG COMPILATION FAIL.\nExpected:\n\t%s\n\nReceived:\n\t%s\n\n", i, stTestCases[i].name, desrProg, recvProg)
 			}
 		}
 	}
