@@ -93,6 +93,8 @@ func vhdlTranslateOperatorToken(token string) string {
 		return ""
 	case stMultiply:
 		return "*"
+	case stDivide:
+		return "/"
 	case stModulo:
 		return "%"
 	case stAdd:
