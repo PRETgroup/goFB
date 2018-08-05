@@ -97,6 +97,8 @@ func cTranslateOperatorToken(token string) string {
 		return ""
 	case stMultiply:
 		return "*"
+	case stDivide:
+		return "/"
 	case stModulo:
 		return "%"
 	case stDivide:
