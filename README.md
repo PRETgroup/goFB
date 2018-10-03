@@ -18,16 +18,23 @@ The goFB toolchain currently supports the following aspects of the IEC61499 stan
 - [x] Service Interface Function Blocks
 - [x] Composite Function Blocks
 - [x] Resources *(partial - goFB but not goTFB)*
+- [ ] Devices
+- [ ] Systems
+
+There is also some work into IEC61499 extensions:
 - [x] Hybrid Function Blocks *(partial - goFB but not goTFB)*
 - [ ] Enforcer Function Blocks
-- [ ] Devices 
-- [ ] Systems
 
 ## Examples
 
 Examples can be found in the `examples` directory. 
 
 For complete usage of the toolchain, refer to the examples in the `examples/goTFB` directory. `examples/goFB_only` has examples that utilize the compiler in different ways, such as adding CVODE, and building for the T-CREST platform.
+
+## Output languages
+
+Primarily, this tool is designed to compile IEC61499 to C. 
+There is also partial Verilog support on the roadmap, to replace the currently nonfunctional VHDL compilation toolchain.
 
 ## Build
 
@@ -43,4 +50,4 @@ You will need to add the `bin` directory of the repostory to your `$PATH`, for i
 
 The goFB toolchain was used in the ACM-IEEE MEMOCODE publication [Simulation of cyber-physical systems using IEC61499](https://dl.acm.org/citation.cfm?id=3127052), and the examples used in this paper can be found under `examples/goFB_only/c_odes`.
 
-The goFB toolchain was also used in the IEEE ISORC 2018 paper "Faster Function Blocks for Precision Timed Industrial Automation" (still under review). The examples for this paper can be found under `examples/goFB_only/c_tcrest`.
+The goFB toolchain was also used in the IEEE ISORC 2018 paper [Faster Function Blocks for Precision Timed Industrial Automation](https://ieeexplore.ieee.org/abstract/document/8421148/). The examples for this paper can be found under `examples/goFB_only/c_tcrest`.
