@@ -31,6 +31,8 @@ func New(language string) (*Converter, error) {
 		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageVHDL, templates: vhdlTemplates}, nil
 	} else if strings.ToLower(language) == "c" {
 		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageC, templates: cTemplates}, nil
+	} else if strings.ToLower(language) == "verilog" {
+		return &Converter{Blocks: make([]iec61499.FB, 0), outputLanguage: languageVerilog, templates: verilogTemplates}, nil
 	}
 
 	return nil, errors.New("Unknown language " + language + "for converter")
@@ -459,7 +461,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			return nil, errors.New("Couldn't format template (top) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 
-		finishedConversions = append(finishedConversions, OutputFile{Name: "iec61499_network_top", Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
+		finishedConversions = append(finishedConversions, OutputFile{Name: "top", Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
 
 	}
 

@@ -37,7 +37,7 @@
 		</EventConnections>
 		<DataConnections>
 			<Connection Source="i" Destination="curve.i" dx1=""></Connection>
-			<Connection Source="i" Destination="curve.iSet" dx1=""></Connection>
+			<Connection Source="iSet" Destination="curve.iSet" dx1=""></Connection>
 			<Connection Source="sr.b" Destination="b" dx1=""></Connection>
 		</DataConnections>
 	</FBNetwork>

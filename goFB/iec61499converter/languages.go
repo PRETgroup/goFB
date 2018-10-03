@@ -13,9 +13,10 @@ import (
 type language string
 
 const (
-	languageVHDL   language = "vhdl"
-	languageC      language = "c"
-	languageEventC language = "eventC"
+	languageVHDL    language = "vhdl"
+	languageC       language = "c"
+	languageEventC  language = "eventC"
+	languageVerilog language = "verilog"
 )
 
 //hasHeaders returns info on whether or not header files will be generated for the selected language
@@ -33,6 +34,9 @@ func (l language) getExtension() string {
 	}
 	if l == languageEventC {
 		return "c"
+	}
+	if l == languageVerilog {
+		return "v"
 	}
 	return "file"
 }
@@ -56,10 +60,10 @@ type supportFileTemplate struct {
 //supportFileTemplates is used to store template/file names for support files needed for the output
 //i.e. fbtypes.h for c
 func (l language) supportFileTemplates() []supportFileTemplate {
-	if l == languageVHDL {
+	if l == languageVHDL || l == languageVerilog {
 		return nil
 	}
-	if l == languageC {
+	if l == languageC || l == languageEventC {
 		return []supportFileTemplate{{"fbtypes", "fbtypes", "h"}, {"utilheader", "util", "h"}, {"util", "util", "c"}}
 	}
 	return nil
@@ -93,6 +97,22 @@ var (
 		"eventIsTOPIO_IN":               eventIsTOPIO_IN,
 		"getSpecialIO":                  getSpecialIO,
 		"getSpecialIOForRef":            getSpecialIOForRef,
+
+		"div":   div,
+		"add":   add,
+		"mod":   mod,
+		"count": count,
+	}
+
+	verilogTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/verilog/*"))
+
+	verilogTemplateFuncMap = template.FuncMap{
+		//"compileAlgorithm":				vhdlCompileAlgorithm,
+
+		"getVerilogType":                   getVerilogType,
+		"getVerilogECCTransitionCondition": getVerilogECCTransitionCondition,
+		"connChildSourceOnly":              connChildSourceOnly,
+		"connChildNameMatches":             connChildNameMatches,
 
 		"div":   div,
 		"add":   add,
