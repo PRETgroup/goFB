@@ -1,0 +1,42 @@
+compositeFB CfbOvercurrentDetector;
+
+interface of CfbOvercurrentDetector {
+    in event tick;
+    in event i_measured;
+    in event test;
+    in event set;
+    in event iSet_change;
+
+    //in with i_measured unsigned i;
+    //in with iSet_change unsigned iSet;
+    in ulint i;
+    in ulint iSet;
+
+    out event b_change;
+    
+    //out with b_change bool b;
+    out bool b;
+}
+
+architecture of CfbOvercurrentDetector{
+	instance BfbSetterResetter sr;
+    instance BfbIDMTCurve curve;
+
+	events {
+		curve.tick <- tick;
+        curve.i_measured <- i_measured;
+        curve.iSet_change <- iSet_change;
+
+        sr.test <- test;
+        sr.set <- set;
+        sr.unsafe <- curve.unsafe;
+
+        b_change <- sr.b_change;
+	}
+
+	data {
+		curve.i <- i;
+        curve.iSet <- iSet;
+        b <- sr.b;
+	}
+}

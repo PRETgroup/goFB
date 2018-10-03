@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbSetterResetter" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="test" Comment=""></Event>
+			<Event Name="set" Comment=""></Event>
+			<Event Name="unsafe" Comment=""></Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="b_change" Comment="">
+				<With Var="b"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars>
+			<VarDeclaration Name="b" Type="BOOL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="s_init" Comment="" x="" y=""></ECState>
+			<ECState Name="s_reset" Comment="" x="" y="">
+				<ECAction Output="b_change"></ECAction>
+				<ECAction Algorithm="s_reset_alg0"></ECAction>
+			</ECState>
+			<ECState Name="s_set" Comment="" x="" y="">
+				<ECAction Output="b_change"></ECAction>
+				<ECAction Algorithm="s_set_alg0"></ECAction>
+			</ECState>
+			<ECTransition Source="s_init" Destination="s_reset" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="s_reset" Destination="s_set" Condition="set = &#39; 1 &#39;" x="" y=""></ECTransition>
+			<ECTransition Source="s_set" Destination="s_reset" Condition="test = &#39; 1 &#39; OR unsafe = &#39; 1 &#39;" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="s_reset_alg0" Comment="">
+			<Other Language="ST" Text="b := 0;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_set_alg0" Comment="">
+			<Other Language="ST" Text="b := 1;"></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

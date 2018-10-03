@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbIDMTCurve" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="tick" Comment=""></Event>
+			<Event Name="i_measured" Comment="">
+				<With Var="i"></With>
+			</Event>
+			<Event Name="iSet_change" Comment="">
+				<With Var="iSet"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="unsafe" Comment=""></Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="i" Type="ULINT" Comment=""></VarDeclaration>
+			<VarDeclaration Name="iSet" Type="ULINT" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="v" Type="ULINT" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="thresh" Type="ULINT" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="K" Type="ULINT" InitialValue="10000" Comment=""></VarDeclaration>
+			<VarDeclaration Name="B" Type="ULINT" InitialValue="135" Comment=""></VarDeclaration>
+		</InternalVars>
+		<ECC>
+			<ECState Name="s_start" Comment="" x="" y=""></ECState>
+			<ECState Name="s_wait" Comment="" x="" y="">
+				<ECAction Algorithm="s_wait_alg0"></ECAction>
+			</ECState>
+			<ECState Name="s_count" Comment="" x="" y="">
+				<ECAction Algorithm="updateThresh"></ECAction>
+				<ECAction Algorithm="s_count_alg0"></ECAction>
+			</ECState>
+			<ECState Name="s_over" Comment="" x="" y="">
+				<ECAction Output="unsafe"></ECAction>
+			</ECState>
+			<ECTransition Source="s_start" Destination="s_wait" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="s_wait" Destination="s_count" Condition="i &gt; iSet" x="" y=""></ECTransition>
+			<ECTransition Source="s_count" Destination="s_wait" Condition="i &lt;= iSet" x="" y=""></ECTransition>
+			<ECTransition Source="s_count" Destination="s_over" Condition="v &gt; thresh" x="" y=""></ECTransition>
+			<ECTransition Source="s_count" Destination="s_count" Condition="tick = &#39; 1 &#39;" x="" y=""></ECTransition>
+			<ECTransition Source="s_over" Destination="s_wait" Condition="i &lt;= iSet" x="" y=""></ECTransition>
+			<ECTransition Source="s_over" Destination="s_over" Condition="true" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="s_wait_alg0" Comment="">
+			<Other Language="VHDL" Text="v &lt;= 0;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_count_alg0" Comment="">
+			<Other Language="VHDL" Text="v &lt;= v + 1;"></Other>
+		</Algorithm>
+		<Algorithm Name="updateThresh" Comment="">
+			<Other Language="VHDL" Text="&#xA;        thresh &lt;= ((K*B) / ((I_mA / Iset_mA) - 1));&#xA;    "></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

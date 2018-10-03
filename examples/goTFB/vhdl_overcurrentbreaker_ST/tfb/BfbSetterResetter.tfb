@@ -1,0 +1,31 @@
+basicFB BfbSetterResetter;
+
+interface of BfbSetterResetter {
+	in event test;
+    in event set;
+    in event unsafe;
+
+    out event b_change;
+    out with b_change bool b;
+} 
+
+architecture of BfbSetterResetter {
+	states {
+		s_init {
+            -> s_reset;
+        }
+
+        s_reset {
+            emit b_change;
+            run in "ST" `b := 0;`;
+            -> s_set on set = '1';
+        }
+
+        s_set {
+            emit b_change;
+            run in "ST" `b := 1;`;
+
+            -> s_reset on test = '1' OR unsafe = '1';
+        }
+	}
+}

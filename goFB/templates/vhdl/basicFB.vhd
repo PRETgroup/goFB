@@ -16,16 +16,19 @@ architecture rtl of {{$block.Name}} is
 	-- Register to hold the current state
 	signal state   : state_type := STATE_{{(index $basicFB.States 0).Name}};
 
-	{{if $block.InputVars}}-- signals to store variable sampled on enable {{range $index, $var := $block.InputVars.Variables}}
+	{{range $index, $event := $block.EventInputs}}signal {{$event.Name}} : std_logic;
+	{{end}}
+
+	{{if $block.InputVars}}-- signals to store variable sampled on enable {{range $index, $var := $block.InputVars}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; --register for input{{end}}
 	{{end}}
-	{{if $block.OutputVars}}-- signals to rename outputs {{range $index, $var := $block.OutputVars.Variables}}
+	{{if $block.OutputVars}}-- signals to rename outputs {{range $index, $var := $block.OutputVars}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}} := {{if eq (getVhdlType $var.Type) "std_logic"}}'0'{{else}}(others => '0'){{end}}; {{end}}
 	{{end}}
 
 	{{if $block.EventOutputs}}
 	--signals to rename output events
-	{{range $index, $event := $block.EventOutputs.Events}}signal {{$event.Name}}_eO_ecc_out : std_logic := '0'; --used when event driven from ECC (normal FB behaviour)
+	{{range $index, $event := $block.EventOutputs}}signal {{$event.Name}}_eO_ecc_out : std_logic := '0'; --used when event driven from ECC (normal FB behaviour)
 	signal {{$event.Name}}_eO_alg_out : std_logic := '0'; --used when event driven from algorithm (normal SIFB behaviour)
 	{{end}}{{end}}
 
@@ -38,16 +41,20 @@ architecture rtl of {{$block.Name}} is
 	signal AlgorithmsStart : std_logic := '0';
 	signal AlgorithmsDone : std_logic;
 
-	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars.Variables}}{{if not (or (variableIsTOPIO_IN $var) (variableIsTOPIO_OUT $var))}}{{/*ignore the special IO cos they are in the port list*/}}
+	{{if $basicFB.InternalVars}}--internal variables {{range $varIndex, $var := $basicFB.InternalVars}}{{if not (or (variableIsTOPIO_IN $var) (variableIsTOPIO_OUT $var))}}{{/*ignore the special IO cos they are in the port list*/}}
 	signal {{$var.Name}} : {{getVhdlType $var.Type}}; --type was {{$var.Type}} {{end}}{{end}}{{end}}
 begin
+
+	{{range $index, $event := $block.EventInputs}}{{$event.Name}} <= {{$event.Name}}_eI;
+	{{end}}
+
 	{{if $block.EventInputs}}{{if $block.InputVars}}-- Registers for data variables (only updated on relevant events)
 	process (clk)
 	begin
 		if rising_edge(clk) then
 			if sync = '1' then
-				{{range $eventIndex, $event := $block.EventInputs.Events}}{{if $event.With}}
-				if {{$event.Name}}_eI = '1' then{{range $varIndex, $var := $block.InputVars.Variables}}{{if $event.IsLoadFor $var}}
+				{{range $eventIndex, $event := $block.EventInputs}}{{if $event.With}}
+				if {{$event.Name}}_eI = '1' then{{range $varIndex, $var := $block.InputVars}}{{if $event.IsLoadFor $var}}
 					{{$var.Name}} <= {{$var.Name}}_I;{{end}}{{end}}
 				end if;
 				{{end}}{{end}}
@@ -56,7 +63,7 @@ begin
 	end process;{{end}}{{end}}
 	
 	{{if $block.OutputVars}}--output var renaming, no output registers as inputs are stored where they are processed
-	{{range $varIndex, $var := $block.OutputVars.Variables}}{{$var.Name}}_O <= {{$var.Name}};
+	{{range $varIndex, $var := $block.OutputVars}}{{$var.Name}}_O <= {{$var.Name}};
 	{{end}}{{end}}		
 	
 	-- Logic to advance to the next state
@@ -76,7 +83,7 @@ begin
 				--next state logic
 				case state is
 					{{range $curStateIndex, $curState := $basicFB.States}}when STATE_{{$curState.Name}} =>
-						{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{getVhdlECCTransitionCondition $trans.Condition}} then
+						{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if {{$trans.Condition}} then
 							state <= STATE_{{$trans.Destination}};
 							AlgorithmsStart <= '1';
 						{{end}}end if;
@@ -92,7 +99,7 @@ begin
 	begin
 		--default values
 		{{if $block.EventOutputs}}--events
-		{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}}_eO_ecc_out <= '0';
+		{{range $index, $event := $block.EventOutputs}}{{$event.Name}}_eO_ecc_out <= '0';
 		{{end}}{{end}}
 		{{if $basicFB.Algorithms}}--algorithms{{range $algIndex, $alg := $basicFB.Algorithms}}
 		{{$alg.Name}}_alg_en <= '0'; {{end}}{{end}}
@@ -116,7 +123,7 @@ begin
 					{{$alg.Name}}_alg_done <= '0';
 					{{if $block.EventOutputs}}
 					--logic for resetting algorithm-driven output events
-					{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}}_eO_alg_out <= '0';
+					{{range $index, $event := $block.EventOutputs}}{{$event.Name}}_eO_alg_out <= '0';
 					{{end}}{{end}}
 				end if;
 				{{end}}
@@ -141,7 +148,7 @@ begin
 
 	{{if $block.EventOutputs}}
 	--logic for renamed output events
-	{{range $index, $event := $block.EventOutputs.Events}}{{$event.Name}}_eO <= {{$event.Name}}_eO_ecc_out or {{$event.Name}}_eO_alg_out;
+	{{range $index, $event := $block.EventOutputs}}{{$event.Name}}_eO <= {{$event.Name}}_eO_ecc_out or {{$event.Name}}_eO_alg_out;
 	{{end}}{{end}}
 
 end rtl;

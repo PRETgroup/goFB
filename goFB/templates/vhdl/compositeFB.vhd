@@ -21,16 +21,16 @@ architecture rtl of {{$block.Name}} is
 begin
 	--top level I/O to signals
 	{{if $block.EventInputs}}--input events
-	{{range $index, $event := $block.EventInputs.Events}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Source $event.Name}}{{renameConnSignal $conn.Source}}_eI <= {{$event.Name}};
+	{{range $index, $event := $block.EventInputs}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Source $event.Name}}{{renameConnSignal $conn.Source}} <= {{$event.Name}}_eI;
 	{{end}}{{end}}{{end}}
 	{{end}}{{if $block.EventOutputs}}--output events
-	{{range $index, $event := $block.EventOutputs.Events}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Destination $event.Name}}{{$event.Name}}_eO <= {{renameConnSignal $conn.Source}};
+	{{range $index, $event := $block.EventOutputs}}{{range $curConnIndex, $conn := $compositeFB.EventConnections}}{{if eq $conn.Destination $event.Name}}{{$event.Name}}_eO <= {{renameConnSignal $conn.Source}};
 	{{end}}{{end}}{{end}}
 	{{end}}{{if $block.InputVars}}--input variables
-	{{range $index, $var := $block.InputVars.Variables}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Source $var.Name}}{{renameConnSignal $conn.Source}} <= {{$var.Name}}_I;
+	{{range $index, $var := $block.InputVars}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Source $var.Name}}{{renameConnSignal $conn.Source}} <= {{$var.Name}}_I;
 	{{end}}{{end}}{{end}}
 	{{end}}{{if $block.OutputVars}}--output events
-	{{range $index, $var := $block.OutputVars.Variables}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Destination $var.Name}}{{$var.Name}}_O <= {{renameConnSignal $conn.Source}};
+	{{range $index, $var := $block.OutputVars}}{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if eq $conn.Destination $var.Name}}{{$var.Name}}_O <= {{renameConnSignal $conn.Source}};
 	{{end}}{{end}}{{end}}
 	{{end}}
 	-- child I/O to signals
@@ -54,7 +54,7 @@ begin
 		{{range $curConnIndex, $conn := $compositeFB.DataConnections}}{{if connChildNameMatches $conn.Destination $child.Name}}{{connChildSourceOnly $conn.Destination}}_I => {{renameConnSignal $conn.Source}},
 		{{end}}{{end}}
 
-		{{$special := $child.GetSpecialIO $blocks}}{{if $special.InternalVars}}--specials
+		{{$special := getSpecialIOForRef $child $blocks}}{{if $special.InternalVars}}--specials
 		{{range $curSpecialIndex, $sInternal := $special.InternalVars}}{{$sInternal.Name}} => {{$sInternal.Name}}, --{{if variableIsTOPIO_IN $sInternal}}input{{else}}output{{end}}
 		{{end}}{{end}}
 		done => {{$child.Name}}_done

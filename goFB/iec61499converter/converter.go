@@ -459,7 +459,7 @@ func (c *Converter) ConvertAll() ([]OutputFile, error) {
 			return nil, errors.New("Couldn't format template (top) of" + c.Blocks[topIndex].Name + ": " + err.Error())
 		}
 
-		finishedConversions = append(finishedConversions, OutputFile{Name: "top", Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
+		finishedConversions = append(finishedConversions, OutputFile{Name: "iec61499_network_top", Extension: c.outputLanguage.getExtension(), Contents: output.Bytes()})
 
 	}
 

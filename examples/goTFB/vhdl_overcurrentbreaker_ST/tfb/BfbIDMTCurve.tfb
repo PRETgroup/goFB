@@ -1,0 +1,51 @@
+basicFB BfbIDMTCurve;
+
+interface of BfbIDMTCurve {
+	in event tick;
+    in event i_measured;
+    in event iSet_change;
+
+    out event unsafe;
+
+    in with i_measured ulint i;
+    in with iSet_change ulint iSet;    
+} 
+
+architecture of BfbIDMTCurve {
+	internals {
+        ulint v := 0;
+        ulint thresh := 0;
+        ulint K := 10000;	
+		ulint B := 135;
+    }
+    
+    states {
+		s_start {
+			-> s_wait;
+		}
+
+		s_wait {
+			run in "VHDL" `v <= 0;`;
+			-> s_count on i > iSet;
+		}
+
+        s_count {
+            run updateThresh;
+            run in "VHDL" `v <= v + 1;`;
+            
+            -> s_wait on i <= iSet;
+            -> s_over on v > thresh;
+            -> s_count on tick = '1';
+        }
+
+        s_over {
+            emit unsafe;
+            -> s_wait on i <= iSet;
+            -> s_over;
+        }
+	}
+
+    algorithm updateThresh in "VHDL" `
+        thresh <= ((K*B) / ((I_mA / Iset_mA) - 1));
+    `;
+}

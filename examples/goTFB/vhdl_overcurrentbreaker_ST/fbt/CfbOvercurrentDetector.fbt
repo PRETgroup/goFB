@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="CfbOvercurrentDetector" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="tick" Comment=""></Event>
+			<Event Name="i_measured" Comment=""></Event>
+			<Event Name="test" Comment=""></Event>
+			<Event Name="set" Comment=""></Event>
+			<Event Name="iSet_change" Comment=""></Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="b_change" Comment=""></Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="i" Type="ULINT" Comment=""></VarDeclaration>
+			<VarDeclaration Name="iSet" Type="ULINT" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="b" Type="BOOL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<FBNetwork>
+		<FB Name="sr" Type="BfbSetterResetter" x="" y=""></FB>
+		<FB Name="curve" Type="BfbIDMTCurve" x="" y=""></FB>
+		<EventConnections>
+			<Connection Source="tick" Destination="curve.tick" dx1=""></Connection>
+			<Connection Source="i_measured" Destination="curve.i_measured" dx1=""></Connection>
+			<Connection Source="iSet_change" Destination="curve.iSet_change" dx1=""></Connection>
+			<Connection Source="test" Destination="sr.test" dx1=""></Connection>
+			<Connection Source="set" Destination="sr.set" dx1=""></Connection>
+			<Connection Source="curve.unsafe" Destination="sr.unsafe" dx1=""></Connection>
+			<Connection Source="sr.b_change" Destination="b_change" dx1=""></Connection>
+		</EventConnections>
+		<DataConnections>
+			<Connection Source="i" Destination="curve.i" dx1=""></Connection>
+			<Connection Source="i" Destination="curve.iSet" dx1=""></Connection>
+			<Connection Source="sr.b" Destination="b" dx1=""></Connection>
+		</DataConnections>
+	</FBNetwork>
+</FBType>
