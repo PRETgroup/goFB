@@ -53,13 +53,26 @@ reg  b;
 ////END internal vars
 
 always@(posedge clk) begin
-	//BEGIN update internal inputs
-
+	//BEGIN update internal inputs on relevant events
+	
 	//END update internal inputs
 
 
 
-	//BEGIN update 
+	//BEGIN ecc 
+
+
+
+	//END ecc
+
+	//BEGIN update external outputs on relevant events
+	
+	if(b_change) begin 
+		b_O = b;
+		
+	end
+	
+	//END update external outputs
 
 end
 endmodule

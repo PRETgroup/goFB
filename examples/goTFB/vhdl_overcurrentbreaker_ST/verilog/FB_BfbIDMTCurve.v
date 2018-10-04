@@ -59,13 +59,31 @@ reg  unsigned [63:0] B  = 135;
 ////END internal vars
 
 always@(posedge clk) begin
-	//BEGIN update internal inputs
-
+	//BEGIN update internal inputs on relevant events
+	
+	if(i_measured) begin 
+		i = i_I;
+		
+	end
+	
+	if(iSet_change) begin 
+		iSet = iSet_I;
+		
+	end
+	
 	//END update internal inputs
 
 
 
-	//BEGIN update 
+	//BEGIN ecc 
+
+
+
+	//END ecc
+
+	//BEGIN update external outputs on relevant events
+	
+	//END update external outputs
 
 end
 endmodule

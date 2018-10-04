@@ -29,13 +29,31 @@ reg  {{getVerilogSize $var.Type}} {{$var.Name}} {{if $var.InitialValue}} = {{$va
 ////END internal vars
 
 always@(posedge clk) begin
-	//BEGIN update internal inputs
-
+	//BEGIN update internal inputs on relevant events
+	{{if $block.EventInputs}}{{if $block.InputVars}}{{range $eventIndex, $event := $block.EventInputs}}{{if $event.With}}
+	if({{$event.Name}}) begin 
+		{{range $varIndex, $var := $block.InputVars}}{{if $event.IsLoadFor $var}}{{$var.Name}} = {{$var.Name}}_I;
+		{{end}}{{end}}
+	end
+	{{end}}{{end}}{{end}}{{end}}
 	//END update internal inputs
 
 
 
-	//BEGIN update 
+	//BEGIN ecc 
+
+
+
+	//END ecc
+
+	//BEGIN update external outputs on relevant events
+	{{if $block.EventOutputs}}{{if $block.OutputVars}}{{range $eventIndex, $event := $block.EventOutputs}}{{if $event.With}}
+	if({{$event.Name}}) begin 
+		{{range $varIndex, $var := $block.OutputVars}}{{if $event.IsLoadFor $var}}{{$var.Name}}_O = {{$var.Name}};
+		{{end}}{{end}}
+	end
+	{{end}}{{end}}{{end}}{{end}}
+	//END update external outputs
 
 end
 endmodule{{end}}
