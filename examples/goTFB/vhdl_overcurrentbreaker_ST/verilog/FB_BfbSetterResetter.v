@@ -29,6 +29,22 @@ module FB_BfbSetterResetter
 );
 
 
+////BEGIN algorithm functions
+
+function s_reset_alg0
+
+begin
+b := 0;
+
+endfunction
+function s_set_alg0
+
+begin
+b := 1;
+
+endfunction
+////END algorithm functions
+
 ////BEGIN internal copies of I/O
 //input events
 wire test;
@@ -56,8 +72,6 @@ always@(posedge clk) begin
 	//BEGIN update internal inputs on relevant events
 	
 	//END update internal inputs
-
-
 
 	//BEGIN ecc 
 

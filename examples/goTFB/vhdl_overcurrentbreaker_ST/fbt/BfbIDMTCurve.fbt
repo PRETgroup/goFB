@@ -51,13 +51,13 @@
 			<ECTransition Source="s_over" Destination="s_over" Condition="true" x="" y=""></ECTransition>
 		</ECC>
 		<Algorithm Name="s_wait_alg0" Comment="">
-			<Other Language="VHDL" Text="v &lt;= 0;"></Other>
+			<Other Language="ST" Text="v := 0;"></Other>
 		</Algorithm>
 		<Algorithm Name="s_count_alg0" Comment="">
-			<Other Language="VHDL" Text="v &lt;= v + 1;"></Other>
+			<Other Language="ST" Text="v := v + 1;"></Other>
 		</Algorithm>
 		<Algorithm Name="updateThresh" Comment="">
-			<Other Language="VHDL" Text="&#xA;        thresh &lt;= ((K*B) / ((I_mA / Iset_mA) - 1));&#xA;    "></Other>
+			<Other Language="ST" Text="&#xA;        thresh := ((K*B) / ((I_mA / Iset_mA) - 1));&#xA;    "></Other>
 		</Algorithm>
 	</BasicFB>
 </FBType>

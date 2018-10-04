@@ -30,6 +30,30 @@ module FB_BfbIDMTCurve
 );
 
 
+////BEGIN algorithm functions
+
+function s_wait_alg0
+
+begin
+v := 0;
+
+endfunction
+function s_count_alg0
+
+begin
+v := v + 1;
+
+endfunction
+function updateThresh
+
+begin
+
+        thresh := ((K*B) / ((I_mA / Iset_mA) - 1));
+    
+
+endfunction
+////END algorithm functions
+
 ////BEGIN internal copies of I/O
 //input events
 wire tick;
@@ -72,8 +96,6 @@ always@(posedge clk) begin
 	end
 	
 	//END update internal inputs
-
-
 
 	//BEGIN ecc 
 

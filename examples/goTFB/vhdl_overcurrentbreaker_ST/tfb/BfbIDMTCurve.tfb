@@ -25,13 +25,13 @@ architecture of BfbIDMTCurve {
 		}
 
 		s_wait {
-			run in "VHDL" `v <= 0;`;
+			run in "ST" `v := 0;`;
 			-> s_count on i > iSet;
 		}
 
         s_count {
             run updateThresh;
-            run in "VHDL" `v <= v + 1;`;
+            run in "ST" `v := v + 1;`;
             
             -> s_wait on i <= iSet;
             -> s_over on v > thresh;
@@ -45,7 +45,7 @@ architecture of BfbIDMTCurve {
         }
 	}
 
-    algorithm updateThresh in "VHDL" `
-        thresh <= ((K*B) / ((I_mA / Iset_mA) - 1));
+    algorithm updateThresh in "ST" `
+        thresh := ((K*B) / ((I_mA / Iset_mA) - 1));
     `;
 }

@@ -6,6 +6,16 @@
 
 module FB_{{$block.Name}} {{template "_moduleDeclr" .}}
 
+////BEGIN algorithm functions
+{{if $basicFB.Algorithms}}{{range $algIndex, $alg := $basicFB.Algorithms}}
+function {{$alg.Name}}
+
+begin
+{{$alg.Other.Text}}
+
+endfunction{{end}}{{end}}
+////END algorithm functions
+
 ////BEGIN internal copies of I/O
 {{if $block.EventInputs}}//input events
 {{range $index, $event := $block.EventInputs}}wire {{$event.Name}};
@@ -37,8 +47,6 @@ always@(posedge clk) begin
 	end
 	{{end}}{{end}}{{end}}{{end}}
 	//END update internal inputs
-
-
 
 	//BEGIN ecc 
 
