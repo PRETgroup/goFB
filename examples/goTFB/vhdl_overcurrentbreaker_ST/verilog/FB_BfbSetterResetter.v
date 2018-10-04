@@ -4,7 +4,7 @@
 
 // This file represents the Basic Function Block for BfbSetterResetter
 
-module BfbSetterResetter 
+module FB_BfbSetterResetter 
 
 (
 		input wire clk,

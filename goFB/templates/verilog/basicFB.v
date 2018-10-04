@@ -4,7 +4,7 @@
 {{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}{{$basicFB := $block.BasicFB}}
 // This file represents the Basic Function Block for {{$block.Name}}
 
-module {{$block.Name}} {{template "_moduleDeclr" .}}
+module FB_{{$block.Name}} {{template "_moduleDeclr" .}}
 
 ////BEGIN internal copies of I/O
 {{if $block.EventInputs}}//input events

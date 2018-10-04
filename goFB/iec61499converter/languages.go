@@ -111,6 +111,7 @@ var (
 
 		"getVerilogSize":                   getVerilogSize,
 		"getVerilogECCTransitionCondition": getVerilogECCTransitionCondition,
+		"renameConnSignal":                 renameConnSignal,
 		"connChildSourceOnly":              connChildSourceOnly,
 		"connChildNameMatches":             connChildNameMatches,
 

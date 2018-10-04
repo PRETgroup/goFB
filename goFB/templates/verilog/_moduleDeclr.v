@@ -17,7 +17,7 @@
 		{{end}}{{end}}
 		{{if $block.OutputVars}}
 		//output variables
-		{{range $index, $var := $block.OutputVars}}output reg {{getVerilogSize $var.Type}} {{$var.Name}}_O {{if $var.InitialValue}} = {{$var.InitialValue}}{{end}},
+		{{range $index, $var := $block.OutputVars}}output {{if $block.BasicFB}}reg{{else}}wire{{end}} {{getVerilogSize $var.Type}} {{$var.Name}}_O {{if $var.InitialValue}} = {{$var.InitialValue}}{{end}},
 		{{end}}{{end}}
 
 		input reset

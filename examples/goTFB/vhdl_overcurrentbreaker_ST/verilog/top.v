@@ -28,7 +28,7 @@ module top
 		
 		
 		//output variables
-		output reg  b_O ,
+		output wire  b_O ,
 		
 
 		input reset

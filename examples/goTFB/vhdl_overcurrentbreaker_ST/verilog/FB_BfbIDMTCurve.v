@@ -4,7 +4,7 @@
 
 // This file represents the Basic Function Block for BfbIDMTCurve
 
-module BfbIDMTCurve 
+module FB_BfbIDMTCurve 
 
 (
 		input wire clk,
