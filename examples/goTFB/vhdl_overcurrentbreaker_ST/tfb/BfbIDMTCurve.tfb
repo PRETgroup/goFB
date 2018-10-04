@@ -35,7 +35,7 @@ architecture of BfbIDMTCurve {
             
             -> s_wait on i <= iSet;
             -> s_over on v > thresh;
-            -> s_count on tick = '1';
+            -> s_count on tick;
         }
 
         s_over {

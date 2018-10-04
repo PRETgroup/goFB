@@ -8,6 +8,17 @@ import (
 	"github.com/PRETgroup/goFB/iec61499"
 )
 
+func verilogCompileTransition(block iec61499.FB, trans string) string {
+	//transitions are all ST type
+	stconverter.SetKnownVarNames(block.GetAllVarNames())
+	instrs, err := stconverter.ParseString(block.Name+"(transition)", trans)
+	if err != nil {
+		panic(err)
+	}
+	comp := stconverter.VerilogCompileSequence(instrs, false)
+	return comp
+}
+
 func verilogCompileAlgorithm(block iec61499.FB, algorithm iec61499.Algorithm) string {
 	//if it's ST we know how to compile that! :)
 	if algorithm.Other.Language == "ST" {
@@ -16,7 +27,7 @@ func verilogCompileAlgorithm(block iec61499.FB, algorithm iec61499.Algorithm) st
 		if err != nil {
 			panic(err)
 		}
-		comp := stconverter.VerilogCompileSequence(instrs)
+		comp := stconverter.VerilogCompileSequence(instrs, true)
 		return comp
 	}
 	//can't do much otherwise...

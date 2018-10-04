@@ -84,33 +84,79 @@ reg  unsigned [63:0] K  = 10000;
 reg  unsigned [63:0] B  = 135; 
 ////END internal vars
 
-//STATE variable
+//STATE variables
 reg integer state = `STATE_s_start;
+reg entered = 1'b0;
 
 always@(posedge clk) begin
-	//BEGIN update internal inputs on relevant events
-	
-	if(i_measured) begin 
-		i = i_I;
+
+	if(reset) begin
+		//reset state 
+		state = `STATE_s_start;
+
+		//reset I/O registers
+		i = 0;
+		iSet = 0;
 		
-	end
-	
-	if(iSet_change) begin 
-		iSet = iSet_I;
+		//reset internal vars
+		v = 0;
+		thresh = 0;
+		K = 10000;
+		B = 135;
+	end else begin
+
+		//BEGIN update internal inputs on relevant events
 		
+		if(i_measured) begin 
+			i = i_I;
+			
+		end
+		
+		if(iSet_change) begin 
+			iSet = iSet_I;
+			
+		end
+		
+		//END update internal inputs
+
+		//BEGIN ecc 
+		case(state) 
+			`STATE_s_start: begin
+				if(true) begin
+					state = `STATE_s_wait;
+					entered = 1'b1;
+				end;
+			end `STATE_s_wait: begin
+				if(i > iSet) begin
+					state = `STATE_s_count;
+					entered = 1'b1;
+				end;
+			end `STATE_s_count: begin
+				if(i <= iSet) begin
+					state = `STATE_s_wait;
+					entered = 1'b1;
+				elsif(v > thresh) begin
+					state = `STATE_s_over;
+					entered = 1'b1;
+				elsif(tick) begin
+					state = `STATE_s_count;
+					entered = 1'b1;
+				end;
+			end `STATE_s_over: begin
+				if(i <= iSet) begin
+					state = `STATE_s_wait;
+					entered = 1'b1;
+				elsif(true) begin
+					state = `STATE_s_over;
+					entered = 1'b1;
+				end;
+			end 
+		endcase
+		//END ecc
+
+		//BEGIN update external outputs on relevant events
+		
+		//END update external outputs
 	end
-	
-	//END update internal inputs
-
-	//BEGIN ecc 
-	
-
-
-	//END ecc
-
-	//BEGIN update external outputs on relevant events
-	
-	//END update external outputs
-
 end
 endmodule

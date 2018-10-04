@@ -154,15 +154,17 @@ func VhdlCompileSequence(sequence []STInstruction) string {
 //2) All variables are integer types
 //3) Everything completes in a single cycle
 //4) loops aren't yet supported
-func VerilogCompileSequence(sequence []STInstruction) string {
+func VerilogCompileSequence(sequence []STInstruction, addTermColon bool) string {
 	output := &bytes.Buffer{}
 	for _, untypedInst := range sequence {
 		switch inst := untypedInst.(type) {
 		case STExpression:
 			_, err := output.WriteString(VerilogCompileExpression(inst)) //we have a special function for CCompileExpression because we might want to call it separately for 61499 guards
 			panicOnErr(err)
-			panicOnErr(output.WriteByte(';'))
-			panicOnErr(output.WriteByte('\n'))
+			if addTermColon {
+				panicOnErr(output.WriteByte(';'))
+				panicOnErr(output.WriteByte('\n'))
+			}
 		case STIfElsIfElse:
 			panicOnErr(verilogTemplates.ExecuteTemplate(output, "ifelsifelse", inst))
 		case STSwitchCase:

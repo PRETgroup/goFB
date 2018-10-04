@@ -18,14 +18,14 @@ architecture of BfbSetterResetter {
         s_reset {
             emit b_change;
             run in "ST" `b := 0;`;
-            -> s_set on set = '1';
+            -> s_set on set;
         }
 
         s_set {
             emit b_change;
             run in "ST" `b := 1;`;
 
-            -> s_reset on test = '1' OR unsafe = '1';
+            -> s_reset on test || unsafe;
         }
 	}
 }

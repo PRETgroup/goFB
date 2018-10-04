@@ -64,7 +64,7 @@ assign b_change_eO = b_change;
 
 
 //output variables
-reg  b;
+reg  b ;
 
 ////END internal copies of I/O
 
@@ -72,28 +72,55 @@ reg  b;
 
 ////END internal vars
 
-//STATE variable
+//STATE variables
 reg integer state = `STATE_s_init;
+reg entered = 1'b0;
 
 always@(posedge clk) begin
-	//BEGIN update internal inputs on relevant events
-	
-	//END update internal inputs
 
-	//BEGIN ecc 
-	
+	if(reset) begin
+		//reset state 
+		state = `STATE_s_init;
 
-
-	//END ecc
-
-	//BEGIN update external outputs on relevant events
-	
-	if(b_change) begin 
-		b_O = b;
+		//reset I/O registers
 		
-	end
-	
-	//END update external outputs
+		b = 0;
+		//reset internal vars
+	end else begin
 
+		//BEGIN update internal inputs on relevant events
+		
+		//END update internal inputs
+
+		//BEGIN ecc 
+		case(state) 
+			`STATE_s_init: begin
+				if(true) begin
+					state = `STATE_s_reset;
+					entered = 1'b1;
+				end;
+			end `STATE_s_reset: begin
+				if(set) begin
+					state = `STATE_s_set;
+					entered = 1'b1;
+				end;
+			end `STATE_s_set: begin
+				if(test || unsafe) begin
+					state = `STATE_s_reset;
+					entered = 1'b1;
+				end;
+			end 
+		endcase
+		//END ecc
+
+		//BEGIN update external outputs on relevant events
+		
+		if(b_change) begin 
+			b_O = b;
+			
+		end
+		
+		//END update external outputs
+	end
 end
 endmodule

@@ -46,7 +46,7 @@
 			<ECTransition Source="s_wait" Destination="s_count" Condition="i &gt; iSet" x="" y=""></ECTransition>
 			<ECTransition Source="s_count" Destination="s_wait" Condition="i &lt;= iSet" x="" y=""></ECTransition>
 			<ECTransition Source="s_count" Destination="s_over" Condition="v &gt; thresh" x="" y=""></ECTransition>
-			<ECTransition Source="s_count" Destination="s_count" Condition="tick = &#39; 1 &#39;" x="" y=""></ECTransition>
+			<ECTransition Source="s_count" Destination="s_count" Condition="tick" x="" y=""></ECTransition>
 			<ECTransition Source="s_over" Destination="s_wait" Condition="i &lt;= iSet" x="" y=""></ECTransition>
 			<ECTransition Source="s_over" Destination="s_over" Condition="true" x="" y=""></ECTransition>
 		</ECC>
