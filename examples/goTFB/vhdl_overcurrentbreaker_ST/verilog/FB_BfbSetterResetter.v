@@ -4,6 +4,12 @@
 
 // This file represents the Basic Function Block for BfbSetterResetter
 
+//defines for state names used internally
+`define STATE_s_init 0
+`define STATE_s_reset 1
+`define STATE_s_set 2
+
+
 module FB_BfbSetterResetter 
 
 (
@@ -34,14 +40,12 @@ module FB_BfbSetterResetter
 function s_reset_alg0
 
 begin
-b := 0;
-
+b = 0;
 endfunction
 function s_set_alg0
 
 begin
-b := 1;
-
+b = 1;
 endfunction
 ////END algorithm functions
 
@@ -68,13 +72,16 @@ reg  b;
 
 ////END internal vars
 
+//STATE variable
+reg integer state = `STATE_s_init;
+
 always@(posedge clk) begin
 	//BEGIN update internal inputs on relevant events
 	
 	//END update internal inputs
 
 	//BEGIN ecc 
-
+	
 
 
 	//END ecc

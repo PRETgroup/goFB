@@ -3,7 +3,25 @@ package iec61499converter
 import (
 	"regexp"
 	"strings"
+
+	"github.com/PRETgroup/goFB/goFB/stconverter"
+	"github.com/PRETgroup/goFB/iec61499"
 )
+
+func verilogCompileAlgorithm(block iec61499.FB, algorithm iec61499.Algorithm) string {
+	//if it's ST we know how to compile that! :)
+	if algorithm.Other.Language == "ST" {
+		stconverter.SetKnownVarNames(block.GetAllVarNames())
+		instrs, err := stconverter.ParseString(block.Name+"_"+algorithm.Name, algorithm.Other.Text)
+		if err != nil {
+			panic(err)
+		}
+		comp := stconverter.VerilogCompileSequence(instrs)
+		return comp
+	}
+	//can't do much otherwise...
+	return algorithm.Other.Text
+}
 
 //getVerilogSize returns the Verilog size to use with respect to an IEC61499 type
 func getVerilogSize(iec61499type string) string {

@@ -4,6 +4,13 @@
 
 // This file represents the Basic Function Block for BfbIDMTCurve
 
+//defines for state names used internally
+`define STATE_s_start 0
+`define STATE_s_wait 1
+`define STATE_s_count 2
+`define STATE_s_over 3
+
+
 module FB_BfbIDMTCurve 
 
 (
@@ -35,22 +42,17 @@ module FB_BfbIDMTCurve
 function s_wait_alg0
 
 begin
-v := 0;
-
+v = 0;
 endfunction
 function s_count_alg0
 
 begin
-v := v + 1;
-
+v = v + 1;
 endfunction
 function updateThresh
 
 begin
-
-        thresh := ((K*B) / ((I_mA / Iset_mA) - 1));
-    
-
+thresh = K * B / (I_mA / Iset_mA - 1);
 endfunction
 ////END algorithm functions
 
@@ -82,6 +84,9 @@ reg  unsigned [63:0] K  = 10000;
 reg  unsigned [63:0] B  = 135; 
 ////END internal vars
 
+//STATE variable
+reg integer state = `STATE_s_start;
+
 always@(posedge clk) begin
 	//BEGIN update internal inputs on relevant events
 	
@@ -98,7 +103,7 @@ always@(posedge clk) begin
 	//END update internal inputs
 
 	//BEGIN ecc 
-
+	
 
 
 	//END ecc

@@ -4,6 +4,10 @@
 {{$block := index .Blocks .BlockIndex}}{{$blocks := .Blocks}}{{$basicFB := $block.BasicFB}}
 // This file represents the Basic Function Block for {{$block.Name}}
 
+//defines for state names used internally
+{{range $index, $state := $basicFB.States}}`define STATE_{{$state.Name}} {{$index}}
+{{end}}
+
 module FB_{{$block.Name}} {{template "_moduleDeclr" .}}
 
 ////BEGIN algorithm functions
@@ -11,8 +15,7 @@ module FB_{{$block.Name}} {{template "_moduleDeclr" .}}
 function {{$alg.Name}}
 
 begin
-{{$alg.Other.Text}}
-
+{{compileAlgorithm $block $alg -}}
 endfunction{{end}}{{end}}
 ////END algorithm functions
 
@@ -38,6 +41,9 @@ assign {{$event.Name}}_eO = {{$event.Name}};
 reg  {{getVerilogSize $var.Type}} {{$var.Name}} {{if $var.InitialValue}} = {{$var.InitialValue}}{{end}}; {{end}}{{end}}
 ////END internal vars
 
+//STATE variable
+reg integer state = `STATE_{{(index $basicFB.States 0).Name}};
+
 always@(posedge clk) begin
 	//BEGIN update internal inputs on relevant events
 	{{if $block.EventInputs}}{{if $block.InputVars}}{{range $eventIndex, $event := $block.EventInputs}}{{if $event.With}}
@@ -49,7 +55,7 @@ always@(posedge clk) begin
 	//END update internal inputs
 
 	//BEGIN ecc 
-
+	
 
 
 	//END ecc
