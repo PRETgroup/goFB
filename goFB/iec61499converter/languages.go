@@ -104,12 +104,12 @@ var (
 		"count": count,
 	}
 
-	verilogTemplates = template.Must(template.New("").Funcs(vhdlTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/verilog/*"))
+	verilogTemplates = template.Must(template.New("").Funcs(verilogTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/verilog/*"))
 
 	verilogTemplateFuncMap = template.FuncMap{
 		//"compileAlgorithm":				vhdlCompileAlgorithm,
 
-		"getVerilogType":                   getVerilogType,
+		"getVerilogSize":                   getVerilogSize,
 		"getVerilogECCTransitionCondition": getVerilogECCTransitionCondition,
 		"connChildSourceOnly":              connChildSourceOnly,
 		"connChildNameMatches":             connChildNameMatches,

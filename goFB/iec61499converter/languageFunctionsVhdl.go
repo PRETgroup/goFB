@@ -3,6 +3,8 @@ package iec61499converter
 import (
 	"regexp"
 	"strings"
+
+	"github.com/PRETgroup/goFB/iec61499"
 )
 
 const (
@@ -78,4 +80,69 @@ func getVerilogECCTransitionCondition(iec61499trans string) string {
 	retVal = strings.Replace(retVal, "OR", "or", -1)
 	retVal = re.ReplaceAllStringFunc(retVal, addTrueCheck)
 	return retVal
+}
+
+//variableIsTOPIO_OUT used in templates
+func variableIsTOPIO_OUT(v iec61499.Variable) bool {
+	return v.Comment == vhdl_TOPIO_OUT
+}
+
+//variableIsTOPIO_IN used in templates
+func variableIsTOPIO_IN(v iec61499.Variable) bool {
+	return v.Comment == vhdl_TOPIO_IN
+}
+
+//eventIsTOPIO_OUT used in templates
+func eventIsTOPIO_OUT(e iec61499.Event) bool {
+	return e.Comment == vhdl_TOPIO_OUT
+}
+
+//eventIsTOPIO_IN used in templates
+func eventIsTOPIO_IN(e iec61499.Event) bool {
+	return e.Comment == vhdl_TOPIO_IN
+}
+
+//SpecialIO is used to store internal variables that are "special" (i.e. exported because they are for debugging or service interfaces)
+type SpecialIO struct {
+	//Perhaps in future we will have special []Event and []Variable for normal event and data API
+	InternalVars []iec61499.Variable
+}
+
+//getSpecialIOForRef returns all SpecialIO for a given FBReference
+func getSpecialIOForRef(fr iec61499.FBReference, otherBlocks []iec61499.FB) SpecialIO {
+	for j := 0; j < len(otherBlocks); j++ {
+		if otherBlocks[j].Name == fr.Type {
+			return getSpecialIO(otherBlocks[j], otherBlocks)
+		}
+	}
+	return SpecialIO{}
+}
+
+//getSpecialIO is used for service interface blocks and those blocks that contain service interface blocks
+func getSpecialIO(f iec61499.FB, otherBlocks []iec61499.FB) SpecialIO {
+	s := SpecialIO{
+		InternalVars: make([]iec61499.Variable, 0),
+	}
+
+	if f.BasicFB != nil {
+		if f.BasicFB.InternalVars != nil {
+			for i := 0; i < len(f.BasicFB.InternalVars); i++ {
+				if variableIsTOPIO_IN(f.BasicFB.InternalVars[i]) || variableIsTOPIO_OUT(f.BasicFB.InternalVars[i]) {
+					s.InternalVars = append(s.InternalVars, f.BasicFB.InternalVars[i])
+				}
+			}
+		}
+	} else if f.CompositeFB != nil {
+		for i := 0; i < len(f.CompositeFB.FBs); i++ {
+			for j := 0; j < len(otherBlocks); j++ {
+				if otherBlocks[j].Name == f.CompositeFB.FBs[i].Type {
+					os := getSpecialIO(otherBlocks[j], otherBlocks)
+					s.InternalVars = append(s.InternalVars, os.InternalVars...)
+					continue
+				}
+			}
+		}
+	}
+
+	return s
 }
