@@ -18,8 +18,8 @@
 			<Event Name="unsafe" Comment=""></Event>
 		</EventOutputs>
 		<InputVars>
-			<VarDeclaration Name="i" Type="ULINT" Comment=""></VarDeclaration>
-			<VarDeclaration Name="iSet" Type="ULINT" Comment=""></VarDeclaration>
+			<VarDeclaration Name="i" Type="UDINT" Comment=""></VarDeclaration>
+			<VarDeclaration Name="iSet" Type="UDINT" Comment=""></VarDeclaration>
 		</InputVars>
 		<OutputVars></OutputVars>
 	</InterfaceList>
@@ -27,8 +27,8 @@
 		<InternalVars>
 			<VarDeclaration Name="v" Type="ULINT" InitialValue="0" Comment=""></VarDeclaration>
 			<VarDeclaration Name="thresh" Type="ULINT" InitialValue="0" Comment=""></VarDeclaration>
-			<VarDeclaration Name="K" Type="ULINT" InitialValue="10000" Comment=""></VarDeclaration>
-			<VarDeclaration Name="B" Type="ULINT" InitialValue="135" Comment=""></VarDeclaration>
+			<VarDeclaration Name="K" Type="UDINT" InitialValue="10000" Comment=""></VarDeclaration>
+			<VarDeclaration Name="B" Type="UDINT" InitialValue="135" Comment=""></VarDeclaration>
 		</InternalVars>
 		<ECC>
 			<ECState Name="s_start" Comment="" x="" y=""></ECState>
@@ -57,7 +57,7 @@
 			<Other Language="ST" Text="v := v + 1;"></Other>
 		</Algorithm>
 		<Algorithm Name="updateThresh" Comment="">
-			<Other Language="ST" Text="&#xA;        thresh := ((K*B) / ((I_mA / Iset_mA) - 1));&#xA;    "></Other>
+			<Other Language="ST" Text="&#xA;        thresh := ((K*B) / ((i / iSet) - 1));&#xA;    "></Other>
 		</Algorithm>
 	</BasicFB>
 </FBType>

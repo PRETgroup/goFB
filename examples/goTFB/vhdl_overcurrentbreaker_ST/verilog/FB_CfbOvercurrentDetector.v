@@ -9,7 +9,6 @@ module FB_CfbOvercurrentDetector
 (
 		input wire clk,
 		
-		
 		//input events
 		input wire tick_eI,
 		input wire i_measured_eI,
@@ -17,15 +16,12 @@ module FB_CfbOvercurrentDetector
 		input wire set_eI,
 		input wire iSet_change_eI,
 		
-		
 		//output events
 		output wire b_change_eO,
 		
-		
 		//input variables
-		input wire unsigned [63:0] i_I,
-		input wire unsigned [63:0] iSet_I,
-		
+		input wire unsigned [31:0] i_I,
+		input wire unsigned [31:0] iSet_I,
 		
 		//output variables
 		output wire  b_O ,
@@ -46,8 +42,8 @@ wire sr_b_change_conn;
 
 
 //Wires needed for data connections 
-wire unsigned [63:0] i_conn;
-wire unsigned [63:0] iSet_conn;
+wire unsigned [31:0] i_conn;
+wire unsigned [31:0] iSet_conn;
 wire  sr_b_conn;
 
 

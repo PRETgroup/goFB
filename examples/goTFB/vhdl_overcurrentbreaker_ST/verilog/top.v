@@ -9,7 +9,6 @@ module top
 (
 		input wire clk,
 		
-		
 		//input events
 		input wire tick_eI,
 		input wire i_measured_eI,
@@ -17,21 +16,43 @@ module top
 		input wire set_eI,
 		input wire iSet_change_eI,
 		
-		
 		//output events
 		output wire b_change_eO,
 		
-		
 		//input variables
-		input wire unsigned [63:0] i_I,
-		input wire unsigned [63:0] iSet_I,
-		
+		input wire unsigned [31:0] i_I,
+		input wire unsigned [31:0] iSet_I,
 		
 		//output variables
 		output wire  b_O ,
 		
 
 		input reset
+);
+
+
+// I/O
+FB_CfbOvercurrentDetector iec61499_network_top (
+	.clk(clk),
+		
+    //input events
+    .tick_eI(tick_eI),
+    .i_measured_eI(i_measured_eI),
+    .test_eI(test_eI),
+    .set_eI(set_eI),
+    .iSet_change_eI(iSet_change_eI),
+    
+    //output events
+    .b_change_eO(b_change_eO),
+    
+    //input variables
+    .i_I(i_I),
+    .iSet_I(iSet_I),
+    
+    //output variables
+    .b_O(b_O),
+    
+	.reset(reset)
 );
 
 

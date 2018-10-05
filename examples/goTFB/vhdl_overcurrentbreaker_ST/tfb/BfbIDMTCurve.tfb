@@ -7,16 +7,16 @@ interface of BfbIDMTCurve {
 
     out event unsafe;
 
-    in with i_measured ulint i;
-    in with iSet_change ulint iSet;    
+    in with i_measured udint i;
+    in with iSet_change udint iSet;    
 } 
 
 architecture of BfbIDMTCurve {
 	internals {
         ulint v := 0;
         ulint thresh := 0;
-        ulint K := 10000;	
-		ulint B := 135;
+        udint K := 10000;	
+		udint B := 135;
     }
     
     states {
@@ -46,6 +46,6 @@ architecture of BfbIDMTCurve {
 	}
 
     algorithm updateThresh in "ST" `
-        thresh := ((K*B) / ((I_mA / Iset_mA) - 1));
+        thresh := ((K*B) / ((i / iSet) - 1));
     `;
 }
