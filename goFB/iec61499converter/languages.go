@@ -107,8 +107,11 @@ var (
 	verilogTemplates = template.Must(template.New("").Funcs(verilogTemplateFuncMap).ParseGlob(execLoc + "/../goFB/templates/verilog/*"))
 
 	verilogTemplateFuncMap = template.FuncMap{
-		"compileAlgorithm":  verilogCompileAlgorithm,
-		"compileTransition": verilogCompileTransition,
+		"compileAlgorithm":     verilogCompileAlgorithm,
+		"compileTransition":    verilogCompileTransition,
+		"getVerilogWidthArray": getVerilogWidthArray,
+
+		"rmTrueFalse": rmTrueFalse,
 
 		"getVerilogSize":                   getVerilogSize,
 		"getVerilogECCTransitionCondition": getVerilogECCTransitionCondition,

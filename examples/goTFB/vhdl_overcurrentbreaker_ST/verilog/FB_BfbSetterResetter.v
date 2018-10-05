@@ -35,20 +35,6 @@ module FB_BfbSetterResetter
 );
 
 
-////BEGIN algorithm functions
-
-function s_reset_alg0
-
-begin
-b = 0;
-endfunction
-function s_set_alg0
-
-begin
-b = 1;
-endfunction
-////END algorithm functions
-
 ////BEGIN internal copies of I/O
 //input events
 wire test;
@@ -73,7 +59,7 @@ reg  b ;
 ////END internal vars
 
 //STATE variables
-reg integer state = `STATE_s_init;
+reg [1:0] state = `STATE_s_init;
 reg entered = 1'b0;
 
 always@(posedge clk) begin
@@ -94,8 +80,8 @@ always@(posedge clk) begin
 
 		//BEGIN ecc 
 		case(state) 
-			`STATE_s_init: begin
-				if(true) begin
+			default: begin
+				if(1) begin
 					state = `STATE_s_reset;
 					entered = 1'b1;
 				end;
@@ -112,6 +98,10 @@ always@(posedge clk) begin
 			end 
 		endcase
 		//END ecc
+
+		//BEGIN algorithms
+
+		//END algorithms
 
 		//BEGIN update external outputs on relevant events
 		

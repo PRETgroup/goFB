@@ -1,6 +1,7 @@
 package iec61499converter
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -122,4 +123,52 @@ func renameDoneSignal(in string, name string) string {
 //renameConnSignal is used in templates to make a consistent and friendly name for the connections
 func renameConnSignal(in string) string {
 	return strings.Replace(in, ".", "_", -1) + "_conn" // + "_to_" + strings.Replace(c.Destination, ".", "_", -1)
+}
+
+//renameTrueFalse is used to turn "true" into "1" and "false" into "0"
+func rmTrueFalse(in string) string {
+	str := strings.Replace(in, "true", "1", -1)
+	return strings.Replace(str, "false", "0", -1)
+}
+
+//used for sizing reg so it can store up to "l" in value
+func getVerilogWidthArray(l int) string {
+	cl2 := ceilLog2(uint64(l)) - 1
+	if cl2 >= 1 {
+		return fmt.Sprintf("[%v:0]", cl2)
+	}
+	return ""
+}
+
+//t is used in ceilLog2
+var t = [6]uint64{
+	0xFFFFFFFF00000000,
+	0x00000000FFFF0000,
+	0x000000000000FF00,
+	0x00000000000000F0,
+	0x000000000000000C,
+	0x0000000000000002,
+}
+
+//ceilLog2 performs a log2 ceiling function quickly
+func ceilLog2(x uint64) int {
+
+	y := 0
+	if (x & (x - 1)) != 0 {
+		y = 1
+	}
+	j := 32
+	var i int
+
+	for i = 0; i < 6; i++ {
+		k := 0
+		if (x & t[i]) != 0 {
+			k = j
+		}
+		y += k
+		x >>= uint64(k)
+		j >>= 1
+	}
+
+	return y
 }

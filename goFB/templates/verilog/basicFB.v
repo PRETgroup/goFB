@@ -10,15 +10,6 @@
 
 module FB_{{$block.Name}} {{template "_moduleDeclr" .}}
 
-////BEGIN algorithm functions
-{{if $basicFB.Algorithms}}{{range $algIndex, $alg := $basicFB.Algorithms}}
-function {{$alg.Name}}
-
-begin
-{{compileAlgorithm $block $alg -}}
-endfunction{{end}}{{end}}
-////END algorithm functions
-
 ////BEGIN internal copies of I/O
 {{if $block.EventInputs}}//input events
 {{range $index, $event := $block.EventInputs}}wire {{$event.Name}};
@@ -42,7 +33,7 @@ reg  {{getVerilogSize $var.Type}} {{$var.Name}} {{if $var.InitialValue}} = {{$va
 ////END internal vars
 
 //STATE variables
-reg integer state = `STATE_{{(index $basicFB.States 0).Name}};
+reg {{getVerilogWidthArray (len $basicFB.States)}} state = `STATE_{{(index $basicFB.States 0).Name}};
 reg entered = 1'b0;
 
 always@(posedge clk) begin
@@ -75,14 +66,18 @@ always@(posedge clk) begin
 
 		//BEGIN ecc 
 		case(state) 
-			{{range $curStateIndex, $curState := $basicFB.States}}`STATE_{{$curState.Name}}: begin
-				{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}els{{end}}if({{compileTransition $block $trans.Condition}}) begin
+			{{range $curStateIndex, $curState := $basicFB.States}}{{if $curStateIndex}}`STATE_{{$curState.Name}}{{else}}default{{end}}: begin
+				{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}end else {{end}}if({{rmTrueFalse (compileTransition $block $trans.Condition)}}) begin
 					state = `STATE_{{$trans.Destination}};
 					entered = 1'b1;
 				{{end}}end;
 			end {{end}}
 		endcase
 		//END ecc
+
+		//BEGIN algorithms
+
+		//END algorithms
 
 		//BEGIN update external outputs on relevant events
 		{{if $block.EventOutputs}}{{if $block.OutputVars}}{{range $eventIndex, $event := $block.EventOutputs}}{{if $event.With}}

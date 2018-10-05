@@ -37,25 +37,6 @@ module FB_BfbIDMTCurve
 );
 
 
-////BEGIN algorithm functions
-
-function s_wait_alg0
-
-begin
-v = 0;
-endfunction
-function s_count_alg0
-
-begin
-v = v + 1;
-endfunction
-function updateThresh
-
-begin
-thresh = K * B / (I_mA / Iset_mA - 1);
-endfunction
-////END algorithm functions
-
 ////BEGIN internal copies of I/O
 //input events
 wire tick;
@@ -85,7 +66,7 @@ reg  unsigned [63:0] B  = 135;
 ////END internal vars
 
 //STATE variables
-reg integer state = `STATE_s_start;
+reg [1:0] state = `STATE_s_start;
 reg entered = 1'b0;
 
 always@(posedge clk) begin
@@ -121,8 +102,8 @@ always@(posedge clk) begin
 
 		//BEGIN ecc 
 		case(state) 
-			`STATE_s_start: begin
-				if(true) begin
+			default: begin
+				if(1) begin
 					state = `STATE_s_wait;
 					entered = 1'b1;
 				end;
@@ -135,10 +116,10 @@ always@(posedge clk) begin
 				if(i <= iSet) begin
 					state = `STATE_s_wait;
 					entered = 1'b1;
-				elsif(v > thresh) begin
+				end else if(v > thresh) begin
 					state = `STATE_s_over;
 					entered = 1'b1;
-				elsif(tick) begin
+				end else if(tick) begin
 					state = `STATE_s_count;
 					entered = 1'b1;
 				end;
@@ -146,13 +127,17 @@ always@(posedge clk) begin
 				if(i <= iSet) begin
 					state = `STATE_s_wait;
 					entered = 1'b1;
-				elsif(true) begin
+				end else if(1) begin
 					state = `STATE_s_over;
 					entered = 1'b1;
 				end;
 			end 
 		endcase
 		//END ecc
+
+		//BEGIN algorithms
+
+		//END algorithms
 
 		//BEGIN update external outputs on relevant events
 		
