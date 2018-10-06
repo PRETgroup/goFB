@@ -7,16 +7,16 @@ interface of BfbIDMTCurve {
 
     out event unsafe;
 
-    in with i_measured udint i;
-    in with iSet_change udint iSet;    
+    in with i_measured usint i;
+    in with iSet_change usint iSet;    
 } 
 
 architecture of BfbIDMTCurve {
 	internals {
-        ulint v := 0;
-        ulint thresh := 0;
-        udint K := 10000;	
-		udint B := 135;
+        uint v := 0;
+        uint thresh := 0;
+        //udint K := 10000;	
+		//udint B := 135;
     }
     
     states {
@@ -46,6 +46,26 @@ architecture of BfbIDMTCurve {
 	}
 
     algorithm updateThresh in "ST" `
-        thresh := ((K*B) / ((i / iSet) - 1));
-    `;
+        if i > 145 then
+            thresh := 5;
+        elsif i > 100 then
+            thresh := 10;
+        elsif i > 77 then
+            thresh := 15;
+        elsif i > 55 then
+            thresh := 30;
+        elsif i > 32 then
+            thresh := 60;
+        elsif i > 23 then
+            thresh := 100;
+        elsif i > 19 then
+            thresh := 150;
+        elsif i > 14 then
+            thresh := 300;
+        else
+            thresh := 400;
+        end_if;
+    `; 
+    //replaced with LUT above
+    //thresh := ((10*135) / ((i / iSet) - 1));
 }

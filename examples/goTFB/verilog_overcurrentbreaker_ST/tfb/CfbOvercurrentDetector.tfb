@@ -9,8 +9,8 @@ interface of CfbOvercurrentDetector {
 
     //in with i_measured unsigned i;
     //in with iSet_change unsigned iSet;
-    in udint i;
-    in udint iSet;
+    in usint i;
+    in usint iSet;
 
     out event b_change;
     

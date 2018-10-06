@@ -16,8 +16,8 @@
 			<Event Name="b_change" Comment=""></Event>
 		</EventOutputs>
 		<InputVars>
-			<VarDeclaration Name="i" Type="UDINT" Comment=""></VarDeclaration>
-			<VarDeclaration Name="iSet" Type="UDINT" Comment=""></VarDeclaration>
+			<VarDeclaration Name="i" Type="USINT" Comment=""></VarDeclaration>
+			<VarDeclaration Name="iSet" Type="USINT" Comment=""></VarDeclaration>
 		</InputVars>
 		<OutputVars>
 			<VarDeclaration Name="b" Type="BOOL" Comment=""></VarDeclaration>

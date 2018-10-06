@@ -18,17 +18,15 @@
 			<Event Name="unsafe" Comment=""></Event>
 		</EventOutputs>
 		<InputVars>
-			<VarDeclaration Name="i" Type="UDINT" Comment=""></VarDeclaration>
-			<VarDeclaration Name="iSet" Type="UDINT" Comment=""></VarDeclaration>
+			<VarDeclaration Name="i" Type="USINT" Comment=""></VarDeclaration>
+			<VarDeclaration Name="iSet" Type="USINT" Comment=""></VarDeclaration>
 		</InputVars>
 		<OutputVars></OutputVars>
 	</InterfaceList>
 	<BasicFB>
 		<InternalVars>
-			<VarDeclaration Name="v" Type="ULINT" InitialValue="0" Comment=""></VarDeclaration>
-			<VarDeclaration Name="thresh" Type="ULINT" InitialValue="0" Comment=""></VarDeclaration>
-			<VarDeclaration Name="K" Type="UDINT" InitialValue="10000" Comment=""></VarDeclaration>
-			<VarDeclaration Name="B" Type="UDINT" InitialValue="135" Comment=""></VarDeclaration>
+			<VarDeclaration Name="v" Type="UINT" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="thresh" Type="UINT" InitialValue="0" Comment=""></VarDeclaration>
 		</InternalVars>
 		<ECC>
 			<ECState Name="s_start" Comment="" x="" y=""></ECState>
@@ -57,7 +55,7 @@
 			<Other Language="ST" Text="v := v + 1;"></Other>
 		</Algorithm>
 		<Algorithm Name="updateThresh" Comment="">
-			<Other Language="ST" Text="&#xA;        thresh := ((K*B) / ((i / iSet) - 1));&#xA;    "></Other>
+			<Other Language="ST" Text="&#xA;        if i &gt; 145 then&#xA;            thresh := 5;&#xA;        elsif i &gt; 100 then&#xA;            thresh := 10;&#xA;        elsif i &gt; 77 then&#xA;            thresh := 15;&#xA;        elsif i &gt; 55 then&#xA;            thresh := 30;&#xA;        elsif i &gt; 32 then&#xA;            thresh := 60;&#xA;        elsif i &gt; 23 then&#xA;            thresh := 100;&#xA;        elsif i &gt; 19 then&#xA;            thresh := 150;&#xA;        elsif i &gt; 14 then&#xA;            thresh := 300;&#xA;        else&#xA;            thresh := 400;&#xA;        end_if;&#xA;    "></Other>
 		</Algorithm>
 	</BasicFB>
 </FBType>

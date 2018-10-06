@@ -20,8 +20,8 @@ module FB_CfbOvercurrentDetector
 		output wire b_change_eO,
 		
 		//input variables
-		input wire unsigned [31:0] i_I,
-		input wire unsigned [31:0] iSet_I,
+		input wire unsigned [7:0] i_I,
+		input wire unsigned [7:0] iSet_I,
 		
 		//output variables
 		output wire  b_O ,
@@ -42,8 +42,8 @@ wire sr_b_change_conn;
 
 
 //Wires needed for data connections 
-wire unsigned [31:0] i_conn;
-wire unsigned [31:0] iSet_conn;
+wire unsigned [7:0] i_conn;
+wire unsigned [7:0] iSet_conn;
 wire  sr_b_conn;
 
 

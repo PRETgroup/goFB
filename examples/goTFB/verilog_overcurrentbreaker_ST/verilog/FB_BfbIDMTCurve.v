@@ -25,8 +25,8 @@ module FB_BfbIDMTCurve
 		output wire unsafe_eO,
 		
 		//input variables
-		input wire unsigned [31:0] i_I,
-		input wire unsigned [31:0] iSet_I,
+		input wire unsigned [7:0] i_I,
+		input wire unsigned [7:0] iSet_I,
 		
 		
 
@@ -48,18 +48,16 @@ reg unsafe;
 assign unsafe_eO = unsafe;
 
 //input variables
-reg unsigned [31:0] i ;
-reg unsigned [31:0] iSet ;
+reg unsigned [7:0] i ;
+reg unsigned [7:0] iSet ;
 
 
 ////END internal copies of I/O
 
 ////BEGIN internal vars
 
-reg  unsigned [63:0] v  = 0; 
-reg  unsigned [63:0] thresh  = 0; 
-reg  unsigned [31:0] K  = 10000; 
-reg  unsigned [31:0] B  = 135; 
+reg  unsigned [15:0] v  = 0; 
+reg  unsigned [15:0] thresh  = 0; 
 ////END internal vars
 
 //BEGIN STATE variables
@@ -90,8 +88,6 @@ always@(posedge clk) begin
 		//reset internal vars
 		v = 0;
 		thresh = 0;
-		K = 10000;
-		B = 135;
 	end else begin
 
 		//BEGIN clear output events
@@ -191,8 +187,34 @@ always@(posedge clk) begin
 
 		end 
 		if(updateThresh_alg_en) begin
-			thresh = K * B / (i / iSet - 1);
+			if (i > 145) begin
+			thresh = 5;
 
+		end else if (i > 100) begin
+			thresh = 10;
+
+		end else if (i > 77) begin
+			thresh = 15;
+
+		end else if (i > 55) begin
+			thresh = 30;
+
+		end else if (i > 32) begin
+			thresh = 60;
+
+		end else if (i > 23) begin
+			thresh = 100;
+
+		end else if (i > 19) begin
+			thresh = 150;
+
+		end else if (i > 14) begin
+			thresh = 300;
+
+		end else begin 
+		thresh = 400;
+
+	end
 		end 
 		
 		//END algorithms

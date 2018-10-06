@@ -20,8 +20,8 @@ module top
 		output wire b_change_eO,
 		
 		//input variables
-		input wire unsigned [31:0] i_I,
-		input wire unsigned [31:0] iSet_I,
+		input wire unsigned [7:0] i_I,
+		input wire unsigned [7:0] iSet_I,
 		
 		//output variables
 		output wire  b_O ,

@@ -16,7 +16,7 @@ func verilogCompileTransition(block iec61499.FB, trans string) string {
 	if err != nil {
 		panic(err)
 	}
-	comp := stconverter.VerilogCompileSequence(instrs, false)
+	comp := stconverter.VerilogCompileExpression(instrs[0].(stconverter.STExpression))
 	return comp
 }
 
@@ -28,7 +28,7 @@ func verilogCompileAlgorithm(block iec61499.FB, algorithm iec61499.Algorithm) st
 		if err != nil {
 			panic(err)
 		}
-		comp := stconverter.VerilogCompileSequence(instrs, true)
+		comp := stconverter.VerilogCompileSequence(instrs)
 		return comp
 	}
 	//can't do much otherwise...
