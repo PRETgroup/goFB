@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="InjectorPumpsController" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="StartPump" Comment="">
+  </Event>
+  <Event Name="EmergencyStopChanged" Comment="">
+    <With Var="EmergencyStop" />
+  </Event>
+  <Event Name="CanisterPressureChanged" Comment="">
+    <With Var="CanisterPressure" />
+  </Event>
+  <Event Name="FillContentsAvailableChanged" Comment="">
+    <With Var="FillContentsAvailable" />
+  </Event>
+  <Event Name="VacuumTimerElapsed" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="PumpFinished" Comment="">
+  </Event>
+  <Event Name="RejectCanister" Comment="">
+  </Event>
+  <Event Name="InjectorControlsChanged" Comment="">
+    <With Var="InjectorPressurePumpRun" />
+    <With Var="InjectorVacuumRun" />
+    <With Var="InjectorContentsValveOpen" />
+  </Event>
+  <Event Name="FillContentsChanged" Comment="">
+    <With Var="FillContents" />
+  </Event>
+  <Event Name="StartVacuumTimer" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="EmergencyStop" Type="BOOL" Comment="" />
+  <VarDeclaration Name="CanisterPressure" Type="BYTE" Comment="" />
+  <VarDeclaration Name="FillContentsAvailable" Type="BYTE" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="InjectorContentsValveOpen" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectorVacuumRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectorPressurePumpRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="FillContents" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="RejectCanister" Comment="" x="1428.25515270233" y="328.125">
+    <ECAction Algorithm="ClearControls" Output="RejectCanister" />
+    <ECAction Output="InjectorControlsChanged" />
+  </ECState>
+  <ECState Name="AwaitPump" Comment="" x="1843.88020833333" y="1006.25">
+    <ECAction Output="PumpFinished" />
+  </ECState>
+  <ECState Name="VacuumPump" Comment="" x="1822.00520833333" y="1407.29166666667">
+    <ECAction Algorithm="StartVacuum" Output="InjectorControlsChanged" />
+    <ECAction Output="StartVacuumTimer" />
+  </ECState>
+  <ECState Name="FinishPump" Comment="" x="3874.609375" y="758.333333333333">
+    <ECAction Algorithm="ClearControls" Output="InjectorControlsChanged" />
+  </ECState>
+  <ECState Name="StartPump" Comment="" x="4239.19270833333" y="1228.64583333333">
+    <ECAction Algorithm="StartPump" Output="InjectorControlsChanged" />
+  </ECState>
+  <ECState Name="OpenValve" Comment="" x="3808.984375" y="1542.1875">
+    <ECAction Algorithm="OpenValve" Output="InjectorControlsChanged" />
+  </ECState>
+  <ECState Name="StopVacuum" Comment="" x="2493.75" y="1881.25">
+    <ECAction Algorithm="ClearControls" Output="InjectorControlsChanged" />
+  </ECState>
+  <ECTransition Source="RejectCanister" Destination="AwaitPump" Condition="true" x="1616.06768051783" y="610.1875" />
+  <ECTransition Source="AwaitPump" Destination="VacuumPump" Condition="StartPump" x="1831.94270833333" y="1217.77083333333" />
+  <ECTransition Source="VacuumPump" Destination="RejectCanister" Condition="VacuumTimerElapsed" x="1592.13018051783" y="945.708333333333" />
+  <ECTransition Source="VacuumPump" Destination="StopVacuum" Condition="CanisterPressureChanged AND (CanisterPressure&lt;=10)" x="2190.890625" y="1617.63541666667" />
+  <ECTransition Source="FinishPump" Destination="AwaitPump" Condition="true" x="2742.24479166667" y="899.291666666667" />
+  <ECTransition Source="StartPump" Destination="FinishPump" Condition="CanisterPressureChanged AND (CanisterPressure&gt;=245)" x="4057.90104166667" y="969.489583333333" />
+  <ECTransition Source="OpenValve" Destination="StartPump" Condition="true" x="4006.08854166667" y="1361.41666666667" />
+  <ECTransition Source="StopVacuum" Destination="OpenValve" Condition="true" x="3124.3671875" y="1694.71875" />
+</ECC><Algorithm Name="StartVacuum" Comment="">
+  <Other Language="ST" Prototype="" Text="InjectorVacuumRun := 1;" />
+</Algorithm>
+<Algorithm Name="ClearControls" Comment="">
+  <Other Language="ST" Prototype="" Text="InjectorContentsValveOpen := 0;&#xD;&#xA;InjectorPressurePumpRun := 0;&#xD;&#xA;InjectorVacuumRun := 0;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="OpenValve" Comment="">
+  <Other Language="ST" Prototype="" Text="InjectorContentsValveOpen := 1;" />
+</Algorithm>
+<Algorithm Name="StartPump" Comment="">
+  <Other Language="ST" Prototype="" Text="InjectorPressurePumpRun := 1;" />
+</Algorithm></BasicFB>
+</FBType>

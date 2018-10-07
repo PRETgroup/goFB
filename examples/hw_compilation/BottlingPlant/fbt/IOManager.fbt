@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="IOManager" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2016-00-28" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="DoorReleaseCanister" Comment="">
+  </Event>
+  <Event Name="ConveyorChanged" Comment="">
+    <With Var="ConveyorSpeed" />
+  </Event>
+  <Event Name="InjectorPositionChanged" Comment="">
+    <With Var="InjectorPosition" />
+  </Event>
+  <Event Name="InjectorControlsChanged" Comment="">
+    <With Var="InjectorContentsValveOpen" />
+    <With Var="InjectorVacuumRun" />
+    <With Var="InjectorPressurePumpRun" />
+  </Event>
+  <Event Name="FillContentsChanged" Comment="">
+    <With Var="FillContents" />
+  </Event>
+  <Event Name="StartVacuumTimer" Comment="">
+  </Event>
+  <Event Name="GoRejectArm" Comment="">
+  </Event>
+  <Event Name="CanisterCountChanged" Comment="">
+    <With Var="CanisterCount" />
+  </Event>
+  <Event Name="InjectDone" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="InjectorArmFinishMovement" Comment="">
+  </Event>
+  <Event Name="EmergencyStopChanged" Comment="">
+    <With Var="EmergencyStop" />
+  </Event>
+  <Event Name="CanisterPressureChanged" Comment="">
+    <With Var="CanisterPressure" />
+  </Event>
+  <Event Name="FillContentsAvailableChanged" Comment="">
+    <With Var="FillContentsAvailable" />
+  </Event>
+  <Event Name="LasersChanged" Comment="">
+    <With Var="DoorSiteLaser" />
+    <With Var="InjectSiteLaser" />
+    <With Var="RejectSiteLaser" />
+    <With Var="RejectBinLaser" />
+    <With Var="AcceptBinLaser" />
+  </Event>
+  <Event Name="DoorOverride" Comment="">
+  </Event>
+  <Event Name="VacuumTimerElapsed" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="ConveyorSpeed" Type="BYTE" Comment="" />
+  <VarDeclaration Name="InjectorPosition" Type="BYTE" Comment="" />
+  <VarDeclaration Name="InjectorContentsValveOpen" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectorVacuumRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectorPressurePumpRun" Type="BOOL" Comment="" />
+  <VarDeclaration Name="FillContents" Type="BOOL" Comment="" />
+  <VarDeclaration Name="CanisterCount" Type="BYTE" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="EmergencyStop" Type="BOOL" Comment="" />
+  <VarDeclaration Name="CanisterPressure" Type="BYTE" Comment="" />
+  <VarDeclaration Name="FillContentsAvailable" Type="BYTE" Comment="" />
+  <VarDeclaration Name="DoorSiteLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="InjectSiteLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="RejectSiteLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="RejectBinLaser" Type="BOOL" Comment="" />
+  <VarDeclaration Name="AcceptBinLaser" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="EmergencyStopped" Type="BOOL" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="656.25" y="481.25">
+    <ECAction Algorithm="IOAlgorithm" Output="EmergencyStopChanged" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Start" Condition="true" x="656.25" y="1006.25" />
+</ECC><Algorithm Name="IOAlgorithm" Comment="">
+  <Other Language="ST" Prototype="" Text="" />
+</Algorithm></BasicFB>
+</FBType>

@@ -127,6 +127,18 @@ func scanString(name string, input string) []string {
 			items[i] = stAnd
 			items = append(items[:i+1], items[i+2:]...)
 		}
+
+		if items[i] == "AND" {
+			items[i] = "and"
+		}
+
+		if items[i] == "OR" {
+			items[i] = "or"
+		}
+
+		if items[i] == "XOR" {
+			items[i] = "xor"
+		}
 	}
 
 	return items

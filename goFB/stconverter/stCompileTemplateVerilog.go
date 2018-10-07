@@ -28,7 +28,8 @@ const verilogTemplate = `
 	*/}}{{range $i, $ifThen := .IfThens}}{{/* //cycle through all the ifThens
 		*/}}{{if $i}} else {{end}}if ({{template "expression" $ifThen.IfExpression}}) begin
 			{{compileSequence $ifThen.ThenSequence}}
-		end{{end}}{{/*
+		end
+		{{end}}{{/*
 	*/}}{{if .ElseSequence}} else begin 
 		{{compileSequence .ElseSequence}}
 	end{{end}}{{/*
