@@ -1,0 +1,60 @@
+compositeFB CfbOneLink;
+
+interface of CfbOneLink {
+    in event Tick;
+   
+    in event PedWaiting;
+    in event GoSeq;
+    out event DoneSeq;
+
+    in event SpecialInstr;
+    in bool HoldGreen;
+
+    out event PedLightsChange;
+    out bool PedRed;
+    out bool PedFlashRed;
+    out bool PedGreen;
+
+    out event TrafLightsChange;
+    out bool TrafRed;
+    out bool TrafYellow;
+    out bool TrafGreen;
+}
+
+architecture of CfbOneLink{
+	instance BfbOnePedCtrl ped;
+    instance BfbOneWayCtrl traf;
+
+	events {
+		ped.Tick <- Tick;
+        traf.Tick <- Tick;
+        
+        traf.BeginSeq <- GoSeq;
+        DoneSeq <- traf.DoneSeq;
+
+        ped.PedWaiting <- PedWaiting;    //a pedestrian has pushed a button
+        ped.SeqGrant <- traf.PedGrant;   //sequence grant request from BfbOneWayCtrl meaning that ped lights can go
+        
+        traf.PedStatusChange <- ped.SeqStatusChange; //sequence status (for informing BfbOnWayCtrl we are done)
+
+        traf.SpecialInstr <- SpecialInstr;
+        
+        PedLightsChange <- ped.LightCtrlChange;  //output update for ped lights
+        TrafLightsChange <- traf.LightCtrlChange; //output update for traf lights
+	}
+
+	data {
+		traf.PedRunning <- ped.Running;  //if true, we are running, if false, we are not
+        traf.PedRequest <- ped.Request;  //sequence request for BfbOneWayCtrl to grant
+
+        traf.HoldGreen <- HoldGreen;
+
+        PedRed <- ped.LightRed;
+        PedFlashRed <- ped.LightFlashRed;
+        PedGreen <- ped.LightGreen;
+
+        TrafRed <- traf.LightRed;
+        TrafYellow <- traf.LightYellow;
+        TrafGreen <- traf.LightGreen;
+	}
+}

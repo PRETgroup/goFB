@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="CfbOneLink" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="Tick" Comment=""></Event>
+			<Event Name="PedWaiting" Comment=""></Event>
+			<Event Name="GoSeq" Comment=""></Event>
+			<Event Name="SpecialInstr" Comment=""></Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="DoneSeq" Comment=""></Event>
+			<Event Name="PedLightsChange" Comment=""></Event>
+			<Event Name="TrafLightsChange" Comment=""></Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="HoldGreen" Type="BOOL" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="PedRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="PedFlashRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="PedGreen" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="TrafRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="TrafYellow" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="TrafGreen" Type="BOOL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<FBNetwork>
+		<FB Name="ped" Type="BfbOnePedCtrl" x="" y=""></FB>
+		<FB Name="traf" Type="BfbOneWayCtrl" x="" y=""></FB>
+		<EventConnections>
+			<Connection Source="Tick" Destination="ped.Tick" dx1=""></Connection>
+			<Connection Source="Tick" Destination="traf.Tick" dx1=""></Connection>
+			<Connection Source="GoSeq" Destination="traf.BeginSeq" dx1=""></Connection>
+			<Connection Source="traf.DoneSeq" Destination="DoneSeq" dx1=""></Connection>
+			<Connection Source="PedWaiting" Destination="ped.PedWaiting" dx1=""></Connection>
+			<Connection Source="traf.PedGrant" Destination="ped.SeqGrant" dx1=""></Connection>
+			<Connection Source="ped.SeqStatusChange" Destination="traf.PedStatusChange" dx1=""></Connection>
+			<Connection Source="SpecialInstr" Destination="traf.SpecialInstr" dx1=""></Connection>
+			<Connection Source="ped.LightCtrlChange" Destination="PedLightsChange" dx1=""></Connection>
+			<Connection Source="traf.LightCtrlChange" Destination="TrafLightsChange" dx1=""></Connection>
+		</EventConnections>
+		<DataConnections>
+			<Connection Source="ped.Running" Destination="traf.PedRunning" dx1=""></Connection>
+			<Connection Source="ped.Request" Destination="traf.PedRequest" dx1=""></Connection>
+			<Connection Source="HoldGreen" Destination="traf.HoldGreen" dx1=""></Connection>
+			<Connection Source="ped.LightRed" Destination="PedRed" dx1=""></Connection>
+			<Connection Source="ped.LightFlashRed" Destination="PedFlashRed" dx1=""></Connection>
+			<Connection Source="ped.LightGreen" Destination="PedGreen" dx1=""></Connection>
+			<Connection Source="traf.LightRed" Destination="TrafRed" dx1=""></Connection>
+			<Connection Source="traf.LightYellow" Destination="TrafYellow" dx1=""></Connection>
+			<Connection Source="traf.LightGreen" Destination="TrafGreen" dx1=""></Connection>
+		</DataConnections>
+	</FBNetwork>
+</FBType>

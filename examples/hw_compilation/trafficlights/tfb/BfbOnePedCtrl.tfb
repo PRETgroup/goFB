@@ -1,0 +1,109 @@
+basicFB BfbOnePedCtrl;
+
+interface of BfbOnePedCtrl {
+    in event Tick;
+
+	in event PedWaiting;    //a pedestrian has pushed a button
+    in event SeqGrant;      //sequence grant request from BfbOneWayCtrl meaning that ped lights can go
+    
+    out event SeqStatusChange;              //sequence status (for informing BfbOnWayCtrl we are done)
+    out with SeqStatusChange bool Running;  //if true, we are running, if false, we are not
+    out with SeqStatusChange bool Request;  //sequence request for BfbOneWayCtrl to grant
+    
+    out event LightCtrlChange;  //output update for lights
+    out with LightCtrlChange bool LightRed;
+    out with LightCtrlChange bool LightFlashRed;
+    out with LightCtrlChange bool LightGreen;
+} 
+
+architecture of BfbOnePedCtrl {
+    internal {
+        lint d := 0;
+        lint greenTicks := 10000;
+        lint flashTicks := 10000;
+    }
+	states {
+		s_init {
+            -> s_wait;
+        }
+
+        s_wait {
+            emit LightCtrlChange;
+            run LightsOff;
+            -> s_ped_wait on PedWaiting;
+        }
+
+        s_ped_wait {
+            emit LightCtrlChange;
+            run LightsOff;
+            run LightsRed;
+
+            emit SeqStatusChange;
+            run in "ST" `Request := 1;`;
+
+            -> s_ped_grant on SeqGrant;
+        }
+
+        s_ped_grant {
+            emit SeqStatusChange;
+            run in "ST" `Request := 0;`;
+            run in "ST" `Running := 1;`;
+            emit LightCtrlChange;
+            run LightsOff;
+            run LightsGreen;
+            run in "ST" `d := 0;`;
+            -> s_ped_green;
+        }
+
+        s_ped_green {
+            run in "ST" `d := d + 1`;
+
+            -> s_ped_flash_begin on d > greenTicks;
+            -> s_ped_green on Tick;
+        }
+
+        s_ped_flash_begin {
+            run in "ST" `d := 0;`;
+            emit LightCtrlChange;
+            run LightsOff;
+            run LightsFlashRed;
+            
+            -> s_ped_flash;
+        }
+
+        s_ped_flash {
+            run in "ST" `d := d + 1;`;
+
+            -> s_ped_done on d > flashTicks;
+            -> s_ped_flash on Tick;
+        }
+
+        s_ped_done {
+            emit SeqStatusChange;
+            run in "ST" `Running := 0;`;
+            run in "ST" `d := 0;`;
+            emit LightCtrlChange;
+            run LightsRed;
+
+            -> s_wait;
+        }
+	}
+
+    algorithm LightsOff in "ST" `
+        LightRed := 0;
+        LightFlashRed := 0;
+        LightGreen := 0;
+    `;
+
+    algorithm LightsRed in "ST" `
+        LightRed := 1;
+    `;
+
+    algorithm LightsFlashRed in "ST" `
+        LightFlashRed := 1;
+    `;
+
+    algorithm LightsGreen in "ST" `
+        LightGreen := 1;
+    `;
+}

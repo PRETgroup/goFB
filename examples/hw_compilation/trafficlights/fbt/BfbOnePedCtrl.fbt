@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbOnePedCtrl" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="Tick" Comment=""></Event>
+			<Event Name="PedWaiting" Comment=""></Event>
+			<Event Name="SeqGrant" Comment=""></Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="SeqStatusChange" Comment="">
+				<With Var="Running"></With>
+				<With Var="Request"></With>
+			</Event>
+			<Event Name="LightCtrlChange" Comment="">
+				<With Var="LightRed"></With>
+				<With Var="LightFlashRed"></With>
+				<With Var="LightGreen"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars>
+			<VarDeclaration Name="Running" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Request" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="LightRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="LightFlashRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="LightGreen" Type="BOOL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="d" Type="LINT" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="greenTicks" Type="LINT" InitialValue="10000" Comment=""></VarDeclaration>
+			<VarDeclaration Name="flashTicks" Type="LINT" InitialValue="10000" Comment=""></VarDeclaration>
+		</InternalVars>
+		<ECC>
+			<ECState Name="s_init" Comment="" x="" y=""></ECState>
+			<ECState Name="s_wait" Comment="" x="" y="">
+				<ECAction Output="LightCtrlChange"></ECAction>
+				<ECAction Algorithm="LightsOff"></ECAction>
+			</ECState>
+			<ECState Name="s_ped_wait" Comment="" x="" y="">
+				<ECAction Output="LightCtrlChange"></ECAction>
+				<ECAction Output="SeqStatusChange"></ECAction>
+				<ECAction Algorithm="LightsOff"></ECAction>
+				<ECAction Algorithm="LightsRed"></ECAction>
+				<ECAction Algorithm="s_ped_wait_alg0"></ECAction>
+			</ECState>
+			<ECState Name="s_ped_grant" Comment="" x="" y="">
+				<ECAction Output="SeqStatusChange"></ECAction>
+				<ECAction Output="LightCtrlChange"></ECAction>
+				<ECAction Algorithm="s_ped_grant_alg0"></ECAction>
+				<ECAction Algorithm="s_ped_grant_alg1"></ECAction>
+				<ECAction Algorithm="LightsOff"></ECAction>
+				<ECAction Algorithm="LightsGreen"></ECAction>
+				<ECAction Algorithm="s_ped_grant_alg2"></ECAction>
+			</ECState>
+			<ECState Name="s_ped_green" Comment="" x="" y="">
+				<ECAction Algorithm="s_ped_green_alg0"></ECAction>
+			</ECState>
+			<ECState Name="s_ped_flash_begin" Comment="" x="" y="">
+				<ECAction Output="LightCtrlChange"></ECAction>
+				<ECAction Algorithm="s_ped_flash_begin_alg0"></ECAction>
+				<ECAction Algorithm="LightsOff"></ECAction>
+				<ECAction Algorithm="LightsFlashRed"></ECAction>
+			</ECState>
+			<ECState Name="s_ped_flash" Comment="" x="" y="">
+				<ECAction Algorithm="s_ped_flash_alg0"></ECAction>
+			</ECState>
+			<ECState Name="s_ped_done" Comment="" x="" y="">
+				<ECAction Output="SeqStatusChange"></ECAction>
+				<ECAction Output="LightCtrlChange"></ECAction>
+				<ECAction Algorithm="s_ped_done_alg0"></ECAction>
+				<ECAction Algorithm="s_ped_done_alg1"></ECAction>
+				<ECAction Algorithm="LightsRed"></ECAction>
+			</ECState>
+			<ECTransition Source="s_init" Destination="s_wait" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="s_wait" Destination="s_ped_wait" Condition="PedWaiting" x="" y=""></ECTransition>
+			<ECTransition Source="s_ped_wait" Destination="s_ped_grant" Condition="SeqGrant" x="" y=""></ECTransition>
+			<ECTransition Source="s_ped_grant" Destination="s_ped_green" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="s_ped_green" Destination="s_ped_flash_begin" Condition="d &gt; greenTicks" x="" y=""></ECTransition>
+			<ECTransition Source="s_ped_green" Destination="s_ped_green" Condition="Tick" x="" y=""></ECTransition>
+			<ECTransition Source="s_ped_flash_begin" Destination="s_ped_flash" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="s_ped_flash" Destination="s_ped_done" Condition="d &gt; flashTicks" x="" y=""></ECTransition>
+			<ECTransition Source="s_ped_flash" Destination="s_ped_flash" Condition="Tick" x="" y=""></ECTransition>
+			<ECTransition Source="s_ped_done" Destination="s_wait" Condition="true" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="s_ped_wait_alg0" Comment="">
+			<Other Language="ST" Text="Request := 1;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_ped_grant_alg0" Comment="">
+			<Other Language="ST" Text="Request := 0;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_ped_grant_alg1" Comment="">
+			<Other Language="ST" Text="Running := 1;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_ped_grant_alg2" Comment="">
+			<Other Language="ST" Text="d := 0;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_ped_green_alg0" Comment="">
+			<Other Language="ST" Text="d := d + 1"></Other>
+		</Algorithm>
+		<Algorithm Name="s_ped_flash_begin_alg0" Comment="">
+			<Other Language="ST" Text="d := 0;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_ped_flash_alg0" Comment="">
+			<Other Language="ST" Text="d := d + 1;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_ped_done_alg0" Comment="">
+			<Other Language="ST" Text="Running := 0;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_ped_done_alg1" Comment="">
+			<Other Language="ST" Text="d := 0;"></Other>
+		</Algorithm>
+		<Algorithm Name="LightsOff" Comment="">
+			<Other Language="ST" Text="&#xA;        LightRed := 0;&#xA;        LightFlashRed := 0;&#xA;        LightGreen := 0;&#xA;    "></Other>
+		</Algorithm>
+		<Algorithm Name="LightsRed" Comment="">
+			<Other Language="ST" Text="&#xA;        LightRed := 1;&#xA;    "></Other>
+		</Algorithm>
+		<Algorithm Name="LightsFlashRed" Comment="">
+			<Other Language="ST" Text="&#xA;        LightFlashRed := 1;&#xA;    "></Other>
+		</Algorithm>
+		<Algorithm Name="LightsGreen" Comment="">
+			<Other Language="ST" Text="&#xA;        LightGreen := 1;&#xA;    "></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

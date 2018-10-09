@@ -1,0 +1,9 @@
+compositeFB CfbTlNetwork;
+
+interface of CfbTlNetwork {
+
+}
+
+architecture of CfbTlNetwork{
+
+}

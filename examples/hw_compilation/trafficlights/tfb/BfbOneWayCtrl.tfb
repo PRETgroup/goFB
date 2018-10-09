@@ -1,0 +1,90 @@
+basicFB BfbOneWayCtrl;
+
+interface of BfbOneWayCtrl {
+    in event Tick;
+
+    in event SpecialInstr;
+    in with SpecialInstr bool HoldGreen;
+
+	in event BeginSeq;      //the intersection is clear, begin your sequence
+    out event DoneSeq;      //the sequence is complete
+    
+    in event PedStatusChange;   //status for associated pedestrian lights
+    in with PedStatusChange bool PedRequest;
+    in with PedStatusChange bool PedRunning;
+
+    out event PedGrant;      //sequence grant request from BfbOneWayCtrl meaning that ped lights can go
+
+    out event LightCtrlChange;  //output update for lights
+    out with LightCtrlChange bool LightRed;
+    out with LightCtrlChange bool LightYellow;
+    out with LightCtrlChange bool LightGreen;
+} 
+
+architecture of BfbOneWayCtrl {
+    internal {
+        lint d := 0;
+        lint greenTicks := 15000;
+        lint yellowTicks := 5000;
+    }
+	states {
+		s_init {
+            -> s_wait;
+        }
+
+        s_wait {
+            emit LightCtrlChange;
+            emit DoneSeq;
+            run LightsRed;
+            -> s_green on BeginSeq;
+        }
+
+        s_green {
+            emit LightCtrlChange;
+            emit PedGrant; //we will always try to grant a request, even if there are none available
+            run LightsGreen;
+            run in "ST" `d := 0;`;
+            -> s_green_count;
+        }
+
+        s_green_count {
+            run in "ST" `if d <= greenTicks then d := d + 1; end_if;`;
+
+            -> s_yellow on d > greenTicks and HoldGreen=0 and PedStatusChange=0;
+            -> s_green_count on Tick;
+        }
+
+        s_yellow {
+            run in "ST" `d := 0;`;
+            emit LightCtrlChange;
+            run LightsYellow;
+            
+            -> s_yellow_count;
+        }
+
+        s_yellow_count {
+            run in "ST" `d := d + 1;`;
+
+            -> s_wait on d > flashTicks;
+            -> s_yellow_count on Tick;
+        }
+	}
+
+    algorithm LightsRed in "ST" `
+        LightRed := 1;
+        LightYellow := 0;
+        LightGreen := 0;
+    `;
+
+    algorithm LightsYellow in "ST" `
+        LightRed := 0;
+        LightYellow := 1;
+        LightGreen := 0;
+    `;
+
+    algorithm LightsGreen in "ST" `
+        LightRed := 0;
+        LightYellow := 0;
+        LightGreen := 1;
+    `;
+}

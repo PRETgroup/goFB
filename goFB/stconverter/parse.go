@@ -139,6 +139,11 @@ func scanString(name string, input string) []string {
 		if items[i] == "XOR" {
 			items[i] = "xor"
 		}
+
+		if items[i] == "'" && len(items) > i+2 && items[i+2] == "'" { //single-quoted constants become a single term
+			items[i] = "'" + items[i+1] + "'"
+			items = append(items[:i+1], items[i+3:]...)
+		}
 	}
 
 	return items
