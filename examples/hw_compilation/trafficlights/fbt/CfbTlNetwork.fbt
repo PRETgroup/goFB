@@ -5,13 +5,74 @@
 	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
 	<CompilerInfo header="" classdef=""></CompilerInfo>
 	<InterfaceList>
-		<EventInputs></EventInputs>
-		<EventOutputs></EventOutputs>
-		<InputVars></InputVars>
-		<OutputVars></OutputVars>
+		<EventInputs>
+			<Event Name="Tick" Comment=""></Event>
+			<Event Name="Start" Comment=""></Event>
+			<Event Name="SpecialInstr" Comment=""></Event>
+			<Event Name="N_S_PedWaiting" Comment=""></Event>
+			<Event Name="E_W_PedWaiting" Comment=""></Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="N_S_PedLightsChange" Comment=""></Event>
+			<Event Name="N_S_TrafLightsChange" Comment=""></Event>
+			<Event Name="E_W_PedLightsChange" Comment=""></Event>
+			<Event Name="E_W_TrafLightsChange" Comment=""></Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="N_S_HoldGreen" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="E_W_HoldGreen" Type="BOOL" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="N_S_PedRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="N_S_PedFlashRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="N_S_PedGreen" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="N_S_TrafRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="N_S_TrafYellow" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="N_S_TrafGreen" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="E_W_PedRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="E_W_PedFlashRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="E_W_PedGreen" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="E_W_TrafRed" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="E_W_TrafYellow" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="E_W_TrafGreen" Type="BOOL" Comment=""></VarDeclaration>
+		</OutputVars>
 	</InterfaceList>
 	<FBNetwork>
-		<EventConnections></EventConnections>
-		<DataConnections></DataConnections>
+		<FB Name="N_S" Type="CfbOneLink" x="" y=""></FB>
+		<FB Name="E_W" Type="CfbOneLink" x="" y=""></FB>
+		<FB Name="mt" Type="BfbIntersectionMutex" x="" y=""></FB>
+		<EventConnections>
+			<Connection Source="Tick" Destination="N_S.Tick" dx1=""></Connection>
+			<Connection Source="Tick" Destination="E_W.Tick" dx1=""></Connection>
+			<Connection Source="SpecialInstr" Destination="N_S.SpecialInstr" dx1=""></Connection>
+			<Connection Source="SpecialInstr" Destination="E_W.SpecialInstr" dx1=""></Connection>
+			<Connection Source="Start" Destination="mt.Start" dx1=""></Connection>
+			<Connection Source="mt.N_S_Start" Destination="N_S.GoSeq" dx1=""></Connection>
+			<Connection Source="N_S.DoneSeq" Destination="mt.N_S_Done" dx1=""></Connection>
+			<Connection Source="mt.E_W_GoSeq" Destination="E_W.GoSeq" dx1=""></Connection>
+			<Connection Source="E_W.DoneSeq" Destination="mt.E_W_Done" dx1=""></Connection>
+			<Connection Source="N_S_PedWaiting" Destination="N_S.PedWaiting" dx1=""></Connection>
+			<Connection Source="E_W_PedWaiting" Destination="E_W.PedWaiting" dx1=""></Connection>
+			<Connection Source="N_S.PedLightsChange" Destination="N_S_PedLightsChange" dx1=""></Connection>
+			<Connection Source="N_S.TrafLightsChange" Destination="N_S_TrafLightsChange" dx1=""></Connection>
+			<Connection Source="E_W.PedLightsChange" Destination="E_W_PedLightsChange" dx1=""></Connection>
+			<Connection Source="E_W.TrafLightsChange" Destination="E_W_TrafLightsChange" dx1=""></Connection>
+		</EventConnections>
+		<DataConnections>
+			<Connection Source="N_S_HoldGreen" Destination="N_S.HoldGreen" dx1=""></Connection>
+			<Connection Source="E_W_HoldGreen" Destination="E_W.HoldGreen" dx1=""></Connection>
+			<Connection Source="N_S.PedRed" Destination="N_S_PedRed" dx1=""></Connection>
+			<Connection Source="N_S.PedFlashRed" Destination="N_S_PedFlashRed" dx1=""></Connection>
+			<Connection Source="N_S.PedGreen" Destination="N_S_PedGreen" dx1=""></Connection>
+			<Connection Source="N_S.TrafRed" Destination="N_S_TrafRed" dx1=""></Connection>
+			<Connection Source="N_S.TrafYellow" Destination="N_S_TrafYellow" dx1=""></Connection>
+			<Connection Source="N_S.TrafGreen" Destination="N_S_TrafGreen" dx1=""></Connection>
+			<Connection Source="E_W.PedRed" Destination="E_W_PedRed" dx1=""></Connection>
+			<Connection Source="E_W.PedFlashRed" Destination="E_W_PedFlashRed" dx1=""></Connection>
+			<Connection Source="E_W.PedGreen" Destination="E_W_PedGreen" dx1=""></Connection>
+			<Connection Source="E_W.TrafRed" Destination="E_W_TrafRed" dx1=""></Connection>
+			<Connection Source="E_W.TrafYellow" Destination="E_W_TrafYellow" dx1=""></Connection>
+			<Connection Source="E_W.TrafGreen" Destination="E_W_TrafGreen" dx1=""></Connection>
+		</DataConnections>
 	</FBNetwork>
 </FBType>

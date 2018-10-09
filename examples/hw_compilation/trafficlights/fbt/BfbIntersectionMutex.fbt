@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbIntersectionMutex" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="Start" Comment=""></Event>
+			<Event Name="N_S_Done" Comment=""></Event>
+			<Event Name="E_W_Done" Comment=""></Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="N_S_Start" Comment=""></Event>
+			<Event Name="E_W_Start" Comment=""></Event>
+		</EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="s_init" Comment="" x="" y=""></ECState>
+			<ECState Name="s_N_S_Go" Comment="" x="" y="">
+				<ECAction Output="N_S_Start"></ECAction>
+			</ECState>
+			<ECState Name="s_E_W_Go" Comment="" x="" y="">
+				<ECAction Output="E_W_Start"></ECAction>
+			</ECState>
+			<ECTransition Source="s_init" Destination="s_N_S_Go" Condition="Start" x="" y=""></ECTransition>
+			<ECTransition Source="s_N_S_Go" Destination="s_E_W_Go" Condition="N_S_Done" x="" y=""></ECTransition>
+			<ECTransition Source="s_E_W_Go" Destination="s_N_S_Go" Condition="E_W_Done" x="" y=""></ECTransition>
+		</ECC>
+	</BasicFB>
+</FBType>

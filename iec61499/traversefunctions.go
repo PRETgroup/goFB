@@ -168,7 +168,7 @@ conns:
 			}
 		}
 		if childType == "" {
-			return nil, errors.New("Could not find source of dataconnection '" + conn.Source + "' as child block can't be found.")
+			return nil, errors.New("Could not find source of dataconnection '" + conn.Source + "' as child block for name '" + childName + "' can't be found.")
 		}
 
 		//scan through all blocks trying to find correct API type

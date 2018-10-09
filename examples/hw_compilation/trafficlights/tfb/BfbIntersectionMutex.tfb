@@ -1,0 +1,31 @@
+basicFB BfbIntersectionMutex;
+
+interface of BfbIntersectionMutex {
+    in event Start;
+
+    in event N_S_Done;
+    in event E_W_Done;
+
+    out event N_S_Start;
+    out event E_W_Start;
+}
+
+architecture of BfbIntersectionMutex {
+    states {
+        s_init {
+            -> s_N_S_Go on Start;
+        }
+
+        s_N_S_Go {
+            emit N_S_Start;
+
+            -> s_E_W_Go on N_S_Done;
+        }
+
+        s_E_W_Go {
+            emit E_W_Start;
+
+            -> s_N_S_Go on E_W_Done;
+        }
+    }
+}

@@ -1,9 +1,85 @@
 compositeFB CfbTlNetwork;
 
 interface of CfbTlNetwork {
+    in event Tick;
 
+    in event Start;
+    in event SpecialInstr;
+    in bool N_S_HoldGreen;
+    in bool E_W_HoldGreen;
+
+    in event N_S_PedWaiting;
+    in event E_W_PedWaiting;
+
+    out event N_S_PedLightsChange;
+    out bool N_S_PedRed;
+    out bool N_S_PedFlashRed;
+    out bool N_S_PedGreen;
+
+    out event N_S_TrafLightsChange;
+    out bool N_S_TrafRed;
+    out bool N_S_TrafYellow;
+    out bool N_S_TrafGreen;
+
+    out event E_W_PedLightsChange;
+    out bool E_W_PedRed;
+    out bool E_W_PedFlashRed;
+    out bool E_W_PedGreen;
+
+    out event E_W_TrafLightsChange;
+    out bool E_W_TrafRed;
+    out bool E_W_TrafYellow;
+    out bool E_W_TrafGreen;
 }
 
 architecture of CfbTlNetwork{
+    instance CfbOneLink N_S;
+    instance CfbOneLink E_W;
+    instance BfbIntersectionMutex mt;
 
+    events {
+        N_S.Tick <- Tick;
+        E_W.Tick <- Tick;
+
+        N_S.SpecialInstr <- SpecialInstr;
+        E_W.SpecialInstr <- SpecialInstr;
+
+        mt.Start <- Start;
+
+        N_S.GoSeq <- mt.N_S_Start;
+        mt.N_S_Done <- N_S.DoneSeq;
+
+        E_W.GoSeq <- mt.E_W_GoSeq;
+        mt.E_W_Done <- E_W.DoneSeq;
+   
+        N_S.PedWaiting <- N_S_PedWaiting;
+        E_W.PedWaiting <- E_W_PedWaiting;
+
+        N_S_PedLightsChange <- N_S.PedLightsChange;
+        N_S_TrafLightsChange <- N_S.TrafLightsChange;
+
+        E_W_PedLightsChange <- E_W.PedLightsChange;
+        E_W_TrafLightsChange <- E_W.TrafLightsChange;
+    }
+
+    data {
+        N_S.HoldGreen <- N_S_HoldGreen;
+        E_W.HoldGreen <- E_W_HoldGreen;
+
+        N_S_PedRed <- N_S.PedRed;
+        N_S_PedFlashRed <- N_S.PedFlashRed;
+        N_S_PedGreen <- N_S.PedGreen;
+
+        N_S_TrafRed <- N_S.TrafRed;
+        N_S_TrafYellow <- N_S.TrafYellow;
+        N_S_TrafGreen <- N_S.TrafGreen;
+
+        E_W_PedRed <- E_W.PedRed;
+        E_W_PedFlashRed <- E_W.PedFlashRed;
+        E_W_PedGreen <- E_W.PedGreen;
+
+        E_W_TrafRed <- E_W.TrafRed;
+        E_W_TrafYellow <- E_W.TrafYellow;
+        E_W_TrafGreen <- E_W.TrafGreen;
+    }
 }
