@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbWaterPump" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="UpdateLevels" Comment="">
+				<With Var="Level1"></With>
+				<With Var="Level2"></With>
+			</Event>
+			<Event Name="UpdateControls" Comment="">
+				<With Var="ModeBalance"></With>
+				<With Var="ModeFill1"></With>
+				<With Var="ModeFill2"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="UpdatePump" Comment="">
+				<With Var="PumpDir"></With>
+				<With Var="PumpRun"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="Level1" Type="USINT" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Level2" Type="USINT" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="ModeBalance" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="ModeFill1" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="ModeFill2" Type="BOOL" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="PumpDir" Type="BOOL" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="PumpRun" Type="BOOL" InitialValue="0" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="s_start" Comment="" x="" y=""></ECState>
+			<ECState Name="s_idle" Comment="" x="" y="">
+				<ECAction Output="UpdatePump"></ECAction>
+				<ECAction Algorithm="s_idle_alg0"></ECAction>
+			</ECState>
+			<ECState Name="s_balance" Comment="" x="" y="">
+				<ECAction Output="UpdatePump"></ECAction>
+				<ECAction Algorithm="s_balance_alg0"></ECAction>
+			</ECState>
+			<ECState Name="s_fill" Comment="" x="" y="">
+				<ECAction Output="UpdatePump"></ECAction>
+				<ECAction Algorithm="s_fill_alg0"></ECAction>
+			</ECState>
+			<ECTransition Source="s_start" Destination="s_idle" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="s_idle" Destination="s_balance" Condition="UpdateControls &amp;&amp; ModeBalance" x="" y=""></ECTransition>
+			<ECTransition Source="s_idle" Destination="s_fill" Condition="UpdateControls &amp;&amp; ( ModeFill1 || ModeFill2 )" x="" y=""></ECTransition>
+			<ECTransition Source="s_balance" Destination="s_fill" Condition="UpdateControls &amp;&amp; !ModeBalance &amp;&amp; ( ModeFill1 || ModeFill2 )" x="" y=""></ECTransition>
+			<ECTransition Source="s_balance" Destination="s_idle" Condition="UpdateControls &amp;&amp; !ModeBalance" x="" y=""></ECTransition>
+			<ECTransition Source="s_balance" Destination="s_balance" Condition="UpdateLevels" x="" y=""></ECTransition>
+			<ECTransition Source="s_fill" Destination="s_balance" Condition="UpdateControls &amp;&amp; ModeBalance" x="" y=""></ECTransition>
+			<ECTransition Source="s_fill" Destination="s_idle" Condition="UpdateControls &amp;&amp; !ModeBalance &amp;&amp; !ModeFill1 &amp;&amp; !ModeFill2" x="" y=""></ECTransition>
+			<ECTransition Source="s_fill" Destination="s_fill" Condition="UpdateControls" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="s_idle_alg0" Comment="">
+			<Other Language="ST" Text="PumpDir := 0; PumpRun := 0;"></Other>
+		</Algorithm>
+		<Algorithm Name="s_balance_alg0" Comment="">
+			<Other Language="ST" Text="&#xA;                if Level1 &gt; Level2 then&#xA;                    PumpDir := 0;&#xA;                    PumpRun := 1;&#xA;                elsif Level2 &gt; Level1 then&#xA;                    PumpDir := 1;&#xA;                    PumpRun := 1;&#xA;                else&#xA;                    PumpRun := 0;&#xA;                end_if;&#xA;            "></Other>
+		</Algorithm>
+		<Algorithm Name="s_fill_alg0" Comment="">
+			<Other Language="ST" Text="&#xA;                if ModeFill1 then&#xA;                    PumpDir := 1;&#xA;                    PumpRun := 1;&#xA;                elsif ModeFill2 then&#xA;                    PumpDir := 0;&#xA;                    PumpRun := 1;&#xA;                else&#xA;                    PumpRun := 0;&#xA;                end_if;&#xA;            "></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

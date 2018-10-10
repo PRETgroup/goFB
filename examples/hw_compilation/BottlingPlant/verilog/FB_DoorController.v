@@ -96,7 +96,7 @@ always@(posedge clk) begin
 		//BEGIN ecc 
 		entered = 1'b0;
 		case(state) 
-			default: begin
+			`STATE_E_Stop: begin
 				if(EmergencyStopChanged && ~EmergencyStop) begin
 					state = `STATE_Await;
 					entered = 1'b1;
@@ -117,7 +117,9 @@ always@(posedge clk) begin
 					entered = 1'b1;
 				end
 			end 
-			
+			default: begin
+				state = 0;
+			end
 		endcase
 		//END ecc
 
@@ -125,7 +127,7 @@ always@(posedge clk) begin
 		
 		if(entered) begin
 			case(state)
-				default: begin
+				`STATE_E_Stop: begin
 					
 				end 
 				`STATE_Run: begin
@@ -135,7 +137,9 @@ always@(posedge clk) begin
 				`STATE_Await: begin
 					
 				end 
-				
+				default: begin
+
+				end
 			endcase
 		end
 		//END triggers
