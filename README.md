@@ -34,7 +34,10 @@ For complete usage of the toolchain, refer to the examples in the `examples/goTF
 ## Output languages
 
 Primarily, this tool is designed to compile IEC61499 to C. 
-There is also partial Verilog support on the roadmap, to replace the currently nonfunctional VHDL compilation toolchain.
+
+There is also partial Verilog support for compiling BFBs/CFBs for FPGAs. 
+
+There is effort for VHDL compilation but it is currently completely non-functional.
 
 ## Build
 
@@ -48,6 +51,15 @@ You will need to add the `bin` directory of the repostory to your `$PATH`, for i
 
 ## Publications
 
-The goFB toolchain was used in the ACM-IEEE MEMOCODE publication [Simulation of cyber-physical systems using IEC61499](https://dl.acm.org/citation.cfm?id=3127052), and the examples used in this paper can be found under `examples/goFB_only/c_odes`.
+The goFB toolchain was used in the following publications:
 
-The goFB toolchain was also used in the IEEE ISORC 2018 paper [Faster Function Blocks for Precision Timed Industrial Automation](https://ieeexplore.ieee.org/abstract/document/8421148/). The examples for this paper can be found under `examples/goFB_only/c_tcrest`.
+* ACM-IEEE MEMOCODE publication [Simulation of cyber-physical systems using IEC61499](https://dl.acm.org/citation.cfm?id=3127052). 
+  * The examples used in this paper can be found under `examples/goFB_only/c_odes`.
+
+* IEEE ISORC 2018 paper [Faster Function Blocks for Precision Timed Industrial Automation](https://ieeexplore.ieee.org/abstract/document/8421148/). 
+  * The examples for this paper can be found under `examples/goFB_only/c_tcrest`.
+
+* IEEE ICEIC 2019 paper "Synthesizing IEC61499 Function Blocks to Hardware" (under review).
+  * The examples for this paper can be found under `examples/hw_compilation`. 
+
+For the purposes of replicating results, these and other examples are kept pre-compiled within the repository for your convenience.
