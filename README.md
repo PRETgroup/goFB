@@ -1,6 +1,6 @@
 # goFB, an IEC61499 Function Block toolchain
 
-This repository provides all source code for the goFB project, which aims to supply acomplete toolchain for IEC61499 design, validation, and compilation.
+This repository provides all source code for the goFB project, which aims to supply a complete toolchain for IEC61499 design, validation, and compilation.
 
 goFB was inspired by [FBC](https://www.researchgate.net/publication/224453746_Efficient_implementation_of_IEC_61499_function_blocks), [BlokIDE](http://timeme.io), and Structured Text.
 
