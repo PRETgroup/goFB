@@ -7,20 +7,20 @@ interface of BfbOnePedCtrl {
     in event SeqGrant;      //sequence grant request from BfbOneWayCtrl meaning that ped lights can go
     
     out event SeqStatusChange;              //sequence status (for informing BfbOnWayCtrl we are done)
-    out with SeqStatusChange bool Running;  //if true, we are running, if false, we are not
-    out with SeqStatusChange bool Request;  //sequence request for BfbOneWayCtrl to grant
+    out with SeqStatusChange bool Running := 0;  //if true, we are running, if false, we are not
+    out with SeqStatusChange bool Request := 0;  //sequence request for BfbOneWayCtrl to grant
     
     out event LightCtrlChange;  //output update for lights
-    out with LightCtrlChange bool LightRed;
-    out with LightCtrlChange bool LightFlashRed;
-    out with LightCtrlChange bool LightGreen;
+    out with LightCtrlChange bool LightRed := 0;
+    out with LightCtrlChange bool LightFlashRed := 0;
+    out with LightCtrlChange bool LightGreen := 0;
 } 
 
 architecture of BfbOnePedCtrl {
     internal {
-        lint d := 0;
-        lint greenTicks := 10000;
-        lint flashTicks := 10000;
+        udint d := 0;
+        udint greenTicks := 10000000;
+        udint flashTicks := 10000000;
     }
 	states {
 		s_init {

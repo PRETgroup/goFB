@@ -82,13 +82,15 @@ always@(posedge clk) begin
 		//BEGIN ecc 
 		entered = 1'b0;
 		case(state) 
-			{{range $curStateIndex, $curState := $basicFB.States}}{{if $curStateIndex}}`STATE_{{$curState.Name}}{{else}}default{{end}}: begin
+			{{range $curStateIndex, $curState := $basicFB.States}}`STATE_{{$curState.Name}}: begin
 				{{range $transIndex, $trans := $basicFB.GetTransitionsForState $curState.Name}}{{if $transIndex}}end else {{end}}if({{rmTrueFalse (compileTransition $block $trans.Condition)}}) begin
 					state = `STATE_{{$trans.Destination}};
 					entered = 1'b1;
 				{{end}}end
 			end 
-			{{end}}
+			{{end}}default: begin
+				state = 0;
+			end
 		endcase
 		//END ecc
 
@@ -98,12 +100,14 @@ always@(posedge clk) begin
 		{{end}}
 		if(entered) begin
 			case(state)
-				{{range $curStateIndex, $curState := $basicFB.States}}{{if $curStateIndex}}`STATE_{{$curState.Name}}{{else}}default{{end}}: begin
+				{{range $curStateIndex, $curState := $basicFB.States}}`STATE_{{$curState.Name}}: begin
 					{{range $actionIndex, $action := $curState.ECActions}}{{if $action.Algorithm}}{{$action.Algorithm}}_alg_en = 1'b1;
 					{{end}}{{if $action.Output}}{{$action.Output}} = 1'b1;
 					{{end}}{{end}}
 				end 
-				{{end}}
+				{{end}}default: begin
+
+				end
 			endcase
 		end
 		//END triggers

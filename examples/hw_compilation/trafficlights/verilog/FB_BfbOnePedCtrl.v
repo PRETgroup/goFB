@@ -31,11 +31,11 @@ module FB_BfbOnePedCtrl
 		
 		
 		//output variables
-		output reg  Running_O ,
-		output reg  Request_O ,
-		output reg  LightRed_O ,
-		output reg  LightFlashRed_O ,
-		output reg  LightGreen_O ,
+		output reg  Running_O  = 0,
+		output reg  Request_O  = 0,
+		output reg  LightRed_O  = 0,
+		output reg  LightFlashRed_O  = 0,
+		output reg  LightGreen_O  = 0,
 		
 
 		input reset
@@ -59,19 +59,19 @@ assign LightCtrlChange_eO = LightCtrlChange;
 
 
 //output variables
-reg  Running ;
-reg  Request ;
-reg  LightRed ;
-reg  LightFlashRed ;
-reg  LightGreen ;
+reg  Running  = 0;
+reg  Request  = 0;
+reg  LightRed  = 0;
+reg  LightFlashRed  = 0;
+reg  LightGreen  = 0;
 
 ////END internal copies of I/O
 
 ////BEGIN internal vars
 
-reg  signed [63:0] d  = 0; 
-reg  signed [63:0] greenTicks  = 10000; 
-reg  signed [63:0] flashTicks  = 10000; 
+reg  unsigned [31:0] d  = 0; 
+reg  unsigned [31:0] greenTicks  = 10000000; 
+reg  unsigned [31:0] flashTicks  = 10000000; 
 ////END internal vars
 
 //BEGIN STATE variables
@@ -115,8 +115,8 @@ always@(posedge clk) begin
 		LightGreen = 0;
 		//reset internal vars
 		d = 0;
-		greenTicks = 10000;
-		flashTicks = 10000;
+		greenTicks = 10000000;
+		flashTicks = 10000000;
 	end else begin
 
 		//BEGIN clear output events
@@ -132,7 +132,7 @@ always@(posedge clk) begin
 		//BEGIN ecc 
 		entered = 1'b0;
 		case(state) 
-			default: begin
+			`STATE_s_init: begin
 				if(1) begin
 					state = `STATE_s_wait;
 					entered = 1'b1;
@@ -186,7 +186,9 @@ always@(posedge clk) begin
 					entered = 1'b1;
 				end
 			end 
-			
+			default: begin
+				state = 0;
+			end
 		endcase
 		//END ecc
 
@@ -207,7 +209,7 @@ always@(posedge clk) begin
 		
 		if(entered) begin
 			case(state)
-				default: begin
+				`STATE_s_init: begin
 					
 				end 
 				`STATE_s_wait: begin
@@ -256,7 +258,9 @@ always@(posedge clk) begin
 					LightsRed_alg_en = 1'b1;
 					
 				end 
-				
+				default: begin
+
+				end
 			endcase
 		end
 		//END triggers

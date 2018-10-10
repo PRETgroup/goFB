@@ -23,18 +23,18 @@
 		</EventOutputs>
 		<InputVars></InputVars>
 		<OutputVars>
-			<VarDeclaration Name="Running" Type="BOOL" Comment=""></VarDeclaration>
-			<VarDeclaration Name="Request" Type="BOOL" Comment=""></VarDeclaration>
-			<VarDeclaration Name="LightRed" Type="BOOL" Comment=""></VarDeclaration>
-			<VarDeclaration Name="LightFlashRed" Type="BOOL" Comment=""></VarDeclaration>
-			<VarDeclaration Name="LightGreen" Type="BOOL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Running" Type="BOOL" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Request" Type="BOOL" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="LightRed" Type="BOOL" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="LightFlashRed" Type="BOOL" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="LightGreen" Type="BOOL" InitialValue="0" Comment=""></VarDeclaration>
 		</OutputVars>
 	</InterfaceList>
 	<BasicFB>
 		<InternalVars>
-			<VarDeclaration Name="d" Type="LINT" InitialValue="0" Comment=""></VarDeclaration>
-			<VarDeclaration Name="greenTicks" Type="LINT" InitialValue="10000" Comment=""></VarDeclaration>
-			<VarDeclaration Name="flashTicks" Type="LINT" InitialValue="10000" Comment=""></VarDeclaration>
+			<VarDeclaration Name="d" Type="UDINT" InitialValue="0" Comment=""></VarDeclaration>
+			<VarDeclaration Name="greenTicks" Type="UDINT" InitialValue="10000000" Comment=""></VarDeclaration>
+			<VarDeclaration Name="flashTicks" Type="UDINT" InitialValue="10000000" Comment=""></VarDeclaration>
 		</InternalVars>
 		<ECC>
 			<ECState Name="s_init" Comment="" x="" y=""></ECState>

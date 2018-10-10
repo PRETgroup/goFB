@@ -11,6 +11,8 @@
 `define STATE_s_green_count 3
 `define STATE_s_yellow 4
 `define STATE_s_yellow_count 5
+`define STATE_s_red 6
+`define STATE_s_red_count 7
 
 
 module FB_BfbOneWayCtrl 
@@ -35,9 +37,9 @@ module FB_BfbOneWayCtrl
 		input wire  PedRunning_I,
 		
 		//output variables
-		output reg  LightRed_O ,
-		output reg  LightYellow_O ,
-		output reg  LightGreen_O ,
+		output reg  LightRed_O  = 0,
+		output reg  LightYellow_O  = 0,
+		output reg  LightGreen_O  = 0,
 		
 
 		input reset
@@ -64,22 +66,23 @@ reg LightCtrlChange;
 assign LightCtrlChange_eO = LightCtrlChange;
 
 //input variables
-reg  HoldGreen ;
-reg  PedRequest ;
-reg  PedRunning ;
+reg  HoldGreen  = 0;
+reg  PedRequest  = 0;
+reg  PedRunning  = 0;
 
 //output variables
-reg  LightRed ;
-reg  LightYellow ;
-reg  LightGreen ;
+reg  LightRed  = 0;
+reg  LightYellow  = 0;
+reg  LightGreen  = 0;
 
 ////END internal copies of I/O
 
 ////BEGIN internal vars
 
-reg  signed [63:0] d  = 0; 
-reg  signed [63:0] greenTicks  = 15000; 
-reg  signed [63:0] yellowTicks  = 5000; 
+reg  unsigned [31:0] d  = 0; 
+reg  unsigned [31:0] greenTicks  = 15000000; 
+reg  unsigned [31:0] yellowTicks  = 5000000; 
+reg  unsigned [31:0] redTicks  = 2000000; 
 ////END internal vars
 
 //BEGIN STATE variables
@@ -92,6 +95,8 @@ reg s_green_alg0_alg_en = 1'b0;
 reg s_green_count_alg0_alg_en = 1'b0; 
 reg s_yellow_alg0_alg_en = 1'b0; 
 reg s_yellow_count_alg0_alg_en = 1'b0; 
+reg s_red_alg0_alg_en = 1'b0; 
+reg s_red_count_alg0_alg_en = 1'b0; 
 reg LightsRed_alg_en = 1'b0; 
 reg LightsYellow_alg_en = 1'b0; 
 reg LightsGreen_alg_en = 1'b0; 
@@ -119,8 +124,9 @@ always@(posedge clk) begin
 		LightGreen = 0;
 		//reset internal vars
 		d = 0;
-		greenTicks = 15000;
-		yellowTicks = 5000;
+		greenTicks = 15000000;
+		yellowTicks = 5000000;
+		redTicks = 2000000;
 	end else begin
 
 		//BEGIN clear output events
@@ -148,7 +154,7 @@ always@(posedge clk) begin
 		//BEGIN ecc 
 		entered = 1'b0;
 		case(state) 
-			default: begin
+			`STATE_s_init: begin
 				if(1) begin
 					state = `STATE_s_wait;
 					entered = 1'b1;
@@ -167,7 +173,7 @@ always@(posedge clk) begin
 				end
 			end 
 			`STATE_s_green_count: begin
-				if(d > greenTicks && HoldGreen == 0 && PedStatusChange == 0) begin
+				if(d > greenTicks && HoldGreen == 0 && PedRunning == 0) begin
 					state = `STATE_s_yellow;
 					entered = 1'b1;
 				end else if(Tick) begin
@@ -182,15 +188,32 @@ always@(posedge clk) begin
 				end
 			end 
 			`STATE_s_yellow_count: begin
-				if(d > flashTicks) begin
-					state = `STATE_s_wait;
+				if(d > yellowTicks) begin
+					state = `STATE_s_red;
 					entered = 1'b1;
 				end else if(Tick) begin
 					state = `STATE_s_yellow_count;
 					entered = 1'b1;
 				end
 			end 
-			
+			`STATE_s_red: begin
+				if(1) begin
+					state = `STATE_s_red_count;
+					entered = 1'b1;
+				end
+			end 
+			`STATE_s_red_count: begin
+				if(d > redTicks) begin
+					state = `STATE_s_wait;
+					entered = 1'b1;
+				end else if(Tick) begin
+					state = `STATE_s_red_count;
+					entered = 1'b1;
+				end
+			end 
+			default: begin
+				state = 0;
+			end
 		endcase
 		//END ecc
 
@@ -199,13 +222,15 @@ always@(posedge clk) begin
 		s_green_count_alg0_alg_en = 1'b0; 
 		s_yellow_alg0_alg_en = 1'b0; 
 		s_yellow_count_alg0_alg_en = 1'b0; 
+		s_red_alg0_alg_en = 1'b0; 
+		s_red_count_alg0_alg_en = 1'b0; 
 		LightsRed_alg_en = 1'b0; 
 		LightsYellow_alg_en = 1'b0; 
 		LightsGreen_alg_en = 1'b0; 
 		
 		if(entered) begin
 			case(state)
-				default: begin
+				`STATE_s_init: begin
 					
 				end 
 				`STATE_s_wait: begin
@@ -235,7 +260,19 @@ always@(posedge clk) begin
 					s_yellow_count_alg0_alg_en = 1'b1;
 					
 				end 
-				
+				`STATE_s_red: begin
+					LightCtrlChange = 1'b1;
+					s_red_alg0_alg_en = 1'b1;
+					LightsRed_alg_en = 1'b1;
+					
+				end 
+				`STATE_s_red_count: begin
+					s_red_count_alg0_alg_en = 1'b1;
+					
+				end 
+				default: begin
+
+				end
 			endcase
 		end
 		//END triggers
@@ -257,6 +294,14 @@ always@(posedge clk) begin
 
 		end 
 		if(s_yellow_count_alg0_alg_en) begin
+			d = d + 1;
+
+		end 
+		if(s_red_alg0_alg_en) begin
+			d = 0;
+
+		end 
+		if(s_red_count_alg0_alg_en) begin
 			d = d + 1;
 
 		end 

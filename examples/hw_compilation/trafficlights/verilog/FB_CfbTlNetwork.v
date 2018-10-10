@@ -51,7 +51,7 @@ wire SpecialInstr_conn;
 wire Start_conn;
 wire mt_N_S_Start_conn;
 wire N_S_DoneSeq_conn;
-wire mt_E_W_GoSeq_conn;
+wire mt_E_W_Start_conn;
 wire E_W_DoneSeq_conn;
 wire N_S_PedWaiting_conn;
 wire E_W_PedWaiting_conn;
@@ -156,7 +156,7 @@ FB_CfbOneLink E_W (
 	//event inputs
 	.Tick_eI(Tick_conn), 
 	.SpecialInstr_eI(SpecialInstr_conn), 
-	.GoSeq_eI(mt_E_W_GoSeq_conn), 
+	.GoSeq_eI(mt_E_W_Start_conn), 
 	.PedWaiting_eI(E_W_PedWaiting_conn), 
 	
 	//data outputs
@@ -179,7 +179,7 @@ FB_BfbIntersectionMutex mt (
 
 	//event outputs 
 	.N_S_Start_eO(mt_N_S_Start_conn),
-	.E_W_GoSeq_eO(mt_E_W_GoSeq_conn),
+	.E_W_Start_eO(mt_E_W_Start_conn),
 	
 	//event inputs
 	.Start_eI(Start_conn), 

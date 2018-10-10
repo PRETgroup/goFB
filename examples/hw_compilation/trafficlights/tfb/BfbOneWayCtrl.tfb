@@ -4,28 +4,29 @@ interface of BfbOneWayCtrl {
     in event Tick;
 
     in event SpecialInstr;
-    in with SpecialInstr bool HoldGreen;
+    in with SpecialInstr bool HoldGreen := 0;
 
 	in event BeginSeq;      //the intersection is clear, begin your sequence
     out event DoneSeq;      //the sequence is complete
     
     in event PedStatusChange;   //status for associated pedestrian lights
-    in with PedStatusChange bool PedRequest;
-    in with PedStatusChange bool PedRunning;
+    in with PedStatusChange bool PedRequest := 0;
+    in with PedStatusChange bool PedRunning := 0;
 
     out event PedGrant;      //sequence grant request from BfbOneWayCtrl meaning that ped lights can go
 
     out event LightCtrlChange;  //output update for lights
-    out with LightCtrlChange bool LightRed;
-    out with LightCtrlChange bool LightYellow;
-    out with LightCtrlChange bool LightGreen;
+    out with LightCtrlChange bool LightRed := 0;
+    out with LightCtrlChange bool LightYellow := 0;
+    out with LightCtrlChange bool LightGreen := 0;
 } 
 
 architecture of BfbOneWayCtrl {
     internal {
-        lint d := 0;
-        lint greenTicks := 15000;
-        lint yellowTicks := 5000;
+        udint d := 0;
+        udint greenTicks  := 15000000;
+        udint yellowTicks :=  5000000;
+        udint redTicks    :=  2000000;
     }
 	states {
 		s_init {
@@ -50,7 +51,7 @@ architecture of BfbOneWayCtrl {
         s_green_count {
             run in "ST" `if d <= greenTicks then d := d + 1; end_if;`;
 
-            -> s_yellow on d > greenTicks and HoldGreen=0 and PedStatusChange=0;
+            -> s_yellow on d > greenTicks and HoldGreen=0 and PedRunning=0;
             -> s_green_count on Tick;
         }
 
@@ -65,9 +66,25 @@ architecture of BfbOneWayCtrl {
         s_yellow_count {
             run in "ST" `d := d + 1;`;
 
-            -> s_wait on d > flashTicks;
+            -> s_red on d > yellowTicks;
             -> s_yellow_count on Tick;
         }
+
+        s_red {
+            run in "ST" `d := 0;`;
+            emit LightCtrlChange;
+            run LightsRed;
+
+            -> s_red_count;
+        }
+
+        s_red_count {
+            run in "ST" `d := d + 1;`;
+
+            -> s_wait on d > redTicks;
+            -> s_red_count on Tick;
+        }
+
 	}
 
     algorithm LightsRed in "ST" `

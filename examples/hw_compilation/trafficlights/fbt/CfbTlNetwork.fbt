@@ -49,7 +49,7 @@
 			<Connection Source="Start" Destination="mt.Start" dx1=""></Connection>
 			<Connection Source="mt.N_S_Start" Destination="N_S.GoSeq" dx1=""></Connection>
 			<Connection Source="N_S.DoneSeq" Destination="mt.N_S_Done" dx1=""></Connection>
-			<Connection Source="mt.E_W_GoSeq" Destination="E_W.GoSeq" dx1=""></Connection>
+			<Connection Source="mt.E_W_Start" Destination="E_W.GoSeq" dx1=""></Connection>
 			<Connection Source="E_W.DoneSeq" Destination="mt.E_W_Done" dx1=""></Connection>
 			<Connection Source="N_S_PedWaiting" Destination="N_S.PedWaiting" dx1=""></Connection>
 			<Connection Source="E_W_PedWaiting" Destination="E_W.PedWaiting" dx1=""></Connection>

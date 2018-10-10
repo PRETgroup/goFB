@@ -91,7 +91,7 @@ always@(posedge clk) begin
 		//BEGIN ecc 
 		entered = 1'b0;
 		case(state) 
-			default: begin
+			`STATE_s_init: begin
 				if(Start) begin
 					state = `STATE_s_N_S_Go;
 					entered = 1'b1;
@@ -109,7 +109,9 @@ always@(posedge clk) begin
 					entered = 1'b1;
 				end
 			end 
-			
+			default: begin
+				state = 0;
+			end
 		endcase
 		//END ecc
 
@@ -117,7 +119,7 @@ always@(posedge clk) begin
 		
 		if(entered) begin
 			case(state)
-				default: begin
+				`STATE_s_init: begin
 					
 				end 
 				`STATE_s_N_S_Go: begin
@@ -128,7 +130,9 @@ always@(posedge clk) begin
 					E_W_Start = 1'b1;
 					
 				end 
-				
+				default: begin
+
+				end
 			endcase
 		end
 		//END triggers

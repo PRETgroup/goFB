@@ -49,7 +49,7 @@ architecture of CfbTlNetwork{
         N_S.GoSeq <- mt.N_S_Start;
         mt.N_S_Done <- N_S.DoneSeq;
 
-        E_W.GoSeq <- mt.E_W_GoSeq;
+        E_W.GoSeq <- mt.E_W_Start;
         mt.E_W_Done <- E_W.DoneSeq;
    
         N_S.PedWaiting <- N_S_PedWaiting;

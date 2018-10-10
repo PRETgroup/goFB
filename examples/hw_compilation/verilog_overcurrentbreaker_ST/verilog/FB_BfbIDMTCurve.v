@@ -190,28 +190,36 @@ always@(posedge clk) begin
 			if (i > 145) begin
 			thresh = 5;
 
-		end else if (i > 100) begin
+		end
+		 else if (i > 100) begin
 			thresh = 10;
 
-		end else if (i > 77) begin
+		end
+		 else if (i > 77) begin
 			thresh = 15;
 
-		end else if (i > 55) begin
+		end
+		 else if (i > 55) begin
 			thresh = 30;
 
-		end else if (i > 32) begin
+		end
+		 else if (i > 32) begin
 			thresh = 60;
 
-		end else if (i > 23) begin
+		end
+		 else if (i > 23) begin
 			thresh = 100;
 
-		end else if (i > 19) begin
+		end
+		 else if (i > 19) begin
 			thresh = 150;
 
-		end else if (i > 14) begin
+		end
+		 else if (i > 14) begin
 			thresh = 300;
 
-		end else begin 
+		end
+		 else begin 
 		thresh = 400;
 
 	end
