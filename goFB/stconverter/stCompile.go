@@ -12,6 +12,7 @@ var cTemplateFuncMap = template.FuncMap{
 	"compileSequence":        CCompileSequence,
 	"isKnownVar":             isKnownVar,
 	"reverseArgs":            reverseArgs,
+	"gte":                    gte,
 }
 
 var vhdlTemplateFuncMap = template.FuncMap{
@@ -20,6 +21,7 @@ var vhdlTemplateFuncMap = template.FuncMap{
 	"compileSequence":        VhdlCompileSequence,
 	"isKnownVar":             isKnownVar,
 	"reverseArgs":            reverseArgs,
+	"gte":                    gte,
 }
 
 var verilogTemplateFuncMap = template.FuncMap{
@@ -28,6 +30,7 @@ var verilogTemplateFuncMap = template.FuncMap{
 	"compileSequence":        VerilogCompileSequence,
 	"isKnownVar":             isKnownVar,
 	"reverseArgs":            reverseArgs,
+	"gte":                    gte,
 }
 
 var stTemplateFuncMap = template.FuncMap{

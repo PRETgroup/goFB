@@ -62,6 +62,9 @@ const cTemplate = `
 */}}{{end}}`
 
 func cTokenIsFunctionCall(token string) bool {
+	if token == "not" {
+		return true
+	}
 	first := strings.Index(token, "<")
 	if len(token) > 2 && token[len(token)-1:] == ">" && first != -1 {
 		return true
@@ -80,6 +83,10 @@ func cTranslateOperatorToken(token string) string {
 		// 	return token[:first-1] + "("
 		// }
 		return token[:first] + "("
+	}
+	//TODO: nots should be dealt with a better way
+	if token == "not" {
+		return "!("
 	}
 	//ok, not a function, so it's one of the st Operators
 	switch token {
