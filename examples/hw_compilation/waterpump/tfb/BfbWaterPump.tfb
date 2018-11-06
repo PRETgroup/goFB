@@ -1,0 +1,73 @@
+basicFB BfbWaterPump;
+
+interface of BfbWaterPump {
+    in event UpdateLevels;
+
+    in with UpdateLevels usint Level1 := 0;
+    in with UpdateLevels usint Level2 := 0;
+
+    in event UpdateControls;
+    in with UpdateControls bool ModeBalance;
+    in with UpdateControls bool ModeFill1;
+    in with UpdateControls bool ModeFill2;
+
+    out event UpdatePump;
+    out with UpdatePump bool PumpDir := 0; //pumpDir == 0 (1 -> 2), == 1 (2 -> 1)
+    out with UpdatePump bool PumpRun := 0; 
+}
+
+architecture of BfbWaterPump {
+    states {
+        s_start {
+            -> s_idle;
+        }
+
+        s_idle {
+            emit UpdatePump;
+            run in "ST" `PumpDir := 0; PumpRun := 0;`;
+
+            -> s_balance on UpdateControls && ModeBalance;
+            -> s_fill on UpdateControls && (ModeFill1 || ModeFill2);
+        }
+
+        s_balance {
+
+            run in "ST" `
+                if Level1 > Level2 then
+                    PumpDir := 0;
+                    PumpRun := 1;
+                elsif Level2 > Level1 then
+                    PumpDir := 1;
+                    PumpRun := 1;
+                else
+                    PumpRun := 0;
+                end_if;
+            `;
+
+            emit UpdatePump;
+            -> s_fill on UpdateControls && !ModeBalance && (ModeFill1 || ModeFill2);
+            -> s_idle on UpdateControls && !ModeBalance;
+            -> s_balance on UpdateLevels;
+        }
+
+        s_fill {
+            
+            run in "ST" `
+                if ModeFill1 then
+                    PumpDir := 1;
+                    PumpRun := 1;
+                elsif ModeFill2 then
+                    PumpDir := 0;
+                    PumpRun := 1;
+                else
+                    PumpRun := 0;
+                end_if;
+            `;
+
+            emit UpdatePump;
+            -> s_balance on UpdateControls && ModeBalance;
+            -> s_idle on UpdateControls && !ModeBalance && !ModeFill1 && !ModeFill2;
+            -> s_fill on UpdateControls;
+        }
+    }
+}
