@@ -162,9 +162,9 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
-		compC:       "y = ((a == 1 || b == 3) && c == 0);",
-		//compVhdl:    "y := not(x) + 2;",
-		//compVerilog: "y = ~x + 2;",
+		compC:       "y = (a == 1 || b == 3) && c == 0;",
+		compVhdl:    "y := (a = 1 or b = 3) and c = 0;",
+		compVerilog: "y = (a == 1 || b == 3) && c == 0;",
 	},
 	{
 		name:       "assignment 3",
