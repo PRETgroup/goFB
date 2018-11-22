@@ -92,9 +92,79 @@ var stTestCases = []stTestCase{
 				},
 			},
 		},
+	},
+	/*	{ 
+			name:       "assignment 3",
+			progString: "y := (a or b) and (c or d);",
+			prog: []STInstruction{
+				STExpressionOperator{
+					Operator: FindOp(stAssignment),
+					Arguments: []STExpression{
+						STExpressionOperator{
+							Operator: FindOp(stAdd),
+							Arguments: []STExpression{
+								STExpressionValue{"2"},
+								STExpressionOperator{
+									Operator: FindOp(stNot),
+									Arguments: []STExpression{
+										STExpressionValue{"x"},
+									},
+								},
+							},
+						},
+						STExpressionValue{"y"},
+					},
+				},
+			},
 		compC:       "y = !x + 2;",
 		compVhdl:    "y := not(x) + 2;",
 		compVerilog: "y = ~x + 2;",
+	}, */
+	{ 
+		name:       "issue #1",
+		progString: "y := ((a = 1 or b = 3) and c = 0);",
+		prog: []STInstruction{
+			STExpressionOperator{
+				Operator: FindOp(stAssignment),
+				Arguments: []STExpression{
+					STExpressionOperator{
+						Operator: FindOp(stAnd),
+						Arguments: []STExpression{
+							STExpressionOperator{
+								Operator: FindOp(stEqual),
+								Arguments: []STExpression{
+									STExpressionValue{"0"},
+									STExpressionValue{"c"},
+								},
+							},
+							STExpressionOperator{
+								Operator: FindOp(stOr),
+								Arguments: []STExpression{
+									STExpressionOperator{
+										Operator: FindOp(stEqual),
+										Arguments: []STExpression{
+											STExpressionValue{"3"},
+											STExpressionValue{"b"},
+										},
+									},
+									STExpressionOperator{
+										Operator: FindOp(stEqual),
+										Arguments: []STExpression{
+											STExpressionValue{"1"},
+											STExpressionValue{"a"},
+										},
+									},
+								},
+							},
+						},
+					},
+					STExpressionValue{"y"},
+				},
+			},
+		},
+		compC:       "y = ((a == 1 || b == 3) && c == 0);",
+		//compVhdl:    "y := not(x) + 2;",
+		//compVerilog: "y = ~x + 2;",
 	},
 	{
 		name:       "assignment 3",
