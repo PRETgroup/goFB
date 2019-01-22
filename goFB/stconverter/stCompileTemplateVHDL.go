@@ -16,7 +16,7 @@ const vhdlTemplate = `
 	*/}}{{else if $operator}}{{/* //then we need to determine how to print this operator
 		*/}}{{if $operator.LeftAssociative}}{{/* //print first argument, operator string, then remaining arguments
 			*/}}{{$args := reverseArgs .GetArguments}}{{$a := index $args 0}}{{$b := index $args 1}}{{$curPrec := $operator.GetPrecedence}}{{$aop := $a.HasOperator}}{{$bop := $b.HasOperator}}{{/*
-			*/}}{{if $aop}}{{if gt $aop.GetPrecedence $curPrec}}({{end}}{{end}}{{template "expression" $a}}{{if $aop}}{{if gt $aop.GetPrecedence $curPrec}}){{end}}{{end}} {{translateOperatorToken $operator.GetToken}} {{if $bop}}{{if gt $bop.GetPrecedence $curPrec}}({{end}}{{end}}{{template "expression" $b}}{{if $bop}}{{if gt $bop.GetPrecedence $curPrec}}){{end}}{{end}}{{/*
+			*/}}{{if $aop}}{{if gte $aop.GetPrecedence $curPrec}}({{end}}{{end}}{{template "expression" $a}}{{if $aop}}{{if gte $aop.GetPrecedence $curPrec}}){{end}}{{end}} {{translateOperatorToken $operator.GetToken}} {{if $bop}}{{if gte $bop.GetPrecedence $curPrec}}({{end}}{{end}}{{template "expression" $b}}{{if $bop}}{{if gte $bop.GetPrecedence $curPrec}}){{end}}{{end}}{{/*
 		*/}}{{else}}{{/* //print name, opening bracket, then arguments separated by commas
 			*/}}{{translateOperatorToken $operator.GetToken}}{{/*
 			*/}}{{range $ind, $arg := reverseArgs .GetArguments}}{{if $ind}}, {{end}}{{template "expression" $arg}}{{end}}{{if tokenIsFunctionCall $operator.GetToken}}){{end}}{{/*
