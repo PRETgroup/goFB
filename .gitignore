@@ -5,6 +5,14 @@
 *.csv
 *.out.json
 *.swp
+
+fbTikz/*.aux
+fbTikz/*.log
+fbTikz/*.synctex.gz
+fbTikz/*.pdf
+fbTikz/*.tex
+fbTikz/fbTikz
+
 EasyEnforcer
 .vscode
 .DS_Store*
