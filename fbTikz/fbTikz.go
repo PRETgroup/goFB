@@ -69,36 +69,58 @@ func (f FBTikzHelper) GetEventsSize() int {
 	return len(f.InterfaceList.EventOutputs)
 }
 
-//FBTikzIONames is used for rendering matched IO
+//FBTikzIO will hold the events and data slices for rendering purposes
+type FBTikzIO struct {
+	Events []FBTikzIONames
+	Data   []FBTikzIONames
+}
+
+//FBTikzIONames is used for rendering matched IO on a horizontal level
+//You can use the InputAssocPos to link between events and data, by using the same index
+//and input/output-ness
 type FBTikzIONames struct {
-	Input  string
-	Output string
+	Input          string
+	InputAssocPos  int //if 0, not linked
+	Output         string
+	OutputAssocPos int //if 0, not linked
 }
 
-//GetMatchedVars returns the matched names of the variable area for a FB
-func (f FBTikzHelper) GetMatchedVars() []FBTikzIONames {
-	matchedNames := make([]FBTikzIONames, f.GetVarsSize())
-	for i := 0; i < f.GetVarsSize(); i++ {
-		if i < len(f.InterfaceList.InputVars) {
-			matchedNames[i].Input = f.InterfaceList.InputVars[i].Name
-		}
-		if i < len(f.InterfaceList.OutputVars) {
-			matchedNames[i].Output = f.InterfaceList.OutputVars[i].Name
-		}
+//GetTikzIO will return the IO of the block in a helpful and easy-to-render structre
+func (f FBTikzHelper) GetTikzIO() FBTikzIO {
+	IO := FBTikzIO{
+		Events: make([]FBTikzIONames, f.GetEventsSize()),
+		Data:   make([]FBTikzIONames, f.GetVarsSize()),
 	}
-	return matchedNames
-}
 
-//GetMatchedEvents returns the matched names of the event area for a FB
-func (f FBTikzHelper) GetMatchedEvents() []FBTikzIONames {
-	matchedNames := make([]FBTikzIONames, f.GetEventsSize())
-	for i := 0; i < f.GetEventsSize(); i++ {
+	//sort out the event area for a FB
+	inputEventsPos := 0
+	outputEventsPos := 0
+	for i := 0; i < len(IO.Events); i++ {
 		if i < len(f.InterfaceList.EventInputs) {
-			matchedNames[i].Input = f.InterfaceList.EventInputs[i].Name
+			IO.Events[i].Input = f.InterfaceList.EventInputs[i].Name
+			if len(f.InterfaceList.EventInputs[i].With) > 0 {
+				inputEventsPos++
+				IO.Events[i].InputAssocPos = inputEventsPos
+			}
 		}
 		if i < len(f.InterfaceList.EventOutputs) {
-			matchedNames[i].Output = f.InterfaceList.EventOutputs[i].Name
+			IO.Events[i].Output = f.InterfaceList.EventOutputs[i].Name
+			if len(f.InterfaceList.EventOutputs[i].With) > 0 {
+				outputEventsPos++
+				IO.Events[i].OutputAssocPos = outputEventsPos
+			}
 		}
 	}
-	return matchedNames
+
+	//var names
+	for i := 0; i < len(IO.Data); i++ {
+		if i < len(f.InterfaceList.InputVars) {
+			IO.Data[i].Input = f.InterfaceList.InputVars[i].Name
+		}
+		if i < len(f.InterfaceList.OutputVars) {
+			IO.Data[i].Output = f.InterfaceList.OutputVars[i].Name
+		}
+	}
+
+	return IO
 }
