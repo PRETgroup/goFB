@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	inFileName  = flag.String("i", "", "Specifies the name of the source file or directory of fbt-type files to be compiled.")
-	outLocation = flag.String("o", "", "Specifies the name of the directory to put output files. If blank, uses current directory")
+	inFileName     = flag.String("i", "", "Specifies the name of the source file or directory of fbt-type files to be compiled.")
+	outLocation    = flag.String("o", "", "Specifies the name of the directory to put output files. If blank, uses current directory")
+	drawInternalOf = flag.String("internalOf", "", "Specifies the name of a function block to render the internals of. If blank, will draw all I/O files instead.")
 )
 
 func main() {
@@ -71,7 +72,7 @@ func main() {
 	fbTikz := new(FBTikz)
 
 	for _, name := range fbtFileNames {
-		sourceFile, err := ioutil.ReadFile(*inFileName)
+		sourceFile, err := ioutil.ReadFile(name)
 		if err != nil {
 			fmt.Printf("Error reading file '%s' for conversion: %s\n", name, err.Error())
 			return
@@ -84,10 +85,22 @@ func main() {
 		}
 	}
 
-	outputs, err := fbTikz.ConvertAll()
-	if err != nil {
-		fmt.Println("Error during conversion:", err.Error())
-		return
+	var outputs []OutputFile
+
+	if *drawInternalOf == "" {
+		fmt.Println("Drawing all I/O file(s)")
+		outputs, err = fbTikz.ConvertAll()
+		if err != nil {
+			fmt.Println("Error during conversion:", err.Error())
+			return
+		}
+	} else {
+		fmt.Println("Drawing internals of FB called '" + *drawInternalOf + "'")
+		outputs, err = fbTikz.ConvertInternal(*drawInternalOf)
+		if err != nil {
+			fmt.Println("Error during conversion:", err.Error())
+			return
+		}
 	}
 
 	for _, output := range outputs {
