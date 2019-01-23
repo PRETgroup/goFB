@@ -79,10 +79,16 @@ type FBTikzIO struct {
 //You can use the InputAssocPos to link between events and data, by using the same index
 //and input/output-ness
 type FBTikzIONames struct {
-	Input          string
-	InputAssocPos  int //if 0, not linked
-	Output         string
-	OutputAssocPos int //if 0, not linked
+	Input       string
+	InputAssoc  FBTikzIOAssocPos
+	Output      string
+	OutputAssoc FBTikzIOAssocPos
+}
+
+//FBTikzIOAssocPos is used for data-variable association
+type FBTikzIOAssocPos struct {
+	PosX     int //if 0, not linked
+	PosEvent int //if 0, this is the event
 }
 
 //GetTikzIO will return the IO of the block in a helpful and easy-to-render structre
@@ -95,17 +101,18 @@ func (f FBTikzHelper) GetTikzIO() FBTikzIO {
 	//sort out the event area for a FB
 	inputEventsPos := 0
 	outputEventsPos := 0
-	inputAssocPos := make(map[string]int)
-	outputAssocPos := make(map[string]int)
+
+	inputAssocPos := make(map[string]FBTikzIOAssocPos)
+	outputAssocPos := make(map[string]FBTikzIOAssocPos)
 
 	for i := 0; i < len(IO.Events); i++ {
 		if i < len(f.InterfaceList.EventInputs) {
 			IO.Events[i].Input = f.InterfaceList.EventInputs[i].Name
 			if len(f.InterfaceList.EventInputs[i].With) > 0 {
 				inputEventsPos++
-				IO.Events[i].InputAssocPos = inputEventsPos
+				IO.Events[i].InputAssoc = FBTikzIOAssocPos{PosX: inputEventsPos, PosEvent: 0}
 				for _, with := range f.InterfaceList.EventInputs[i].With {
-					inputAssocPos[with.Var] = inputEventsPos
+					inputAssocPos[with.Var] = FBTikzIOAssocPos{PosX: inputEventsPos, PosEvent: i}
 				}
 			}
 		}
@@ -113,9 +120,9 @@ func (f FBTikzHelper) GetTikzIO() FBTikzIO {
 			IO.Events[i].Output = f.InterfaceList.EventOutputs[i].Name
 			if len(f.InterfaceList.EventOutputs[i].With) > 0 {
 				outputEventsPos++
-				IO.Events[i].OutputAssocPos = outputEventsPos
+				IO.Events[i].OutputAssoc = FBTikzIOAssocPos{PosX: outputEventsPos, PosEvent: 0}
 				for _, with := range f.InterfaceList.EventOutputs[i].With {
-					outputAssocPos[with.Var] = outputEventsPos
+					outputAssocPos[with.Var] = FBTikzIOAssocPos{PosX: outputEventsPos, PosEvent: i}
 				}
 			}
 		}
@@ -128,13 +135,13 @@ func (f FBTikzHelper) GetTikzIO() FBTikzIO {
 		if i < len(f.InterfaceList.InputVars) {
 			IO.Data[i].Input = f.InterfaceList.InputVars[i].Name
 			if pos, ok := inputAssocPos[f.InterfaceList.InputVars[i].Name]; ok {
-				IO.Data[i].InputAssocPos = pos
+				IO.Data[i].InputAssoc = pos
 			}
 		}
 		if i < len(f.InterfaceList.OutputVars) {
 			IO.Data[i].Output = f.InterfaceList.OutputVars[i].Name
 			if pos, ok := outputAssocPos[f.InterfaceList.OutputVars[i].Name]; ok {
-				IO.Data[i].OutputAssocPos = pos
+				IO.Data[i].OutputAssoc = pos
 			}
 		}
 	}
