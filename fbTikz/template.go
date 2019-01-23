@@ -54,9 +54,17 @@ const tikzTemplateStr = `\documentclass{standalone}
 \draw (0,{{add $baseVars $i}}) -- (0,{{add $i (add $baseVars 1)}}) {{if $names.Input}}node [anchor=west,yshift=-0.5] { {{textsafe $names.Input}} } {{end}}; %vert line and label 
 {{if $names.Input}}
 \draw [dataWire] (0,{{add $i (add $baseVars 1)}}) -- (-1,{{add $i (add $baseVars 1)}}); %link line 
+	{{if $names.InputAssocPos}}
+		\draw ({{subf -0.2 (mulf 0.2 (intf $names.InputAssocPos))}},{{add $i (add $baseVars 1)}}) circle (0.3mm); %association circle
+	{{end}}
 {{end}}
 \draw ({{$width}},{{add $baseVars $i}}) -- ({{$width}},{{add $i (add $baseVars 1)}}) {{if $names.Output}}node [anchor=east,yshift=-0.5] { {{textsafe $names.Output}} } {{end}}; 
-{{if $names.Output}}\draw [dataWire] ({{$width}},{{add $i (add $baseVars 1)}}) -- ({{add $width 1}},{{add $i (add $baseVars 1)}}); %link line {{end}}
+{{if $names.Output}}
+\draw [dataWire] ({{$width}},{{add $i (add $baseVars 1)}}) -- ({{add $width 1}},{{add $i (add $baseVars 1)}}); %link line 
+	{{if $names.OutputAssocPos}}
+	\draw ({{addf (addf (intf $width) 0.2) (mulf 0.2 (intf $names.OutputAssocPos))}},{{add $i (add $baseVars 1)}}) circle (0.3mm); %association circle
+	{{end}}
+{{end}}
 {{end}}
 
 %bottom container

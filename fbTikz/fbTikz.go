@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
-	"fmt"
 
 	"github.com/PRETgroup/goFB/iec61499"
 )
@@ -96,12 +95,18 @@ func (f FBTikzHelper) GetTikzIO() FBTikzIO {
 	//sort out the event area for a FB
 	inputEventsPos := 0
 	outputEventsPos := 0
+	inputAssocPos := make(map[string]int)
+	outputAssocPos := make(map[string]int)
+
 	for i := 0; i < len(IO.Events); i++ {
 		if i < len(f.InterfaceList.EventInputs) {
 			IO.Events[i].Input = f.InterfaceList.EventInputs[i].Name
 			if len(f.InterfaceList.EventInputs[i].With) > 0 {
 				inputEventsPos++
 				IO.Events[i].InputAssocPos = inputEventsPos
+				for _, with := range f.InterfaceList.EventInputs[i].With {
+					inputAssocPos[with.Var] = inputEventsPos
+				}
 			}
 		}
 		if i < len(f.InterfaceList.EventOutputs) {
@@ -109,19 +114,28 @@ func (f FBTikzHelper) GetTikzIO() FBTikzIO {
 			if len(f.InterfaceList.EventOutputs[i].With) > 0 {
 				outputEventsPos++
 				IO.Events[i].OutputAssocPos = outputEventsPos
+				for _, with := range f.InterfaceList.EventOutputs[i].With {
+					outputAssocPos[with.Var] = outputEventsPos
+				}
 			}
 		}
 	}
 
-	fmt.Printf("%+v\r\n", IO.Events)
+	//fmt.Printf("%+v\r\n", IO.Events)
 
 	//var names
 	for i := 0; i < len(IO.Data); i++ {
 		if i < len(f.InterfaceList.InputVars) {
 			IO.Data[i].Input = f.InterfaceList.InputVars[i].Name
+			if pos, ok := inputAssocPos[f.InterfaceList.InputVars[i].Name]; ok {
+				IO.Data[i].InputAssocPos = pos
+			}
 		}
 		if i < len(f.InterfaceList.OutputVars) {
 			IO.Data[i].Output = f.InterfaceList.OutputVars[i].Name
+			if pos, ok := outputAssocPos[f.InterfaceList.OutputVars[i].Name]; ok {
+				IO.Data[i].OutputAssocPos = pos
+			}
 		}
 	}
 
