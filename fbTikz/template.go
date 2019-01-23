@@ -9,11 +9,11 @@ const tikzTemplateStr = `\documentclass{standalone}
 \usepackage[rgb]{xcolor}
 \usepackage{tikz}
 
-\begin{document}
+\begin{document}{{$fb := .}}
 \begin{tikzpicture}[x=5mm,y=-5mm]
 \definecolor{eventWire}{HTML}{6C8EBF}
 \definecolor{dataWire}{HTML}{B85450}
-{{$border := .Points.Border}}
+{{$border := $fb.Points.Border}}
 \draw 	{{$border.EventsTopLeft}} -- 
 		{{$border.EventsTopRight}} --
 		{{$border.EventsBottomRight}} --
@@ -27,6 +27,27 @@ const tikzTemplateStr = `\documentclass{standalone}
 		{{$border.NeckTopLeft}} --
 		{{$border.EventsBottomLeft}} --
 		cycle;
+
+{{range $i, $port := $fb.InterfaceList.EventInputs}}
+	{{$portInfo := (index $fb.Points.EventsInfo $port.Name)}}
+	\draw {{$portInfo.Anchor}} node[anchor=west] { {{textsafe $port.Name}} };
+{{end}}
+
+{{range $i, $port := $fb.InterfaceList.EventOutputs}}
+	{{$portInfo := (index $fb.Points.EventsInfo $port.Name)}}
+	\draw {{$portInfo.Anchor}} node[anchor=east] { {{textsafe $port.Name}} };
+{{end}}
+
+{{range $i, $port := $fb.InterfaceList.InputVars}}
+	{{$portInfo := (index $fb.Points.EventsInfo $port.Name)}}
+	\draw {{$portInfo.Anchor}} node[anchor=west] { {{textsafe $port.Name}} };
+{{end}}
+
+{{range $i, $port := $fb.InterfaceList.OutputVars}}
+	{{$portInfo := (index $fb.Points.EventsInfo $port.Name)}}
+	\draw {{$portInfo.Anchor}} node[anchor=east] { {{textsafe $port.Name}} };
+{{end}}
+
 
 \end{tikzpicture}
 \end{document}
