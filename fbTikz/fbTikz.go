@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
+	"fmt"
 
 	"github.com/PRETgroup/goFB/iec61499"
 )
@@ -111,6 +112,8 @@ func (f FBTikzHelper) GetTikzIO() FBTikzIO {
 			}
 		}
 	}
+
+	fmt.Printf("%+v\r\n", IO.Events)
 
 	//var names
 	for i := 0; i < len(IO.Data); i++ {
