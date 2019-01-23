@@ -79,6 +79,11 @@ func (p FBTikzPoint) Add(x, y float64) FBTikzPoint {
 	return FBTikzPoint{X: p.X + x, Y: p.Y + y}
 }
 
+//Sub subtracts x,y from a given point and returns it as a new point
+func (p FBTikzPoint) Sub(x, y float64) FBTikzPoint {
+	return FBTikzPoint{X: p.X - x, Y: p.Y - y}
+}
+
 func (p FBTikzPoint) String() string {
 	return fmt.Sprintf("(%.2f,%.2f)", p.X, p.Y)
 }
@@ -117,24 +122,25 @@ const (
 
 //FBTikzPoints is used to store information about where everything is for a given FB
 type FBTikzPoints struct {
-	Origin          FBTikzPoint //x = xlocation, y = ylocation
-	Width           float64     // == width of the FB
-	EventsHeight    float64     // == height of the events area
-	NeckHeight      float64     // == height of the fb "neck"
-	DataHeight      float64     // == height of the data area
-	TextSpacing     float64     // == spacing between i/o labels
-	TextOffset      float64     // == offset from top of area to first text label
-	MinIOLineLength float64     // == minimum length of the i/o lines
-	EventsInfo      map[string]FBTikzIOInfo
-	Border          FBTikzBorderBox
+	Origin         FBTikzPoint //x = xlocation, y = ylocation
+	Width          float64     // == width of the FB
+	EventsHeight   float64     // == height of the events area
+	NeckHeight     float64     // == height of the fb "neck"
+	DataHeight     float64     // == height of the data area
+	TextSpacing    float64     // == spacing between i/o labels
+	TextOffset     float64     // == offset from top of area to first text label
+	PortLineLength float64     // == length of the i/o lines
+	EventsInfo     map[string]FBTikzIOInfo
+	Border         FBTikzBorderBox
 }
 
 //FBTikzIOInfo is used for port info, location, data-variable association
 type FBTikzIOInfo struct {
 	//OffsetY    float64 //the difference between the block origin and the ypos for this position
-	Anchor     FBTikzPoint //where this port is located (left- or right-alignedness is determined by input- or output-ness)
-	LinkX      float64     //if 0, not linked, if !0, this is the position to render the link in
-	LinkEventY float64     //if 0, this is the event, and no action required, if !0, this is the height to draw the vertical association link to
+	Anchor       FBTikzPoint //where this port is located (left- or right-alignedness is determined by input- or output-ness)
+	PortAnchor   FBTikzPoint //where the end of the port is located
+	LinkAnchor   FBTikzPoint //if zerod, not linked, if !zerod, this is the position to render the link circle
+	LinkLineDest FBTikzPoint //if zerod, don't draw (this is the event), if !zerod, draw a line from LinkAnchor to this position
 }
 
 //NewFBTikzHelper will convert an FB to a FBTikzHelper and calculate all
@@ -151,8 +157,11 @@ func NewFBTikzHelper(fb iec61499.FB, origin FBTikzPoint) FBTikzHelper {
 		},
 	}
 
-	//calculate width
+	//todo: calculate width
 	help.Points.Width = 7
+
+	//todo: claculate port line width
+	help.Points.PortLineLength = 1
 
 	//calculate events height
 	eventLength := help.GetEventsSize() + 1
@@ -165,24 +174,28 @@ func NewFBTikzHelper(fb iec61499.FB, origin FBTikzPoint) FBTikzHelper {
 	for i, port := range help.FB.InterfaceList.EventInputs {
 		info := FBTikzIOInfo{}
 		info.Anchor = help.Points.Origin.AddY(help.Points.TextOffset + float64(i)*help.Points.TextSpacing)
+		info.PortAnchor = info.Anchor.AddX(-help.Points.PortLineLength)
 		help.Points.EventsInfo[port.Name] = info
 	}
 
 	for i, port := range help.FB.InterfaceList.EventOutputs {
 		info := FBTikzIOInfo{}
 		info.Anchor = help.Points.Origin.Add(help.Points.Width, help.Points.TextOffset+float64(i)*help.Points.TextSpacing)
+		info.PortAnchor = info.Anchor.AddX(help.Points.PortLineLength)
 		help.Points.EventsInfo[port.Name] = info
 	}
 
 	for i, port := range help.FB.InterfaceList.InputVars {
 		info := FBTikzIOInfo{}
 		info.Anchor = help.Points.Origin.AddY(help.Points.EventsHeight + help.Points.NeckHeight + help.Points.TextOffset + float64(i)*help.Points.TextSpacing)
+		info.PortAnchor = info.Anchor.AddX(-help.Points.PortLineLength)
 		help.Points.EventsInfo[port.Name] = info
 	}
 
 	for i, port := range help.FB.InterfaceList.OutputVars {
 		info := FBTikzIOInfo{}
 		info.Anchor = help.Points.Origin.Add(help.Points.Width, help.Points.EventsHeight+help.Points.NeckHeight+help.Points.TextOffset+float64(i)*help.Points.TextSpacing)
+		info.PortAnchor = info.Anchor.AddX(help.Points.PortLineLength)
 		help.Points.EventsInfo[port.Name] = info
 	}
 

@@ -31,21 +31,25 @@ const tikzTemplateStr = `\documentclass{standalone}
 {{range $i, $port := $fb.InterfaceList.EventInputs}}
 	{{$portInfo := (index $fb.Points.EventsInfo $port.Name)}}
 	\draw {{$portInfo.Anchor}} node[anchor=west] { {{textsafe $port.Name}} };
+	\draw [eventWire] {{$portInfo.Anchor}} -- {{$portInfo.PortAnchor}};
 {{end}}
 
 {{range $i, $port := $fb.InterfaceList.EventOutputs}}
 	{{$portInfo := (index $fb.Points.EventsInfo $port.Name)}}
 	\draw {{$portInfo.Anchor}} node[anchor=east] { {{textsafe $port.Name}} };
+	\draw [eventWire] {{$portInfo.Anchor}} -- {{$portInfo.PortAnchor}};
 {{end}}
 
 {{range $i, $port := $fb.InterfaceList.InputVars}}
 	{{$portInfo := (index $fb.Points.EventsInfo $port.Name)}}
 	\draw {{$portInfo.Anchor}} node[anchor=west] { {{textsafe $port.Name}} };
+	\draw [dataWire] {{$portInfo.Anchor}} -- {{$portInfo.PortAnchor}};
 {{end}}
 
 {{range $i, $port := $fb.InterfaceList.OutputVars}}
 	{{$portInfo := (index $fb.Points.EventsInfo $port.Name)}}
 	\draw {{$portInfo.Anchor}} node[anchor=east] { {{textsafe $port.Name}} };
+	\draw [dataWire] {{$portInfo.Anchor}} -- {{$portInfo.PortAnchor}};
 {{end}}
 
 
