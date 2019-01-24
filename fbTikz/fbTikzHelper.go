@@ -286,10 +286,22 @@ func (f FBTikzDynamicHelper) GetEventsSize() int {
 //FBTikzStaticConnectionBuilder is used to create FBTikzStaticConnections
 //so that they don't overlap
 type FBTikzStaticConnectionBuilder struct {
+	GlobalOrigin FBTikzPoint //will probably be 0,0: represents the top-left of the top-left-most block
+	GlobalHeight float64     //represents the distance to the bottom of the lowest block
+
 	BottomHorizWireCount int
 	TopHorizWireCount    int
-	ColumnVertWireCounts []int
-	Connections          []FBTikzStaticConnection
+	Columns              []FBTikzStaticConnectionColumn
+
+	Connections []FBTikzStaticConnection
+}
+
+//FBTikzStaticConnectionColumn is used to store information about columns within the
+//FBTikzStaticConnectionBuilder, it allows for renderers to find the column origin
+//as well as store the current offset for vertical wires
+type FBTikzStaticConnectionColumn struct {
+	ColumnOrigin        FBTikzPoint
+	ColumnVertWireCount int
 }
 
 //FBTikzStaticConnection holds the data needed to draw a connection line in
@@ -322,11 +334,11 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 	destCol++
 
 	//ensure we have enough vertWireCounts, fill with zero if not
-	for sourceCol > len(b.ColumnVertWireCounts) {
-		b.ColumnVertWireCounts = append(b.ColumnVertWireCounts, 0)
+	for sourceCol > len(b.Columns) {
+		panic("sourceCol size exceeds number of columns")
 	}
-	for destCol > len(b.ColumnVertWireCounts) {
-		b.ColumnVertWireCounts = append(b.ColumnVertWireCounts, 0)
+	for destCol > len(b.Columns) {
+		panic("destCol size exceeds number of columns")
 	}
 
 	WireSpacing := TextOffset
@@ -338,14 +350,27 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 
 	if destCol == sourceCol+1 {
 		//case 1, make some intermediate links
-		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.ColumnVertWireCounts[sourceCol]))
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceCol].ColumnVertWireCount))
 		changeAnchor2 := destAnchor
 		changeAnchor2.X = changeAnchor1.X
-		b.ColumnVertWireCounts[sourceCol]++
+		b.Columns[sourceCol].ColumnVertWireCount++
 		link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2}
 
 	} else if destCol > sourceCol+1 {
 		//case 2, make some intermediate links for "up and over"
+		// changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.ColumnVertWireCounts[sourceCol]))
+		// b.ColumnVertWireCounts[sourceCol]++
+
+		// changeAnchor2 := b.GlobalOrigin.AddY(WireSpacing * float64(b.TopHorizWireCount))
+		// b.TopHorizWireCount++
+		// changeAnchor2.X = changeAnchor1.X
+
+		// changeAnchor4 :=
+		// changeAnchor2 := destAnchor
+		// changeAnchor2.X = changeAnchor1.X
+		// b.ColumnVertWireCounts[sourceCol]++
+		// link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2}
+
 		panic("ahahaha")
 	} else {
 		//case 3, make some intermediate links for "down and under"

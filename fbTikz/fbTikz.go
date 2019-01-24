@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -86,6 +87,36 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 
 	//define global origin
 	origin := FBTikzPoint{0.0, 0.0}
+
+	//determine the number of columns (3 columns for each "x" in fbRef)
+	//and determine the total height
+	//column 1 = incoming vertical wires
+	//column 2 = the blocks
+	//column 3 = outgoing vertical wires
+
+	//capture all unique column labels for X position, and increment a counter each time it's
+	//captured
+	colLabelCounts := make(map[float64]int)
+	for _, fbRef := range top.CompositeFB.FBs {
+		fbRefX, err := strconv.ParseFloat(fbRef.X, 64)
+		if err != nil {
+			return nil, errors.New("Problem parsing X position in block ref name'" + fbRef.Name + "': " + err.Error())
+		}
+		colLabelCounts[fbRefX]++
+	}
+	//then sort those unique labels in order
+	var colLabels []float64
+	for key := range colLabelCounts {
+		colLabels = append(colLabels, key)
+	}
+	sort.Float64s(colLabels) //using colLabels, we can now work out which index a given column is in
+
+	//column sizes for 1 and 3 are determined by the largest number of
+	// incoming/outgoing wires for a given block in column 2
+
+	//column size 2 is determined by the widest block (todo: currently staticly set to 7)
+
+	//determine how much room is needed for vertical wires between each of the columns
 
 	//for each instance in the network, create in the instance slice
 	for _, fbRef := range top.CompositeFB.FBs {
