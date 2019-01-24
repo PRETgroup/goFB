@@ -51,13 +51,13 @@ You will need to add the `bin` directory of the repostory to your `$PATH`, for i
 
 The goFB toolchain was used in the following publications:
 
-* ACM-IEEE MEMOCODE publication [Simulation of cyber-physical systems using IEC61499](https://dl.acm.org/citation.cfm?id=3127052). 
+* ACM-IEEE MEMOCODE 2017 publication [Simulation of cyber-physical systems using IEC61499](https://dl.acm.org/citation.cfm?id=3127052). 
   * The examples used in this paper can be found under `examples/goFB_only/c_odes`.
 
 * IEEE ISORC 2018 paper [Faster Function Blocks for Precision Timed Industrial Automation](https://ieeexplore.ieee.org/abstract/document/8421148/). 
   * The examples for this paper can be found under `examples/goFB_only/c_tcrest`.
 
-* IEEE ICEIC 2019 paper "Synthesizing IEC61499 Function Blocks to Hardware" (IEEEXplore link not yet available).
+* IEIE-IEEE ICEIC 2019 paper "Synthesizing IEC61499 Function Blocks to Hardware" (IEEEXplore link not yet available).
   * The examples for this paper can be found under `examples/hw_compilation`. 
 
 For the purposes of replicating results, these and other examples are kept pre-compiled within the repository for your convenience.
