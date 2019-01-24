@@ -324,9 +324,12 @@ func NewFBTikzStaticConnectionBuilder(origin FBTikzPoint, height float64, column
 //FBTikzStaticConnectionBuilder, it allows for renderers to find the column origin
 //as well as store the current offset for vertical wires
 type FBTikzStaticConnectionColumn struct {
-	Origin            FBTikzPoint
-	IncomingVertCount int
-	OutgoingVertCount int
+	Origin                      FBTikzPoint
+	IncomingFromTopVertCount    int
+	IncomingFromBottomVertCount int
+
+	OutgoingToTopVertCount    int
+	OutgoingToBottomVertCount int
 }
 
 //FBTikzStaticConnection holds the data needed to draw a connection line in
@@ -372,17 +375,17 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 
 	if destBlockCol == sourceBlockCol+1 {
 		//case 1, make some intermediate links
-		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingVertCount))
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingToTopVertCount))
 		changeAnchor2 := destAnchor
 		changeAnchor2.X = changeAnchor1.X
-		b.Columns[sourceBlockCol].OutgoingVertCount++
+		b.Columns[sourceBlockCol].OutgoingToTopVertCount++
 		link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2}
 
 	} else if destBlockCol > sourceBlockCol+1 {
 		//case 2, make some intermediate links for "up and over"
 		//travel right to turn up location
-		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingVertCount))
-		b.Columns[sourceBlockCol].OutgoingVertCount++
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingToTopVertCount))
+		b.Columns[sourceBlockCol].OutgoingToTopVertCount++
 
 		//travel up to turn right location
 		changeAnchor2 := changeAnchor1
@@ -391,8 +394,8 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 
 		//travel right to turn down location
 		changeAnchor3 := changeAnchor2
-		changeAnchor3.X = b.Columns[destBlockCol].Origin.X - float64(b.Columns[destBlockCol].IncomingVertCount)*WireSpacing
-		b.Columns[destBlockCol].IncomingVertCount++
+		changeAnchor3.X = b.Columns[destBlockCol].Origin.X - float64(b.Columns[destBlockCol].IncomingFromTopVertCount)*WireSpacing
+		b.Columns[destBlockCol].IncomingFromTopVertCount++
 
 		//travel down to turn right location
 		changeAnchor4 := changeAnchor3
@@ -405,8 +408,8 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 		fmt.Printf("SourceCol:%v,DestCol:%v\n", sourceBlockCol, destBlockCol)
 
 		//travel right to turn down location
-		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingVertCount))
-		b.Columns[sourceBlockCol].OutgoingVertCount++
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingToBottomVertCount))
+		b.Columns[sourceBlockCol].OutgoingToBottomVertCount--
 
 		//travel down to turn left location
 		changeAnchor2 := changeAnchor1
@@ -415,8 +418,8 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 
 		//travel left to turn up location
 		changeAnchor3 := changeAnchor2
-		changeAnchor3.X = b.Columns[destBlockCol].Origin.X - float64(b.Columns[destBlockCol].IncomingVertCount)*WireSpacing
-		b.Columns[destBlockCol].IncomingVertCount++
+		changeAnchor3.X = b.Columns[destBlockCol].Origin.X - float64(b.Columns[destBlockCol].IncomingFromBottomVertCount)*WireSpacing
+		b.Columns[destBlockCol].IncomingFromBottomVertCount--
 
 		//travel up to turn left location
 		changeAnchor4 := changeAnchor3
