@@ -11,6 +11,7 @@ type FBTikzDynamicHelper iec61499.FB
 
 //FBTikzStaticHelper overleads the FBTikzDynamicHelper type by saving the info
 type FBTikzStaticHelper struct {
+	Name string
 	FBTikzDynamicHelper
 	Points FBTikzPoints
 }
@@ -117,13 +118,25 @@ func NewFBTikzDynamicHelper(fb iec61499.FB) FBTikzDynamicHelper {
 
 //NewFBTikzStaticHelper will convert an FB to a FBTikzHelper and calculate all
 //necessary render information
-func NewFBTikzStaticHelper(fb iec61499.FB, origin FBTikzPoint) FBTikzStaticHelper {
+func NewFBTikzStaticHelper(fb iec61499.FB, origin FBTikzPoint, name string) FBTikzStaticHelper {
 	help := FBTikzStaticHelper{
+		Name:                name,
 		FBTikzDynamicHelper: NewFBTikzDynamicHelper(fb),
 	}
 
 	help.Points = help.FBTikzDynamicHelper.CalcPoints(origin)
 	return help
+}
+
+//ToStatic is a helpful wrapper function for CalcPoints,
+//and converts a FBTikzDynamicHelper to a FBTikzStaticHelper
+func (f FBTikzDynamicHelper) ToStatic(origin FBTikzPoint, name string) FBTikzStaticHelper {
+	points := f.CalcPoints(origin)
+	return FBTikzStaticHelper{
+		Name:                name,
+		FBTikzDynamicHelper: f,
+		Points:              points,
+	}
 }
 
 //CalcPoints will calculate all locations of all points of interest inside an FBTikzDynamicHelper

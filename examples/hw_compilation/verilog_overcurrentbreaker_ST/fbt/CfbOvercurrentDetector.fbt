@@ -24,8 +24,8 @@
 		</OutputVars>
 	</InterfaceList>
 	<FBNetwork>
-		<FB Name="sr" Type="BfbSetterResetter" x="" y=""></FB>
-		<FB Name="curve" Type="BfbIDMTCurve" x="" y=""></FB>
+		<FB Name="sr" Type="BfbSetterResetter" x="1" y="0"></FB>
+		<FB Name="curve" Type="BfbIDMTCurve" x="0" y="0"></FB>
 		<EventConnections>
 			<Connection Source="tick" Destination="curve.tick" dx1=""></Connection>
 			<Connection Source="i_measured" Destination="curve.i_measured" dx1=""></Connection>

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
+	"strconv"
 
 	"github.com/PRETgroup/goFB/iec61499"
 )
@@ -51,8 +52,8 @@ func (f *FBTikz) ConvertAll() ([]OutputFile, error) {
 
 		output := &bytes.Buffer{}
 		origin := FBTikzPoint{0.0, 0.0}
-		fbh := NewFBTikzStaticHelper(f.Blocks[i], origin)
-		if err := tikzTemplate.ExecuteTemplate(output, "", fbh); err != nil {
+		fbh := NewFBTikzStaticHelper(f.Blocks[i], origin, "")
+		if err := tikzTemplate.ExecuteTemplate(output, "tikzBlockIO", fbh); err != nil {
 			return nil, errors.New("Couldn't format template (fb) of" + f.Blocks[i].Name + ": " + err.Error())
 		}
 
@@ -64,13 +65,55 @@ func (f *FBTikz) ConvertAll() ([]OutputFile, error) {
 
 //ConvertInternal will render the internals of a single FB to a Tikz file
 func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
-	//make sure the block exists
-	// top, found := f.FindBlockForName(name)
-	// if !found {
-	// 	return nil, errors.New("couldn't find block with name '" + name + "'")
-	// }
+	//create dynamic helpers for all blocks and map them relative to their names
+	blocks := make(map[string]FBTikzDynamicHelper)
+	for _, block := range f.Blocks {
+		blocks[block.Name] = NewFBTikzDynamicHelper(block)
+	}
 
-	// conversion := OutputFile{}
+	//make sure top block is found
+	top, ok := blocks[name]
+	if !ok {
+		return nil, errors.New("couldn't find block with name '" + name + "'")
+	}
+	if top.CompositeFB == nil {
+		return nil, errors.New("can only draw internals of composite FBs for now")
+	}
 
-	return nil, errors.New("not yet implemented")
+	//create instance slice for rendering
+	instances := make([]FBTikzStaticHelper, len(top.CompositeFB.FBs))
+
+	//define global origin
+	origin := FBTikzPoint{0.0, 0.0}
+
+	//for each instance in the network, create in the instance slice
+	for i, fbRef := range top.CompositeFB.FBs {
+		instDef, ok := blocks[fbRef.Type]
+		if !ok {
+			return nil, errors.New("couldn't find block reference for name '" + fbRef.Name + "'")
+		}
+		fbRefX, err := strconv.ParseFloat(fbRef.X, 64)
+		if err != nil {
+			return nil, errors.New("Problem parsing X position in block ref name'" + fbRef.Name + "': " + err.Error())
+		}
+		fbRefY, err := strconv.ParseFloat(fbRef.Y, 64)
+		if err != nil {
+			return nil, errors.New("Problem parsing Y position in block ref name'" + fbRef.Name + "': " + err.Error())
+		}
+		//todo: determine this correctly
+		xGap := 14.0
+		yGap := 20.0
+		instOrig := origin.Add(xGap*fbRefX, yGap*fbRefY) //line up blocks with a 7 point gap
+		instance := instDef.ToStatic(instOrig, fbRef.Name)
+		instances[i] = instance
+	}
+
+	output := &bytes.Buffer{}
+	if err := tikzTemplate.ExecuteTemplate(output, "tikzBlockInternalNetwork", instances); err != nil {
+		return nil, errors.New("Couldn't format template (fb) of" + name + ": " + err.Error())
+	}
+
+	return []OutputFile{
+		OutputFile{Name: name + "-network-tikz", Extension: "tex", Contents: output.Bytes()},
+	}, nil
 }

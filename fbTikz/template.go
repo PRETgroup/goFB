@@ -5,15 +5,8 @@ import (
 	"text/template"
 )
 
-const tikzTemplateStr = `\documentclass{standalone}
-\usepackage[rgb]{xcolor}
-\usepackage{tikz}
-
-\begin{document}{{$fb := .}}
-\begin{tikzpicture}[x=5mm,y=-5mm]
-\definecolor{eventWire}{HTML}{6C8EBF}
-\definecolor{dataWire}{HTML}{B85450}
-{{$border := $fb.Points.Border}}
+const tikzTemplateStr = `{{define "_drawFB"}}
+{{$fb := .}}{{$border := $fb.Points.Border}}
 \draw 	{{$border.EventsTopLeft}} -- 
 		{{$border.EventsTopRight}} --
 		{{$border.EventsBottomRight}} --
@@ -62,9 +55,43 @@ const tikzTemplateStr = `\documentclass{standalone}
 	{{end}}
 {{end}}
 
+{{end}}
+
+{{define "tikzBlockIO"}}
+\documentclass{standalone}
+
+\usepackage[rgb]{xcolor}
+\usepackage{tikz}
+
+\begin{document}
+\begin{tikzpicture}[x=5mm,y=-5mm]
+\definecolor{eventWire}{HTML}{6C8EBF}
+\definecolor{dataWire}{HTML}{B85450}
+
+{{template "_drawFB" .}}
 
 \end{tikzpicture}
 \end{document}
+{{end}}
+
+{{define "tikzBlockInternalNetwork"}}
+\documentclass{standalone}
+
+\usepackage[rgb]{xcolor}
+\usepackage{tikz}
+
+\begin{document}
+\begin{tikzpicture}[x=5mm,y=-5mm]
+\definecolor{eventWire}{HTML}{6C8EBF}
+\definecolor{dataWire}{HTML}{B85450}
+
+{{range $i, $b := .}}
+{{template "_drawFB" $b}}
+{{end}}
+
+\end{tikzpicture}
+\end{document}
+{{end}}
 `
 
 var tikzTemplateFuncMap = template.FuncMap{
