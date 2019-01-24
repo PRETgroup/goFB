@@ -38,9 +38,9 @@
 		</OutputVars>
 	</InterfaceList>
 	<FBNetwork>
-		<FB Name="N_S" Type="CfbOneLink" x="" y=""></FB>
-		<FB Name="E_W" Type="CfbOneLink" x="" y=""></FB>
-		<FB Name="mt" Type="BfbIntersectionMutex" x="" y=""></FB>
+		<FB Name="N_S" Type="CfbOneLink" x="0" y="0"></FB>
+		<FB Name="E_W" Type="CfbOneLink" x="1" y="0"></FB>
+		<FB Name="mt" Type="BfbIntersectionMutex" x="2" y="0"></FB>
 		<EventConnections>
 			<Connection Source="Tick" Destination="N_S.Tick" dx1=""></Connection>
 			<Connection Source="Tick" Destination="E_W.Tick" dx1=""></Connection>

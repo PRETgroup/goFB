@@ -97,7 +97,7 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 	//capture all unique column labels for X position, and increment a counter each time it's
 	//captured
 	type CountAndIndex struct {
-		NumFBs           int //Number of blocks
+		FBNames          []string
 		Index            int //Index position of column (0, 1, 2, etc)
 		NumIncomingVerts int //number of slots required for incoming vertical wires (either down or up)
 		NumOutgoingVerts int //number of slots required for outgoing vertical wires (either down or up)
@@ -109,7 +109,7 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 			return nil, errors.New("Problem parsing X position in block ref name'" + fbRef.Name + "': " + err.Error())
 		}
 		cai := colLabelCounts[fbRefX]
-		cai.NumFBs++
+		cai.FBNames = append(cai.FBNames, fbRef.Name)
 		colLabelCounts[fbRefX] = cai
 	}
 	//then sort those unique labels in order
@@ -129,8 +129,76 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 	//to determine their widths, we need to know how many incoming and outgoing wires there
 	//will be for each block in the column
 	//.. for each column, for each block, classify incoming wires and count, classify outgoing wires and count
+	//.. if a wire connects any two blocks in the network it counts as a vertical wire
 
-	//if a wire connects any two blocks in the network it counts as a vertical wire
+	//.. for each connection, find the source and destination links, and increment the appropriate counters
+	for _, fbConn := range top.CompositeFB.EventConnections {
+		sourceParts := strings.Split(fbConn.Source, ".")
+		destParts := strings.Split(fbConn.Destination, ".")
+
+		if len(sourceParts) == 2 && len(destParts) == 2 {
+			foundSource := false
+			foundDest := false
+
+		out:
+			for _, key := range colLabels {
+				cai := colLabelCounts[key]
+
+				for _, name := range cai.FBNames {
+					if name == sourceParts[0] {
+						cai.NumOutgoingVerts++
+						colLabelCounts[key] = cai
+						foundSource = true
+					}
+					if name == destParts[0] {
+						cai.NumIncomingVerts++
+						colLabelCounts[key] = cai
+						foundDest = true
+					}
+					if foundSource && foundDest {
+						break out
+					}
+
+				}
+			}
+		}
+	}
+
+	//now we have a nice structure with all the column information, so let's make the columns that we need
+	columns := make([]FBTikzStaticConnectionColumn, 0, len(colLabels)*3)
+	ColumnSpacing := TextSpacing
+
+	nextOrigin := origin
+	for _, key := range colLabels {
+		cai := colLabelCounts[key]
+		columnIn := FBTikzStaticConnectionColumn{
+			Origin: nextOrigin,
+			//VertWireCount: cai.NumIncomingVerts,
+		}
+		nextOrigin = columnIn.Origin.AddX(float64(cai.NumIncomingVerts+1) * ColumnSpacing)
+
+		columnBlock := FBTikzStaticConnectionColumn{
+			Origin: nextOrigin,
+			//VertWireCount: 0,
+		}
+		nextOrigin = columnBlock.Origin.AddX(float64(12) * ColumnSpacing)
+
+		columnOut := FBTikzStaticConnectionColumn{
+			Origin: nextOrigin,
+			//VertWireCount: cai.NumOutgoingVerts,
+		}
+		nextOrigin = columnOut.Origin.AddX(float64(cai.NumOutgoingVerts+1) * ColumnSpacing)
+
+		columns = append(columns, columnIn, columnBlock, columnOut)
+	}
+
+	// for _, key := range colLabels { //for each column label
+	// 	col := colLabelCounts[key]
+	// 	for _, refName := range col.FBNames {
+
+	// 	}
+
+	// }
 
 	//column sizes for 1 and 3 are determined by the largest number of
 	// incoming/outgoing wires for a given block in column 2
@@ -145,25 +213,39 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 		if !ok {
 			return nil, errors.New("couldn't find block reference for name '" + fbRef.Name + "'")
 		}
-		fbRefX, err := strconv.ParseFloat(fbRef.X, 64)
-		if err != nil {
-			return nil, errors.New("Problem parsing X position in block ref name'" + fbRef.Name + "': " + err.Error())
+
+		//find the column that they're in
+		refColIndex := -1
+
+	out2:
+		for _, key := range colLabels {
+			cai := colLabelCounts[key]
+			for _, name := range cai.FBNames {
+				if name == fbRef.Name {
+					refColIndex = cai.Index
+					break out2
+				}
+			}
 		}
+		if refColIndex == -1 {
+			return nil, errors.New("Something went wrong\r\n")
+		}
+		refCol := columns[refColIndex*3+1]
+
 		fbRefY, err := strconv.ParseFloat(fbRef.Y, 64)
 		if err != nil {
 			return nil, errors.New("Problem parsing Y position in block ref name'" + fbRef.Name + "': " + err.Error())
 		}
-		//todo: determine this correctly
-		xGap := 14.0
-		yGap := 20.0
-		instOrig := origin.Add(xGap*fbRefX, yGap*fbRefY) //line up blocks with a 7 point gap
 
-		instance := instDef.ToStatic(instOrig, fbRef.Name, int(fbRefX), int(fbRefY)) //todo: the "int" casts here are egregariously bad
+		yGap := 20.0 //todo: fix
+		instOrig := refCol.Origin.AddY(yGap * fbRefY)
+
+		instance := instDef.ToStatic(instOrig, fbRef.Name, refColIndex, int(fbRefY)) //todo: the "int" casts here are egregariously bad
 		instances[fbRef.Name] = instance
 	}
 
 	//create connections
-	staticLinksFactory := new(FBTikzStaticConnectionBuilder)
+	staticLinksFactory := NewFBTikzStaticConnectionBuilder(origin, columns)
 	eventConnections := make([]FBTikzStaticConnection, 0, len(top.CompositeFB.EventConnections))
 	for _, fbConn := range top.CompositeFB.EventConnections {
 		if strings.Contains(fbConn.Source, ".") && strings.Contains(fbConn.Destination, ".") {

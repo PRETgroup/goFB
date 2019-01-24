@@ -11,6 +11,7 @@ fbTikz/*.log
 fbTikz/*.synctex.gz
 fbTikz/*.pdf
 fbTikz/*.tex
+fbTikz/testtex/*
 fbTikz/fbTikz
 
 EasyEnforcer

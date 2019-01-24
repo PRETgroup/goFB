@@ -149,7 +149,7 @@ func (f FBTikzDynamicHelper) ToStatic(origin FBTikzPoint, name string, col int, 
 //with reference to a provided origin (which is the top-left of the image)
 func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 	points := FBTikzPoints{
-		Origin:                   origin,
+		Origin:                   origin.AddX(1),
 		TextSpacing:              TextSpacing,
 		TextOffset:               TextOffset,
 		NeckHeight:               NeckHeight,
@@ -157,7 +157,7 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 		IOInfo:                   make(map[string]FBTikzIOInfo),
 	}
 	//todo: calculate width
-	points.Width = 7
+	points.Width = 10
 
 	//todo: claculate port line width
 	points.PortLineLength = 1
@@ -296,12 +296,19 @@ type FBTikzStaticConnectionBuilder struct {
 	Connections []FBTikzStaticConnection
 }
 
+func NewFBTikzStaticConnectionBuilder(origin FBTikzPoint, columns []FBTikzStaticConnectionColumn) FBTikzStaticConnectionBuilder {
+	return FBTikzStaticConnectionBuilder{
+		GlobalOrigin: origin,
+		Columns:      columns,
+	}
+}
+
 //FBTikzStaticConnectionColumn is used to store information about columns within the
 //FBTikzStaticConnectionBuilder, it allows for renderers to find the column origin
 //as well as store the current offset for vertical wires
 type FBTikzStaticConnectionColumn struct {
-	ColumnOrigin        FBTikzPoint
-	ColumnVertWireCount int
+	Origin        FBTikzPoint
+	VertWireCount int
 }
 
 //FBTikzStaticConnection holds the data needed to draw a connection line in
@@ -328,16 +335,13 @@ type FBTikzStaticConnection struct {
 //3. if a wire goes from column x to column y <= x
 //it will travel "down and under"
 //it will increment both the columnVertWireCounts[x] value and the columnVetWireCounts[y] value
-func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAnchor FBTikzPoint, sourceCol int, destAnchor FBTikzPoint, destCol int) {
-	//columns here are 1-indexed because column "0" is for first-column back-tracking
-	sourceCol++
-	destCol++
+func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAnchor FBTikzPoint, sourceBlockCol int, destAnchor FBTikzPoint, destBlockCol int) {
 
 	//ensure we have enough vertWireCounts, fill with zero if not
-	for sourceCol > len(b.Columns) {
+	for sourceBlockCol > len(b.Columns) {
 		panic("sourceCol size exceeds number of columns")
 	}
-	for destCol > len(b.Columns) {
+	for destBlockCol > len(b.Columns) {
 		panic("destCol size exceeds number of columns")
 	}
 
@@ -348,15 +352,17 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 		DestAnchor:   destAnchor,
 	}
 
-	if destCol == sourceCol+1 {
+	fmt.Printf("SourceCol:%v,DestCol:%v\n", sourceBlockCol, destBlockCol)
+
+	if destBlockCol == sourceBlockCol+1 {
 		//case 1, make some intermediate links
-		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceCol].ColumnVertWireCount))
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol*3].VertWireCount+1))
 		changeAnchor2 := destAnchor
 		changeAnchor2.X = changeAnchor1.X
-		b.Columns[sourceCol].ColumnVertWireCount++
+		b.Columns[sourceBlockCol*3].VertWireCount++
 		link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2}
-
-	} else if destCol > sourceCol+1 {
+		b.Connections = append(b.Connections, link)
+	} else if destBlockCol > sourceBlockCol+1 {
 		//case 2, make some intermediate links for "up and over"
 		// changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.ColumnVertWireCounts[sourceCol]))
 		// b.ColumnVertWireCounts[sourceCol]++
@@ -371,12 +377,10 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 		// b.ColumnVertWireCounts[sourceCol]++
 		// link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2}
 
-		panic("ahahaha")
+		//panic("ahahaha")
 	} else {
 		//case 3, make some intermediate links for "down and under"
-		panic("nonononon")
+		//panic("nonononon")
 	}
-
-	b.Connections = append(b.Connections, link)
 
 }
