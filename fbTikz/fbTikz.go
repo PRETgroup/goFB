@@ -96,13 +96,21 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 
 	//capture all unique column labels for X position, and increment a counter each time it's
 	//captured
-	colLabelCounts := make(map[float64]int)
+	type CountAndIndex struct {
+		NumFBs           int //Number of blocks
+		Index            int //Index position of column (0, 1, 2, etc)
+		NumIncomingVerts int //number of slots required for incoming vertical wires (either down or up)
+		NumOutgoingVerts int //number of slots required for outgoing vertical wires (either down or up)
+	}
+	colLabelCounts := make(map[float64]CountAndIndex)
 	for _, fbRef := range top.CompositeFB.FBs {
 		fbRefX, err := strconv.ParseFloat(fbRef.X, 64)
 		if err != nil {
 			return nil, errors.New("Problem parsing X position in block ref name'" + fbRef.Name + "': " + err.Error())
 		}
-		colLabelCounts[fbRefX]++
+		cai := colLabelCounts[fbRefX]
+		cai.NumFBs++
+		colLabelCounts[fbRefX] = cai
 	}
 	//then sort those unique labels in order
 	var colLabels []float64
@@ -110,6 +118,19 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 		colLabels = append(colLabels, key)
 	}
 	sort.Float64s(colLabels) //using colLabels, we can now work out which index a given column is in
+	//and put them back in the map
+	for i, key := range colLabels {
+		cai := colLabelCounts[key]
+		cai.Index = i
+		colLabelCounts[key] = cai
+	}
+
+	//there are len(colLabels)*3 columns
+	//to determine their widths, we need to know how many incoming and outgoing wires there
+	//will be for each block in the column
+	//.. for each column, for each block, classify incoming wires and count, classify outgoing wires and count
+
+	//if a wire connects any two blocks in the network it counts as a vertical wire
 
 	//column sizes for 1 and 3 are determined by the largest number of
 	// incoming/outgoing wires for a given block in column 2
