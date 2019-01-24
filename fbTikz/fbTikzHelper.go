@@ -11,7 +11,9 @@ type FBTikzDynamicHelper iec61499.FB
 
 //FBTikzStaticHelper overleads the FBTikzDynamicHelper type by saving the info
 type FBTikzStaticHelper struct {
-	Name string
+	InstanceName string
+	Col          int
+	Row          int
 	FBTikzDynamicHelper
 	Points FBTikzPoints
 }
@@ -97,8 +99,10 @@ type FBTikzPoints struct {
 	TextSpacing              float64     // == spacing between i/o labels
 	TextOffset               float64     // == offset from top of area to first text label
 	PortLineLength           float64     // == length of the i/o lines
-	LinkAssociationCircleDia float64
-	EventsInfo               map[string]FBTikzIOInfo
+	LinkAssociationCircleDia float64     // == diameter of link association circles
+	InstanceNameAnchor       FBTikzPoint
+	NameAnchor               FBTikzPoint
+	IOInfo                   map[string]FBTikzIOInfo
 	Border                   FBTikzBorderBox
 }
 
@@ -120,7 +124,7 @@ func NewFBTikzDynamicHelper(fb iec61499.FB) FBTikzDynamicHelper {
 //necessary render information
 func NewFBTikzStaticHelper(fb iec61499.FB, origin FBTikzPoint, name string) FBTikzStaticHelper {
 	help := FBTikzStaticHelper{
-		Name:                name,
+		InstanceName:        name,
 		FBTikzDynamicHelper: NewFBTikzDynamicHelper(fb),
 	}
 
@@ -130,10 +134,12 @@ func NewFBTikzStaticHelper(fb iec61499.FB, origin FBTikzPoint, name string) FBTi
 
 //ToStatic is a helpful wrapper function for CalcPoints,
 //and converts a FBTikzDynamicHelper to a FBTikzStaticHelper
-func (f FBTikzDynamicHelper) ToStatic(origin FBTikzPoint, name string) FBTikzStaticHelper {
+func (f FBTikzDynamicHelper) ToStatic(origin FBTikzPoint, name string, col int, row int) FBTikzStaticHelper {
 	points := f.CalcPoints(origin)
 	return FBTikzStaticHelper{
-		Name:                name,
+		InstanceName:        name,
+		Col:                 col,
+		Row:                 row,
 		FBTikzDynamicHelper: f,
 		Points:              points,
 	}
@@ -148,7 +154,7 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 		TextOffset:               TextOffset,
 		NeckHeight:               NeckHeight,
 		LinkAssociationCircleDia: LinkAssociationCircleDia,
-		EventsInfo:               make(map[string]FBTikzIOInfo),
+		IOInfo:                   make(map[string]FBTikzIOInfo),
 	}
 	//todo: calculate width
 	points.Width = 7
@@ -175,9 +181,9 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 			info.LinkAnchor = info.Anchor.AddX(-FirstLinkAssociationOffset - LinkAssocationSpacing*float64(assocPos))
 			assocPos++
 		}
-		points.EventsInfo[port.Name] = info
+		points.IOInfo[port.Name] = info
 		for _, w := range port.With { //pre-save the linkAnchor destination for the associated vars
-			points.EventsInfo[w.Var] = FBTikzIOInfo{LinkLineDest: info.LinkAnchor}
+			points.IOInfo[w.Var] = FBTikzIOInfo{LinkLineDest: info.LinkAnchor}
 		}
 	}
 
@@ -191,9 +197,9 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 			info.LinkAnchor = info.Anchor.AddX(FirstLinkAssociationOffset + LinkAssocationSpacing*float64(assocPos))
 			assocPos++
 		}
-		points.EventsInfo[port.Name] = info
+		points.IOInfo[port.Name] = info
 		for _, w := range port.With { //pre-save the linkAnchor destination for the associated vars
-			points.EventsInfo[w.Var] = FBTikzIOInfo{LinkLineDest: info.LinkAnchor}
+			points.IOInfo[w.Var] = FBTikzIOInfo{LinkLineDest: info.LinkAnchor}
 		}
 	}
 
@@ -201,25 +207,28 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 		info := FBTikzIOInfo{}
 		info.Anchor = points.Origin.AddY(points.EventsHeight + points.NeckHeight + points.TextOffset + float64(i)*points.TextSpacing)
 		info.PortAnchor = info.Anchor.AddX(-points.PortLineLength)
-		info.LinkLineDest = points.EventsInfo[port.Name].LinkLineDest
+		info.LinkLineDest = points.IOInfo[port.Name].LinkLineDest
 		if info.LinkLineDest.NonZero() {
 			info.LinkAnchor.X = info.LinkLineDest.X
 			info.LinkAnchor.Y = info.PortAnchor.Y
 		}
-		points.EventsInfo[port.Name] = info
+		points.IOInfo[port.Name] = info
 	}
 
 	for i, port := range f.InterfaceList.OutputVars {
 		info := FBTikzIOInfo{}
 		info.Anchor = points.Origin.Add(points.Width, points.EventsHeight+points.NeckHeight+points.TextOffset+float64(i)*points.TextSpacing)
 		info.PortAnchor = info.Anchor.AddX(points.PortLineLength)
-		info.LinkLineDest = points.EventsInfo[port.Name].LinkLineDest
+		info.LinkLineDest = points.IOInfo[port.Name].LinkLineDest
 		if info.LinkLineDest.NonZero() {
 			info.LinkAnchor.X = info.LinkLineDest.X
 			info.LinkAnchor.Y = info.PortAnchor.Y
 		}
-		points.EventsInfo[port.Name] = info
+		points.IOInfo[port.Name] = info
 	}
+
+	points.InstanceNameAnchor = points.Origin.AddX(points.Width / 2)
+	points.NameAnchor = points.InstanceNameAnchor.AddY(points.EventsHeight + points.NeckHeight + points.DataHeight)
 
 	//calculate border
 	points.Border = FBTikzBorderBox{}
@@ -272,4 +281,77 @@ func (f FBTikzDynamicHelper) GetEventsSize() int {
 		return len(f.InterfaceList.EventInputs)
 	}
 	return len(f.InterfaceList.EventOutputs)
+}
+
+//FBTikzStaticConnectionBuilder is used to create FBTikzStaticConnections
+//so that they don't overlap
+type FBTikzStaticConnectionBuilder struct {
+	BottomHorizWireCount int
+	TopHorizWireCount    int
+	ColumnVertWireCounts []int
+	Connections          []FBTikzStaticConnection
+}
+
+//FBTikzStaticConnection holds the data needed to draw a connection line in
+//a FB network
+//line points are as follows
+//SourceAnchor, IntermediatePoints[0], ... IntermediatePoints[n], DestAnchor
+type FBTikzStaticConnection struct {
+	SourceText         string //if the connection is to parent, then this will indicate that by being not ""
+	SourceAnchor       FBTikzPoint
+	DestText           string //if the connection is to parent, then this will indicate that by being not ""
+	DestAnchor         FBTikzPoint
+	IntermediatePoints []FBTikzPoint //any points that are needed along the way
+}
+
+//AddNormalFBTikzStaticConnection will create a new static connection between two normal anchors
+//it will endeavor to prevent overlaps on the blocks
+//Rules:
+//1. if a wire goes from column x to column y=x+1
+//it will travel just between these columns, left to right
+//it will increment the columnVertWireCounts[x] value and take that position
+//2. if a wire goes from column x to column y > x + 1
+//it will travel "up and over"
+//it will increment both the columnVertWireCounts[x] value and the columnVertWireCounts[y-1] value
+//3. if a wire goes from column x to column y <= x
+//it will travel "down and under"
+//it will increment both the columnVertWireCounts[x] value and the columnVetWireCounts[y] value
+func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAnchor FBTikzPoint, sourceCol int, destAnchor FBTikzPoint, destCol int) {
+	//columns here are 1-indexed because column "0" is for first-column back-tracking
+	sourceCol++
+	destCol++
+
+	//ensure we have enough vertWireCounts, fill with zero if not
+	for sourceCol > len(b.ColumnVertWireCounts) {
+		b.ColumnVertWireCounts = append(b.ColumnVertWireCounts, 0)
+	}
+	for destCol > len(b.ColumnVertWireCounts) {
+		b.ColumnVertWireCounts = append(b.ColumnVertWireCounts, 0)
+	}
+
+	WireSpacing := TextOffset
+
+	link := FBTikzStaticConnection{
+		SourceAnchor: sourceAnchor,
+		DestAnchor:   destAnchor,
+	}
+
+	if destCol == sourceCol+1 {
+		//case 1, make some intermediate links
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.ColumnVertWireCounts[sourceCol]))
+		changeAnchor2 := destAnchor
+		changeAnchor2.X = changeAnchor1.X
+		b.ColumnVertWireCounts[sourceCol]++
+		link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2}
+
+	} else if destCol > sourceCol+1 {
+		//case 2, make some intermediate links for "up and over"
+		panic("ahahaha")
+	} else {
+		//case 3, make some intermediate links for "down and under"
+		panic("nonononon")
+	}
+
+	b.Connections = append(b.Connections, link)
+
 }

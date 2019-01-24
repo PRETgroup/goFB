@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"strconv"
+	"strings"
 
 	"github.com/PRETgroup/goFB/iec61499"
 )
@@ -81,13 +82,13 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 	}
 
 	//create instance slice for rendering
-	instances := make([]FBTikzStaticHelper, len(top.CompositeFB.FBs))
+	instances := make(map[string]FBTikzStaticHelper)
 
 	//define global origin
 	origin := FBTikzPoint{0.0, 0.0}
 
 	//for each instance in the network, create in the instance slice
-	for i, fbRef := range top.CompositeFB.FBs {
+	for _, fbRef := range top.CompositeFB.FBs {
 		instDef, ok := blocks[fbRef.Type]
 		if !ok {
 			return nil, errors.New("couldn't find block reference for name '" + fbRef.Name + "'")
@@ -104,12 +105,53 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 		xGap := 14.0
 		yGap := 20.0
 		instOrig := origin.Add(xGap*fbRefX, yGap*fbRefY) //line up blocks with a 7 point gap
-		instance := instDef.ToStatic(instOrig, fbRef.Name)
-		instances[i] = instance
+
+		instance := instDef.ToStatic(instOrig, fbRef.Name, int(fbRefX), int(fbRefY)) //todo: the "int" casts here are egregariously bad
+		instances[fbRef.Name] = instance
+	}
+
+	//create connections
+	staticLinksFactory := new(FBTikzStaticConnectionBuilder)
+	eventConnections := make([]FBTikzStaticConnection, 0, len(top.CompositeFB.EventConnections))
+	for _, fbConn := range top.CompositeFB.EventConnections {
+		if strings.Contains(fbConn.Source, ".") && strings.Contains(fbConn.Destination, ".") {
+			sourceParts := strings.Split(fbConn.Source, ".")
+			destParts := strings.Split(fbConn.Destination, ".")
+			sourceInstance, ok := instances[sourceParts[0]]
+			if !ok {
+				return nil, errors.New("couldn't find block reference for name '" + sourceParts[0] + "'")
+			}
+			destInstance, ok := instances[destParts[0]]
+			if !ok {
+				return nil, errors.New("couldn't find block reference for name '" + destParts[0] + "'")
+			}
+
+			sourcePort, ok := sourceInstance.Points.IOInfo[sourceParts[1]]
+			if !ok {
+				return nil, errors.New("couldn't find block port for name '" + sourceParts[1] + "'")
+			}
+			destPort, ok := destInstance.Points.IOInfo[destParts[1]]
+			if !ok {
+				return nil, errors.New("couldn't find block port for name '" + destParts[1] + "'")
+			}
+
+			staticLinksFactory.AddNormalFBTikzStaticConnection(sourcePort.PortAnchor, sourceInstance.Col, destPort.PortAnchor, destInstance.Col)
+		}
+	}
+	eventConnections = append(eventConnections, staticLinksFactory.Connections...)
+
+	type TikzBlockInternalNetwork struct {
+		Instances   map[string]FBTikzStaticHelper
+		Connections []FBTikzStaticConnection
+	}
+
+	render := TikzBlockInternalNetwork{
+		Instances:   instances,
+		Connections: eventConnections,
 	}
 
 	output := &bytes.Buffer{}
-	if err := tikzTemplate.ExecuteTemplate(output, "tikzBlockInternalNetwork", instances); err != nil {
+	if err := tikzTemplate.ExecuteTemplate(output, "tikzBlockInternalNetwork", render); err != nil {
 		return nil, errors.New("Couldn't format template (fb) of" + name + ": " + err.Error())
 	}
 
