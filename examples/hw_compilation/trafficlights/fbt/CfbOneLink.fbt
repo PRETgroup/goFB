@@ -29,8 +29,8 @@
 		</OutputVars>
 	</InterfaceList>
 	<FBNetwork>
-		<FB Name="ped" Type="BfbOnePedCtrl" x="" y=""></FB>
-		<FB Name="traf" Type="BfbOneWayCtrl" x="" y=""></FB>
+		<FB Name="ped" Type="BfbOnePedCtrl" x="0" y="0"></FB>
+		<FB Name="traf" Type="BfbOneWayCtrl" x="1" y="0"></FB>
 		<EventConnections>
 			<Connection Source="Tick" Destination="ped.Tick" dx1=""></Connection>
 			<Connection Source="Tick" Destination="traf.Tick" dx1=""></Connection>

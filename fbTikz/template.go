@@ -28,14 +28,14 @@ const tikzTemplateStr = `{{define "_drawFB"}}
 	{{$portInfo := (index $fb.Points.IOInfo $port.Name)}}
 	\draw {{$portInfo.Anchor}} node[anchor=west] { {{textsafe $port.Name}} }; %port text
 	\draw [eventWire] {{$portInfo.Anchor}} -- {{$portInfo.PortAnchor}}; %port line
-	{{if $portInfo.LinkAnchor.NonZero}}\draw {{$portInfo.LinkAnchor}} circle ({{$fb.Points.LinkAssociationCircleDia}}); %association circle{{end}}
+	{{if $portInfo.LinkAnchor.NonZero}}\draw {{$portInfo.LinkAnchor}} circle ({{$fb.Characteristics.LinkAssociationCircleDia}}); %association circle{{end}}
 {{end}}
 
 {{range $i, $port := $fb.InterfaceList.EventOutputs}}
 	{{$portInfo := (index $fb.Points.IOInfo $port.Name)}}
 	\draw {{$portInfo.Anchor}} node[anchor=east] { {{textsafe $port.Name}} };
 	\draw [eventWire] {{$portInfo.Anchor}} -- {{$portInfo.PortAnchor}};
-	{{if $portInfo.LinkAnchor.NonZero}}\draw {{$portInfo.LinkAnchor}} circle ({{$fb.Points.LinkAssociationCircleDia}}); %association circle{{end}}
+	{{if $portInfo.LinkAnchor.NonZero}}\draw {{$portInfo.LinkAnchor}} circle ({{$fb.Characteristics.LinkAssociationCircleDia}}); %association circle{{end}}
 {{end}}
 
 {{range $i, $port := $fb.InterfaceList.InputVars}}
@@ -43,7 +43,7 @@ const tikzTemplateStr = `{{define "_drawFB"}}
 	\draw {{$portInfo.Anchor}} node[anchor=west] { {{textsafe $port.Name}} };
 	\draw [dataWire] {{$portInfo.Anchor}} -- {{$portInfo.PortAnchor}};
 	{{if $portInfo.LinkAnchor.NonZero}}
-		\draw {{$portInfo.LinkAnchor}} circle ({{$fb.Points.LinkAssociationCircleDia}}); %association circle
+		\draw {{$portInfo.LinkAnchor}} circle ({{$fb.Characteristics.LinkAssociationCircleDia}}); %association circle
 		\draw [eventWire,dashed] {{$portInfo.LinkAnchor}} -- {{$portInfo.LinkLineDest}};
 	{{end}}
 {{end}}
@@ -53,7 +53,7 @@ const tikzTemplateStr = `{{define "_drawFB"}}
 	\draw {{$portInfo.Anchor}} node[anchor=east] { {{textsafe $port.Name}} };
 	\draw [dataWire] {{$portInfo.Anchor}} -- {{$portInfo.PortAnchor}};
 	{{if $portInfo.LinkAnchor.NonZero}}
-		\draw {{$portInfo.LinkAnchor}} circle ({{$fb.Points.LinkAssociationCircleDia}}); %association circle
+		\draw {{$portInfo.LinkAnchor}} circle ({{$fb.Characteristics.LinkAssociationCircleDia}}); %association circle
 		\draw [eventWire,dashed] {{$portInfo.LinkAnchor}} -- {{$portInfo.LinkLineDest}};
 	{{end}}
 {{end}}
