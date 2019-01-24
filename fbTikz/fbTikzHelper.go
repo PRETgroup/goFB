@@ -7,7 +7,10 @@ import (
 )
 
 //FBTikzDynamicHelper overleads the iec61499.FB type with extra render functions
-type FBTikzDynamicHelper iec61499.FB
+type FBTikzDynamicHelper struct {
+	iec61499.FB
+	Characteristics FBTikzCharacteristics
+}
 
 //FBTikzStaticHelper overleads the FBTikzDynamicHelper type by saving the info
 type FBTikzStaticHelper struct {
@@ -89,21 +92,26 @@ const (
 
 */
 
-//FBTikzPoints is used to store information about where everything is for a given FB
+//FBTikzCharacteristics is used to store information about a given FB that is independent of its origin location
+type FBTikzCharacteristics struct {
+	Width                    float64 // == width of the FB
+	EventsHeight             float64 // == height of the events area
+	NeckHeight               float64 // == height of the fb "neck"
+	DataHeight               float64 // == height of the data area
+	TextSpacing              float64 // == spacing between i/o labels
+	TextOffset               float64 // == offset from top of area to first text label
+	PortLineLength           float64 // == length of the i/o lines
+	LinkAssociationCircleDia float64 // == diameter of link association circles
+
+}
+
+//FBTikzPoints is used to store information about a given FB that depends on the location
 type FBTikzPoints struct {
-	Origin                   FBTikzPoint //x = xlocation, y = ylocation
-	Width                    float64     // == width of the FB
-	EventsHeight             float64     // == height of the events area
-	NeckHeight               float64     // == height of the fb "neck"
-	DataHeight               float64     // == height of the data area
-	TextSpacing              float64     // == spacing between i/o labels
-	TextOffset               float64     // == offset from top of area to first text label
-	PortLineLength           float64     // == length of the i/o lines
-	LinkAssociationCircleDia float64     // == diameter of link association circles
-	InstanceNameAnchor       FBTikzPoint
-	NameAnchor               FBTikzPoint
-	IOInfo                   map[string]FBTikzIOInfo
-	Border                   FBTikzBorderBox
+	Origin             FBTikzPoint //x = xlocation, y = ylocation
+	InstanceNameAnchor FBTikzPoint
+	NameAnchor         FBTikzPoint
+	IOInfo             map[string]FBTikzIOInfo
+	Border             FBTikzBorderBox
 }
 
 //FBTikzIOInfo is used for port info, location, data-variable association
@@ -117,7 +125,30 @@ type FBTikzIOInfo struct {
 
 //NewFBTikzDynamicHelper will convert a fb to the dynamic helper type
 func NewFBTikzDynamicHelper(fb iec61499.FB) FBTikzDynamicHelper {
-	return FBTikzDynamicHelper(fb)
+	help := FBTikzDynamicHelper{
+		FB: fb,
+	}
+	characteristics := FBTikzCharacteristics{
+		TextSpacing:              TextSpacing,
+		TextOffset:               TextOffset,
+		NeckHeight:               NeckHeight,
+		LinkAssociationCircleDia: LinkAssociationCircleDia,
+	}
+	//todo: calculate width
+	characteristics.Width = 10
+
+	//todo: claculate port line width
+	characteristics.PortLineLength = 1
+
+	//calculate events height
+	eventLength := help.GetEventsSize() + 1
+	characteristics.EventsHeight = float64(eventLength) * (characteristics.TextSpacing)
+
+	//calculate data height
+	dataLength := help.GetVarsSize() + 1
+	characteristics.DataHeight = float64(dataLength) * (characteristics.TextSpacing)
+	help.Characteristics = characteristics
+	return help
 }
 
 //NewFBTikzStaticHelper will convert an FB to a FBTikzHelper and calculate all
@@ -149,34 +180,17 @@ func (f FBTikzDynamicHelper) ToStatic(origin FBTikzPoint, name string, col int, 
 //with reference to a provided origin (which is the top-left of the image)
 func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 	points := FBTikzPoints{
-		Origin:                   origin.AddX(1),
-		TextSpacing:              TextSpacing,
-		TextOffset:               TextOffset,
-		NeckHeight:               NeckHeight,
-		LinkAssociationCircleDia: LinkAssociationCircleDia,
-		IOInfo:                   make(map[string]FBTikzIOInfo),
+		Origin: origin.AddX(1),
+		IOInfo: make(map[string]FBTikzIOInfo),
 	}
-	//todo: calculate width
-	points.Width = 10
-
-	//todo: claculate port line width
-	points.PortLineLength = 1
-
-	//calculate events height
-	eventLength := f.GetEventsSize() + 1
-	points.EventsHeight = float64(eventLength) * (points.TextSpacing)
-
-	//calculate data height
-	dataLength := f.GetVarsSize() + 1
-	points.DataHeight = float64(dataLength) * (points.TextSpacing)
 
 	//calculate port locations, association link circle locations, and port text locations
 	assocPos := 0
 
 	for i, port := range f.InterfaceList.EventInputs {
 		info := FBTikzIOInfo{}
-		info.Anchor = points.Origin.AddY(points.TextOffset + float64(i)*points.TextSpacing)
-		info.PortAnchor = info.Anchor.AddX(-points.PortLineLength)
+		info.Anchor = points.Origin.AddY(f.Characteristics.TextOffset + float64(i)*f.Characteristics.TextSpacing)
+		info.PortAnchor = info.Anchor.AddX(-f.Characteristics.PortLineLength)
 		if len(port.With) > 0 {
 			info.LinkAnchor = info.Anchor.AddX(-FirstLinkAssociationOffset - LinkAssocationSpacing*float64(assocPos))
 			assocPos++
@@ -191,8 +205,8 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 
 	for i, port := range f.InterfaceList.EventOutputs {
 		info := FBTikzIOInfo{}
-		info.Anchor = points.Origin.Add(points.Width, points.TextOffset+float64(i)*points.TextSpacing)
-		info.PortAnchor = info.Anchor.AddX(points.PortLineLength)
+		info.Anchor = points.Origin.Add(f.Characteristics.Width, f.Characteristics.TextOffset+float64(i)*f.Characteristics.TextSpacing)
+		info.PortAnchor = info.Anchor.AddX(f.Characteristics.PortLineLength)
 		if len(port.With) > 0 {
 			info.LinkAnchor = info.Anchor.AddX(FirstLinkAssociationOffset + LinkAssocationSpacing*float64(assocPos))
 			assocPos++
@@ -205,8 +219,8 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 
 	for i, port := range f.InterfaceList.InputVars {
 		info := FBTikzIOInfo{}
-		info.Anchor = points.Origin.AddY(points.EventsHeight + points.NeckHeight + points.TextOffset + float64(i)*points.TextSpacing)
-		info.PortAnchor = info.Anchor.AddX(-points.PortLineLength)
+		info.Anchor = points.Origin.AddY(f.Characteristics.EventsHeight + f.Characteristics.NeckHeight + f.Characteristics.TextOffset + float64(i)*f.Characteristics.TextSpacing)
+		info.PortAnchor = info.Anchor.AddX(-f.Characteristics.PortLineLength)
 		info.LinkLineDest = points.IOInfo[port.Name].LinkLineDest
 		if info.LinkLineDest.NonZero() {
 			info.LinkAnchor.X = info.LinkLineDest.X
@@ -217,8 +231,8 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 
 	for i, port := range f.InterfaceList.OutputVars {
 		info := FBTikzIOInfo{}
-		info.Anchor = points.Origin.Add(points.Width, points.EventsHeight+points.NeckHeight+points.TextOffset+float64(i)*points.TextSpacing)
-		info.PortAnchor = info.Anchor.AddX(points.PortLineLength)
+		info.Anchor = points.Origin.Add(f.Characteristics.Width, f.Characteristics.EventsHeight+f.Characteristics.NeckHeight+f.Characteristics.TextOffset+float64(i)*f.Characteristics.TextSpacing)
+		info.PortAnchor = info.Anchor.AddX(f.Characteristics.PortLineLength)
 		info.LinkLineDest = points.IOInfo[port.Name].LinkLineDest
 		if info.LinkLineDest.NonZero() {
 			info.LinkAnchor.X = info.LinkLineDest.X
@@ -227,26 +241,26 @@ func (f FBTikzDynamicHelper) CalcPoints(origin FBTikzPoint) FBTikzPoints {
 		points.IOInfo[port.Name] = info
 	}
 
-	points.InstanceNameAnchor = points.Origin.AddX(points.Width / 2)
-	points.NameAnchor = points.InstanceNameAnchor.AddY(points.EventsHeight + points.NeckHeight + points.DataHeight)
+	points.InstanceNameAnchor = points.Origin.AddX(f.Characteristics.Width / 2)
+	points.NameAnchor = points.InstanceNameAnchor.AddY(f.Characteristics.EventsHeight + f.Characteristics.NeckHeight + f.Characteristics.DataHeight)
 
 	//calculate border
 	points.Border = FBTikzBorderBox{}
 
 	points.Border.EventsTopLeft = points.Origin
-	points.Border.EventsTopRight = points.Origin.AddX(points.Width)
-	points.Border.EventsBottomLeft = points.Border.EventsTopLeft.AddY(points.EventsHeight)
-	points.Border.EventsBottomRight = points.Border.EventsTopRight.AddY(points.EventsHeight)
+	points.Border.EventsTopRight = points.Origin.AddX(f.Characteristics.Width)
+	points.Border.EventsBottomLeft = points.Border.EventsTopLeft.AddY(f.Characteristics.EventsHeight)
+	points.Border.EventsBottomRight = points.Border.EventsTopRight.AddY(f.Characteristics.EventsHeight)
 
 	points.Border.NeckTopLeft = points.Border.EventsBottomLeft.AddX(NeckInset)
 	points.Border.NeckTopRight = points.Border.EventsBottomRight.AddX(-NeckInset)
-	points.Border.NeckBottomLeft = points.Border.NeckTopLeft.AddY(points.NeckHeight)
-	points.Border.NeckBottomRight = points.Border.NeckTopRight.AddY(points.NeckHeight)
+	points.Border.NeckBottomLeft = points.Border.NeckTopLeft.AddY(f.Characteristics.NeckHeight)
+	points.Border.NeckBottomRight = points.Border.NeckTopRight.AddY(f.Characteristics.NeckHeight)
 
-	points.Border.DataTopLeft = points.Border.EventsBottomLeft.AddY(points.NeckHeight)
-	points.Border.DataTopRight = points.Border.EventsBottomRight.AddY(points.NeckHeight)
-	points.Border.DataBottomLeft = points.Border.DataTopLeft.AddY(points.DataHeight)
-	points.Border.DataBottomRight = points.Border.DataTopRight.AddY(points.DataHeight)
+	points.Border.DataTopLeft = points.Border.EventsBottomLeft.AddY(f.Characteristics.NeckHeight)
+	points.Border.DataTopRight = points.Border.EventsBottomRight.AddY(f.Characteristics.NeckHeight)
+	points.Border.DataBottomLeft = points.Border.DataTopLeft.AddY(f.Characteristics.DataHeight)
+	points.Border.DataBottomRight = points.Border.DataTopRight.AddY(f.Characteristics.DataHeight)
 
 	return points
 }
@@ -296,10 +310,13 @@ type FBTikzStaticConnectionBuilder struct {
 	Connections []FBTikzStaticConnection
 }
 
-func NewFBTikzStaticConnectionBuilder(origin FBTikzPoint, columns []FBTikzStaticConnectionColumn) FBTikzStaticConnectionBuilder {
+func NewFBTikzStaticConnectionBuilder(origin FBTikzPoint, height float64, columns []FBTikzStaticConnectionColumn) FBTikzStaticConnectionBuilder {
 	return FBTikzStaticConnectionBuilder{
-		GlobalOrigin: origin,
-		Columns:      columns,
+		TopHorizWireCount:    2, //set the first index for topHorizWires to be "2", meaning they're a bit higher (and look a bit nicer)
+		BottomHorizWireCount: 0, //set the first index for bottomHorizWires to be "0", meaning they're a bit higher (and look a bit nicer)
+		GlobalOrigin:         origin,
+		GlobalHeight:         height,
+		Columns:              columns,
 	}
 }
 
@@ -307,8 +324,9 @@ func NewFBTikzStaticConnectionBuilder(origin FBTikzPoint, columns []FBTikzStatic
 //FBTikzStaticConnectionBuilder, it allows for renderers to find the column origin
 //as well as store the current offset for vertical wires
 type FBTikzStaticConnectionColumn struct {
-	Origin        FBTikzPoint
-	VertWireCount int
+	Origin            FBTikzPoint
+	IncomingVertCount int
+	OutgoingVertCount int
 }
 
 //FBTikzStaticConnection holds the data needed to draw a connection line in
@@ -352,35 +370,62 @@ func (b *FBTikzStaticConnectionBuilder) AddNormalFBTikzStaticConnection(sourceAn
 		DestAnchor:   destAnchor,
 	}
 
-	fmt.Printf("SourceCol:%v,DestCol:%v\n", sourceBlockCol, destBlockCol)
-
 	if destBlockCol == sourceBlockCol+1 {
 		//case 1, make some intermediate links
-		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol*3].VertWireCount+1))
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingVertCount))
 		changeAnchor2 := destAnchor
 		changeAnchor2.X = changeAnchor1.X
-		b.Columns[sourceBlockCol*3].VertWireCount++
+		b.Columns[sourceBlockCol].OutgoingVertCount++
 		link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2}
-		b.Connections = append(b.Connections, link)
+
 	} else if destBlockCol > sourceBlockCol+1 {
 		//case 2, make some intermediate links for "up and over"
-		// changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.ColumnVertWireCounts[sourceCol]))
-		// b.ColumnVertWireCounts[sourceCol]++
+		//travel right to turn up location
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingVertCount))
+		b.Columns[sourceBlockCol].OutgoingVertCount++
 
-		// changeAnchor2 := b.GlobalOrigin.AddY(WireSpacing * float64(b.TopHorizWireCount))
-		// b.TopHorizWireCount++
-		// changeAnchor2.X = changeAnchor1.X
+		//travel up to turn right location
+		changeAnchor2 := changeAnchor1
+		changeAnchor2.Y = b.GlobalOrigin.Y - WireSpacing*float64(b.TopHorizWireCount)
+		b.TopHorizWireCount++
 
-		// changeAnchor4 :=
-		// changeAnchor2 := destAnchor
-		// changeAnchor2.X = changeAnchor1.X
-		// b.ColumnVertWireCounts[sourceCol]++
-		// link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2}
+		//travel right to turn down location
+		changeAnchor3 := changeAnchor2
+		changeAnchor3.X = b.Columns[destBlockCol].Origin.X - float64(b.Columns[destBlockCol].IncomingVertCount)*WireSpacing
+		b.Columns[destBlockCol].IncomingVertCount++
 
-		//panic("ahahaha")
+		//travel down to turn right location
+		changeAnchor4 := changeAnchor3
+		changeAnchor4.Y = destAnchor.Y
+
+		link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2, changeAnchor3, changeAnchor4}
+
 	} else {
 		//case 3, make some intermediate links for "down and under"
-		//panic("nonononon")
+		fmt.Printf("SourceCol:%v,DestCol:%v\n", sourceBlockCol, destBlockCol)
+
+		//travel right to turn down location
+		changeAnchor1 := sourceAnchor.AddX(WireSpacing * float64(b.Columns[sourceBlockCol].OutgoingVertCount))
+		b.Columns[sourceBlockCol].OutgoingVertCount++
+
+		//travel down to turn left location
+		changeAnchor2 := changeAnchor1
+		changeAnchor2.Y = b.GlobalOrigin.Y + b.GlobalHeight + WireSpacing*float64(b.BottomHorizWireCount)
+		b.BottomHorizWireCount++
+
+		//travel left to turn up location
+		changeAnchor3 := changeAnchor2
+		changeAnchor3.X = b.Columns[destBlockCol].Origin.X - float64(b.Columns[destBlockCol].IncomingVertCount)*WireSpacing
+		b.Columns[destBlockCol].IncomingVertCount++
+
+		//travel up to turn left location
+		changeAnchor4 := changeAnchor3
+		changeAnchor4.Y = destAnchor.Y
+
+		link.IntermediatePoints = []FBTikzPoint{changeAnchor1, changeAnchor2, changeAnchor3, changeAnchor4}
+
 	}
+
+	b.Connections = append(b.Connections, link)
 
 }

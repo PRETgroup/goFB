@@ -70,7 +70,7 @@ const tikzTemplateStr = `{{define "_drawFB"}}
 {{end}}
 
 {{define "tikzBlockIO"}}
-\documentclass{standalone}
+\documentclass[margin=5mm]{standalone}
 
 \usepackage[rgb]{xcolor}
 \usepackage{tikz}
@@ -87,7 +87,7 @@ const tikzTemplateStr = `{{define "_drawFB"}}
 {{end}}
 
 {{define "tikzBlockInternalNetwork"}}
-\documentclass{standalone}
+\documentclass[margin=5mm]{standalone}
 
 \usepackage[rgb]{xcolor}
 \usepackage{tikz}

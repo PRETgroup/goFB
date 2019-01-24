@@ -125,6 +125,26 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 		colLabelCounts[key] = cai
 	}
 
+	//find the maximum height for a given label
+	maxColHeight := float64(0)
+	for _, key := range colLabels {
+		cai := colLabelCounts[key]
+		colHeight := float64(0)
+	out3:
+		for _, sname := range cai.FBNames {
+			for _, ref := range top.CompositeFB.FBs {
+				if ref.Name == sname {
+					def := blocks[ref.Type]
+					colHeight += def.Characteristics.DataHeight + def.Characteristics.NeckHeight + def.Characteristics.DataHeight + 2
+					break out3
+				}
+			}
+		}
+		if colHeight > maxColHeight {
+			maxColHeight = colHeight
+		}
+	}
+
 	//there are len(colLabels)*3 columns
 	//to determine their widths, we need to know how many incoming and outgoing wires there
 	//will be for each block in the column
@@ -168,28 +188,23 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 	columns := make([]FBTikzStaticConnectionColumn, 0, len(colLabels)*3)
 	ColumnSpacing := TextSpacing
 
+	//TODO: we must be able to change this mechanism to use only one column but with better spacing
 	nextOrigin := origin
 	for _, key := range colLabels {
 		cai := colLabelCounts[key]
-		columnIn := FBTikzStaticConnectionColumn{
-			Origin: nextOrigin,
-			//VertWireCount: cai.NumIncomingVerts,
-		}
-		nextOrigin = columnIn.Origin.AddX(float64(cai.NumIncomingVerts+1) * ColumnSpacing)
+
+		nextOrigin = nextOrigin.AddX(float64(cai.NumIncomingVerts+1) * ColumnSpacing)
 
 		columnBlock := FBTikzStaticConnectionColumn{
-			Origin: nextOrigin,
-			//VertWireCount: 0,
+			Origin:            nextOrigin,
+			IncomingVertCount: 1, //starting offsets for incoming and outgoing verts
+			OutgoingVertCount: 1, //starting offsets for incoming and outgoing verts
 		}
 		nextOrigin = columnBlock.Origin.AddX(float64(12) * ColumnSpacing)
 
-		columnOut := FBTikzStaticConnectionColumn{
-			Origin: nextOrigin,
-			//VertWireCount: cai.NumOutgoingVerts,
-		}
-		nextOrigin = columnOut.Origin.AddX(float64(cai.NumOutgoingVerts+1) * ColumnSpacing)
+		nextOrigin = nextOrigin.AddX(float64(cai.NumOutgoingVerts+1) * ColumnSpacing)
 
-		columns = append(columns, columnIn, columnBlock, columnOut)
+		columns = append(columns, columnBlock)
 	}
 
 	// for _, key := range colLabels { //for each column label
@@ -230,7 +245,7 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 		if refColIndex == -1 {
 			return nil, errors.New("Something went wrong\r\n")
 		}
-		refCol := columns[refColIndex*3+1]
+		refCol := columns[refColIndex]
 
 		fbRefY, err := strconv.ParseFloat(fbRef.Y, 64)
 		if err != nil {
@@ -245,7 +260,7 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 	}
 
 	//create connections
-	staticLinksFactory := NewFBTikzStaticConnectionBuilder(origin, columns)
+	staticLinksFactory := NewFBTikzStaticConnectionBuilder(origin, maxColHeight, columns)
 	eventConnections := make([]FBTikzStaticConnection, 0, len(top.CompositeFB.EventConnections))
 	for _, fbConn := range top.CompositeFB.EventConnections {
 		if strings.Contains(fbConn.Source, ".") && strings.Contains(fbConn.Destination, ".") {
