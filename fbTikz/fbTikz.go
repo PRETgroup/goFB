@@ -248,6 +248,15 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 	}
 
 	//create connections
+
+	//1. create links that go "up and over"
+	// --- (from TOP to BOTTOM of column)
+
+	//2. create links that go "down and under"
+	// --- (from BOTTOM to TOP of column)
+
+	//3. cr??
+
 	staticLinksFactory := NewFBTikzStaticConnectionBuilder(origin, maxColHeight, columns)
 	eventConnections := make([]FBTikzStaticConnection, 0, len(top.CompositeFB.EventConnections))
 	for _, fbConn := range top.CompositeFB.EventConnections {
