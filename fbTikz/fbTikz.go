@@ -188,17 +188,20 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 	columns := make([]FBTikzStaticConnectionColumn, 0, len(colLabels)*3)
 	ColumnSpacing := TextSpacing
 
-	//TODO: we must be able to change this mechanism to use only one column but with better spacing
+	//this mechanism to uses columns of blocks,
+	// which have spacing between them to ensure that they have enough room for vertical wires
 	nextOrigin := origin
 	for _, key := range colLabels {
 		cai := colLabelCounts[key]
 
 		nextOrigin = nextOrigin.AddX(float64(cai.NumIncomingVerts+1) * ColumnSpacing)
-
 		columnBlock := FBTikzStaticConnectionColumn{
-			Origin:            nextOrigin,
-			IncomingVertCount: 1, //starting offsets for incoming and outgoing verts
-			OutgoingVertCount: 1, //starting offsets for incoming and outgoing verts
+			Origin:                      nextOrigin,
+			IncomingFromTopVertCount:    1, //starting offsets for incoming and outgoing verts
+			IncomingFromBottomVertCount: cai.NumIncomingVerts,
+
+			OutgoingToTopVertCount:    1, //starting offsets for incoming and outgoing verts
+			OutgoingToBottomVertCount: cai.NumOutgoingVerts,
 		}
 		nextOrigin = columnBlock.Origin.AddX(float64(12) * ColumnSpacing)
 
@@ -206,21 +209,6 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 
 		columns = append(columns, columnBlock)
 	}
-
-	// for _, key := range colLabels { //for each column label
-	// 	col := colLabelCounts[key]
-	// 	for _, refName := range col.FBNames {
-
-	// 	}
-
-	// }
-
-	//column sizes for 1 and 3 are determined by the largest number of
-	// incoming/outgoing wires for a given block in column 2
-
-	//column size 2 is determined by the widest block (todo: currently staticly set to 7)
-
-	//determine how much room is needed for vertical wires between each of the columns
 
 	//for each instance in the network, create in the instance slice
 	for _, fbRef := range top.CompositeFB.FBs {
@@ -260,6 +248,15 @@ func (f *FBTikz) ConvertInternal(name string) ([]OutputFile, error) {
 	}
 
 	//create connections
+
+	//1. create links that go "up and over"
+	// --- (from TOP to BOTTOM of column)
+
+	//2. create links that go "down and under"
+	// --- (from BOTTOM to TOP of column)
+
+	//3. cr??
+
 	staticLinksFactory := NewFBTikzStaticConnectionBuilder(origin, maxColHeight, columns)
 	eventConnections := make([]FBTikzStaticConnection, 0, len(top.CompositeFB.EventConnections))
 	for _, fbConn := range top.CompositeFB.EventConnections {
