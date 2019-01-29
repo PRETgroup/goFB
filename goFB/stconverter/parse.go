@@ -64,7 +64,7 @@ const (
 	stEndRepeat = "end_repeat"
 )
 
-//ParseString takes an input string (i.e. filename) and input and returns all FBs in that string
+//ParseString takes an input string (i.e. filename) and input and returns all ST instructions in that string
 func ParseString(name string, input string) ([]STInstruction, *STParseError) {
 	//break up input string into all of its parts
 	items := scanString(name, input)
