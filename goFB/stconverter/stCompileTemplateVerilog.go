@@ -56,6 +56,9 @@ const verilogTemplate = `
 {{end}}`
 
 func verilogTokenIsFunctionCall(token string) bool {
+	if token == "not" {
+		return true
+	}
 	first := strings.Index(token, "<")
 	if len(token) > 2 && token[len(token)-1:] == ">" && first != -1 {
 		return true
@@ -74,6 +77,10 @@ func verilogTranslateOperatorToken(token string) string {
 		// 	return token[:first-1] + "("
 		// }
 		return token[:first] + "("
+	}
+	//TODO: nots should be dealt with a better way
+	if token == "not" {
+		return "~("
 	}
 	//ok, not a function, so it's one of the st Operators
 	switch token {
