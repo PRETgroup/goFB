@@ -101,7 +101,6 @@ func cTranslateOperatorToken(token string) string {
 	case stExponentiation:
 		//todo: we need to roll a custom exponentiation function
 		panic("exponentiation not supported in C!")
-		return ""
 	case stMultiply:
 		return "*"
 	case stDivide:
@@ -135,5 +134,4 @@ func cTranslateOperatorToken(token string) string {
 	}
 	//still here? panic
 	panic("unsupported token " + token)
-	return ""
 }

@@ -127,5 +127,4 @@ func verilogTranslateOperatorToken(token string) string {
 	}
 	//still here? panic
 	panic("unsupported token " + token)
-	return ""
 }

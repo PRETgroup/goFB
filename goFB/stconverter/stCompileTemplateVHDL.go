@@ -90,7 +90,6 @@ func vhdlTranslateOperatorToken(token string) string {
 	case stExponentiation:
 		//todo: we need to roll a custom exponentiation function
 		panic("exponentiation not supported in VHDL!")
-		return ""
 	case stMultiply:
 		return "*"
 	case stDivide:
@@ -124,5 +123,4 @@ func vhdlTranslateOperatorToken(token string) string {
 	}
 	//still here? panic
 	panic("unsupported token " + token)
-	return ""
 }
