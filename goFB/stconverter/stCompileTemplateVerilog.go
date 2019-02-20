@@ -80,7 +80,7 @@ func verilogTranslateOperatorToken(token string) string {
 	}
 	//TODO: nots should be dealt with a better way
 	if token == "not" {
-		return "~("
+		return "!("
 	}
 	//ok, not a function, so it's one of the st Operators
 	switch token {
@@ -89,7 +89,7 @@ func verilogTranslateOperatorToken(token string) string {
 	case stReturn:
 		return "return"
 	case stNot:
-		return "~"
+		return "!"
 	case stNegative:
 		return "-"
 	case stExponentiation:
