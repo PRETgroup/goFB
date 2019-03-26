@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Top" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs></EventInputs>
+		<EventOutputs></EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<FBNetwork>
+		<FB Name="gen" Type="Generator" x="" y=""></FB>
+		<FB Name="ic" Type="IntegralController" x="" y=""></FB>
+		<FB Name="print" Type="LfcPrint" x="" y=""></FB>
+		<EventConnections>
+			<Connection Source="1" Destination="ic.Tick" dx1=""></Connection>
+			<Connection Source="1" Destination="gen.Tick" dx1=""></Connection>
+			<Connection Source="1" Destination="print.Tick" dx1=""></Connection>
+			<Connection Source="gen.DfDptDphChange" Destination="ic.DfChange" dx1=""></Connection>
+			<Connection Source="ic.DprefChange" Destination="gen.DprefChange" dx1=""></Connection>
+			<Connection Source="gen.DfDptDphChange" Destination="print.DfDptDphChange" dx1=""></Connection>
+			<Connection Source="ic.DprefChange" Destination="print.DprefChange" dx1=""></Connection>
+		</EventConnections>
+		<DataConnections>
+			<Connection Source="gen.Df" Destination="ic.Df" dx1=""></Connection>
+			<Connection Source="ic.Dpref" Destination="gen.Dpref" dx1=""></Connection>
+			<Connection Source="0.1" Destination="gen.Dpe" dx1=""></Connection>
+			<Connection Source="gen.Df" Destination="print.Df" dx1=""></Connection>
+			<Connection Source="gen.Dpt" Destination="print.Dpt" dx1=""></Connection>
+			<Connection Source="gen.Dph" Destination="print.Dph" dx1=""></Connection>
+			<Connection Source="ic.Dpref" Destination="print.Dpref" dx1=""></Connection>
+		</DataConnections>
+	</FBNetwork>
+</FBType>

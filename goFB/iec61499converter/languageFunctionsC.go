@@ -30,6 +30,12 @@ type CECCTransition struct {
 	AssEvents []string
 }
 
+//isNumeric returns true if the input is a numeric constant
+func isNumeric(input string) bool {
+	isNum := regexp.MustCompile("^[0-9.]+$")
+	return isNum.MatchString(input)
+}
+
 //getCECCTransitionCondition returns the C "if" condition to use in state machine next state logic and associated events
 // returns "full condition", "associated events"
 func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTransition {
@@ -37,7 +43,6 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 
 	re1 := regexp.MustCompile("([<>=!]+)")          //for capturing operators
 	re2 := regexp.MustCompile("([a-zA-Z0-9_<>=]+)") //for capturing variable and event names and operators
-	isNum := regexp.MustCompile("^[0-9.]+$")
 
 	retVal := iec61499trans
 
@@ -60,7 +65,7 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 			return in
 		}
 
-		if isNum.MatchString(in) {
+		if isNumeric(in) {
 			//no need to make changes, it is a numerical value of some sort
 			return in
 		}
@@ -138,6 +143,9 @@ func getCECCTransitionCondition(block iec61499.FB, iec61499trans string) CECCTra
 //locationType = 2 (source)
 //don't use this function, use one of the helper functions
 func renameCLocation(in string, locationType int) string {
+	if isNumeric(in) {
+		return in
+	}
 	if strings.Contains(in, ".") {
 		//it comes from a child FB
 		if locationType == 1 {

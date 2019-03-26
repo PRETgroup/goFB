@@ -24,14 +24,19 @@
  */
 void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//first, for all cfb children, call this same function
-	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.CompositeFB}}
+	{{range $currChildIndex, $child := $compositeFB.FBs -}}
+		{{$childType := findBlockDefinitionForType $blocks $child.Type -}}
+		{{if $childType.CompositeFB}}
 	{{$childType.Name}}_syncOutputEvents(&me->{{$child.Name}});//sync for {{$child.Name}} (of type {{$childType.Name}}) which is a CFB
-	{{end}}{{end}}
+		{{- end -}}
+	{{- end -}}
 	
 	//then, for all connections that are connected to an output on the parent, run their run their copy
-	{{if $block.EventOutputs}}{{range $eventIndex, $event := $block.EventOutputs}}
-	me->outputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections "" $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}me->{{$eventSource}}{{end}}{{else}}0{{end}}; 
-	{{end}}{{end}}
+	{{if $block.EventOutputs -}}
+		{{range $eventIndex, $event := $block.EventOutputs}}
+	me->outputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections "" $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}{{if not (isNumeric $eventSource)}}me->{{end}}{{$eventSource}}{{end}}{{else}}0{{end}}; 
+		{{end -}}
+	{{- end -}}
 }
 
 /* {{$block.Name}}_syncInputEvents() synchronises the input events of an
@@ -42,7 +47,7 @@ void {{$block.Name}}_syncOutputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_S
 void {{$block.Name}}_syncInputEvents({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me) {
 	//first, we explicitly synchronise the children
 	{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}{{if $childType.EventInputs}}{{range $currEventIndex, $event := $childType.EventInputs}}
-	me->{{$child.Name}}.inputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections $child.Name $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}me->{{$eventSource}}{{end}}{{else}}0{{end}}; 
+	me->{{$child.Name}}.inputEvents.event.{{$event.Name}} = {{$allEventSources := findSourcesEventName $compositeFB.EventConnections $child.Name $event.Name}}{{if $allEventSources}}{{range $currEventSourceIndex, $eventSource := $allEventSources}}{{if $currEventSourceIndex}} || {{end}}{{if not (isNumeric $eventSource)}}me->{{end}}{{$eventSource}}{{end}}{{else}}0{{end}}; 
 	{{end}}{{end}}{{end}}
 
 	//then, call this same function on all cfb children
@@ -64,7 +69,7 @@ void {{$block.Name}}_syncOutputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM
 	{{$childType.Name}}_syncOutputData(&me->{{$child.Name}});{{end}}{{end}}
 	
 	//for data that is sent from child to this CFB (me), always copy (event controlled copies will be resolved at the next level up) //TODO: arrays!?
-	{{range $currLinkIndex, $link := $block.CompositeFB.DataConnections}}{{if connIsOnParent $link.Destination}}me->{{$link.Destination}} = me->{{$link.Source}};
+	{{range $currLinkIndex, $link := $block.CompositeFB.DataConnections}}{{if connIsOnParent $link.Destination}}me->{{$link.Destination}} = {{if not (isNumeric $link.Source)}}me->{{end}}{{$link.Source}};
 	{{end}}{{end}}
 	
 }
@@ -89,7 +94,7 @@ void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{
 		*/}}{{if $varDef.GetArraySize}}{{/*
 		*/}}{{range $index, $count := count $varDef.GetArraySize}}
 		me->{{$child.Name}}.{{$with.Var}}[{{$count}}] = me->{{$source}}[{{$count}}];
-		{{end}}{{else}}me->{{$child.Name}}.{{$with.Var}} = me->{{$source}};
+		{{end}}{{else}}me->{{$child.Name}}.{{$with.Var}} = {{if not (isNumeric $source)}}me->{{end}}{{$source}};
 		{{end}}{{end}}{{end}}
 	} {{end}}{{end}}{{end}}
 	{{else}}{{/*it's a composite function block*/}}//sync for {{$child.Name}} (of Type {{$childType.Name}}) which is a CFB
@@ -98,7 +103,7 @@ void {{$block.Name}}_syncInputData({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{
 		{{range $index, $count := count $inputVar.GetArraySize}}
 		me->{{$child.Name}}.{{$inputVar.Name}}[{{$count}}] = me->{{$source}}[{{$count}}];{{end}}
 		{{else}}
-		me->{{$child.Name}}.{{$inputVar.Name}} = me->{{$source}};
+		me->{{$child.Name}}.{{$inputVar.Name}} = {{if not (isNumeric $source)}}me->{{end}}{{$source}};
 	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
 	
 	//for all composite function block children, call this same function

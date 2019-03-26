@@ -144,6 +144,7 @@ var (
 		"nextPossibleECCStates":           nextPossibleECCStates,
 		"findAlgorithmFromName":           findAlgorithmFromName,
 		"findEventPortForName":            findEventPortForName,
+		"isNumeric":                       isNumeric,
 
 		//eventMoC functions
 		"getOutputEventPortID": eca.GetOutputEventPortID,

@@ -102,14 +102,30 @@ int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	{{/*{{if $block.CompositeFB}}{{range $currLinkIndex, $link := $block.CompositeFB.DataConnections}}me->{{$link.Destination}} = me->{{$link.Source}};
 	{{end}}{{end}}*/}}
-	{{if $block.CompositeFB}}{{$compositeFB := $block.CompositeFB}}{{range $currChildIndex, $child := $compositeFB.FBs}}{{$childType := findBlockDefinitionForType $blocks $child.Type}}//sync config for {{$child.Name}} (of Type {{$childType.Name}}) 
-	{{if $childType.InputVars}}{{range $inputVarIndex, $inputVar := $childType.InputVars}}{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $inputVar.Name}}
-	{{if $source}}{{if $inputVar.GetArraySize}}
-		{{range $index, $count := count $inputVar.GetArraySize}}
-		me->{{$child.Name}}.{{$inputVar.Name}}[{{$count}}] = me->{{$source}}[{{$count}}];{{end}}
-		{{else}}
-		me->{{$child.Name}}.{{$inputVar.Name}} = me->{{$source}};
-	{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+	
+	{{if $block.CompositeFB -}}
+		{{$compositeFB := $block.CompositeFB -}}
+		{{range $currChildIndex, $child := $compositeFB.FBs -}}
+			{{$childType := findBlockDefinitionForType $blocks $child.Type}}//sync config for {{$child.Name}} (of Type {{$childType.Name}}) 
+			{{if $childType.InputVars -}}
+				{{range $inputVarIndex, $inputVar := $childType.InputVars -}}
+				{{$source := findSourceDataName $compositeFB.DataConnections $child.Name $inputVar.Name -}}
+					{{if $source -}}
+						{{if $inputVar.GetArraySize -}}
+							{{range $index, $count := count $inputVar.GetArraySize -}}
+	me->{{$child.Name}}.{{$inputVar.Name}}[{{$count}}] = me->{{$source}}[{{$count}}];{{end}}
+						{{else -}}
+							{{if isNumeric $source -}}
+	me->{{$child.Name}}.{{$inputVar.Name}} = {{$source}};
+							{{else -}}
+	me->{{$child.Name}}.{{$inputVar.Name}} = me->{{$source}};
+							{{- end -}}
+						{{- end -}}
+					{{- end -}}
+				{{- end -}}
+			{{- end -}}
+		{{- end -}}
+	{{- end -}}
 
 	{{if $block.ServiceFB}}{{if $block.ServiceFB.Autogenerate}}//Code provided in SIFB
 	{{$block.ServiceFB.Autogenerate.InitText}}{{end}}{{end}}
