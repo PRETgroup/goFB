@@ -35,11 +35,14 @@ architecture of Ticksource {
             -> print;
         }
         update {
-            emit TickIc;
             emit TickGen;
-            emit TickLoad;
             emit TickTie;
+            emit TickIc;
             emit TickPrint;
+            -> update_load;
+        }
+        update_load {
+            emit TickLoad;
             -> update;
         }
     }

@@ -86,7 +86,7 @@ if(me->inputEvents.event.Tick) {
 	static int tickCount = 0;
 	static int firstRun = 1;
 	if(firstRun == 1) {
-		printf("%10s, %10s, %10s, %10s, %10s, %10s\r\n", "Time", "Dpref1", "Dpref2", "Df1", "Df2", "Dp12");
+		printf("%-11s,%-11s,%-11s,%-11s,%-11s,%-11s\r\n", "Time", "Dpref1", "Dpref2", "Df1", "Df2", "Dp12");
 		firstRun = 0;
 	}
 	printf("%10f, %10f, %10f, %10f, %10f, %10f\r\n",

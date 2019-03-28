@@ -11,7 +11,7 @@
 
 
 //This is a BFB with states, so we need an enum type for the state machine
-enum Ticksource_states { STATE_Ticksource_reset, STATE_Ticksource_print, STATE_Ticksource_tie, STATE_Ticksource_ic, STATE_Ticksource_load, STATE_Ticksource_gen, STATE_Ticksource_update };
+enum Ticksource_states { STATE_Ticksource_reset, STATE_Ticksource_print, STATE_Ticksource_tie, STATE_Ticksource_ic, STATE_Ticksource_load, STATE_Ticksource_gen, STATE_Ticksource_update, STATE_Ticksource_update_load };
 
 
 

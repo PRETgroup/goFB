@@ -144,6 +144,13 @@ void Ticksource_run(Ticksource_t  *me) {
 		case STATE_Ticksource_update:
 			if(true) {
 				
+				me->_state = STATE_Ticksource_update_load;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_Ticksource_update_load:
+			if(true) {
+				
 				me->_state = STATE_Ticksource_update;
 				me->_trigger = true;
 			};
@@ -202,11 +209,17 @@ void Ticksource_run(Ticksource_t  *me) {
 			#ifdef PRINT_STATES
 				printf("Ticksource: [Entered State update]\n");
 			#endif
-			me->outputEvents.event.TickIc = 1;
 			me->outputEvents.event.TickGen = 1;
-			me->outputEvents.event.TickLoad = 1;
 			me->outputEvents.event.TickTie = 1;
+			me->outputEvents.event.TickIc = 1;
 			me->outputEvents.event.TickPrint = 1;
+			
+			break;
+		case STATE_Ticksource_update_load:
+			#ifdef PRINT_STATES
+				printf("Ticksource: [Entered State update_load]\n");
+			#endif
+			me->outputEvents.event.TickLoad = 1;
 			
 			break;
 		

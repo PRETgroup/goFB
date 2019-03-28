@@ -67,7 +67,7 @@ architecture of Top {
 		ic1.Df <- gen1.Df;
 		ic1.Dp12 <- tieline.Dp12;
 
-		load1.Dp12 <- tieline.Dp21; //notes - check Dp21 vs Dp12 here?!
+		load1.Dp12 <- tieline.Dp12; 
 		load1.DpeExternal <- 0;
 
 		gen2.Dpref <- ic2.Dpref;
@@ -76,7 +76,7 @@ architecture of Top {
 		ic2.Df <- gen2.Df;
 		ic2.Dp12 <- tieline.Dp21;
 
-		load2.Dp12 <- tieline.Dp12;
+		load2.Dp12 <- tieline.Dp21;
 		load2.DpeExternal <- 0.1;
 		
 		tieline.Df1 <- gen1.Df;

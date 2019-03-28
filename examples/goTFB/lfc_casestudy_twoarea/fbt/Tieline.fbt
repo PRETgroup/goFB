@@ -43,7 +43,7 @@
 			<ECTransition Source="update" Destination="update" Condition="Tick" x="" y=""></ECTransition>
 		</ECC>
 		<Algorithm Name="TielineTick" Comment="">
-			<Other Language="ST" Text="&#xA;        Dp12 := Dp12 - (2*Pi*T0*(Df1 - Df2))*StepSize;&#xA;        Dp21 := -Dp12;&#xA;    "></Other>
+			<Other Language="ST" Text="&#xA;        Dp12 := Dp12 + (2*Pi*T0*(Df1 - Df2))*StepSize;&#xA;        Dp21 := -Dp12;&#xA;    "></Other>
 		</Algorithm>
 	</BasicFB>
 </FBType>

@@ -59,13 +59,13 @@
 			<Connection Source="load1.Dpe" Destination="gen1.Dpe" dx1=""></Connection>
 			<Connection Source="gen1.Df" Destination="ic1.Df" dx1=""></Connection>
 			<Connection Source="tieline.Dp12" Destination="ic1.Dp12" dx1=""></Connection>
-			<Connection Source="tieline.Dp21" Destination="load1.Dp12" dx1=""></Connection>
+			<Connection Source="tieline.Dp12" Destination="load1.Dp12" dx1=""></Connection>
 			<Connection Source="0" Destination="load1.DpeExternal" dx1=""></Connection>
 			<Connection Source="ic2.Dpref" Destination="gen2.Dpref" dx1=""></Connection>
 			<Connection Source="load2.Dpe" Destination="gen2.Dpe" dx1=""></Connection>
 			<Connection Source="gen2.Df" Destination="ic2.Df" dx1=""></Connection>
 			<Connection Source="tieline.Dp21" Destination="ic2.Dp12" dx1=""></Connection>
-			<Connection Source="tieline.Dp12" Destination="load2.Dp12" dx1=""></Connection>
+			<Connection Source="tieline.Dp21" Destination="load2.Dp12" dx1=""></Connection>
 			<Connection Source="0.1" Destination="load2.DpeExternal" dx1=""></Connection>
 			<Connection Source="gen1.Df" Destination="tieline.Df1" dx1=""></Connection>
 			<Connection Source="gen2.Df" Destination="tieline.Df2" dx1=""></Connection>

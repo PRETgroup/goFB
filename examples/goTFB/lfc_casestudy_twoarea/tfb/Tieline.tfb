@@ -29,7 +29,7 @@ architecture of Tieline {
     }
 
     algorithm TielineTick in "ST" `
-        Dp12 := Dp12 - (2*Pi*T0*(Df1 - Df2))*StepSize;
+        Dp12 := Dp12 + (2*Pi*T0*(Df1 - Df2))*StepSize;
         Dp21 := -Dp12;
     `;
 }

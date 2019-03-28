@@ -108,10 +108,10 @@ int Top_init(Top_t  *me) {
 			me->ic2.Df = me->gen2.Df;
 							me->ic2.Dp12 = me->tieline.Dp21;
 							//sync config for load1 (of Type Load) 
-			me->load1.Dp12 = me->tieline.Dp21;
+			me->load1.Dp12 = me->tieline.Dp12;
 							me->load1.DpeExternal = 0;
 							//sync config for load2 (of Type Load) 
-			me->load2.Dp12 = me->tieline.Dp12;
+			me->load2.Dp12 = me->tieline.Dp21;
 							me->load2.DpeExternal = 0.1;
 							//sync config for tieline (of Type Tieline) 
 			me->tieline.Df1 = me->gen1.Df;
@@ -307,7 +307,7 @@ void Top_syncInputData(Top_t  *me) {
 	//sync for load1 (of type Load) which is a BFB
 	
 	if(me->load1.inputEvents.event.Dp12Change == 1) {
-		me->load1.Dp12 = me->tieline.Dp21;
+		me->load1.Dp12 = me->tieline.Dp12;
 		
 	} 
 	if(me->load1.inputEvents.event.DpeExternalChange == 1) {
@@ -318,7 +318,7 @@ void Top_syncInputData(Top_t  *me) {
 	//sync for load2 (of type Load) which is a BFB
 	
 	if(me->load2.inputEvents.event.Dp12Change == 1) {
-		me->load2.Dp12 = me->tieline.Dp12;
+		me->load2.Dp12 = me->tieline.Dp21;
 		
 	} 
 	if(me->load2.inputEvents.event.DpeExternalChange == 1) {
