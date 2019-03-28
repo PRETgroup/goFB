@@ -1,0 +1,51 @@
+serviceFB LfcPrint;
+interface of LfcPrint {
+    in event Tick;
+
+	in event DfChange;
+	in with DfChange lreal Df1, Df2;
+
+	in event Dp12Change;
+	in with Dp12Change lreal Dp12;
+
+	in event DprefChange;
+	in with DprefChange lreal Dpref1, Dpref2;
+}
+
+architecture of LfcPrint {
+    in "C";
+
+    arbitrary 
+`
+#include <stdio.h>
+#include <stdlib.h>
+`;
+    
+    in_struct 
+`
+
+`;
+    
+    run 
+`
+if(me->inputEvents.event.Tick) {
+	static int tickCount = 0;
+	static int firstRun = 1;
+	if(firstRun == 1) {
+		printf("%10s, %10s, %10s, %10s, %10s, %10s\r\n", "Time", "Dpref1", "Dpref2", "Df1", "Df2", "Dp12");
+		firstRun = 0;
+	}
+	printf("%10f, %10f, %10f, %10f, %10f, %10f\r\n",
+		tickCount * 0.1,
+		me->Dpref1,
+		me->Dpref2,
+		me->Df1,
+		me->Df2,
+		me->Dp12);
+
+	tickCount++;
+}
+me->inputEvents.event.Tick = 0;
+`;
+    
+}

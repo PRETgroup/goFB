@@ -1,0 +1,42 @@
+basicFB Ticksource;
+
+interface of Ticksource {
+    out event TickIc;
+    out event TickGen;
+    out event TickLoad;
+    out event TickTie;
+    out event TickPrint;
+}
+
+architecture of Ticksource {
+    states {
+        reset {
+            -> print;
+        }
+        print {
+            emit TickPrint;
+            -> tie;
+        }
+        tie {
+            emit TickTie;
+            -> tie2;
+        }
+        tie2 {
+            -> ic;
+        }
+        ic {
+            emit TickIc;
+            -> load;
+        }
+        load {
+            emit TickLoad;
+            -> gen;
+        }
+        gen {
+            emit TickGen;
+            -> print;
+        }
+    }
+
+    
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Load" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="Tick" Comment=""></Event>
+			<Event Name="Dp12Change" Comment="">
+				<With Var="Dp12"></With>
+			</Event>
+			<Event Name="DpeExternalChange" Comment="">
+				<With Var="DpeExternal"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="DpeChange" Comment="">
+				<With Var="Dpe"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="Dp12" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="DpeExternal" Type="LREAL" InitialValue="0" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="Dpe" Type="LREAL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="reset" Comment="" x="" y=""></ECState>
+			<ECState Name="update" Comment="" x="" y="">
+				<ECAction Output="DpeChange"></ECAction>
+				<ECAction Algorithm="update_alg0"></ECAction>
+			</ECState>
+			<ECTransition Source="reset" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+			<ECTransition Source="update" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="update_alg0" Comment="">
+			<Other Language="ST" Text="Dpe := Dp12 + DpeExternal;"></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

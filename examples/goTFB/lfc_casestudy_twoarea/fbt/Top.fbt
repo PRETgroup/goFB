@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Top" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs></EventInputs>
+		<EventOutputs></EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<FBNetwork>
+		<FB Name="ticksource" Type="Ticksource" x="" y=""></FB>
+		<FB Name="gen1" Type="Generator" x="" y=""></FB>
+		<FB Name="gen2" Type="Generator" x="" y=""></FB>
+		<FB Name="ic1" Type="IntegralController" x="" y=""></FB>
+		<FB Name="ic2" Type="IntegralController" x="" y=""></FB>
+		<FB Name="load1" Type="Load" x="" y=""></FB>
+		<FB Name="load2" Type="Load" x="" y=""></FB>
+		<FB Name="flipsignDp12" Type="Flipsign" x="" y=""></FB>
+		<FB Name="tieline" Type="Tieline" x="" y=""></FB>
+		<FB Name="print" Type="LfcPrint" x="" y=""></FB>
+		<EventConnections>
+			<Connection Source="ticksource.TickIc" Destination="ic1.Tick" dx1=""></Connection>
+			<Connection Source="ticksource.TickIc" Destination="ic2.Tick" dx1=""></Connection>
+			<Connection Source="ticksource.TickGen" Destination="gen1.Tick" dx1=""></Connection>
+			<Connection Source="ticksource.TickGen" Destination="gen2.Tick" dx1=""></Connection>
+			<Connection Source="ticksource.TickLoad" Destination="load1.Tick" dx1=""></Connection>
+			<Connection Source="ticksource.TickLoad" Destination="load2.Tick" dx1=""></Connection>
+			<Connection Source="ticksource.TickTie" Destination="tieline.Tick" dx1=""></Connection>
+			<Connection Source="ticksource.TickPrint" Destination="print.Tick" dx1=""></Connection>
+			<Connection Source="ic1.DprefChange" Destination="print.DprefChange" dx1=""></Connection>
+			<Connection Source="ic2.DprefChange" Destination="print.DprefChange" dx1=""></Connection>
+			<Connection Source="gen1.DfChange" Destination="print.DfChange" dx1=""></Connection>
+			<Connection Source="gen2.DfChange" Destination="print.DfChange" dx1=""></Connection>
+			<Connection Source="tieline.Dp12Change" Destination="print.Dp12Change" dx1=""></Connection>
+			<Connection Source="ic1.DprefChange" Destination="gen1.DprefChange" dx1=""></Connection>
+			<Connection Source="load1.DpeChange" Destination="gen1.DpeChange" dx1=""></Connection>
+			<Connection Source="gen1.DfChange" Destination="ic1.DfChange" dx1=""></Connection>
+			<Connection Source="tieline.Dp12Change" Destination="ic1.Dp12Change" dx1=""></Connection>
+			<Connection Source="tieline.Dp12Change" Destination="load1.Dp12Change" dx1=""></Connection>
+			<Connection Source="0" Destination="load1.DpeExternalChange" dx1=""></Connection>
+			<Connection Source="tieline.Dp12Change" Destination="flipsignDp12.InChange" dx1=""></Connection>
+			<Connection Source="ic2.DprefChange" Destination="gen2.DprefChange" dx1=""></Connection>
+			<Connection Source="load2.DpeChange" Destination="gen2.DpeChange" dx1=""></Connection>
+			<Connection Source="gen2.DfChange" Destination="ic2.DfChange" dx1=""></Connection>
+			<Connection Source="flipsignDp12.OutChange" Destination="ic2.Dp12Change" dx1=""></Connection>
+			<Connection Source="flipsignDp12.OutChange" Destination="load2.Dp12Change" dx1=""></Connection>
+			<Connection Source="0" Destination="load2.DpeExternalChange" dx1=""></Connection>
+			<Connection Source="gen1.DfChange" Destination="tieline.DfChange" dx1=""></Connection>
+			<Connection Source="gen2.DfChange" Destination="tieline.DfChange" dx1=""></Connection>
+		</EventConnections>
+		<DataConnections>
+			<Connection Source="ic1.Dpref" Destination="print.Dpref1" dx1=""></Connection>
+			<Connection Source="ic2.Dpref" Destination="print.Dpref1" dx1=""></Connection>
+			<Connection Source="gen1.Df" Destination="print.Df1" dx1=""></Connection>
+			<Connection Source="gen2.Df" Destination="print.Df2" dx1=""></Connection>
+			<Connection Source="tieline.Dp12" Destination="print.Dp12" dx1=""></Connection>
+			<Connection Source="ic1.Dpref" Destination="gen1.Dpref" dx1=""></Connection>
+			<Connection Source="load1.Dpe" Destination="gen1.Dpe" dx1=""></Connection>
+			<Connection Source="gen1.Df" Destination="ic1.Df" dx1=""></Connection>
+			<Connection Source="tieline.Dp12" Destination="ic1.Dp12" dx1=""></Connection>
+			<Connection Source="tieline.Dp12" Destination="load1.Dp12" dx1=""></Connection>
+			<Connection Source="0" Destination="load1.DpeExternal" dx1=""></Connection>
+			<Connection Source="tieline.Dp12" Destination="flipsignDp12.In" dx1=""></Connection>
+			<Connection Source="ic2.Dpref" Destination="gen2.Dpref" dx1=""></Connection>
+			<Connection Source="load2.Dpe" Destination="gen2.Dpe" dx1=""></Connection>
+			<Connection Source="gen2.Df" Destination="ic2.Df" dx1=""></Connection>
+			<Connection Source="flipsignDp12.Out" Destination="ic2.Dp12" dx1=""></Connection>
+			<Connection Source="flipsignDp12.Out" Destination="load2.Dp12" dx1=""></Connection>
+			<Connection Source="0.1" Destination="load2.DpeExternal" dx1=""></Connection>
+			<Connection Source="gen1.Df" Destination="tieline.Df1" dx1=""></Connection>
+			<Connection Source="gen2.Df" Destination="tieline.Df2" dx1=""></Connection>
+		</DataConnections>
+	</FBNetwork>
+</FBType>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Generator" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="Tick" Comment=""></Event>
+			<Event Name="DprefChange" Comment="">
+				<With Var="Dpref"></With>
+			</Event>
+			<Event Name="DpeChange" Comment="">
+				<With Var="Dpe"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="DfChange" Comment="">
+				<With Var="Df"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="Dpref" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Dpe" Type="LREAL" InitialValue="0.1" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="Df" Type="LREAL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="StepSize" Type="LREAL" InitialValue="0.1" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Kp" Type="LREAL" InitialValue="120" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Tp" Type="LREAL" InitialValue="20" Comment=""></VarDeclaration>
+			<VarDeclaration Name="R" Type="LREAL" InitialValue="2.4" Comment=""></VarDeclaration>
+		</InternalVars>
+		<ECC>
+			<ECState Name="reset" Comment="" x="" y=""></ECState>
+			<ECState Name="update" Comment="" x="" y="">
+				<ECAction Output="DfChange"></ECAction>
+				<ECAction Algorithm="Generator"></ECAction>
+			</ECState>
+			<ECTransition Source="reset" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+			<ECTransition Source="update" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="Generator" Comment="">
+			<Other Language="ST" Text="&#xA;        Df := Df + ((Kp * Dpref - (Kp / R + 1) * Df - Kp * (Dpe)) / Tp) * StepSize;&#xA;    "></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Flipsign" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="InChange" Comment="">
+				<With Var="In"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="OutChange" Comment="">
+				<With Var="Out"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="In" Type="LREAL" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="Out" Type="LREAL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="reset" Comment="" x="" y=""></ECState>
+			<ECState Name="update" Comment="" x="" y="">
+				<ECAction Output="OutChange"></ECAction>
+				<ECAction Algorithm="update_alg0"></ECAction>
+			</ECState>
+			<ECTransition Source="reset" Destination="update" Condition="InChange" x="" y=""></ECTransition>
+			<ECTransition Source="update" Destination="update" Condition="InChange" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="update_alg0" Comment="">
+			<Other Language="ST" Text="Out := -1 * In;"></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

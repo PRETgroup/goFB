@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Tieline" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="Tick" Comment=""></Event>
+			<Event Name="DfChange" Comment="">
+				<With Var="Df1"></With>
+				<With Var="Df2"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="Dp12Change" Comment="">
+				<With Var="Dp12"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="Df1" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Df2" Type="LREAL" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="Dp12" Type="LREAL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="StepSize" Type="LREAL" InitialValue="0.1" Comment=""></VarDeclaration>
+			<VarDeclaration Name="T0" Type="LREAL" InitialValue="0.0707" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Pi" Type="LREAL" InitialValue="3.14159" Comment=""></VarDeclaration>
+		</InternalVars>
+		<ECC>
+			<ECState Name="reset" Comment="" x="" y=""></ECState>
+			<ECState Name="update" Comment="" x="" y="">
+				<ECAction Output="Dp12Change"></ECAction>
+				<ECAction Algorithm="TielineTick"></ECAction>
+			</ECState>
+			<ECTransition Source="reset" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+			<ECTransition Source="update" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="TielineTick" Comment="">
+			<Other Language="ST" Text="&#xA;        Dp12 := Dp12 - (2*Pi*T0*(Df1 - Df2))*StepSize;&#xA;    "></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

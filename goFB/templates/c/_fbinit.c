@@ -119,7 +119,7 @@ int {{$block.Name}}_init({{$block.Name}}_t {{if .TcrestUsingSPM}}_SPM{{end}} *me
 	me->{{$child.Name}}.{{$inputVar.Name}} = {{$source}};
 							{{else -}}
 	me->{{$child.Name}}.{{$inputVar.Name}} = me->{{$source}};
-							{{- end -}}
+							{{end -}}
 						{{- end -}}
 					{{- end -}}
 				{{- end -}}

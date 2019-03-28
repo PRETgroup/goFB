@@ -1,0 +1,40 @@
+basicFB Generator;
+
+interface of Generator {
+    in event Tick;
+    
+	in event DprefChange;
+	in with DprefChange lreal Dpref;
+
+	in event DpeChange;
+	in with DpeChange lreal Dpe := 0.1;
+
+	out event DfChange;
+	out with DfChange lreal Df;
+}
+
+architecture of Generator {
+    internals {
+        lreal StepSize := 0.1;
+		lreal Kp := 120;
+		lreal Tp := 20;
+		lreal R := 2.4;
+    }
+
+    states {
+        reset {
+            -> update on Tick;
+        }
+        update {
+            emit DfChange;
+            run Generator;
+
+            -> update on Tick;
+        }
+    }
+
+    algorithm Generator in "ST" `
+        Df := Df + ((Kp * Dpref - (Kp / R + 1) * Df - Kp * (Dpe)) / Tp) * StepSize;
+    `;
+}
+    

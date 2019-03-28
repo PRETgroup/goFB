@@ -1,0 +1,35 @@
+basicFB IntegralController;
+
+interface of IntegralController {
+    in event Tick;
+    in event DfChange;
+    in with DfChange lreal Df;
+    in event Dp12Change;
+    in with Dp12Change lreal Dp12;
+    out event DprefChange;
+    out with DprefChange lreal Dpref; 
+}
+
+architecture of IntegralController {
+    internals {
+        lreal StepSize := 0.1;
+        lreal Ki := 0.5; //0.6; //0.6;
+        lreal B := 0.425;
+    }
+
+    states {
+        reset {
+            -> update on Tick;
+        }
+        update {
+            emit DprefChange;
+            run IntegralControllerTick;
+
+            -> update on Tick;
+        }
+    }
+
+    algorithm IntegralControllerTick in "ST" `
+        Dpref := Dpref - (Ki * (Df*B + Dp12))*StepSize;
+    `;
+}

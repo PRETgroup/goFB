@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="LfcPrint" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="Tick" Comment=""></Event>
+			<Event Name="DfChange" Comment="">
+				<With Var="Df1"></With>
+				<With Var="Df2"></With>
+			</Event>
+			<Event Name="Dp12Change" Comment="">
+				<With Var="Dp12"></With>
+			</Event>
+			<Event Name="DprefChange" Comment="">
+				<With Var="Dpref1"></With>
+				<With Var="Dpref2"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs></EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="Df1" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Df2" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Dp12" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Dpref1" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Dpref2" Type="LREAL" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<Service>
+		<Autogenerate Language="C" ArbitraryText="&#xA;#include &lt;stdio.h&gt;&#xA;#include &lt;stdlib.h&gt;&#xA;" InStructText="&#xA;&#xA;" PreInitText="" InitText="" RunText="&#xA;if(me-&gt;inputEvents.event.Tick) {&#xA;&#x9;static int tickCount = 0;&#xA;&#x9;static int firstRun = 1;&#xA;&#x9;if(firstRun == 1) {&#xA;&#x9;&#x9;printf(&#34;%10s, %10s, %10s, %10s, %10s, %10s\r\n&#34;, &#34;Time&#34;, &#34;Dpref1&#34;, &#34;Dpref2&#34;, &#34;Df1&#34;, &#34;Df2&#34;, &#34;Dp12&#34;);&#xA;&#x9;&#x9;firstRun = 0;&#xA;&#x9;}&#xA;&#x9;printf(&#34;%10f, %10f, %10f, %10f, %10f, %10f\r\n&#34;,&#xA;&#x9;&#x9;tickCount * 0.1,&#xA;&#x9;&#x9;me-&gt;Dpref1,&#xA;&#x9;&#x9;me-&gt;Dpref2,&#xA;&#x9;&#x9;me-&gt;Df1,&#xA;&#x9;&#x9;me-&gt;Df2,&#xA;&#x9;&#x9;me-&gt;Dp12);&#xA;&#xA;&#x9;tickCount++;&#xA;}&#xA;me-&gt;inputEvents.event.Tick = 0;&#xA;" ShutdownText=""></Autogenerate>
+	</Service>
+</FBType>

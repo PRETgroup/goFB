@@ -1,0 +1,34 @@
+basicFB Tieline;
+
+interface of Tieline {
+    in event Tick;
+
+    in event DfChange;
+	in with DfChange lreal Df1, Df2;
+
+    out event Dp12Change;
+    out with Dp12Change lreal Dp12; 
+}
+
+architecture of Tieline {
+    internals {
+        lreal StepSize := 0.1;
+        lreal T0 := 0.0707;
+		lreal Pi := 3.14159;
+    }
+
+    states {
+        reset {
+            -> update on Tick;
+        }
+        update {
+            emit Dp12Change;
+            run TielineTick;
+            -> update on Tick;
+        }
+    }
+
+    algorithm TielineTick in "ST" `
+        Dp12 := Dp12 - (2*Pi*T0*(Df1 - Df2))*StepSize;
+    `;
+}

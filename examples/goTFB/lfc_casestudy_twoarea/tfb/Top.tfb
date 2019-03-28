@@ -1,0 +1,90 @@
+compositeFB Top;
+interface of Top {
+
+}
+
+architecture of Top {
+    instances {
+			Ticksource ticksource;
+
+			Generator gen1, gen2;
+			IntegralController ic1, ic2;
+			Load load1, load2;
+			Flipsign flipsignDp12;
+
+			Tieline tieline;
+
+			LfcPrint print;
+  	}
+
+  events {
+			ic1.Tick <- ticksource.TickIc;
+      ic2.Tick <- ticksource.TickIc;
+			gen1.Tick <- ticksource.TickGen;
+			gen2.Tick <- ticksource.TickGen;
+			load1.Tick <- ticksource.TickLoad;
+			load2.Tick <- ticksource.TickLoad;
+			tieline.Tick <- ticksource.TickTie;
+			print.Tick <- ticksource.TickPrint;
+
+		print.DprefChange <- ic1.DprefChange;
+		print.DprefChange <- ic2.DprefChange;
+		print.DfChange <- gen1.DfChange;
+		print.DfChange <- gen2.DfChange;
+		print.Dp12Change <- tieline.Dp12Change;
+
+		gen1.DprefChange <- ic1.DprefChange;
+		gen1.DpeChange <- load1.DpeChange;
+
+		ic1.DfChange <- gen1.DfChange;
+		ic1.Dp12Change <- tieline.Dp12Change;
+
+		load1.Dp12Change <- tieline.Dp12Change;
+		load1.DpeExternalChange <- 0;
+
+		flipsignDp12.InChange <- tieline.Dp12Change;
+
+		gen2.DprefChange <- ic2.DprefChange;
+		gen2.DpeChange <- load2.DpeChange;
+
+		ic2.DfChange <- gen2.DfChange;
+		ic2.Dp12Change <- flipsignDp12.OutChange;
+
+		load2.Dp12Change <- flipsignDp12.OutChange;
+		load2.DpeExternalChange <- 0;
+		
+		tieline.DfChange <- gen1.DfChange;
+		tieline.DfChange <- gen2.DfChange;
+  }
+
+	data {
+		print.Dpref1 <- ic1.Dpref;
+		print.Dpref1 <- ic2.Dpref;
+		print.Df1 <- gen1.Df;
+		print.Df2 <- gen2.Df;
+		print.Dp12 <- tieline.Dp12;
+
+		gen1.Dpref <- ic1.Dpref;
+		gen1.Dpe <- load1.Dpe;
+
+		ic1.Df <- gen1.Df;
+		ic1.Dp12 <- tieline.Dp12;
+
+		load1.Dp12 <- tieline.Dp12;
+		load1.DpeExternal <- 0;
+
+		flipsignDp12.In <- tieline.Dp12;
+
+		gen2.Dpref <- ic2.Dpref;
+		gen2.Dpe <- load2.Dpe;
+
+		ic2.Df <- gen2.Df;
+		ic2.Dp12 <- flipsignDp12.Out;
+
+		load2.Dp12 <- flipsignDp12.Out;
+		load2.DpeExternal <- 0.1;
+		
+		tieline.Df1 <- gen1.Df;
+		tieline.Df2 <- gen2.Df;
+	}
+}

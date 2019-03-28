@@ -1,0 +1,25 @@
+basicFB Flipsign;
+
+interface of Flipsign {
+    in event InChange;
+	out event OutChange;
+
+	in with InChange lreal In;
+	out with OutChange lreal Out;
+}
+
+architecture of Flipsign {
+    states {
+		reset {
+			-> update on InChange;
+		}
+        update {
+            emit OutChange;
+            run in "ST" `Out := -1 * In;`;
+
+            -> update on InChange;
+        }
+    }
+
+    
+}

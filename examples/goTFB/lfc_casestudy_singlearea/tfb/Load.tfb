@@ -1,0 +1,21 @@
+basicFB Load;
+
+interface of Load {
+    in event Tick;
+    out event DpeChange;
+	out with DpeChange lreal Dpe;
+
+}
+
+architecture of Load {
+    states {
+        update {
+            emit DpeChange;
+            run in "ST" `Dpe := 0.20`;
+
+            -> update on Tick;
+        }
+    }
+
+    
+}

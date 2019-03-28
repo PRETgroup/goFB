@@ -1,0 +1,43 @@
+compositeFB Top;
+interface of Top {
+
+}
+
+architecture of Top {
+    instances {
+        Generator gen;
+		IntegralController ic;
+		LfcPrint print;
+		Load load;
+    }
+
+    events {
+        ic.Tick <- 1;
+		gen.Tick <- 1;
+		print.Tick <- 1;
+		load.Tick <- 1;
+
+		print.DpeChange <- load.DpeChange;
+
+		ic.DfChange <- gen.DfDptDphChange;
+
+		gen.DprefChange <- ic.DprefChange;
+		gen.DpeChange <- load.DpeChange;
+
+		print.DfDptDphChange <- gen.DfDptDphChange;
+		print.DprefChange <- ic.DprefChange;
+    }
+
+	data {
+		ic.Df <- gen.Df;
+		
+		gen.Dpref <- ic.Dpref;
+		gen.Dpe <- load.Dpe;
+
+		print.Df <- gen.Df;
+		print.Dpt <- gen.Dpt;
+		print.Dph <- gen.Dph;
+		print.Dpref <- ic.Dpref;
+		print.Dpe <- load.Dpe;
+	}
+}

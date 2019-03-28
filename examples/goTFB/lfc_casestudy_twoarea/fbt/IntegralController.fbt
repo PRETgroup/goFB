@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="IntegralController" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs>
+			<Event Name="Tick" Comment=""></Event>
+			<Event Name="DfChange" Comment="">
+				<With Var="Df"></With>
+			</Event>
+			<Event Name="Dp12Change" Comment="">
+				<With Var="Dp12"></With>
+			</Event>
+		</EventInputs>
+		<EventOutputs>
+			<Event Name="DprefChange" Comment="">
+				<With Var="Dpref"></With>
+			</Event>
+		</EventOutputs>
+		<InputVars>
+			<VarDeclaration Name="Df" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Dp12" Type="LREAL" Comment=""></VarDeclaration>
+		</InputVars>
+		<OutputVars>
+			<VarDeclaration Name="Dpref" Type="LREAL" Comment=""></VarDeclaration>
+		</OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars>
+			<VarDeclaration Name="StepSize" Type="LREAL" InitialValue="0.1" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Ki" Type="LREAL" InitialValue="0.5" Comment=""></VarDeclaration>
+			<VarDeclaration Name="B" Type="LREAL" InitialValue="0.425" Comment=""></VarDeclaration>
+		</InternalVars>
+		<ECC>
+			<ECState Name="reset" Comment="" x="" y=""></ECState>
+			<ECState Name="update" Comment="" x="" y="">
+				<ECAction Output="DprefChange"></ECAction>
+				<ECAction Algorithm="IntegralControllerTick"></ECAction>
+			</ECState>
+			<ECTransition Source="reset" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+			<ECTransition Source="update" Destination="update" Condition="Tick" x="" y=""></ECTransition>
+		</ECC>
+		<Algorithm Name="IntegralControllerTick" Comment="">
+			<Other Language="ST" Text="&#xA;        Dpref := Dpref - (Ki * (Df*B + Dp12))*StepSize;&#xA;    "></Other>
+		</Algorithm>
+	</BasicFB>
+</FBType>

@@ -1,0 +1,31 @@
+basicFB Load;
+
+interface of Load {
+    in event Tick;
+
+    in event Dp12Change;
+    in with Dp12Change lreal Dp12;
+
+    in event DpeExternalChange;
+    in with DpeExternalChange lreal DpeExternal := 0;
+
+    out event DpeChange;
+	out with DpeChange lreal Dpe;
+
+}
+
+architecture of Load {
+    states {
+        reset {
+            -> update on Tick;
+        }
+        update {
+            emit DpeChange;
+            run in "ST" `Dpe := Dp12 + DpeExternal;`;
+
+            -> update on Tick;
+        }
+    }
+
+    
+}

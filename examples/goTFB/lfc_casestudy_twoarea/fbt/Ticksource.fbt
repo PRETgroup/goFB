@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Ticksource" Comment="">
+	<Identification Standard="61499-2"></Identification>
+	<VersionInfo Organization="" Version="" Author="" Date=""></VersionInfo>
+	<CompilerInfo header="" classdef=""></CompilerInfo>
+	<InterfaceList>
+		<EventInputs></EventInputs>
+		<EventOutputs>
+			<Event Name="TickIc" Comment=""></Event>
+			<Event Name="TickGen" Comment=""></Event>
+			<Event Name="TickLoad" Comment=""></Event>
+			<Event Name="TickTie" Comment=""></Event>
+			<Event Name="TickPrint" Comment=""></Event>
+		</EventOutputs>
+		<InputVars></InputVars>
+		<OutputVars></OutputVars>
+	</InterfaceList>
+	<BasicFB>
+		<InternalVars></InternalVars>
+		<ECC>
+			<ECState Name="reset" Comment="" x="" y=""></ECState>
+			<ECState Name="print" Comment="" x="" y="">
+				<ECAction Output="TickPrint"></ECAction>
+			</ECState>
+			<ECState Name="tie" Comment="" x="" y="">
+				<ECAction Output="TickTie"></ECAction>
+			</ECState>
+			<ECState Name="tie2" Comment="" x="" y=""></ECState>
+			<ECState Name="ic" Comment="" x="" y="">
+				<ECAction Output="TickIc"></ECAction>
+			</ECState>
+			<ECState Name="load" Comment="" x="" y="">
+				<ECAction Output="TickLoad"></ECAction>
+			</ECState>
+			<ECState Name="gen" Comment="" x="" y="">
+				<ECAction Output="TickGen"></ECAction>
+			</ECState>
+			<ECTransition Source="reset" Destination="print" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="print" Destination="tie" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="tie" Destination="tie2" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="tie2" Destination="ic" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="ic" Destination="load" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="load" Destination="gen" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="gen" Destination="print" Condition="true" x="" y=""></ECTransition>
+		</ECC>
+	</BasicFB>
+</FBType>

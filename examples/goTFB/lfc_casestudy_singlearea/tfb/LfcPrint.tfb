@@ -1,0 +1,45 @@
+serviceFB LfcPrint;
+interface of LfcPrint {
+    in event Tick;
+
+	in event DfDptDphChange;
+	in with DfDptDphChange lreal Df, Dpt, Dph;
+
+	in event DpeChange;
+	in with DpeChange lreal Dpe;
+
+	in event DprefChange;
+	in with DprefChange lreal Dpref;
+}
+
+architecture of LfcPrint {
+    in "C";
+
+    arbitrary 
+`
+#include <stdio.h>
+#include <stdlib.h>
+`;
+    
+    in_struct 
+`
+
+`;
+    
+    run 
+`
+static int tickCount = 0;
+printf("%10f, %10f Hz, %10f MW Generation, %10f MW Load, %10f, %10f, %10f, %10f\r\n",
+	tickCount * 0.0001,
+	me->Df + 60,
+	1000 + me->Dpt * 1000,
+	1000 + me->Dpe * 1000,
+	me->Dpref,
+	me->Df,
+	me->Dpt,
+	me->Dph);
+
+tickCount++;
+`;
+    
+}
