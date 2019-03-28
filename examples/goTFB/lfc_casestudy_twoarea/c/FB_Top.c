@@ -61,10 +61,6 @@ int Top_preinit(Top_t  *me) {
 		return 1;
 	}
 	
-	if(Flipsign_preinit(&me->flipsignDp12) != 0) {
-		return 1;
-	}
-	
 	if(Tieline_preinit(&me->tieline) != 0) {
 		return 1;
 	}
@@ -110,15 +106,13 @@ int Top_init(Top_t  *me) {
 							me->ic1.Dp12 = me->tieline.Dp12;
 							//sync config for ic2 (of Type IntegralController) 
 			me->ic2.Df = me->gen2.Df;
-							me->ic2.Dp12 = me->flipsignDp12.Out;
+							me->ic2.Dp12 = me->tieline.Dp21;
 							//sync config for load1 (of Type Load) 
-			me->load1.Dp12 = me->tieline.Dp12;
+			me->load1.Dp12 = me->tieline.Dp21;
 							me->load1.DpeExternal = 0;
 							//sync config for load2 (of Type Load) 
-			me->load2.Dp12 = me->flipsignDp12.Out;
+			me->load2.Dp12 = me->tieline.Dp12;
 							me->load2.DpeExternal = 0.1;
-							//sync config for flipsignDp12 (of Type Flipsign) 
-			me->flipsignDp12.In = me->tieline.Dp12;
 							//sync config for tieline (of Type Tieline) 
 			me->tieline.Df1 = me->gen1.Df;
 							me->tieline.Df2 = me->gen2.Df;
@@ -127,6 +121,7 @@ int Top_init(Top_t  *me) {
 							me->print.Df2 = me->gen2.Df;
 							me->print.Dp12 = me->tieline.Dp12;
 							me->print.Dpref1 = me->ic1.Dpref;
+							me->print.Dpref2 = me->ic2.Dpref;
 							
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
@@ -149,9 +144,6 @@ int Top_init(Top_t  *me) {
 		return 1;
 	}
 	if(Load_init(&me->load2) != 0) {
-		return 1;
-	}
-	if(Flipsign_init(&me->flipsignDp12) != 0) {
 		return 1;
 	}
 	if(Tieline_init(&me->tieline) != 0) {
@@ -208,7 +200,7 @@ void Top_syncInputEvents(Top_t  *me) {
 	
 	me->ic2.inputEvents.event.DfChange = me->gen2.outputEvents.event.DfChange; 
 	
-	me->ic2.inputEvents.event.Dp12Change = me->flipsignDp12.outputEvents.event.OutChange; 
+	me->ic2.inputEvents.event.Dp12Change = me->tieline.outputEvents.event.Dp12Change; 
 	
 	me->load1.inputEvents.event.Tick = me->ticksource.outputEvents.event.TickLoad; 
 	
@@ -218,11 +210,9 @@ void Top_syncInputEvents(Top_t  *me) {
 	
 	me->load2.inputEvents.event.Tick = me->ticksource.outputEvents.event.TickLoad; 
 	
-	me->load2.inputEvents.event.Dp12Change = me->flipsignDp12.outputEvents.event.OutChange; 
+	me->load2.inputEvents.event.Dp12Change = me->tieline.outputEvents.event.Dp12Change; 
 	
 	me->load2.inputEvents.event.DpeExternalChange = 0; 
-	
-	me->flipsignDp12.inputEvents.event.InChange = me->tieline.outputEvents.event.Dp12Change; 
 	
 	me->tieline.inputEvents.event.Tick = me->ticksource.outputEvents.event.TickTie; 
 	
@@ -310,14 +300,14 @@ void Top_syncInputData(Top_t  *me) {
 		
 	} 
 	if(me->ic2.inputEvents.event.Dp12Change == 1) {
-		me->ic2.Dp12 = me->flipsignDp12.Out;
+		me->ic2.Dp12 = me->tieline.Dp21;
 		
 	} 
 	
 	//sync for load1 (of type Load) which is a BFB
 	
 	if(me->load1.inputEvents.event.Dp12Change == 1) {
-		me->load1.Dp12 = me->tieline.Dp12;
+		me->load1.Dp12 = me->tieline.Dp21;
 		
 	} 
 	if(me->load1.inputEvents.event.DpeExternalChange == 1) {
@@ -328,18 +318,11 @@ void Top_syncInputData(Top_t  *me) {
 	//sync for load2 (of type Load) which is a BFB
 	
 	if(me->load2.inputEvents.event.Dp12Change == 1) {
-		me->load2.Dp12 = me->flipsignDp12.Out;
+		me->load2.Dp12 = me->tieline.Dp12;
 		
 	} 
 	if(me->load2.inputEvents.event.DpeExternalChange == 1) {
 		me->load2.DpeExternal = 0.1;
-		
-	} 
-	
-	//sync for flipsignDp12 (of type Flipsign) which is a BFB
-	
-	if(me->flipsignDp12.inputEvents.event.InChange == 1) {
-		me->flipsignDp12.In = me->tieline.Dp12;
 		
 	} 
 	
@@ -364,6 +347,7 @@ void Top_syncInputData(Top_t  *me) {
 	} 
 	if(me->print.inputEvents.event.DprefChange == 1) {
 		me->print.Dpref1 = me->ic1.Dpref;
+		me->print.Dpref2 = me->ic2.Dpref;
 		
 	} 
 	
@@ -395,8 +379,6 @@ void Top_run(Top_t  *me) {
 	Load_run(&me->load1);
 	
 	Load_run(&me->load2);
-	
-	Flipsign_run(&me->flipsignDp12);
 	
 	Tieline_run(&me->tieline);
 	

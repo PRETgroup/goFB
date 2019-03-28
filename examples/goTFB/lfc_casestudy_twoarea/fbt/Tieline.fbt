@@ -15,6 +15,7 @@
 		<EventOutputs>
 			<Event Name="Dp12Change" Comment="">
 				<With Var="Dp12"></With>
+				<With Var="Dp21"></With>
 			</Event>
 		</EventOutputs>
 		<InputVars>
@@ -23,6 +24,7 @@
 		</InputVars>
 		<OutputVars>
 			<VarDeclaration Name="Dp12" Type="LREAL" Comment=""></VarDeclaration>
+			<VarDeclaration Name="Dp21" Type="LREAL" Comment=""></VarDeclaration>
 		</OutputVars>
 	</InterfaceList>
 	<BasicFB>
@@ -41,7 +43,7 @@
 			<ECTransition Source="update" Destination="update" Condition="Tick" x="" y=""></ECTransition>
 		</ECC>
 		<Algorithm Name="TielineTick" Comment="">
-			<Other Language="ST" Text="&#xA;        Dp12 := Dp12 - (2*Pi*T0*(Df1 - Df2))*StepSize;&#xA;    "></Other>
+			<Other Language="ST" Text="&#xA;        Dp12 := Dp12 - (2*Pi*T0*(Df1 - Df2))*StepSize;&#xA;        Dp21 := -Dp12;&#xA;    "></Other>
 		</Algorithm>
 	</BasicFB>
 </FBType>

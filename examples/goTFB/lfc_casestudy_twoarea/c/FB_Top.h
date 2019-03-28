@@ -18,7 +18,6 @@
 #include "FB_IntegralController.h"
 #include "FB_Load.h"
 #include "FB_Load.h"
-#include "FB_Flipsign.h"
 #include "FB_Tieline.h"
 #include "FB_LfcPrint.h"
 
@@ -52,7 +51,6 @@ typedef struct {
 	IntegralController_t ic2;
 	Load_t load1;
 	Load_t load2;
-	Flipsign_t flipsignDp12;
 	Tieline_t tieline;
 	LfcPrint_t print;
 	

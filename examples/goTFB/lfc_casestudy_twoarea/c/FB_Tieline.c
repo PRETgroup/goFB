@@ -77,6 +77,7 @@ int Tieline_init(Tieline_t  *me) {
 void Tieline_TielineTick(Tieline_t  *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 me->Dp12 = me->Dp12 - (((2 * me->Pi) * me->T0) * (me->Df1 - me->Df2)) * me->StepSize;
+me->Dp21 = -me->Dp12;
 
 }
 

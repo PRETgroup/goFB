@@ -7,7 +7,7 @@ interface of Tieline {
 	in with DfChange lreal Df1, Df2;
 
     out event Dp12Change;
-    out with Dp12Change lreal Dp12; 
+    out with Dp12Change lreal Dp12, Dp21; 
 }
 
 architecture of Tieline {
@@ -30,5 +30,6 @@ architecture of Tieline {
 
     algorithm TielineTick in "ST" `
         Dp12 := Dp12 - (2*Pi*T0*(Df1 - Df2))*StepSize;
+        Dp21 := -Dp12;
     `;
 }

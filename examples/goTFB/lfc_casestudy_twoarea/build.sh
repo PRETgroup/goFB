@@ -10,6 +10,6 @@ goFB -i=./fbt -o=./c -l=c -t=Top
 
 #compile
 echo "Compiling C to binary..."
-gcc c/*.c -o lfc_casestudy_twoarea.out -DMAX_TICKS=1001
+gcc c/*.c -o lfc_casestudy_twoarea.out -DMAX_TICKS=100
 #run
 #./simple.out

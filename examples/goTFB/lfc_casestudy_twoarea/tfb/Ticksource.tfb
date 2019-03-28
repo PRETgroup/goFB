@@ -11,7 +11,8 @@ interface of Ticksource {
 architecture of Ticksource {
     states {
         reset {
-            -> print;
+            //-> print;
+            -> update;
         }
         print {
             emit TickPrint;
@@ -19,9 +20,6 @@ architecture of Ticksource {
         }
         tie {
             emit TickTie;
-            -> tie2;
-        }
-        tie2 {
             -> ic;
         }
         ic {
@@ -35,6 +33,14 @@ architecture of Ticksource {
         gen {
             emit TickGen;
             -> print;
+        }
+        update {
+            emit TickIc;
+            emit TickGen;
+            emit TickLoad;
+            emit TickTie;
+            emit TickPrint;
+            -> update;
         }
     }
 

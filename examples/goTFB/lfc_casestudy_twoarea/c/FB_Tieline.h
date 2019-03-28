@@ -46,6 +46,7 @@ typedef struct {
     
     //output vars
 	LREAL Dp12;
+    LREAL Dp21;
     
 	//any internal vars (BFBs only)
     LREAL StepSize;

@@ -102,7 +102,7 @@ void Ticksource_run(Ticksource_t  *me) {
 		case STATE_Ticksource_reset:
 			if(true) {
 				
-				me->_state = STATE_Ticksource_print;
+				me->_state = STATE_Ticksource_update;
 				me->_trigger = true;
 			};
 			break;
@@ -114,13 +114,6 @@ void Ticksource_run(Ticksource_t  *me) {
 			};
 			break;
 		case STATE_Ticksource_tie:
-			if(true) {
-				
-				me->_state = STATE_Ticksource_tie2;
-				me->_trigger = true;
-			};
-			break;
-		case STATE_Ticksource_tie2:
 			if(true) {
 				
 				me->_state = STATE_Ticksource_ic;
@@ -145,6 +138,13 @@ void Ticksource_run(Ticksource_t  *me) {
 			if(true) {
 				
 				me->_state = STATE_Ticksource_print;
+				me->_trigger = true;
+			};
+			break;
+		case STATE_Ticksource_update:
+			if(true) {
+				
+				me->_state = STATE_Ticksource_update;
 				me->_trigger = true;
 			};
 			break;
@@ -177,12 +177,6 @@ void Ticksource_run(Ticksource_t  *me) {
 			me->outputEvents.event.TickTie = 1;
 			
 			break;
-		case STATE_Ticksource_tie2:
-			#ifdef PRINT_STATES
-				printf("Ticksource: [Entered State tie2]\n");
-			#endif
-			
-			break;
 		case STATE_Ticksource_ic:
 			#ifdef PRINT_STATES
 				printf("Ticksource: [Entered State ic]\n");
@@ -202,6 +196,17 @@ void Ticksource_run(Ticksource_t  *me) {
 				printf("Ticksource: [Entered State gen]\n");
 			#endif
 			me->outputEvents.event.TickGen = 1;
+			
+			break;
+		case STATE_Ticksource_update:
+			#ifdef PRINT_STATES
+				printf("Ticksource: [Entered State update]\n");
+			#endif
+			me->outputEvents.event.TickIc = 1;
+			me->outputEvents.event.TickGen = 1;
+			me->outputEvents.event.TickLoad = 1;
+			me->outputEvents.event.TickTie = 1;
+			me->outputEvents.event.TickPrint = 1;
 			
 			break;
 		

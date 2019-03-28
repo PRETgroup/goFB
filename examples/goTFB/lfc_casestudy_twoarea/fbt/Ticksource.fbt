@@ -26,7 +26,6 @@
 			<ECState Name="tie" Comment="" x="" y="">
 				<ECAction Output="TickTie"></ECAction>
 			</ECState>
-			<ECState Name="tie2" Comment="" x="" y=""></ECState>
 			<ECState Name="ic" Comment="" x="" y="">
 				<ECAction Output="TickIc"></ECAction>
 			</ECState>
@@ -36,13 +35,20 @@
 			<ECState Name="gen" Comment="" x="" y="">
 				<ECAction Output="TickGen"></ECAction>
 			</ECState>
-			<ECTransition Source="reset" Destination="print" Condition="true" x="" y=""></ECTransition>
+			<ECState Name="update" Comment="" x="" y="">
+				<ECAction Output="TickIc"></ECAction>
+				<ECAction Output="TickGen"></ECAction>
+				<ECAction Output="TickLoad"></ECAction>
+				<ECAction Output="TickTie"></ECAction>
+				<ECAction Output="TickPrint"></ECAction>
+			</ECState>
+			<ECTransition Source="reset" Destination="update" Condition="true" x="" y=""></ECTransition>
 			<ECTransition Source="print" Destination="tie" Condition="true" x="" y=""></ECTransition>
-			<ECTransition Source="tie" Destination="tie2" Condition="true" x="" y=""></ECTransition>
-			<ECTransition Source="tie2" Destination="ic" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="tie" Destination="ic" Condition="true" x="" y=""></ECTransition>
 			<ECTransition Source="ic" Destination="load" Condition="true" x="" y=""></ECTransition>
 			<ECTransition Source="load" Destination="gen" Condition="true" x="" y=""></ECTransition>
 			<ECTransition Source="gen" Destination="print" Condition="true" x="" y=""></ECTransition>
+			<ECTransition Source="update" Destination="update" Condition="true" x="" y=""></ECTransition>
 		</ECC>
 	</BasicFB>
 </FBType>
