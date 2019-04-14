@@ -1,0 +1,15 @@
+---
+- analysis-entry: t
+  source: platin
+  cycles: 71
+  cache-max-cycles-instr: 0
+  cache-min-hits-instr: 0
+  cache-max-misses-instr: 0
+  cache-max-cycles-stack: 0
+  cache-max-misses-stack: 0
+  cache-max-cycles-data: 63
+  cache-min-hits-data: 0
+  cache-max-misses-data: 1
+  cache-max-stores-data: 2
+  cache-unknown-address-data: 3
+  cache-max-cycles: 63

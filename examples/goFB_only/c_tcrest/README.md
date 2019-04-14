@@ -1,6 +1,6 @@
 # c_tcrest examples
 
-These examples were used in the (currently under review) ISORC 2018 publication "Faster Function Blocks for Precision Timed Industrial Automation".
+These examples were used in the ISORC 2018 publication "Faster Function Blocks for Precision Timed Industrial Automation".
 
 It should be relatively straightforward to run these examples yourself, using the Makefile in this directory.
 
