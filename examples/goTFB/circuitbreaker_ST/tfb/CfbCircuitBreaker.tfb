@@ -1,0 +1,42 @@
+compositeFB CfbCircuitBreaker;
+
+interface of CfbCircuitBreaker {
+    in event tick;
+    in event i_measured;
+    in event test;
+    in event set;
+    in event iSet_change;
+
+    //in with i_measured unsigned i;
+    //in with iSet_change unsigned iSet;
+    in usint i;
+    in usint iSet;
+
+    out event b_change;
+    
+    //out with b_change bool b;
+    out bool b;
+}
+
+architecture of CfbCircuitBreaker{
+	instance BfbSetterResetter sr;
+    instance BfbIDMTCurve curve;
+
+	events {
+		curve.tick <- tick;
+        curve.i_measured <- i_measured;
+        curve.iSet_change <- iSet_change;
+
+        sr.test <- test;
+        sr.set <- set;
+        sr.unsafe <- curve.unsafe;
+
+        b_change <- sr.b_change;
+	}
+
+	data {
+		curve.i <- i;
+        curve.iSet <- iSet;
+        b <- sr.b;
+	}
+}

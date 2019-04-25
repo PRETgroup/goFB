@@ -1,4 +1,4 @@
-{{define "fbtypes"}}
+
 // This file is modified from source code from the FBC project.
 
 #ifndef FBTYPES_H_
@@ -6,16 +6,7 @@
 
 #include <stdio.h>
 #include <math.h>
-{{if or .TcrestUsingSPM .TcrestIncludes}}
-#include <machine/spm.h>
-#include <machine/patmos.h>
-#include "libcorethread/corethread.h"
-#include "libmp/mp.h"
 
-#define LED 		( *( ( volatile _IODEV unsigned * )	0xF0090000 ) )
-#define HEX 		( *( ( volatile _IODEV unsigned * )	0xF0070000 ) )
-#define SWITCHES 	( *( ( volatile _IODEV unsigned * )	0xF0060000 ) )
-{{end}}
 
 /*********************************************************************
  This file contains the mapping between IEC 61131 and C data types.
@@ -80,16 +71,8 @@ typedef FBstring WSTRING;
 // DTimer
 typedef long long DTIMER;
 
-{{if .EventQueue}}
-typedef struct {
-	short InstanceID;
-	char PortID;
-} EventInvokation;
 
-void PushEvent(short InstanceID, char PortID);
-{{else}}
 #define PushEvent(...) (void)0
-{{end}}
+
 
 #endif // FBTYPES_H_
-{{end}}

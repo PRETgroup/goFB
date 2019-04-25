@@ -1,0 +1,81 @@
+basicFB BfbIDMTCurve;
+
+interface of BfbIDMTCurve {
+	in event tick;
+    in event i_measured;
+    in event iSet_change;
+
+    out event unsafe;
+
+    in with i_measured usint i;
+    in with iSet_change usint iSet;    
+} 
+
+architecture of BfbIDMTCurve {
+	internals {
+        ulint cnt := 0;
+        lreal max := 0;
+        real k := 100;
+        real b := 0.135;
+        real a := 1.0; 
+        //udint K := 10000;	
+		//udint B := 135;
+    }
+    
+    states {
+		s_init {
+			-> s_safe;
+		}
+
+		s_safe {
+			run in "ST" `cnt := 0;`;
+			-> s_count on tick && i > iSet;
+		}
+
+        s_count {
+            run updateMax;
+            run in "ST" `cnt := cnt + 1;`;
+            
+            -> s_safe on tick && i <= iSet;
+            -> s_unsafe on tick && cnt > max;
+            -> s_count on tick;
+        }
+
+        s_unsafe {
+            emit unsafe;
+            -> s_safe on tick && i <= iSet;
+        }
+	}
+
+    //algorithm updateMax in "ST" `
+    //    max := ((k*b) / ((i / iSet)**a - 1));
+    //`;
+
+
+    algorithm updateMax in "C" `
+        me->max = ((me->k*me->b) / (pow((me->i / me->iSet),me->a) - 1));
+    `; 
+
+    //replaced with LUT above
+    //thresh := ((10*135) / ((i / iSet) - 1));
+
+    //    if i > 145 then
+    //        thresh := 5;
+    //    elsif i > 100 then
+    //        thresh := 10;
+    //    elsif i > 77 then
+    //        thresh := 15;
+    //    elsif i > 55 then
+    //        thresh := 30;
+    //    elsif i > 32 then
+    //        thresh := 60;
+    //    elsif i > 23 then
+    //        thresh := 100;
+    //    elsif i > 19 then
+    //        thresh := 150;
+    //    elsif i > 14 then
+    //        thresh := 300;
+    //    else
+    //        thresh := 400;
+    //    end_if;
+}

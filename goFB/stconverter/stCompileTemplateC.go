@@ -65,6 +65,9 @@ func cTokenIsFunctionCall(token string) bool {
 	if token == "not" {
 		return true
 	}
+	if token == "**" {
+		return true
+	}
 	first := strings.Index(token, "<")
 	if len(token) > 2 && token[len(token)-1:] == ">" && first != -1 {
 		return true
@@ -88,6 +91,9 @@ func cTranslateOperatorToken(token string) string {
 	if token == "not" {
 		return "!("
 	}
+	if token == "**" {
+		return "pow("
+	}
 	//ok, not a function, so it's one of the st Operators
 	switch token {
 	case stExit:
@@ -98,9 +104,8 @@ func cTranslateOperatorToken(token string) string {
 		return "!"
 	case stNegative:
 		return "-"
-	case stExponentiation:
-		//todo: we need to roll a custom exponentiation function
-		panic("exponentiation not supported in C!")
+	// case stExponentiation:
+	// 	return "**"
 	case stMultiply:
 		return "*"
 	case stDivide:
