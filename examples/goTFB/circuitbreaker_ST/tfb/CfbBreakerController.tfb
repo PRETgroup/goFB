@@ -1,6 +1,6 @@
-compositeFB CfbCircuitBreaker;
+compositeFB CfbBreakerController;
 
-interface of CfbCircuitBreaker {
+interface of CfbBreakerController {
     in event tick;
     in event i_measured;
     in event test;
@@ -18,7 +18,7 @@ interface of CfbCircuitBreaker {
     out bool b;
 }
 
-architecture of CfbCircuitBreaker{
+architecture of CfbBreakerController{
 	instance BfbSetterResetter sr;
     instance BfbIDMTCurve curve;
 

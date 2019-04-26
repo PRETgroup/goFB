@@ -7,15 +7,15 @@
 /* Function block initialization function */
 void BfbIDMTCurveinit(BfbIDMTCurve* me)
 {
-	me->_state = 0;
-	me->_entered = false;
-	me->_input.events = 0;
-	me->_output.events = 0;
-	me->cnt = 0;
-	me->max = 0;
-	me->k = 100;
-	me->b = 0.135;
-	me->a = 1.0;
+    me->_state = 0;
+    me->_entered = false;
+    me->_input.events = 0;
+    me->_output.events = 0;
+    me->cnt = 0;
+    me->max = 0;
+    me->k = 100;
+    me->b = 0.135;
+    me->a = 1.0;
 }
 
 /* ECC algorithms */
@@ -34,93 +34,93 @@ me->cnt=me->cnt + 1;
 void BfbIDMTCurve_updateMax(BfbIDMTCurve* me)
 {
 
-		me->max = ((me->k*me->b) / (pow((me->i / me->iSet),me->a) - 1));
-	
+        me->max = ((me->k*me->b) / (pow((me->i / me->iSet),me->a) - 1));
+    
 }
 
 /* Function block execution function */
 void BfbIDMTCurverun(BfbIDMTCurve* me)
 {
-	me->_output.events = 0;
+    me->_output.events = 0;
 
-	if (me->_input.events) {
-		if (me->_input.event.i_measured) {
-			me->i = me->_i;
-		}
-		if (me->_input.event.iSet_change) {
-			me->iSet = me->_iSet;
-		}
-	}
-	for (;;) {
-		switch (me->_state) {
-			case 0:
-				// State: s_init
-				if (!me->_entered) {
-					me->_entered = true;
-				}
-				else {
-					me->_state = 1;
-					me->_entered = false;
-					continue;
-				}
-				break;
-			case 1:
-				// State: s_safe
-				if (!me->_entered) {
-					BfbIDMTCurve_s_safe_alg0(me);
-					me->_entered = true;
-				}
-				else {
-					if (me->_input.event.tick && && me->i > me->iSet) {
-						me->_state = 2;
-						me->_entered = false;
-						continue;
-					}
-				}
-				break;
-			case 2:
-				// State: s_count
-				if (!me->_entered) {
-					BfbIDMTCurve_updateMax(me);
-					BfbIDMTCurve_s_count_alg0(me);
-					me->_entered = true;
-				}
-				else {
-					if (me->_input.event.tick && && me->i <= me->iSet) {
-						me->_state = 1;
-						me->_entered = false;
-						continue;
-					}
-					else if (me->_input.event.tick && && me->cnt > me->max) {
-						me->_state = 3;
-						me->_entered = false;
-						continue;
-					}
-					else if (me->_input.event.tick) {
-						me->_state = 2;
-						me->_entered = false;
-						continue;
-					}
-				}
-				break;
-			case 3:
-				// State: s_unsafe
-				if (!me->_entered) {
-					me->_output.event.unsafe = 1;
-					me->_entered = true;
-				}
-				else {
-					if (me->_input.event.tick && && me->i <= me->iSet) {
-						me->_state = 1;
-						me->_entered = false;
-						continue;
-					}
-				}
-				break;
-		}
-		break;
-	}
+    if (me->_input.events) {
+        if (me->_input.event.i_measured) {
+            me->i = me->_i;
+        }
+        if (me->_input.event.iSet_change) {
+            me->iSet = me->_iSet;
+        }
+    }
+    for (;;) {
+        switch (me->_state) {
+            case 0:
+                // State: s_init
+                if (!me->_entered) {
+                    me->_entered = true;
+                }
+                else {
+                    me->_state = 1;
+                    me->_entered = false;
+                    continue;
+                }
+                break;
+            case 1:
+                // State: s_safe
+                if (!me->_entered) {
+                    BfbIDMTCurve_s_safe_alg0(me);
+                    me->_entered = true;
+                }
+                else {
+                    if (me->_input.event.tick && && me->i > me->iSet) {
+                        me->_state = 2;
+                        me->_entered = false;
+                        continue;
+                    }
+                }
+                break;
+            case 2:
+                // State: s_count
+                if (!me->_entered) {
+                    BfbIDMTCurve_updateMax(me);
+                    BfbIDMTCurve_s_count_alg0(me);
+                    me->_entered = true;
+                }
+                else {
+                    if (me->_input.event.tick && && me->i <= me->iSet) {
+                        me->_state = 1;
+                        me->_entered = false;
+                        continue;
+                    }
+                    else if (me->_input.event.tick && && me->cnt > me->max) {
+                        me->_state = 3;
+                        me->_entered = false;
+                        continue;
+                    }
+                    else if (me->_input.event.tick) {
+                        me->_state = 2;
+                        me->_entered = false;
+                        continue;
+                    }
+                }
+                break;
+            case 3:
+                // State: s_unsafe
+                if (!me->_entered) {
+                    me->_output.event.unsafe = 1;
+                    me->_entered = true;
+                }
+                else {
+                    if (me->_input.event.tick && && me->i <= me->iSet) {
+                        me->_state = 1;
+                        me->_entered = false;
+                        continue;
+                    }
+                }
+                break;
+        }
+        break;
+    }
 
-	me->_input.events = 0;
+    me->_input.events = 0;
 }
 
