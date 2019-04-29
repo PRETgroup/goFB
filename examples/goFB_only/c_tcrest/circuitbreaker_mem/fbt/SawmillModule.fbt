@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SawmillModule" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="MessageChange" Comment="">
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="Message" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="saw" Type="Led" x="3237.5" y="1487.5" />
+  <FB Name="control" Type="SawmillControl" x="1881.25" y="1356.25" />
+  <FB Name="runswitch" Type="MaskedSwitch" x="175" y="1093.75">
+    <Parameter Name="SwitchMask" Value="0b0001" />
+  </FB>
+  <FB Name="scale" Type="MaskedSwitch" x="175" y="1666.14583333333">
+    <Parameter Name="SwitchMask" Value="0b0010" />
+  </FB>
+  <FB Name="laser" Type="MaskedSwitch" x="175" y="2231.25">
+    <Parameter Name="SwitchMask" Value="0b0100" />
+  </FB>
+  <FB Name="speedmon" Type="SawmillSpeed" x="1137.5" y="525" />
+  <FB Name="posgen" Type="SawmillPosGen" x="175" y="525" />
+  <FB Name="stall" Type="MaskedSwitch" x="175" y="2843.75">
+    <Parameter Name="SwitchMask" Value="0b1000" />
+  </FB>
+  <EventConnections><Connection Source="control.MessageChange" Destination="MessageChange" />
+<Connection Source="control.CommandChange" Destination="saw.CommandChange" />
+<Connection Source="control.CommandChange" Destination="posgen.SawRunChange" />
+<Connection Source="runswitch.SwitchChanged" Destination="control.ControlChange" />
+<Connection Source="scale.SwitchChanged" Destination="control.WeightChange" />
+<Connection Source="laser.SwitchChanged" Destination="control.LaserChange" />
+<Connection Source="speedmon.BadSpeedChange" Destination="control.BadSpeedChange" />
+<Connection Source="posgen.NewPosChange" Destination="speedmon.NewPos" />
+<Connection Source="stall.SwitchChanged" Destination="control.StallDetectedChange" /></EventConnections>
+  <DataConnections><Connection Source="control.Message" Destination="Message" />
+<Connection Source="control.SawRun" Destination="saw.Run" />
+<Connection Source="control.SawRun" Destination="posgen.SawRun" />
+<Connection Source="runswitch.SwitchOn" Destination="control.ControlRun" />
+<Connection Source="scale.SwitchOn" Destination="control.ScaleOverweight" />
+<Connection Source="laser.SwitchOn" Destination="control.LaserBroken" />
+<Connection Source="speedmon.BadSpeed" Destination="control.BadSpeed" />
+<Connection Source="posgen.NewPos" Destination="speedmon.Pos" />
+<Connection Source="stall.SwitchOn" Destination="control.StallDetected" /></DataConnections>
+</FBNetwork>
+</FBType>

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SawmillPosGen" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="HAMMONDSDESKTOP" Version="0.1" Author="Hammond" Date="2017-00-27" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="SawRunChange" Comment="">
+    <With Var="SawRun" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="NewPosChange" Comment="">
+    <With Var="NewPos" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="SawRun" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="NewPos" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="PosArrayLen" Type="INT" InitialValue="20" Comment="" />
+  <VarDeclaration Name="PosArrayPos" Type="INT" InitialValue="0" Comment="" />
+  <VarDeclaration Name="PosArray" Type="LREAL" InitialValue="[0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,4.5,4,3.5,3,2.5,2,1.5,1,0.5]" ArraySize="20" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="run" Comment="" x="875" y="641.666680574417">
+    <ECAction Algorithm="posgen_service" />
+  </ECState>
+  <ECTransition Source="Start" Destination="run" Condition="true" x="432.125" y="462.083340287209" />
+  <ECTransition Source="run" Destination="run" Condition="true" x="831.25" y="262.5" />
+</ECC><Algorithm Name="posgen_service" Comment="">
+  <Other Language="C" Prototype="" Text="if(me-&gt;SawRun) {&#xD;&#xA;	me-&gt;outputEvents.event.NewPosChange = 1;&#xD;&#xA;	me-&gt;NewPos = me-&gt;PosArray[me-&gt;PosArrayPos];&#xD;&#xA;	me-&gt;PosArrayPos++;&#xD;&#xA;	me-&gt;PosArrayPos = me-&gt;PosArrayPos % me-&gt;PosArrayLen;&#xD;&#xA;} else {&#xD;&#xA;	me-&gt;outputEvents.event.NewPosChange = 0;&#xD;&#xA;}" />
+</Algorithm></BasicFB>
+</FBType>

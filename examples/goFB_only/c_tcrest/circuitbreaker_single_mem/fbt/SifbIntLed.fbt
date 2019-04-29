@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SifbIntLed" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2019-00-29" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="i_change" Comment="">
+    <With Var="i" />
+  </Event>
+</EventInputs>
+
+<InputVars>
+  <VarDeclaration Name="i" Type="INT" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="Update" Comment="" x="743.75" y="700">
+    <ECAction Algorithm="update_led" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Update" Condition="i_change" x="406.5" y="454.25" />
+  <ECTransition Source="Update" Destination="Update" Condition="i_change" x="805.75" y="636" />
+</ECC><Algorithm Name="update_led" Comment="">
+  <Other Language="C" Prototype="" Text="LED = me-&gt;i;" />
+</Algorithm></BasicFB>
+</FBType>

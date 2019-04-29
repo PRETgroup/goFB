@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbIDMTCurve" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2019-00-29" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="tick" Comment="">
+  </Event>
+  <Event Name="i_measured" Comment="">
+    <With Var="i" />
+  </Event>
+  <Event Name="i_set_change" Comment="">
+    <With Var="i_set" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="unsafe" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="i" Type="REAL" Comment="" />
+  <VarDeclaration Name="i_set" Type="REAL" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="cnt" Type="ULINT" InitialValue="0" Comment="" />
+  <VarDeclaration Name="max" Type="LREAL" InitialValue="0.0" Comment="" />
+  <VarDeclaration Name="k" Type="REAL" InitialValue="100.0" Comment="" />
+  <VarDeclaration Name="b" Type="BOOL" InitialValue="0.135" Comment="" />
+  <VarDeclaration Name="a" Type="BOOL" InitialValue="1.0" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="INIT" Comment="" x="831.25" y="437.5">
+  </ECState>
+  <ECState Name="SAFE" Comment="" x="885.9375" y="864.0625">
+    <ECAction Algorithm="ResetCnt" />
+  </ECState>
+  <ECState Name="COUNT" Comment="" x="842.1875" y="1345.3125">
+    <ECAction Algorithm="UpdateCnt" />
+    <ECAction Algorithm="UpdateMax" />
+  </ECState>
+  <ECState Name="UNSAFE" Comment="" x="867.708361148834" y="1884.89577770233">
+    <ECAction Output="unsafe" />
+  </ECState>
+  <ECTransition Source="INIT" Destination="SAFE" Condition="true" x="858.59375" y="620.78125" />
+  <ECTransition Source="SAFE" Destination="COUNT" Condition="tick AND (i &gt; i_set)" x="865.0625" y="1122.6875" />
+  <ECTransition Source="COUNT" Destination="UNSAFE" Condition="tick AND (cnt &gt;= max)" x="854.947930574417" y="1611.10413885117" />
+  <ECTransition Source="COUNT" Destination="SAFE" Condition="tick AND (i &lt; i_set)" x="862.0625" y="1132.6875" />
+  <ECTransition Source="UNSAFE" Destination="SAFE" Condition="tick AND (i &lt; i_set)" x="876.822930574417" y="1379.47913885117" />
+</ECC><Algorithm Name="ResetCnt" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;cnt = 0;" />
+</Algorithm>
+<Algorithm Name="UpdateCnt" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;cnt = me-&gt;cnt + 1;" />
+</Algorithm>
+<Algorithm Name="UpdateMax" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;max = (me-&gt;k * me-&gt;b) / ((me-&gt;i / me-&gt;i_set) - 1);" />
+</Algorithm></BasicFB>
+</FBType>
