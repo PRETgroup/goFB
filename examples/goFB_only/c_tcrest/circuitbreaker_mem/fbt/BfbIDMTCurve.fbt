@@ -30,8 +30,8 @@
   <VarDeclaration Name="cnt" Type="ULINT" InitialValue="0" Comment="" />
   <VarDeclaration Name="max" Type="LREAL" InitialValue="0.0" Comment="" />
   <VarDeclaration Name="k" Type="REAL" InitialValue="100.0" Comment="" />
-  <VarDeclaration Name="b" Type="BOOL" InitialValue="0.135" Comment="" />
-  <VarDeclaration Name="a" Type="BOOL" InitialValue="1.0" Comment="" />
+  <VarDeclaration Name="b" Type="REAL" InitialValue="0.135" Comment="" />
+  <VarDeclaration Name="a" Type="REAL" InitialValue="1.0" Comment="" />
 </InternalVars><ECC>
   <ECState Name="INIT" Comment="" x="831.25" y="437.5">
   </ECState>

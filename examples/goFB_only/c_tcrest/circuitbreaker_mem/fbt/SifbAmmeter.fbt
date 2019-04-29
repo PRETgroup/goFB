@@ -26,6 +26,6 @@
   <ECTransition Source="Start" Destination="Update" Condition="true" x="392.458340287209" y="434.84375" />
   <ECTransition Source="Update" Destination="Update" Condition="true" x="598.666680574417" y="702.1875" />
 </ECC><Algorithm Name="update_amms" Comment="">
-  <Other Language="C" Prototype="" Text="int sw_ammh = (SWITCHES &amp; 0b1000 != 0);&#xD;&#xA;&#xD;&#xA;if(sw_ammh == 1 &amp;&amp; int(me-&gt;i_set) != 300) {&#xD;&#xA;	//switch is pressed&#xD;&#xA;	me-&gt;i = 300.0;&#xD;&#xA;	me-&gt;outputEvents.event.i_change = 1;&#xD;&#xA;}&#xD;&#xA;if(sw_ammh == 0 &amp;&amp; int(me-&gt;i_set) != 5) {&#xD;&#xA;	//switch is pressed&#xD;&#xA;	me-&gt;i_set = 5.0;&#xD;&#xA;	me-&gt;outputEvents.event.i_change = 1;&#xD;&#xA;}" />
+  <Other Language="C" Prototype="" Text="int sw_ammh = ((SWITCHES &amp; 0b1000) != 0);&#xD;&#xA;&#xD;&#xA;if(sw_ammh == 1 &amp;&amp; (int)(me-&gt;i) != 300) {&#xD;&#xA;	//switch is pressed&#xD;&#xA;	me-&gt;i = 300.0;&#xD;&#xA;	me-&gt;outputEvents.event.i_measured = 1;&#xD;&#xA;}&#xD;&#xA;if(sw_ammh == 0 &amp;&amp; (int)(me-&gt;i) != 5) {&#xD;&#xA;	//switch is pressed&#xD;&#xA;	me-&gt;i = 5.0;&#xD;&#xA;	me-&gt;outputEvents.event.i_measured = 1;&#xD;&#xA;}" />
 </Algorithm></BasicFB>
 </FBType>

@@ -76,7 +76,8 @@ void SifbCBPrintStatus_PrintService(SifbCBPrintStatus_t  *me) {
 // STALL -3
 // SPEED -4
 
-
+HEX = me->St1 || (me->St2 << 4) || (me->St3 << 4); 
+/*
 printf("CB 1: ");
 switch(me->St1) {
 	case 0:
@@ -118,7 +119,7 @@ switch(me->St1) {
 		break;
 }
 printf("\n");
-
+*/
 
 }
 
