@@ -8,7 +8,7 @@
 typedef union {
     UDINT events;
     struct {
-        UDINT StatusUpdate : 1; // 
+        UDINT StatusUpdate; // 
     } event;
 } SifbCBPrintStatusIEvents;
 

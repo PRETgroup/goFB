@@ -18,6 +18,15 @@
 #include <sys/time.h>
 #endif
 
+#include <machine/spm.h>
+#include <machine/patmos.h>
+#include "libcorethread/corethread.h"
+#include "libmp/mp.h"
+
+#define LED 		( *( ( volatile _IODEV unsigned * )	0xF0090000 ) )
+#define HEX 		( *( ( volatile _IODEV unsigned * )	0xF0070000 ) )
+#define SWITCHES 	( *( ( volatile _IODEV unsigned * )	0xF0060000 ) )
+
 // bool stuff
 #ifndef __cplusplus
 typedef char bool;

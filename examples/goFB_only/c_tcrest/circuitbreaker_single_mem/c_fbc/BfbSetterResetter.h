@@ -8,16 +8,16 @@
 typedef union {
     UDINT events;
     struct {
-        UDINT brk : 1; // 
-        UDINT rst : 1; // 
-        UDINT unsafe : 1; // 
+        UDINT brk ; // 
+        UDINT rst ; // 
+        UDINT unsafe ; // 
     } event;
 } BfbSetterResetterIEvents;
 
 typedef union {
     UDINT events;
     struct {
-        UDINT b_change : 1; // 
+        UDINT b_change ; // 
     } event;
 } BfbSetterResetterOEvents;
 

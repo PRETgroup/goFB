@@ -16,6 +16,7 @@ void SifbTimerrun(SifbTimer* me)
 {
     me->_output.events = 0;
 
+    #pragma loopbound min 1 max 2
     for (;;) {
         // State: Start
         if (!me->_entered) {

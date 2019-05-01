@@ -9,8 +9,10 @@ void BfbSetterResetterinit(BfbSetterResetter* me)
 {
     me->_state = 0;
     me->_entered = false;
-    me->_input.events = 0;
-    me->_output.events = 0;
+    me->_input.event.brk = 0;
+    me->_input.event.rst = 0;
+    me->_input.event.unsafe = 0;
+    me->_output.event.b_change = 0;
 }
 
 /* ECC algorithms */
@@ -27,8 +29,9 @@ me->b = 0;
 /* Function block execution function */
 void BfbSetterResetterrun(BfbSetterResetter* me)
 {
-    me->_output.events = 0;
+    me->_output.event.b_change = 0;
 
+    #pragma loopbound min 1 max 2
     for (;;) {
         switch (me->_state) {
             case 0:
@@ -79,6 +82,8 @@ void BfbSetterResetterrun(BfbSetterResetter* me)
         me->_b = me->b;
     }
 
-    me->_input.events = 0;
+    me->_input.event.brk = 0;
+    me->_input.event.rst = 0;
+    me->_input.event.unsafe = 0;
 }
 

@@ -7,8 +7,12 @@
 /* Function block initialization function */
 void CfbBreakerControllerinit(CfbBreakerController* me)
 {
-    me->_input.events = 0;
-    me->_output.events = 0;
+    me->_input.event.tick = 0;
+    me->_input.event.i_measured = 0;
+    me->_input.event.i_set_change = 0;
+    me->_input.event.brk = 0;
+    me->_input.event.rst = 0;
+    me->_output.event.b_change = 0;
     BfbIDMTCurveinit(&me->idmtcurve);
     BfbSetterResetterinit(&me->setterresetter);
 }

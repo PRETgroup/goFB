@@ -22,47 +22,49 @@ void SifbCBPrintStatus_PrintService(SifbCBPrintStatus* me)
 // STALL -3
 // SPEED -4
 
-printf("CB 1: ");
-switch(me->St1) {
- case 0:
-  printf("CLOSED       ");
-  break;
- case 1:
-  printf("OPEN         ");
-  break;
- default:
-  printf("UNKNOWN      ");
-  break;
-}
-printf("\t");
+HEX = me->St1 || (me->St2 << 4) || (me->St3 << 4); 
 
-printf("CB 2: ");
-switch(me->St1) {
- case 0:
-  printf("CLOSED       ");
-  break;
- case 1:
-  printf("OPEN         ");
-  break;
- default:
-  printf("UNKNOWN      ");
-  break;
-}
-printf("\t");
+// printf("CB 1: ");
+// switch(me->St1) {
+//  case 0:
+//   printf("CLOSED       ");
+//   break;
+//  case 1:
+//   printf("OPEN         ");
+//   break;
+//  default:
+//   printf("UNKNOWN      ");
+//   break;
+// }
+// printf("\t");
 
-printf("CB 3: ");
-switch(me->St1) {
- case 0:
-  printf("CLOSED       ");
-  break;
- case 1:
-  printf("OPEN         ");
-  break;
- default:
-  printf("UNKNOWN      ");
-  break;
-}
-printf("\n");
+// printf("CB 2: ");
+// switch(me->St1) {
+//  case 0:
+//   printf("CLOSED       ");
+//   break;
+//  case 1:
+//   printf("OPEN         ");
+//   break;
+//  default:
+//   printf("UNKNOWN      ");
+//   break;
+// }
+// printf("\t");
+
+// printf("CB 3: ");
+// switch(me->St1) {
+//  case 0:
+//   printf("CLOSED       ");
+//   break;
+//  case 1:
+//   printf("OPEN         ");
+//   break;
+//  default:
+//   printf("UNKNOWN      ");
+//   break;
+// }
+// printf("\n");
 
 
 }
@@ -76,6 +78,7 @@ void SifbCBPrintStatusrun(SifbCBPrintStatus* me)
         me->St2 = me->_St2;
         me->St3 = me->_St3;
     }
+    #pragma loopbound min 1 max 2
     for (;;) {
         if (me->_state == 0) {
             // State: Start

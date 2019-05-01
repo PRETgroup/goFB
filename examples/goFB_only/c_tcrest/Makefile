@@ -15,7 +15,7 @@ LIBETH=$(BUILDDIR)/libeth.a
 LIBELF=$(BUILDDIR)/libelf.a
 
 #Delay to global memory per request in cycles
-T_DELAY_CYCLES?=83
+T_DELAY_CYCLES?=21
 #Global memory transfer time per burst in cycles
 G_DELAY_CYCLES?=0
 #Transfer size (burst size) of the global memory in bytes
@@ -25,7 +25,7 @@ PROGS_PER_CORE?=1
 
 C_DIR?=c
 
-$(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/c/*.c ./$(PROJECT)/c/*.h
+$(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/$(C_DIR)/*.c ./$(PROJECT)/$(C_DIR)/*.h
 	patmos-clang \
 	-target patmos-unknown-unknown-elf \
 	-O2 \
