@@ -24,7 +24,7 @@ void SifbCBPrintStatus_PrintService(SifbCBPrintStatus* me)
 
 HEX = me->St1 || (me->St2 << 4) || (me->St3 << 4); 
 
-printf("CB 1: ");
+/*printf("CB 1: ");
 switch(me->St1) {
  case 0:
   printf("CLOSED       ");
@@ -64,7 +64,7 @@ switch(me->St3) {
   printf("UNKNOWN      ");
   break;
 }
-printf("\n");
+printf("\n");*/
 
 
 }

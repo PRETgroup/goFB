@@ -32,14 +32,14 @@ int main() {
 	mp_init();
 	printf("Starting t1,t2,t3 and initialising my_TCREST...\n");
 	corethread_t core1 = 1;
-	corethread_create(&core1, &t1, NULL);
+	corethread_create(&core1, &t0, NULL);
 	corethread_t core2 = 2;
 	corethread_create(&core2, &t2, NULL);
 	corethread_t core3 = 3;
 	corethread_create(&core3, &t3, NULL);
 	printf("Started t1,t2,t3\n");
 
-	t0(NULL);
+	t1(NULL);
 	int* res;
 	//corethread_join(core1, (void**)&res);
 

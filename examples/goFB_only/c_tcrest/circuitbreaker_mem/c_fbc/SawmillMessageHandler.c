@@ -32,6 +32,7 @@ void SawmillMessageHandlerrun(SawmillMessageHandler* me)
             me->TxSuccess = me->_TxSuccess;
         }
     }
+    #pragma loopbound min 1 max 2
     for (;;) {
         switch (me->_state) {
             case 0:
