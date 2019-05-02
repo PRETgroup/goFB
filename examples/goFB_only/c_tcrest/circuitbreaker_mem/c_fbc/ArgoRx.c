@@ -36,7 +36,7 @@ void ArgoRxrun(ArgoRx* me)
 		if(mp_nback(me->chan)) {
 			me->needToAck = false;
 		}
-		
+		me->_Data = me->Data;
 		me->_output.event.DataPresent = 1;
 	}
 

@@ -13,7 +13,9 @@ void ArgoTxinit(ArgoTx* me)
 
     me->chan = mp_create_qport(me->ChanId, SOURCE, sizeof(INT), 1);
 	if(me->chan == NULL) {
-		while(1);
+		while(1) {
+			HEX = me->ChanId;
+		}
 	}
 }
 
@@ -23,6 +25,7 @@ void ArgoTxrun(ArgoTx* me)
     me->_output.events = 0;
 
 	if(me->_input.event.DataPresent) {
+		me->Data = me->_Data;
 		HEX = me->Data;
 		*((volatile _SPM INT *)me->chan->write_buf) = me->Data;
 		me->Success = mp_nbsend(me->chan);

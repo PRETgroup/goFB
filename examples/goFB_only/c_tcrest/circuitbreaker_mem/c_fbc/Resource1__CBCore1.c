@@ -7,7 +7,7 @@
 /* Function block initialization function */
 void Resource1__CBCore1init(Resource1__CBCore1* me)
 {
-    me->tx._ChanId = 1;
+    me->tx.ChanId = 1;
     CfbBreakerControllerinit(&me->cb);
     SawmillMessageHandlerinit(&me->msgh);
     ArgoTxinit(&me->tx);

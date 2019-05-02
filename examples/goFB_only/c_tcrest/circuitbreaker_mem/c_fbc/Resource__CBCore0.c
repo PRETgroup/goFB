@@ -7,9 +7,9 @@
 /* Function block initialization function */
 void Resource__CBCore0init(Resource__CBCore0* me)
 {
-    me->cb3rx._ChanId = 3;
-    me->cb2rx._ChanId = 2;
-    me->cb1rx._ChanId = 1;
+    me->cb3rx.ChanId = 3;
+    me->cb2rx.ChanId = 2;
+    me->cb1rx.ChanId = 1;
     ArgoRxinit(&me->cb3rx);
     ArgoRxinit(&me->cb2rx);
     ArgoRxinit(&me->cb1rx);

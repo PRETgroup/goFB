@@ -7,7 +7,7 @@
 /* Function block initialization function */
 void Resource3__CBCore3init(Resource3__CBCore3* me)
 {
-    me->tx._ChanId = 1;
+    me->tx.ChanId = 3;
     SifbTimerinit(&me->timer);
     ArgoTxinit(&me->tx);
     SifbManagementControlsinit(&me->hmi);

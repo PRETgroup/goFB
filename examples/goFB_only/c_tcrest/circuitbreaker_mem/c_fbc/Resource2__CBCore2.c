@@ -7,7 +7,7 @@
 /* Function block initialization function */
 void Resource2__CBCore2init(Resource2__CBCore2* me)
 {
-    me->tx._ChanId = 2;
+    me->tx.ChanId = 2;
     SifbTimerinit(&me->timer);
     ArgoTxinit(&me->tx);
     SifbManagementControlsinit(&me->hmi);
