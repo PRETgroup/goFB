@@ -7,6 +7,7 @@
 /* Function block initialization function */
 void Resource1__CBCore1init(Resource1__CBCore1* me)
 {
+    me->tx._ChanId = 1;
     CfbBreakerControllerinit(&me->cb);
     SawmillMessageHandlerinit(&me->msgh);
     ArgoTxinit(&me->tx);
@@ -14,7 +15,6 @@ void Resource1__CBCore1init(Resource1__CBCore1* me)
     SifbTimerinit(&me->timer);
     SifbManagementControlsinit(&me->hmi);
     SifbAmmeterinit(&me->amm);
-    me->tx._ChanId = 1;
 }
 
 /* Function block execution function */

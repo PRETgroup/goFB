@@ -24,47 +24,47 @@ void SifbCBPrintStatus_PrintService(SifbCBPrintStatus* me)
 
 HEX = me->St1 || (me->St2 << 4) || (me->St3 << 4); 
 
-// printf("CB 1: ");
-// switch(me->St1) {
-//  case 0:
-//   printf("CLOSED       ");
-//   break;
-//  case 1:
-//   printf("OPEN         ");
-//   break;
-//  default:
-//   printf("UNKNOWN      ");
-//   break;
-// }
-// printf("\t");
+printf("CB 1: ");
+switch(me->St1) {
+ case 0:
+  printf("CLOSED       ");
+  break;
+ case 1:
+  printf("OPEN         ");
+  break;
+ default:
+  printf("UNKNOWN      ");
+  break;
+}
+printf("\t");
 
-// printf("CB 2: ");
-// switch(me->St1) {
-//  case 0:
-//   printf("CLOSED       ");
-//   break;
-//  case 1:
-//   printf("OPEN         ");
-//   break;
-//  default:
-//   printf("UNKNOWN      ");
-//   break;
-// }
-// printf("\t");
+printf("CB 2: ");
+switch(me->St2) {
+ case 0:
+  printf("CLOSED       ");
+  break;
+ case 1:
+  printf("OPEN         ");
+  break;
+ default:
+  printf("UNKNOWN      ");
+  break;
+}
+printf("\t");
 
-// printf("CB 3: ");
-// switch(me->St1) {
-//  case 0:
-//   printf("CLOSED       ");
-//   break;
-//  case 1:
-//   printf("OPEN         ");
-//   break;
-//  default:
-//   printf("UNKNOWN      ");
-//   break;
-// }
-// printf("\n");
+printf("CB 3: ");
+switch(me->St3) {
+ case 0:
+  printf("CLOSED       ");
+  break;
+ case 1:
+  printf("OPEN         ");
+  break;
+ default:
+  printf("UNKNOWN      ");
+  break;
+}
+printf("\n");
 
 
 }
