@@ -15,6 +15,8 @@ void t0(void* param);
 int main() {
 	printf("circuitbreaker_mem single startup.\n");
 	printf("sizes: %lu\n", sizeof(_CBCoreSingle_t));
+
+	
 	//mp_init();
 
 
@@ -57,6 +59,23 @@ void t0(void* param) {
 	_CBCoreSingle_t * c0;
 	_CBCoreSingle_t c;
 	c0 = &c; //SPM_BASE;
+
+	// printf("01 sizes: %lu\n", sizeof( c.amm1 ));
+	// printf("02 sizes: %lu\n", sizeof( c.timer1 ));
+	// printf("03 sizes: %lu\n", sizeof( c.cb1 ));
+	// printf("04 sizes: %lu\n", sizeof( c.hm1 ));
+	// printf("05 sizes: %lu\n", sizeof( c.led1 ));
+	// printf("06 sizes: %lu\n", sizeof( c.hm3 ));
+	// printf("07 sizes: %lu\n", sizeof( c.led3 ));
+	// printf("08 sizes: %lu\n", sizeof( c.amm3 ));
+	// printf("09 sizes: %lu\n", sizeof( c.cb3 ));
+	// printf("10 sizes: %lu\n", sizeof( c.timer3 ));
+	// printf("11 sizes: %lu\n", sizeof( c.hm2 ));
+	// printf("12 sizes: %lu\n", sizeof( c.led2 ));
+	// printf("13 sizes: %lu\n", sizeof( c.amm2 ));
+	// printf("14 sizes: %lu\n", sizeof( c.cb2 ));
+	// printf("15 sizes: %lu\n", sizeof( c.timer2 ));
+	// printf("16 sizes: %lu\n", sizeof( c.print ));
 
 	if(_CBCoreSingle_preinit(c0) != 0 || _CBCoreSingle_init(c0) != 0) {
 		HEX = 15;

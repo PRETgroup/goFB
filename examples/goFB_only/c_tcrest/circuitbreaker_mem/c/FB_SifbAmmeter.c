@@ -73,11 +73,13 @@ int sw_ammh = ((SWITCHES & 0b1000) != 0);
 
 if(sw_ammh == 1 && (int)(me->i) != 300) {
 	//switch is pressed
+	//HEX = 1;
 	me->i = 300.0;
 	me->outputEvents.event.i_measured = 1;
 }
 if(sw_ammh == 0 && (int)(me->i) != 5) {
 	//switch is pressed
+	//HEX = 2;
 	me->i = 5.0;
 	me->outputEvents.event.i_measured = 1;
 }
