@@ -9,8 +9,10 @@ void BfbIDMTCurveinit(BfbIDMTCurve* me)
 {
     me->_state = 0;
     me->_entered = false;
-    me->_input.events = 0;
-    me->_output.events = 0;
+    me->_input.event.tick = 0;
+    me->_input.event.i_measured = 0;
+    me->_input.event.i_set_change = 0;
+    me->_output.event.unsafe = 0;
     me->cnt = 0;
     me->max = 0.0;
     me->k = 100.0;
@@ -37,7 +39,7 @@ me->max = (me->k * me->b) / ((me->i / me->i_set) - 1);
 /* Function block execution function */
 void BfbIDMTCurverun(BfbIDMTCurve* me)
 {
-    me->_output.events = 0;
+    me->_output.event.unsafe = 0;
 
     if (me->_input.events) {
         if (me->_input.event.i_measured) {
@@ -47,6 +49,7 @@ void BfbIDMTCurverun(BfbIDMTCurve* me)
             me->i_set = me->_i_set;
         }
     }
+    #pragma loopbound min 1 max 2
     for (;;) {
         switch (me->_state) {
             case 0:
@@ -112,6 +115,8 @@ void BfbIDMTCurverun(BfbIDMTCurve* me)
         break;
     }
 
-    me->_input.events = 0;
+    me->_input.event.tick = 0;
+    me->_input.event.i_measured = 0;
+    me->_input.event.i_set_change = 0;
 }
 

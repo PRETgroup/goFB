@@ -10,18 +10,18 @@
 typedef union {
     UDINT events;
     struct {
-        UDINT tick : 1; // 
-        UDINT i_measured : 1; // 
-        UDINT i_set_change : 1; // 
-        UDINT brk : 1; // 
-        UDINT rst : 1; // 
+        UDINT tick ; // 
+        UDINT i_measured ; // 
+        UDINT i_set_change ; // 
+        UDINT brk ; // 
+        UDINT rst ; // 
     } event;
 } CfbBreakerControllerIEvents;
 
 typedef union {
     UDINT events;
     struct {
-        UDINT b_change : 1; // 
+        UDINT b_change ; // 
     } event;
 } CfbBreakerControllerOEvents;
 

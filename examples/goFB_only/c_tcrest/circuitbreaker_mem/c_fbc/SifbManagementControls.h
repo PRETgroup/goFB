@@ -8,9 +8,9 @@
 typedef union {
     UDINT events;
     struct {
-        UDINT i_set_change : 1; // 
-        UDINT brk : 1; // 
-        UDINT rst : 1; // 
+        UDINT i_set_change; // 
+        UDINT brk; // 
+        UDINT rst; // 
     } event;
 } SifbManagementControlsOEvents;
 

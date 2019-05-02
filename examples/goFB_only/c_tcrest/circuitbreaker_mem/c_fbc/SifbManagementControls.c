@@ -9,35 +9,40 @@ void SifbManagementControlsinit(SifbManagementControls* me)
 {
     me->_state = 0;
     me->_entered = false;
-    me->_output.events = 0;
+    me->_output.event.i_set_change = 0;
+    me->_output.event.brk = 0;
+    me->_output.event.rst = 0;
 }
 
 /* ECC algorithms */
 void SifbManagementControls_update_management(SifbManagementControls* me)
 {
-int sw_break = (SWITCHES & 0b0001 != 0);
-int sw_reset = (SWITCHES & 0b0010 != 0);
-int sw_iseth = (SWITCHES & 0b0100 != 0);
+int sw_break = ((SWITCHES & 0b0001) != 0);
+int sw_reset = ((SWITCHES & 0b0010) != 0);
+int sw_iseth = ((SWITCHES & 0b0100) != 0);
 
-if(sw_iseth == 1 && int(me->i_set) != 100) {
+if(sw_iseth == 1 && (int)(me->i_set) != 100) {
  //switch is pressed
  me->i_set = 1000.0;
- me->outputEvents.event.i_set_change = 1;
+ me->_output.event.i_set_change = 1;
 }
-if(sw_iseth == 0 && int(me->i_set) != 10) {
+if(sw_iseth == 0 && (int)(me->i_set) != 10) {
  //switch is pressed
  me->i_set = 10.0;
- me->outputEvents.event.i_set_change = 1;
+ me->_output.event.i_set_change = 1;
 }
-me->outputEvents.event.brk = (sw_break > 0);
-me->outputEvents.event.rst = (sw_reset > 0);
+me->_output.event.brk = (sw_break > 0);
+me->_output.event.rst = (sw_reset > 0);
 }
 
 /* Function block execution function */
 void SifbManagementControlsrun(SifbManagementControls* me)
 {
-    me->_output.events = 0;
+    me->_output.event.i_set_change = 0;
+    me->_output.event.brk = 0;
+    me->_output.event.rst = 0;
 
+    #pragma loopbound min 1 max 2
     for (;;) {
         if (me->_state == 0) {
             // State: Start

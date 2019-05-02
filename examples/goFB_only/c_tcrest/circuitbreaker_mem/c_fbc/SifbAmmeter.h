@@ -8,7 +8,7 @@
 typedef union {
     UDINT events;
     struct {
-        UDINT i_measured : 1; // 
+        UDINT i_measured; // 
     } event;
 } SifbAmmeterOEvents;
 

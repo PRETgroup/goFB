@@ -10,6 +10,11 @@ void ArgoTxinit(ArgoTx* me)
     me->_entered = false;
     me->_input.events = 0;
     me->_output.events = 0;
+
+    me->chan = mp_create_qport(me->ChanId, SOURCE, sizeof(INT), 1);
+	if(me->chan == NULL) {
+		while(1);
+	}
 }
 
 /* Function block execution function */
@@ -17,16 +22,12 @@ void ArgoTxrun(ArgoTx* me)
 {
     me->_output.events = 0;
 
-    if (me->_input.event.DataPresent) {
-        me->Data = me->_Data;
-    }
-    // State: Start
-    if (!me->_entered) {
-        me->_entered = true;
-    }
-    if (me->_output.event.SuccessChanged) {
-        me->_Success = me->Success;
-    }
+	if(me->_input.event.DataPresent) {
+		HEX = me->Data;
+		*((volatile _SPM INT *)me->chan->write_buf) = me->Data;
+		me->Success = mp_nbsend(me->chan);
+		me->_output.event.SuccessChanged = 1;
+	}
 
     me->_input.events = 0;
 }

@@ -15,17 +15,17 @@ void SifbAmmeterinit(SifbAmmeter* me)
 /* ECC algorithms */
 void SifbAmmeter_update_amms(SifbAmmeter* me)
 {
-int sw_ammh = (SWITCHES & 0b1000 != 0);
+int sw_ammh = ((SWITCHES & 0b1000) != 0);
 
-if(sw_ammh == 1 && int(me->i_set) != 300) {
+if(sw_ammh == 1 && (int)(me->i) != 300) {
  //switch is pressed
  me->i = 300.0;
- me->outputEvents.event.i_change = 1;
+ me->_output.event.i_measured = 1;
 }
-if(sw_ammh == 0 && int(me->i_set) != 5) {
+if(sw_ammh == 0 && (int)(me->i) != 5) {
  //switch is pressed
- me->i_set = 5.0;
- me->outputEvents.event.i_change = 1;
+ me->i = 5.0;
+ me->_output.event.i_measured = 1;
 }
 }
 
@@ -34,6 +34,7 @@ void SifbAmmeterrun(SifbAmmeter* me)
 {
     me->_output.events = 0;
 
+    #pragma loopbound min 1 max 2
     for (;;) {
         if (me->_state == 0) {
             // State: Start

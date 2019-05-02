@@ -8,7 +8,7 @@
 typedef union {
     UDINT events;
     struct {
-        UDINT i_change : 1; // 
+        UDINT i_change; // 
     } event;
 } SifbIntLedIEvents;
 

@@ -30,6 +30,8 @@ typedef struct {
     ArgoTxOEvents _output;
     BOOL Success; // 
     BOOL _Success;
+
+		qpd_t* chan;
 } ArgoTx;
 
 /* Function block initialization function */

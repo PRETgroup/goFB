@@ -25,6 +25,7 @@ void SifbIntLedrun(SifbIntLed* me)
     if (me->_input.event.i_change) {
         me->i = me->_i;
     }
+    #pragma loopbound min 1 max 2
     for (;;) {
         if (me->_state == 0) {
             // State: Start

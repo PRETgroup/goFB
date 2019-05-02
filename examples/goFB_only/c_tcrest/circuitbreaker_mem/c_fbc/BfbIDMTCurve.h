@@ -8,16 +8,16 @@
 typedef union {
     UDINT events;
     struct {
-        UDINT tick : 1; // 
-        UDINT i_measured : 1; // 
-        UDINT i_set_change : 1; // 
+        UDINT tick ; // 
+        UDINT i_measured ; // 
+        UDINT i_set_change ; // 
     } event;
 } BfbIDMTCurveIEvents;
 
 typedef union {
     UDINT events;
     struct {
-        UDINT unsafe : 1; // 
+        UDINT unsafe ; // 
     } event;
 } BfbIDMTCurveOEvents;
 
@@ -33,8 +33,8 @@ typedef struct {
     ULINT cnt; // 
     LREAL max; // 
     REAL k; // 
-    BOOL b; // 
-    BOOL a; // 
+    REAL b; // 
+    REAL a; // 
 } BfbIDMTCurve;
 
 /* Function block initialization function */

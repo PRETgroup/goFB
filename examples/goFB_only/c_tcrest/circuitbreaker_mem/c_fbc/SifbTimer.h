@@ -8,7 +8,7 @@
 typedef union {
     UDINT events;
     struct {
-        UDINT Tick : 1; // 
+        UDINT Tick; // 
     } event;
 } SifbTimerOEvents;
 
