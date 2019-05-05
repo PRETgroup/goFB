@@ -50,8 +50,8 @@ typedef struct {
 	//resources (Devices only)
 	
 	//state and trigger (BFBs only)
-	enum SifbManagementControls_states _state; //stores current state
-	BOOL _trigger; //indicates if a state transition has occured this tick
+	//enum SifbManagementControls_states _state; //stores current state
+	//BOOL _trigger; //indicates if a state transition has occured this tick
 	
 	
 	
@@ -61,13 +61,13 @@ typedef struct {
 } SifbManagementControls_t;
 
 //all FBs get a preinit function
-int SifbManagementControls_preinit(SifbManagementControls_t  *me);
+int SifbManagementControls_preinit(SifbManagementControls_t  _SPM *me);
 
 //all FBs get an init function
-int SifbManagementControls_init(SifbManagementControls_t  *me);
+int SifbManagementControls_init(SifbManagementControls_t  _SPM *me);
 
 //all FBs get a run function
-void SifbManagementControls_run(SifbManagementControls_t  *me);
+void SifbManagementControls_run(SifbManagementControls_t  _SPM *me);
 
 
 

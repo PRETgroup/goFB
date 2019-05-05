@@ -6,10 +6,10 @@
 
 
 /* SifbCBPrintStatus_preinit() is required to be called to 
- * initialise an instance of SifbCBPrintStatus. 
- * It sets all I/O values to zero.
- */
-int SifbCBPrintStatus_preinit(SifbCBPrintStatus_t  *me) {
+ _SPM * initialise an instance of SifbCBPrintStatus. 
+ _SPM * It sets all I/O values to zero.
+ _SPM */
+int SifbCBPrintStatus_preinit(SifbCBPrintStatus_t  _SPM *me) {
 	
 
 	//reset the input events
@@ -30,8 +30,8 @@ int SifbCBPrintStatus_preinit(SifbCBPrintStatus_t  *me) {
 	
 	
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
-	me->_state = STATE_SifbCBPrintStatus_Start;
-	me->_trigger = true;
+	// me->_state = STATE_SifbCBPrintStatus_Start;
+	// me->_trigger = true;
 	
 	
 	
@@ -42,10 +42,10 @@ int SifbCBPrintStatus_preinit(SifbCBPrintStatus_t  *me) {
 }
 
 /* SifbCBPrintStatus_init() is required to be called to 
- * set up an instance of SifbCBPrintStatus. 
- * It passes around configuration data.
- */
-int SifbCBPrintStatus_init(SifbCBPrintStatus_t  *me) {
+ _SPM * set up an instance of SifbCBPrintStatus. 
+ _SPM * It passes around configuration data.
+ _SPM */
+int SifbCBPrintStatus_init(SifbCBPrintStatus_t  _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -67,7 +67,7 @@ int SifbCBPrintStatus_init(SifbCBPrintStatus_t  *me) {
 
 //algorithms
 
-void SifbCBPrintStatus_PrintService(SifbCBPrintStatus_t  *me) {
+void SifbCBPrintStatus_PrintService(SifbCBPrintStatus_t  _SPM *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 // OFF 0
 // RUNNING 1
@@ -76,7 +76,8 @@ void SifbCBPrintStatus_PrintService(SifbCBPrintStatus_t  *me) {
 // STALL -3
 // SPEED -4
 
-
+HEX = me->St1 || (me->St2 << 4) || (me->St3 << 4); 
+/*
 printf("CB 1: ");
 switch(me->St1) {
 	case 0:
@@ -118,20 +119,20 @@ switch(me->St1) {
 		break;
 }
 printf("\n");
-
+*/
 
 }
 
 
 
 /* SifbCBPrintStatus_run() executes a single tick of an
- * instance of SifbCBPrintStatus according to synchronous semantics.
- * Notice that it does NOT perform any I/O - synchronisation
- * will need to be done in the parent.
- * Also note that on the first run of this function, trigger will already be set
- * to true, meaning that on the very first run no next state logic will occur.
- */
-void SifbCBPrintStatus_run(SifbCBPrintStatus_t  *me) {
+ _SPM * instance of SifbCBPrintStatus according to synchronous semantics.
+ _SPM * Notice that it does NOT perform any I/O - synchronisation
+ _SPM * will need to be done in the parent.
+ _SPM * Also note that on the first run of this function, trigger will already be set
+ _SPM * to true, meaning that on the very first run no next state logic will occur.
+ _SPM */
+void SifbCBPrintStatus_run(SifbCBPrintStatus_t  _SPM *me) {
 	//if there are output events, reset them
 	
 	
@@ -139,52 +140,52 @@ void SifbCBPrintStatus_run(SifbCBPrintStatus_t  *me) {
 	
 
 	
-	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_SifbCBPrintStatus_Start:
-			if(true) {
+	// //next state logic
+	// if(me->_trigger == false) {
+	// 	switch(me->_state) {
+	// 	case STATE_SifbCBPrintStatus_Start:
+	// 		if(true) {
 				
-				me->_state = STATE_SifbCBPrintStatus_Update;
-				me->_trigger = true;
-			};
-			break;
-		case STATE_SifbCBPrintStatus_Update:
-			if(me->inputEvents.event.StatusUpdate) {
+	// 			me->_state = STATE_SifbCBPrintStatus_Update;
+	// 			me->_trigger = true;
+	// 		};
+	// 		break;
+	// 	case STATE_SifbCBPrintStatus_Update:
+	// 		if(me->inputEvents.event.StatusUpdate) {
 				
-				me->_state = STATE_SifbCBPrintStatus_Update;
-				me->_trigger = true;
-			};
-			break;
+	// 			me->_state = STATE_SifbCBPrintStatus_Update;
+	// 			me->_trigger = true;
+	// 		};
+	// 		break;
 		
-		default: 
-			break;
-		}
-	}
+	// 	default: 
+	// 		break;
+	// 	}
+	// }
 
-	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_SifbCBPrintStatus_Start:
-			#ifdef PRINT_STATES
-				printf("SifbCBPrintStatus: [Entered State Start]\n");
-			#endif
+	// //state output logic
+	// if(me->_trigger == true) {
+	// 	switch(me->_state) {
+	// 	case STATE_SifbCBPrintStatus_Start:
+	// 		#ifdef PRINT_STATES
+	// 			printf("SifbCBPrintStatus: [Entered State Start]\n");
+	// 		#endif
 			
-			break;
-		case STATE_SifbCBPrintStatus_Update:
-			#ifdef PRINT_STATES
-				printf("SifbCBPrintStatus: [Entered State Update]\n");
-			#endif
+	// 		break;
+	// 	case STATE_SifbCBPrintStatus_Update:
+	// 		#ifdef PRINT_STATES
+	// 			printf("SifbCBPrintStatus: [Entered State Update]\n");
+	// 		#endif
 			SifbCBPrintStatus_PrintService(me);
 			
-			break;
+	// 		break;
 		
-		default: 
-			break;
-		}
-	}
+	// 	default: 
+	// 		break;
+	// 	}
+	// }
 
-	me->_trigger = false;
+	// me->_trigger = false;
 
 	
 

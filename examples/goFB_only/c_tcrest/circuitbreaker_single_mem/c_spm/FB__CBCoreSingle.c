@@ -17,10 +17,10 @@
 
 
 /* _CBCoreSingle_preinit() is required to be called to 
- * initialise an instance of _CBCoreSingle. 
- * It sets all I/O values to zero.
- */
-int _CBCoreSingle_preinit(_CBCoreSingle_t  *me) {
+ _SPM * initialise an instance of _CBCoreSingle. 
+ _SPM * It sets all I/O values to zero.
+ _SPM */
+int _CBCoreSingle_preinit(_CBCoreSingle_t  _SPM *me) {
 	
 
 	
@@ -110,10 +110,10 @@ int _CBCoreSingle_preinit(_CBCoreSingle_t  *me) {
 }
 
 /* _CBCoreSingle_init() is required to be called to 
- * set up an instance of _CBCoreSingle. 
- * It passes around configuration data.
- */
-int _CBCoreSingle_init(_CBCoreSingle_t  *me) {
+ _SPM * set up an instance of _CBCoreSingle. 
+ _SPM * It passes around configuration data.
+ _SPM */
+int _CBCoreSingle_init(_CBCoreSingle_t  _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -210,11 +210,11 @@ int _CBCoreSingle_init(_CBCoreSingle_t  *me) {
 
 
 /* _CBCoreSingle_syncOutputEvents() synchronises the output events of an
- * instance of _CBCoreSingle as required by synchronous semantics.
- * Notice that it does NOT perform any computation - this occurs in the
- * _run function.
- */
-void _CBCoreSingle_syncOutputEvents(_CBCoreSingle_t  *me) {
+ _SPM * instance of _CBCoreSingle as required by synchronous semantics.
+ _SPM * Notice that it does NOT perform any computation - this occurs in the
+ _SPM * _run function.
+ _SPM */
+void _CBCoreSingle_syncOutputEvents(_CBCoreSingle_t  _SPM *me) {
 	//first, for all cfb children, call this same function
 	
 	CfbBreakerController_syncOutputEvents(&me->cb1);//sync for cb1 (of type CfbBreakerController) which is a CFB
@@ -223,11 +223,11 @@ void _CBCoreSingle_syncOutputEvents(_CBCoreSingle_t  *me) {
 	}
 
 /* _CBCoreSingle_syncInputEvents() synchronises the input events of an
- * instance of _CBCoreSingle as required by synchronous semantics.
- * Notice that it does NOT perform any computation - this occurs in the
- * _run function.
- */
-void _CBCoreSingle_syncInputEvents(_CBCoreSingle_t  *me) {
+ _SPM * instance of _CBCoreSingle as required by synchronous semantics.
+ _SPM * Notice that it does NOT perform any computation - this occurs in the
+ _SPM * _run function.
+ _SPM */
+void _CBCoreSingle_syncInputEvents(_CBCoreSingle_t  _SPM *me) {
 	//first, we explicitly synchronise the children
 	
 	me->cb1.inputEvents.event.tick = me->timer1.outputEvents.event.Tick; 
@@ -280,13 +280,13 @@ void _CBCoreSingle_syncInputEvents(_CBCoreSingle_t  *me) {
 }
 
 /* _CBCoreSingle_syncOutputData() synchronises the output data connections of an
- * instance of _CBCoreSingle as required by synchronous semantics.
- * It does the checking to ensure that only connections which have had their
- * associated event fire are updated.
- * Notice that it does NOT perform any computation - this occurs in the
- * _run function.
- */
-void _CBCoreSingle_syncOutputData(_CBCoreSingle_t  *me) {
+ _SPM * instance of _CBCoreSingle as required by synchronous semantics.
+ _SPM * It does the checking to ensure that only connections which have had their
+ _SPM * associated event fire are updated.
+ _SPM * Notice that it does NOT perform any computation - this occurs in the
+ _SPM * _run function.
+ _SPM */
+void _CBCoreSingle_syncOutputData(_CBCoreSingle_t  _SPM *me) {
 	//for all composite function block children, call this same function
 	//sync for cb1 (of type CfbBreakerController) which is a CFB
 	CfbBreakerController_syncOutputData(&me->cb1);//sync for cb3 (of type CfbBreakerController) which is a CFB
@@ -299,13 +299,13 @@ void _CBCoreSingle_syncOutputData(_CBCoreSingle_t  *me) {
 }
 
 /* _CBCoreSingle_syncInputData() synchronises the input data connections of an
- * instance of _CBCoreSingle as required by synchronous semantics.
- * It does the checking to ensure that only connections which have had their
- * associated event fire are updated.
- * Notice that it does NOT perform any computation - this occurs in the
- * _run function.
- */
-void _CBCoreSingle_syncInputData(_CBCoreSingle_t  *me) {
+ _SPM * instance of _CBCoreSingle as required by synchronous semantics.
+ _SPM * It does the checking to ensure that only connections which have had their
+ _SPM * associated event fire are updated.
+ _SPM * Notice that it does NOT perform any computation - this occurs in the
+ _SPM * _run function.
+ _SPM */
+void _CBCoreSingle_syncInputData(_CBCoreSingle_t  _SPM *me) {
 	//for all basic function block children, perform their synchronisations explicitly
 	
 	//sync for amm1 (of type SifbAmmeter) which is a BFB
@@ -397,11 +397,11 @@ void _CBCoreSingle_syncInputData(_CBCoreSingle_t  *me) {
 
 
 /* _CBCoreSingle_run() executes a single tick of an
- * instance of _CBCoreSingle according to synchronise semantics.
- * Notice that it does NOT perform any I/O - synchronisation
- * is done using the _syncX functions at this (and any higher) level.
- */
-void _CBCoreSingle_run(_CBCoreSingle_t  *me) {
+ _SPM * instance of _CBCoreSingle according to synchronise semantics.
+ _SPM * Notice that it does NOT perform any I/O - synchronisation
+ _SPM * is done using the _syncX functions at this (and any higher) level.
+ _SPM */
+void _CBCoreSingle_run(_CBCoreSingle_t  _SPM *me) {
 	
 	
 	SifbAmmeter_run(&me->amm1);

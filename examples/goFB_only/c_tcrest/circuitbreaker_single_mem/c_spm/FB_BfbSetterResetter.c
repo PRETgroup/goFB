@@ -6,10 +6,10 @@
 
 
 /* BfbSetterResetter_preinit() is required to be called to 
- * initialise an instance of BfbSetterResetter. 
- * It sets all I/O values to zero.
- */
-int BfbSetterResetter_preinit(BfbSetterResetter_t  *me) {
+ _SPM * initialise an instance of BfbSetterResetter. 
+ _SPM * It sets all I/O values to zero.
+ _SPM */
+int BfbSetterResetter_preinit(BfbSetterResetter_t  _SPM *me) {
 	
 
 	//reset the input events
@@ -48,10 +48,10 @@ int BfbSetterResetter_preinit(BfbSetterResetter_t  *me) {
 }
 
 /* BfbSetterResetter_init() is required to be called to 
- * set up an instance of BfbSetterResetter. 
- * It passes around configuration data.
- */
-int BfbSetterResetter_init(BfbSetterResetter_t  *me) {
+ _SPM * set up an instance of BfbSetterResetter. 
+ _SPM * It passes around configuration data.
+ _SPM */
+int BfbSetterResetter_init(BfbSetterResetter_t  _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -73,12 +73,12 @@ int BfbSetterResetter_init(BfbSetterResetter_t  *me) {
 
 //algorithms
 
-void BfbSetterResetter_BreakB(BfbSetterResetter_t  *me) {
+void BfbSetterResetter_BreakB(BfbSetterResetter_t  _SPM *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 me->b = 1;
 }
 
-void BfbSetterResetter_CloseB(BfbSetterResetter_t  *me) {
+void BfbSetterResetter_CloseB(BfbSetterResetter_t  _SPM *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 me->b = 0;
 }
@@ -86,13 +86,13 @@ me->b = 0;
 
 
 /* BfbSetterResetter_run() executes a single tick of an
- * instance of BfbSetterResetter according to synchronous semantics.
- * Notice that it does NOT perform any I/O - synchronisation
- * will need to be done in the parent.
- * Also note that on the first run of this function, trigger will already be set
- * to true, meaning that on the very first run no next state logic will occur.
- */
-void BfbSetterResetter_run(BfbSetterResetter_t  *me) {
+ _SPM * instance of BfbSetterResetter according to synchronous semantics.
+ _SPM * Notice that it does NOT perform any I/O - synchronisation
+ _SPM * will need to be done in the parent.
+ _SPM * Also note that on the first run of this function, trigger will already be set
+ _SPM * to true, meaning that on the very first run no next state logic will occur.
+ _SPM */
+void BfbSetterResetter_run(BfbSetterResetter_t  _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.b_change = 0;

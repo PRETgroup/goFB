@@ -27,6 +27,7 @@ C_DIR?=c
 
 $(TCRESTHOMEDIR)/patmos/tmp/$(PROJECT).elf: ./$(PROJECT)/$(C_DIR)/*.c ./$(PROJECT)/$(C_DIR)/*.h
 	patmos-clang \
+	-Wall \
 	-target patmos-unknown-unknown-elf \
 	-O2 \
 	-I $(TCRESTINCLUDEDIR) \

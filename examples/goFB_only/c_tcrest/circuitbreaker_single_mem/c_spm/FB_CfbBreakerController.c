@@ -17,10 +17,10 @@
 
 
 /* CfbBreakerController_preinit() is required to be called to 
- * initialise an instance of CfbBreakerController. 
- * It sets all I/O values to zero.
- */
-int CfbBreakerController_preinit(CfbBreakerController_t  *me) {
+ _SPM * initialise an instance of CfbBreakerController. 
+ _SPM * It sets all I/O values to zero.
+ _SPM */
+int CfbBreakerController_preinit(CfbBreakerController_t  _SPM *me) {
 	
 
 	//reset the input events
@@ -66,10 +66,10 @@ int CfbBreakerController_preinit(CfbBreakerController_t  *me) {
 }
 
 /* CfbBreakerController_init() is required to be called to 
- * set up an instance of CfbBreakerController. 
- * It passes around configuration data.
- */
-int CfbBreakerController_init(CfbBreakerController_t  *me) {
+ _SPM * set up an instance of CfbBreakerController. 
+ _SPM * It passes around configuration data.
+ _SPM */
+int CfbBreakerController_init(CfbBreakerController_t  _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -100,11 +100,11 @@ int CfbBreakerController_init(CfbBreakerController_t  *me) {
 
 
 /* CfbBreakerController_syncOutputEvents() synchronises the output events of an
- * instance of CfbBreakerController as required by synchronous semantics.
- * Notice that it does NOT perform any computation - this occurs in the
- * _run function.
- */
-void CfbBreakerController_syncOutputEvents(CfbBreakerController_t  *me) {
+ _SPM * instance of CfbBreakerController as required by synchronous semantics.
+ _SPM * Notice that it does NOT perform any computation - this occurs in the
+ _SPM * _run function.
+ _SPM */
+void CfbBreakerController_syncOutputEvents(CfbBreakerController_t  _SPM *me) {
 	//first, for all cfb children, call this same function
 	//then, for all connections that are connected to an output on the parent, run their run their copy
 	
@@ -112,11 +112,11 @@ void CfbBreakerController_syncOutputEvents(CfbBreakerController_t  *me) {
 		}
 
 /* CfbBreakerController_syncInputEvents() synchronises the input events of an
- * instance of CfbBreakerController as required by synchronous semantics.
- * Notice that it does NOT perform any computation - this occurs in the
- * _run function.
- */
-void CfbBreakerController_syncInputEvents(CfbBreakerController_t  *me) {
+ _SPM * instance of CfbBreakerController as required by synchronous semantics.
+ _SPM * Notice that it does NOT perform any computation - this occurs in the
+ _SPM * _run function.
+ _SPM */
+void CfbBreakerController_syncInputEvents(CfbBreakerController_t  _SPM *me) {
 	//first, we explicitly synchronise the children
 	
 	me->idmtcurve.inputEvents.event.tick = me->inputEvents.event.tick; 
@@ -137,13 +137,13 @@ void CfbBreakerController_syncInputEvents(CfbBreakerController_t  *me) {
 }
 
 /* CfbBreakerController_syncOutputData() synchronises the output data connections of an
- * instance of CfbBreakerController as required by synchronous semantics.
- * It does the checking to ensure that only connections which have had their
- * associated event fire are updated.
- * Notice that it does NOT perform any computation - this occurs in the
- * _run function.
- */
-void CfbBreakerController_syncOutputData(CfbBreakerController_t  *me) {
+ _SPM * instance of CfbBreakerController as required by synchronous semantics.
+ _SPM * It does the checking to ensure that only connections which have had their
+ _SPM * associated event fire are updated.
+ _SPM * Notice that it does NOT perform any computation - this occurs in the
+ _SPM * _run function.
+ _SPM */
+void CfbBreakerController_syncOutputData(CfbBreakerController_t  _SPM *me) {
 	//for all composite function block children, call this same function
 	
 	
@@ -154,13 +154,13 @@ void CfbBreakerController_syncOutputData(CfbBreakerController_t  *me) {
 }
 
 /* CfbBreakerController_syncInputData() synchronises the input data connections of an
- * instance of CfbBreakerController as required by synchronous semantics.
- * It does the checking to ensure that only connections which have had their
- * associated event fire are updated.
- * Notice that it does NOT perform any computation - this occurs in the
- * _run function.
- */
-void CfbBreakerController_syncInputData(CfbBreakerController_t  *me) {
+ _SPM * instance of CfbBreakerController as required by synchronous semantics.
+ _SPM * It does the checking to ensure that only connections which have had their
+ _SPM * associated event fire are updated.
+ _SPM * Notice that it does NOT perform any computation - this occurs in the
+ _SPM * _run function.
+ _SPM */
+void CfbBreakerController_syncInputData(CfbBreakerController_t  _SPM *me) {
 	//for all basic function block children, perform their synchronisations explicitly
 	
 	//sync for idmtcurve (of type BfbIDMTCurve) which is a BFB
@@ -185,11 +185,11 @@ void CfbBreakerController_syncInputData(CfbBreakerController_t  *me) {
 
 
 /* CfbBreakerController_run() executes a single tick of an
- * instance of CfbBreakerController according to synchronise semantics.
- * Notice that it does NOT perform any I/O - synchronisation
- * is done using the _syncX functions at this (and any higher) level.
- */
-void CfbBreakerController_run(CfbBreakerController_t  *me) {
+ _SPM * instance of CfbBreakerController according to synchronise semantics.
+ _SPM * Notice that it does NOT perform any I/O - synchronisation
+ _SPM * is done using the _syncX functions at this (and any higher) level.
+ _SPM */
+void CfbBreakerController_run(CfbBreakerController_t  _SPM *me) {
 	
 	
 	BfbIDMTCurve_run(&me->idmtcurve);

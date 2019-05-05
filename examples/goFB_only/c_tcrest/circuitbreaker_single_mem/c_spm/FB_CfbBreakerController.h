@@ -70,20 +70,20 @@ typedef struct {
 } CfbBreakerController_t;
 
 //all FBs get a preinit function
-int CfbBreakerController_preinit(CfbBreakerController_t  *me);
+int CfbBreakerController_preinit(CfbBreakerController_t  _SPM *me);
 
 //all FBs get an init function
-int CfbBreakerController_init(CfbBreakerController_t  *me);
+int CfbBreakerController_init(CfbBreakerController_t  _SPM *me);
 
 //all FBs get a run function
-void CfbBreakerController_run(CfbBreakerController_t  *me);
+void CfbBreakerController_run(CfbBreakerController_t  _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void CfbBreakerController_syncOutputEvents(CfbBreakerController_t  *me);
-void CfbBreakerController_syncInputEvents(CfbBreakerController_t  *me);
+void CfbBreakerController_syncOutputEvents(CfbBreakerController_t  _SPM *me);
+void CfbBreakerController_syncInputEvents(CfbBreakerController_t  _SPM *me);
 
-void CfbBreakerController_syncOutputData(CfbBreakerController_t  *me);
-void CfbBreakerController_syncInputData(CfbBreakerController_t  *me);
+void CfbBreakerController_syncOutputData(CfbBreakerController_t  _SPM *me);
+void CfbBreakerController_syncInputData(CfbBreakerController_t  _SPM *me);
 
 
 

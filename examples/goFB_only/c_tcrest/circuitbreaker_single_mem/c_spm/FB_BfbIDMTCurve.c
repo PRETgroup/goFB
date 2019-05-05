@@ -6,10 +6,10 @@
 
 
 /* BfbIDMTCurve_preinit() is required to be called to 
- * initialise an instance of BfbIDMTCurve. 
- * It sets all I/O values to zero.
- */
-int BfbIDMTCurve_preinit(BfbIDMTCurve_t  *me) {
+ _SPM * initialise an instance of BfbIDMTCurve. 
+ _SPM * It sets all I/O values to zero.
+ _SPM */
+int BfbIDMTCurve_preinit(BfbIDMTCurve_t  _SPM *me) {
 	
 
 	//reset the input events
@@ -53,10 +53,10 @@ int BfbIDMTCurve_preinit(BfbIDMTCurve_t  *me) {
 }
 
 /* BfbIDMTCurve_init() is required to be called to 
- * set up an instance of BfbIDMTCurve. 
- * It passes around configuration data.
- */
-int BfbIDMTCurve_init(BfbIDMTCurve_t  *me) {
+ _SPM * set up an instance of BfbIDMTCurve. 
+ _SPM * It passes around configuration data.
+ _SPM */
+int BfbIDMTCurve_init(BfbIDMTCurve_t  _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -78,17 +78,17 @@ int BfbIDMTCurve_init(BfbIDMTCurve_t  *me) {
 
 //algorithms
 
-void BfbIDMTCurve_ResetCnt(BfbIDMTCurve_t  *me) {
+void BfbIDMTCurve_ResetCnt(BfbIDMTCurve_t  _SPM *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 me->cnt = 0;
 }
 
-void BfbIDMTCurve_UpdateCnt(BfbIDMTCurve_t  *me) {
+void BfbIDMTCurve_UpdateCnt(BfbIDMTCurve_t  _SPM *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 me->cnt = me->cnt + 1;
 }
 
-void BfbIDMTCurve_UpdateMax(BfbIDMTCurve_t  *me) {
+void BfbIDMTCurve_UpdateMax(BfbIDMTCurve_t  _SPM *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 me->max = (me->k * me->b) / ((me->i / me->i_set) - 1);
 }
@@ -96,13 +96,13 @@ me->max = (me->k * me->b) / ((me->i / me->i_set) - 1);
 
 
 /* BfbIDMTCurve_run() executes a single tick of an
- * instance of BfbIDMTCurve according to synchronous semantics.
- * Notice that it does NOT perform any I/O - synchronisation
- * will need to be done in the parent.
- * Also note that on the first run of this function, trigger will already be set
- * to true, meaning that on the very first run no next state logic will occur.
- */
-void BfbIDMTCurve_run(BfbIDMTCurve_t  *me) {
+ _SPM * instance of BfbIDMTCurve according to synchronous semantics.
+ _SPM * Notice that it does NOT perform any I/O - synchronisation
+ _SPM * will need to be done in the parent.
+ _SPM * Also note that on the first run of this function, trigger will already be set
+ _SPM * to true, meaning that on the very first run no next state logic will occur.
+ _SPM */
+void BfbIDMTCurve_run(BfbIDMTCurve_t  _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.unsafe = 0;

@@ -66,13 +66,13 @@ typedef struct {
 } BfbSetterResetter_t;
 
 //all FBs get a preinit function
-int BfbSetterResetter_preinit(BfbSetterResetter_t  *me);
+int BfbSetterResetter_preinit(BfbSetterResetter_t  _SPM *me);
 
 //all FBs get an init function
-int BfbSetterResetter_init(BfbSetterResetter_t  *me);
+int BfbSetterResetter_init(BfbSetterResetter_t  _SPM *me);
 
 //all FBs get a run function
-void BfbSetterResetter_run(BfbSetterResetter_t  *me);
+void BfbSetterResetter_run(BfbSetterResetter_t  _SPM *me);
 
 
 

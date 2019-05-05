@@ -6,10 +6,10 @@
 
 
 /* SifbManagementControls_preinit() is required to be called to 
- * initialise an instance of SifbManagementControls. 
- * It sets all I/O values to zero.
- */
-int SifbManagementControls_preinit(SifbManagementControls_t  *me) {
+ _SPM * initialise an instance of SifbManagementControls. 
+ _SPM * It sets all I/O values to zero.
+ _SPM */
+int SifbManagementControls_preinit(SifbManagementControls_t  _SPM *me) {
 	
 
 	
@@ -34,8 +34,8 @@ int SifbManagementControls_preinit(SifbManagementControls_t  *me) {
 	
 	
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
-	me->_state = STATE_SifbManagementControls_Start;
-	me->_trigger = true;
+	//me->_state = STATE_SifbManagementControls_Start;
+	//me->_trigger = true;
 	
 	
 	
@@ -46,10 +46,10 @@ int SifbManagementControls_preinit(SifbManagementControls_t  *me) {
 }
 
 /* SifbManagementControls_init() is required to be called to 
- * set up an instance of SifbManagementControls. 
- * It passes around configuration data.
- */
-int SifbManagementControls_init(SifbManagementControls_t  *me) {
+ _SPM * set up an instance of SifbManagementControls. 
+ _SPM * It passes around configuration data.
+ _SPM */
+int SifbManagementControls_init(SifbManagementControls_t  _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -71,7 +71,7 @@ int SifbManagementControls_init(SifbManagementControls_t  *me) {
 
 //algorithms
 
-void SifbManagementControls_update_management(SifbManagementControls_t  *me) {
+void SifbManagementControls_update_management(SifbManagementControls_t  _SPM *me) {
 //PROVIDED CODE: this algorithm was provided in an algorithm's text field
 int sw_break = ((SWITCHES & 0b0001) != 0);
 int sw_reset = ((SWITCHES & 0b0010) != 0);
@@ -94,13 +94,13 @@ me->outputEvents.event.rst = (sw_reset > 0);
 
 
 /* SifbManagementControls_run() executes a single tick of an
- * instance of SifbManagementControls according to synchronous semantics.
- * Notice that it does NOT perform any I/O - synchronisation
- * will need to be done in the parent.
- * Also note that on the first run of this function, trigger will already be set
- * to true, meaning that on the very first run no next state logic will occur.
- */
-void SifbManagementControls_run(SifbManagementControls_t  *me) {
+ _SPM * instance of SifbManagementControls according to synchronous semantics.
+ _SPM * Notice that it does NOT perform any I/O - synchronisation
+ _SPM * will need to be done in the parent.
+ _SPM * Also note that on the first run of this function, trigger will already be set
+ _SPM * to true, meaning that on the very first run no next state logic will occur.
+ _SPM */
+void SifbManagementControls_run(SifbManagementControls_t  _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.i_set_change = 0;
@@ -112,51 +112,51 @@ void SifbManagementControls_run(SifbManagementControls_t  *me) {
 
 	
 	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_SifbManagementControls_Start:
-			if(true) {
+	// if(me->_trigger == false) {
+	// 	switch(me->_state) {
+	// 	case STATE_SifbManagementControls_Start:
+	// 		if(true) {
 				
-				me->_state = STATE_SifbManagementControls_Update;
-				me->_trigger = true;
-			};
-			break;
-		case STATE_SifbManagementControls_Update:
-			if(true) {
+	// 			me->_state = STATE_SifbManagementControls_Update;
+	// 			me->_trigger = true;
+	// 		};
+	// 		break;
+	// 	case STATE_SifbManagementControls_Update:
+	// 		if(true) {
 				
-				me->_state = STATE_SifbManagementControls_Update;
-				me->_trigger = true;
-			};
-			break;
+	// 			me->_state = STATE_SifbManagementControls_Update;
+	// 			me->_trigger = true;
+	// 		};
+	// 		break;
 		
-		default: 
-			break;
-		}
-	}
+	// 	default: 
+	// 		break;
+	// 	}
+	// }
 
-	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_SifbManagementControls_Start:
-			#ifdef PRINT_STATES
-				printf("SifbManagementControls: [Entered State Start]\n");
-			#endif
+	// //state output logic
+	// if(me->_trigger == true) {
+	// 	switch(me->_state) {
+	// 	case STATE_SifbManagementControls_Start:
+	// 		#ifdef PRINT_STATES
+	// 			printf("SifbManagementControls: [Entered State Start]\n");
+	// 		#endif
 			
-			break;
-		case STATE_SifbManagementControls_Update:
-			#ifdef PRINT_STATES
-				printf("SifbManagementControls: [Entered State Update]\n");
-			#endif
+	// 		break;
+	// 	case STATE_SifbManagementControls_Update:
+	// 		#ifdef PRINT_STATES
+	// 			printf("SifbManagementControls: [Entered State Update]\n");
+	// 		#endif
 			SifbManagementControls_update_management(me);
 			
-			break;
+	// 		break;
 		
-		default: 
-			break;
-		}
-	}
+	// 	default: 
+	// 		break;
+	// 	}
+	// }
 
-	me->_trigger = false;
+	// me->_trigger = false;
 
 	
 

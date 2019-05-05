@@ -72,13 +72,13 @@ typedef struct {
 } BfbIDMTCurve_t;
 
 //all FBs get a preinit function
-int BfbIDMTCurve_preinit(BfbIDMTCurve_t  *me);
+int BfbIDMTCurve_preinit(BfbIDMTCurve_t  _SPM *me);
 
 //all FBs get an init function
-int BfbIDMTCurve_init(BfbIDMTCurve_t  *me);
+int BfbIDMTCurve_init(BfbIDMTCurve_t  _SPM *me);
 
 //all FBs get a run function
-void BfbIDMTCurve_run(BfbIDMTCurve_t  *me);
+void BfbIDMTCurve_run(BfbIDMTCurve_t  _SPM *me);
 
 
 

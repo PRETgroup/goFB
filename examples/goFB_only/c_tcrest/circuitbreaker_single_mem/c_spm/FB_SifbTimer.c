@@ -6,10 +6,10 @@
 
 
 /* SifbTimer_preinit() is required to be called to 
- * initialise an instance of SifbTimer. 
- * It sets all I/O values to zero.
- */
-int SifbTimer_preinit(SifbTimer_t  *me) {
+ _SPM * initialise an instance of SifbTimer. 
+ _SPM * It sets all I/O values to zero.
+ _SPM */
+int SifbTimer_preinit(SifbTimer_t  _SPM *me) {
 	
 
 	
@@ -30,8 +30,8 @@ int SifbTimer_preinit(SifbTimer_t  *me) {
 	
 	
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
-	me->_state = STATE_SifbTimer_Start;
-	me->_trigger = true;
+	//me->_state = STATE_SifbTimer_Start;
+	//me->_trigger = true;
 	
 	
 	
@@ -42,10 +42,10 @@ int SifbTimer_preinit(SifbTimer_t  *me) {
 }
 
 /* SifbTimer_init() is required to be called to 
- * set up an instance of SifbTimer. 
- * It passes around configuration data.
- */
-int SifbTimer_init(SifbTimer_t  *me) {
+ _SPM * set up an instance of SifbTimer. 
+ _SPM * It passes around configuration data.
+ _SPM */
+int SifbTimer_init(SifbTimer_t  _SPM *me) {
 	//pass in any parameters on this level
 	
 	
@@ -69,13 +69,13 @@ int SifbTimer_init(SifbTimer_t  *me) {
 
 
 /* SifbTimer_run() executes a single tick of an
- * instance of SifbTimer according to synchronous semantics.
- * Notice that it does NOT perform any I/O - synchronisation
- * will need to be done in the parent.
- * Also note that on the first run of this function, trigger will already be set
- * to true, meaning that on the very first run no next state logic will occur.
- */
-void SifbTimer_run(SifbTimer_t  *me) {
+ _SPM * instance of SifbTimer according to synchronous semantics.
+ _SPM * Notice that it does NOT perform any I/O - synchronisation
+ _SPM * will need to be done in the parent.
+ _SPM * Also note that on the first run of this function, trigger will already be set
+ _SPM * to true, meaning that on the very first run no next state logic will occur.
+ _SPM */
+void SifbTimer_run(SifbTimer_t  _SPM *me) {
 	//if there are output events, reset them
 	
 	me->outputEvents.event.Tick = 0;
@@ -84,39 +84,39 @@ void SifbTimer_run(SifbTimer_t  *me) {
 	
 
 	
-	//next state logic
-	if(me->_trigger == false) {
-		switch(me->_state) {
-		case STATE_SifbTimer_Start:
-			if(true) {
+	// //next state logic
+	// if(me->_trigger == false) {
+	// 	switch(me->_state) {
+	// 	case STATE_SifbTimer_Start:
+	// 		if(true) {
 				
-				me->_state = STATE_SifbTimer_Start;
-				me->_trigger = true;
-			};
-			break;
+	// 			me->_state = STATE_SifbTimer_Start;
+	// 			me->_trigger = true;
+	// 		};
+	// 		break;
 		
-		default: 
-			break;
-		}
-	}
+	// 	default: 
+	// 		break;
+	// 	}
+	// }
 
 	//state output logic
-	if(me->_trigger == true) {
-		switch(me->_state) {
-		case STATE_SifbTimer_Start:
-			#ifdef PRINT_STATES
-				printf("SifbTimer: [Entered State Start]\n");
-			#endif
+	// if(me->_trigger == true) {
+	// 	switch(me->_state) {
+	// 	case STATE_SifbTimer_Start:
+	// 		#ifdef PRINT_STATES
+	// 			printf("SifbTimer: [Entered State Start]\n");
+	// 		#endif
 			me->outputEvents.event.Tick = 1;
 			
-			break;
+	// 		break;
 		
-		default: 
-			break;
-		}
-	}
+	// 	default: 
+	// 		break;
+	// 	}
+	// }
 
-	me->_trigger = false;
+	// me->_trigger = false;
 
 	
 

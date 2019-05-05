@@ -81,20 +81,20 @@ typedef struct {
 } _CBCoreSingle_t;
 
 //all FBs get a preinit function
-int _CBCoreSingle_preinit(_CBCoreSingle_t  *me);
+int _CBCoreSingle_preinit(_CBCoreSingle_t  _SPM *me);
 
 //all FBs get an init function
-int _CBCoreSingle_init(_CBCoreSingle_t  *me);
+int _CBCoreSingle_init(_CBCoreSingle_t  _SPM *me);
 
 //all FBs get a run function
-void _CBCoreSingle_run(_CBCoreSingle_t  *me);
+void _CBCoreSingle_run(_CBCoreSingle_t  _SPM *me);
 
 //composite/resource/device FBs get sync functions
-void _CBCoreSingle_syncOutputEvents(_CBCoreSingle_t  *me);
-void _CBCoreSingle_syncInputEvents(_CBCoreSingle_t  *me);
+void _CBCoreSingle_syncOutputEvents(_CBCoreSingle_t  _SPM *me);
+void _CBCoreSingle_syncInputEvents(_CBCoreSingle_t  _SPM *me);
 
-void _CBCoreSingle_syncOutputData(_CBCoreSingle_t  *me);
-void _CBCoreSingle_syncInputData(_CBCoreSingle_t  *me);
+void _CBCoreSingle_syncOutputData(_CBCoreSingle_t  _SPM *me);
+void _CBCoreSingle_syncInputData(_CBCoreSingle_t  _SPM *me);
 
 
 
