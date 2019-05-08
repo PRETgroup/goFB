@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="PrintStatus" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="StatusUpdate" Comment="">
+    <With Var="Saw1Status" />
+    <With Var="Saw2Status" />
+    <With Var="Saw3Status" />
+  </Event>
+</EventInputs>
+
+<InputVars>
+  <VarDeclaration Name="Saw1Status" Type="INT" Comment="" />
+  <VarDeclaration Name="Saw2Status" Type="INT" Comment="" />
+  <VarDeclaration Name="Saw3Status" Type="INT" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="Run" Comment="" x="765.625" y="834.895861148834">
+    <ECAction Algorithm="PrintService" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Run" Condition="true" x="461.4375" y="584.697930574417" />
+  <ECTransition Source="Run" Destination="Run" Condition="true" x="756.625" y="759.895861148834" />
+</ECC><Algorithm Name="PrintService" Comment="">
+  <Other Language="C" Prototype="" Text="// OFF 0&#xD;&#xA;// RUNNING 1&#xD;&#xA;// WEIGHT -1&#xD;&#xA;// LASER -2&#xD;&#xA;// STALL -3&#xD;&#xA;// SPEED -4&#xD;&#xA;&#xD;&#xA;if(me-&gt;inputEvents.event.StatusUpdate) {&#xD;&#xA;	printf(&quot;Saw 1: &quot;);&#xD;&#xA;	switch(me-&gt;Saw1Status) {&#xD;&#xA;		case 0:&#xD;&#xA;			printf(&quot;OFF          &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case 1:&#xD;&#xA;			printf(&quot;RUNNING      &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -1:&#xD;&#xA;			printf(&quot;ERR:SAWDUST  &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -2:&#xD;&#xA;			printf(&quot;ERR:PROXIMITY&quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -3:&#xD;&#xA;			printf(&quot;ERR:STALL    &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -4:&#xD;&#xA;			printf(&quot;ERR:JITTER   &quot;);&#xD;&#xA;			break;&#xD;&#xA;		default:&#xD;&#xA;			printf(&quot;ERR:UNKNOWN  &quot;);&#xD;&#xA;	}&#xD;&#xA;	printf(&quot;\t&quot;);&#xD;&#xA;&#xD;&#xA;	printf(&quot;Saw 2: &quot;);&#xD;&#xA;	switch(me-&gt;Saw2Status) {&#xD;&#xA;		case 0:&#xD;&#xA;			printf(&quot;OFF          &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case 1:&#xD;&#xA;			printf(&quot;RUNNING      &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -1:&#xD;&#xA;			printf(&quot;ERR:SAWDUST  &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -2:&#xD;&#xA;			printf(&quot;ERR:PROXIMITY&quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -3:&#xD;&#xA;			printf(&quot;ERR:STALL    &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -4:&#xD;&#xA;			printf(&quot;ERR:JITTER   &quot;);&#xD;&#xA;			break;&#xD;&#xA;		default:&#xD;&#xA;			printf(&quot;ERR:UNKNOWN  &quot;);&#xD;&#xA;	}&#xD;&#xA;	printf(&quot;\t&quot;);&#xD;&#xA;&#xD;&#xA;	printf(&quot;Saw 3: &quot;);&#xD;&#xA;	switch(me-&gt;Saw3Status) {&#xD;&#xA;		case 0:&#xD;&#xA;			printf(&quot;OFF          &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case 1:&#xD;&#xA;			printf(&quot;RUNNING      &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -1:&#xD;&#xA;			printf(&quot;ERR:SAWDUST  &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -2:&#xD;&#xA;			printf(&quot;ERR:PROXIMITY&quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -3:&#xD;&#xA;			printf(&quot;ERR:STALL    &quot;);&#xD;&#xA;			break;&#xD;&#xA;		case -4:&#xD;&#xA;			printf(&quot;ERR:JITTER   &quot;);&#xD;&#xA;			break;&#xD;&#xA;		default:&#xD;&#xA;			printf(&quot;ERR:UNKNOWN  &quot;);&#xD;&#xA;	}&#xD;&#xA;	printf(&quot;\n&quot;);&#xD;&#xA;&#xD;&#xA;}" />
+</Algorithm></BasicFB>
+</FBType>

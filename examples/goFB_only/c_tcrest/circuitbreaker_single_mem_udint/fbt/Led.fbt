@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Led" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="CommandChange" Comment="">
+    <With Var="Run" />
+  </Event>
+</EventInputs>
+
+<InputVars>
+  <VarDeclaration Name="Run" Type="BOOL" Comment="" />
+</InputVars>
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="Run" Comment="" x="871.354138851166" y="707.291638851166">
+    <ECAction Algorithm="LedService" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Run" Condition="true" x="519.302069425583" y="465.895819425583" />
+  <ECTransition Source="Run" Destination="Run" Condition="true" x="875" y="393.75" />
+</ECC><Algorithm Name="LedService" Comment="">
+  <Other Language="C" Prototype="" Text="if(me-&gt;inputEvents.event.CommandChange) {&#xD;&#xA;	LED = me-&gt;Run;&#xD;&#xA;}" />
+</Algorithm></BasicFB>
+</FBType>

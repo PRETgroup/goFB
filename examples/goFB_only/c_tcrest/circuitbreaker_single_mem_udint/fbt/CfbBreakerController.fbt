@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="CfbBreakerController" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2019-00-29" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="tick" Comment="">
+  </Event>
+  <Event Name="i_measured" Comment="">
+  </Event>
+  <Event Name="i_set_change" Comment="">
+  </Event>
+  <Event Name="brk" Comment="">
+  </Event>
+  <Event Name="rst" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="b_change" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="i" Type="UDINT" Comment="" />
+  <VarDeclaration Name="i_set" Type="UDINT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="b" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<FBNetwork>
+  <FB Name="idmtcurve" Type="BfbIDMTCurve" x="1556.77083333333" y="1184.89583333333" />
+  <FB Name="setterresetter" Type="BfbSetterResetter" x="2756.25" y="1181.25" />
+  <EventConnections><Connection Source="tick" Destination="idmtcurve.tick" />
+<Connection Source="i_measured" Destination="idmtcurve.i_measured" />
+<Connection Source="i_set_change" Destination="idmtcurve.i_set_change" />
+<Connection Source="brk" Destination="setterresetter.brk" />
+<Connection Source="rst" Destination="setterresetter.rst" />
+<Connection Source="setterresetter.b_change" Destination="b_change" />
+<Connection Source="idmtcurve.unsafe" Destination="setterresetter.unsafe" /></EventConnections>
+  <DataConnections><Connection Source="i" Destination="idmtcurve.i" />
+<Connection Source="i_set" Destination="idmtcurve.i_set" />
+<Connection Source="setterresetter.b" Destination="b" /></DataConnections>
+</FBNetwork>
+</FBType>

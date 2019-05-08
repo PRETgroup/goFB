@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SawmillSpeed" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="HAMMONDSDESKTOP" Version="0.1" Author="Hammond" Date="2017-00-27" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="NewPos" Comment="">
+    <With Var="Pos" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="BadSpeedChange" Comment="">
+    <With Var="BadSpeed" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Pos" Type="UDINT" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="BadSpeed" Type="BOOL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="LastPos" Type="UDINT" Comment="" />
+</InternalVars><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="Run" Comment="" x="736.458361148834" y="670.833319425583">
+    <ECAction Algorithm="speedChange_service" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Run" Condition="true" x="408.854180574417" y="468.666659712791" />
+  <ECTransition Source="Run" Destination="Run" Condition="NewPos" x="745.458361148834" y="607.833319425583" />
+</ECC><Algorithm Name="speedChange_service" Comment="">
+  <Other Language="C" Prototype="" Text="if(me-&gt;LastPos != 0) {&#xD;&#xA;	if(me-&gt;NewPos - me-&gt;LastPos &gt; 2 || me-&gt;LastPos - me-&gt;NewPos &gt; 2) {&#xD;&#xA;		me-&gt;outputEvents.event.BadSpeedChange = 1;&#xD;&#xA;		me-&gt;BadSpeed = true;&#xD;&#xA;	} else {&#xD;&#xA;		me-&gt;outputEvents.event.BadSpeedChange = 1;&#xD;&#xA;		me-&gt;BadSpeed = false;&#xD;&#xA;	}&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;me-&gt;LastPos = me-&gt;NewPos;" />
+</Algorithm></BasicFB>
+</FBType>

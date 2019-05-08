@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SawmillMessageHandler" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-16" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="MessageChanged" Comment="">
+    <With Var="Message" />
+  </Event>
+  <Event Name="TxSuccessChanged" Comment="">
+    <With Var="TxSuccess" />
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="TxDataPresent" Comment="">
+    <With Var="TxData" />
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="Message" Type="INT" Comment="" />
+  <VarDeclaration Name="TxSuccess" Type="BOOL" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="TxData" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="try_tx" Comment="" x="1312.5" y="1093.75">
+    <ECAction Algorithm="LoadData" Output="TxDataPresent" />
+  </ECState>
+  <ECState Name="tx_done" Comment="" x="1075.52086114883" y="459.375">
+  </ECState>
+  <ECTransition Source="Start" Destination="tx_done" Condition="true" x="673.385430574417" y="350" />
+  <ECTransition Source="try_tx" Destination="try_tx" Condition="TxSuccessChanged AND (!TxSuccess)" x="1392.5" y="1088.75" />
+  <ECTransition Source="try_tx" Destination="tx_done" Condition="TxSuccessChanged AND (TxSuccess)" x="1188.01043057442" y="738.5625" />
+  <ECTransition Source="tx_done" Destination="try_tx" Condition="MessageChanged" x="1180.01043057442" y="792.5625" />
+</ECC><Algorithm Name="LoadData" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;TxData = me-&gt;Message;" />
+</Algorithm></BasicFB>
+</FBType>

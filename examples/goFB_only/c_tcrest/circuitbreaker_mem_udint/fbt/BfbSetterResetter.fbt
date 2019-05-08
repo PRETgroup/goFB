@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="BfbSetterResetter" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2019-00-29" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="brk" Comment="">
+  </Event>
+  <Event Name="rst" Comment="">
+  </Event>
+  <Event Name="unsafe" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="b_change" Comment="">
+    <With Var="b" />
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="b" Type="INT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="INIT" Comment="" x="568.75" y="437.5">
+  </ECState>
+  <ECState Name="OPEN_CONTACTS" Comment="" x="1203.125" y="769.270861148834">
+    <ECAction Algorithm="BreakB" Output="b_change" />
+  </ECState>
+  <ECState Name="CLOSE_CONTACTS" Comment="" x="1268.75" y="1575">
+    <ECAction Algorithm="CloseB" Output="b_change" />
+  </ECState>
+  <ECTransition Source="INIT" Destination="OPEN_CONTACTS" Condition="true" x="905.9375" y="573.385430574417" />
+  <ECTransition Source="OPEN_CONTACTS" Destination="CLOSE_CONTACTS" Condition="rst" x="1575.9375" y="1023.88543057442" />
+  <ECTransition Source="CLOSE_CONTACTS" Destination="OPEN_CONTACTS" Condition="brk OR unsafe" x="1230.9375" y="1219.13543057442" />
+</ECC><Algorithm Name="BreakB" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;b = 1;" />
+</Algorithm>
+<Algorithm Name="CloseB" Comment="">
+  <Other Language="C" Prototype="" Text="me-&gt;b = 0;" />
+</Algorithm></BasicFB>
+</FBType>

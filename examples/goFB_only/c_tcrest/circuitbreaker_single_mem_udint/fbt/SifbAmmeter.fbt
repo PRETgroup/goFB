@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SifbAmmeter" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2019-00-29" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="i_measured" Comment="">
+    <With Var="i" />
+  </Event>
+</EventOutputs>
+
+<OutputVars>
+  <VarDeclaration Name="i" Type="UDINT" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="131.25" y="262.5">
+  </ECState>
+  <ECState Name="Update" Comment="" x="641.666680574417" y="667.1875">
+    <ECAction Algorithm="update_amms" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Update" Condition="true" x="392.458340287209" y="434.84375" />
+  <ECTransition Source="Update" Destination="Update" Condition="true" x="598.666680574417" y="702.1875" />
+</ECC><Algorithm Name="update_amms" Comment="">
+  <Other Language="C" Prototype="" Text="int sw_ammh = ((SWITCHES &amp; 0b1000) != 0);&#xD;&#xA;&#xD;&#xA;if(sw_ammh == 1 &amp;&amp; (int)(me-&gt;i) != 300) {&#xD;&#xA;	//switch is pressed&#xD;&#xA;	me-&gt;i = 300000;&#xD;&#xA;	me-&gt;outputEvents.event.i_measured = 1;&#xD;&#xA;}&#xD;&#xA;if(sw_ammh == 0 &amp;&amp; (int)(me-&gt;i) != 5) {&#xD;&#xA;	//switch is pressed&#xD;&#xA;	me-&gt;i = 5.0;&#xD;&#xA;	me-&gt;outputEvents.event.i_measured = 1;&#xD;&#xA;}" />
+</Algorithm></BasicFB>
+</FBType>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SifbTimer" Comment="" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2019-00-29" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+
+<EventOutputs>
+  <Event Name="Tick" Comment="">
+  </Event>
+</EventOutputs>
+
+
+</InterfaceList>
+<BasicFB><ECC>
+  <ECState Name="Start" Comment="" x="962.5" y="787.5">
+    <ECAction Output="Tick" />
+  </ECState>
+  <ECTransition Source="Start" Destination="Start" Condition="true" x="959.5" y="742.5" />
+</ECC></BasicFB>
+</FBType>
