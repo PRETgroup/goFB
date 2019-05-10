@@ -140,7 +140,7 @@ void {{$block.Name}}_run({{$block.Name}}_t *me) {
 	//if there are output events, reset them
 	{{/*{{if $block.EventOutputs}}{{range $index, $count := count (add (div (len $block.EventOutputs.Events) 32) 1)}}me->outputEvents.events[{{$count}}] = 0;
 	{{end}}{{end}}// this method seems to be having trouble on the t-crest SPM memory*/}}
-	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs.Events}}me->outputEvents.event.{{$event.Name}} = 0;
+	{{if $block.EventOutputs}}{{range $index, $event := $block.EventOutputs}}me->outputEvents.event.{{$event.Name}} = 0;
 	{{end}}{{end}}
 
 	int odeRootFound; //used to trigger mid-tick transitions
@@ -197,8 +197,12 @@ repeat: 	//when we have had a mid-tick transition, we want to start the run agai
 		}
 	}
 
+	//Ensure input events are cleared
+	{{if $block.EventInputs}}{{range $index, $event := $block.EventInputs}}me->inputEvents.event.{{$event.Name}} = 0;
+	{{end}}{{end}}
+
 	#ifdef PRINT_VALS
-	{{if $block.OutputVars}}{{range $ind, $outputVar := $block.OutputVars.Variables}}
+	{{if $block.OutputVars}}{{range $ind, $outputVar := $block.OutputVars}}
 		printf("%f,", me->{{$outputVar.Name}});
 	{{end}}{{end}} 
 	#endif

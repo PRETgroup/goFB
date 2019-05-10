@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="load" Comment="ODE" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+  <Event Name="start" Comment="">
+  </Event>
+  <Event Name="remove" Comment="">
+  </Event>
+  <Event Name="done" Comment="">
+  </Event>
+</EventInputs>
+<EventOutputs>
+  <Event Name="xChange" Comment="">
+    <With Var="x" />
+  </Event>
+  <Event Name="Smoke" Comment="">
+  </Event>
+</EventOutputs>
+<InputVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+</InputVars>
+<OutputVars>
+  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+</OutputVars>
+</InterfaceList>
+<BasicFB>
+<InternalVars>
+  <VarDeclaration Name="i_fault" Type="LREAL" InitialValue="800.0" Comment="" />
+  <VarDeclaration Name="i_inrush" Type="LREAL" InitialValue="800.0" Comment="" />
+  <VarDeclaration Name="t_up" Type="LREAL" InitialValue="0.2" Comment="" />
+  <VarDeclaration Name="t_down" Type="LREAL" InitialValue="0.4" Comment="" />
+  <VarDeclaration Name="i_nom" Type="LREAL" InitialValue="200.0" Comment="" />
+</InternalVars>
+<ECC>
+  <ECState Name="INIT" Comment="" x="218.75" y="656.25">
+  </ECState>
+  <ECState Name="L_OFF_E0" Comment="" x="791.145861148834" y="751.041680574417">
+    <ECAction Algorithm="ClearX" Output="i_change" />
+    <ECAction Algorithm="NoX" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_OFF_E1" Comment="" x="1487.5" y="860.416680574417">
+    <ECAction Algorithm="ClearX" Output="i_change" />
+    <ECAction Algorithm="NoX" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_OFF_E2" Comment="" x="3237.5" y="700">
+    <ECAction Algorithm="ClearX" Output="i_change" />
+    <ECAction Algorithm="NoX" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_OFF" Comment="" x="3609.375" y="907.8125">
+    <ECAction Algorithm="NoX" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_INRUSH_E0" Comment="" x="3295.83344459534" y="2395.3125">
+    <ECAction Algorithm="ContinueX" Output="i_change" />
+    <ECAction Algorithm="InrushX" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_INRUSH" Comment="" x="3580.20844459534" y="2701.5625">
+    <ECAction Algorithm="InrushX" Output="i_change"/>
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_NOM_E0" Comment="" x="1050" y="2275">
+    <ECAction Algorithm="ContinueX" Output="i_change" />
+    <ECAction Algorithm="NomX" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_NOM" Comment="" x="1443.75" y="2843.75">
+    <ECAction Algorithm="NomX" Output="i_change" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_FAULT_E0" Comment="" x="670.833319425583" y="2665.10422229767">
+    <ECAction Algorithm="ContinueX" Output="i_change" />
+    <ECAction Algorithm="FaultX" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECState Name="L_FAULT" Comment="" x="1268.75" y="1152.08336114883">
+    <ECAction Algorithm="FaultX" Output="i_change" />
+    <ECAction Algorithm="UpdateI" />
+  </ECState>
+  <ECTransition Source="INIT" Destination="L_OFF_E0" Condition="true" x="528.947930574417" y="697.645840287209" />
+  
+  <ECTransition Source="L_OFF_E0" Destination="L_OFF" Condition="!(on)" x="2183.32293057442" y="721.520840287209" />
+  <ECTransition Source="L_OFF_E0" Destination="L_INRUSH_E0" Condition="on" x="1166.32293057442" y="807.729180574417" />
+  <ECTransition Source="L_OFF_E1" Destination="L_OFF" Condition="!(on)" x="1559.5" y="833.416680574417" />
+  <ECTransition Source="L_OFF_E1" Destination="L_INRUSH_E0" Condition="on" x="2338.5" y="777.208340287209" />
+  <ECTransition Source="L_OFF_E2" Destination="L_OFF" Condition="!(on)" x="2016.75" y="1506.5" />
+  <ECTransition Source="L_OFF_E2" Destination="L_INRUSH_E0" Condition="on" />
+  
+  <ECTransition Source="L_OFF" Destination="L_INRUSH_E0" Condition="on" />
+  <ECTransition Source="L_OFF" Destination="L_OFF" Condition="!on" />
+
+  <ECTransition Source="L_INRUSH_E0" Destination="L_NOM_0" Condition="LREAL_EQ(x, i_inrush)" />
+  <ECTransition Source="L_INRUSH_E0" Destination="L_INRUSH" Condition="LREAL_LT(x, i_inrush)" />
+  
+  <ECTransition Source="L_INRUSH" Destination="L_NOM_E0" Condition="LREAL_EQ(x, i_inrush)" />
+  <ECTransition Source="L_INRUSH" Destination="L_INRUSH" Condition="!LREAL_EQ(x, i_inrush)" />
+  
+  <ECTransition Source="L_NOM_E0" Destination="L_NOM" Condition="!fault AND !off" />
+  <ECTransition Source="L_NOM_E0" Destination="L_OFF_E1" Condition="off" />
+  <ECTransition Source="L_NOM_E0" Destination="L_FAULT_E0" Condition="fault" />
+  
+  <ECTransition Source="L_NOM" Destination="L_OFF_E1" Condition="off" />
+  <ECTransition Source="L_NOM" Destination="L_FAULT_E0" Condition="fault" />
+  <ECTransition Source="L_NOM" Destination="L_NOM" Condition="!fault AND !off" />
+
+  <ECTransition Source="L_FAULT_E0" Destination="L_OFF_E2" Condition="off" />
+  <ECTransition Source="L_FAULT_E0" Destination="L_FAULT" Condition="!off" />
+  
+  <ECTransition Source="L_FAULT" Destination="L_OFF" Condition="off" />
+  <ECTransition Source="L_FAULT" Destination="L_FAULT" Condition="!off" />
+  
+</ECC>
+<Algorithm Name="ClearX" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = 0;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="ContinueX" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="x_prime = x;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="NoX" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = 0;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="InrushX" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = (5/t_up)*(i_inrush*1.01 - x);&#xD;&#xA;x_trigger = i_inrush;&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="NomX" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot = (5/t_down)*(i_nom - x);&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="FaultX" Comment="ODE">
+  <Other Language="C" Prototype="" Text="x_dot =  (5/t_fault) * (i_fault - x);&#xD;&#xA;" />
+</Algorithm>
+<Algorithm Name="UpdateI" Comment="">
+  <Other Language="C" Prototype="" Text="me->i = me->x;" />
+</Algorithm>
+
+</BasicFB>
+</FBType>

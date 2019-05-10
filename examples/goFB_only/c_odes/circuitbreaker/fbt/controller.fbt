@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="controller" Comment="ODE" >
+<Identification Standard="61499-2" />
+<VersionInfo Organization="UOA" Version="0.1" Author="hpea485" Date="2017-00-25" />
+<CompilerInfo header="" classdef="">
+</CompilerInfo>
+<InterfaceList>
+<EventInputs>
+</EventInputs>
+<EventOutputs>
+  <Event Name="off" Comment="">
+  </Event>
+  <Event Name="on" Comment="">
+  </Event>
+  <Event Name="fault" Comment="">
+  </Event>
+</EventOutputs>
+</InterfaceList>
+<BasicFB><InternalVars>
+  <VarDeclaration Name="StateChangeTime" Type="LREAL" Comment="" InitialValue="5.0" />
+</InternalVars><ECC>
+  <ECState Name="INIT" Comment="">
+  </ECState>
+
+  <ECState Name="L_OFF_E0" Comment="">
+    <ECAction Algorithm="ResetT" Output="off" />
+    <ECAction Algorithm="NextT"  />
+  </ECState>
+  
+  <ECState Name="L_OFF" Comment="">
+    <ECAction Algorithm="NextT" Output="off" />
+  </ECState>
+
+  <ECState Name="L_ON_E0" Comment="">
+    <ECAction Algorithm="ResetT" Output="on" />
+    <ECAction Algorithm="NextT"  />
+  </ECState>
+  
+  <ECState Name="L_ON" Comment="">
+    <ECAction Algorithm="NextT" Output="on" />
+  </ECState>
+
+  <ECState Name="L_FAULT_E0" Comment="">
+    <ECAction Algorithm="ResetT" Output="fault" />
+    <ECAction Algorithm="NextT"  />
+  </ECState>
+
+  <ECState Name="L_FAULT" Comment="">
+    <ECAction Algorithm="NextT" Output="fault" />
+  </ECState>
+  
+  <ECTransition Source="INIT" Destination="L_OFF_E0" Condition="true"  />
+
+  <ECTransition Source="L_OFF_E0" Destination="L_OFF" Condition="!LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_OFF_E0" Destination="L_ON_E0" Condition="LREAL_EQ(t, 5)"  />
+
+  <ECTransition Source="L_OFF" Destination="L_OFF" Condition="!LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_OFF" Destination="L_ON_E0" Condition="LREAL_EQ(t, 5)"  />
+
+  <ECTransition Source="L_ON_E0" Destination="L_ON" Condition="!LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_ON_E0" Destination="L_FAULT_E0" Condition="LREAL_EQ(t, 5)"  />
+
+  <ECTransition Source="L_ON" Destination="L_ON" Condition="!LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_ON" Destination="L_FAULT_E0" Condition="LREAL_EQ(t, 5)"  />
+
+  <ECTransition Source="L_FAULT_E0" Destination="L_FAULT" Condition="!LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_FAULT_E0" Destination="L_OFF_E0" Condition="LREAL_EQ(t, 5)"  />
+
+  <ECTransition Source="L_FAULT" Destination="L_FAULT" Condition="!LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_FAULT" Destination="L_OFF_E0" Condition="LREAL_EQ(t, 5)"  />
+
+</ECC><Algorithm Name="ResetT" Comment="ODE_init">
+  <Other Language="C" Prototype="" Text="t_prime = 0;" />
+</Algorithm>
+<Algorithm Name="NextT" Comment="ODE">
+  <Other Language="C" Prototype="" Text="t_dot = 1;" />
+</Algorithm></BasicFB>
+</FBType>
