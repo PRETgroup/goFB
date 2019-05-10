@@ -7,34 +7,34 @@
 </CompilerInfo>
 <InterfaceList>
 <EventInputs>
-  <Event Name="start" Comment="">
+  <Event Name="on" Comment="">
   </Event>
-  <Event Name="remove" Comment="">
+  <Event Name="off" Comment="">
   </Event>
-  <Event Name="done" Comment="">
+  <Event Name="fault" Comment="">
   </Event>
 </EventInputs>
 <EventOutputs>
-  <Event Name="xChange" Comment="">
-    <With Var="x" />
-  </Event>
-  <Event Name="Smoke" Comment="">
+  <Event Name="i_change" Comment="">
+    <With Var="i" />
   </Event>
 </EventOutputs>
-<InputVars>
-  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
-</InputVars>
 <OutputVars>
-  <VarDeclaration Name="x" Type="LREAL" Comment="" />
+  <VarDeclaration Name="i" Type="LREAL" Comment="" />
 </OutputVars>
 </InterfaceList>
 <BasicFB>
 <InternalVars>
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
   <VarDeclaration Name="i_fault" Type="LREAL" InitialValue="800.0" Comment="" />
   <VarDeclaration Name="i_inrush" Type="LREAL" InitialValue="800.0" Comment="" />
+  <VarDeclaration Name="i_nom" Type="LREAL" InitialValue="200.0" Comment="" />
+
   <VarDeclaration Name="t_up" Type="LREAL" InitialValue="0.2" Comment="" />
   <VarDeclaration Name="t_down" Type="LREAL" InitialValue="0.4" Comment="" />
-  <VarDeclaration Name="i_nom" Type="LREAL" InitialValue="200.0" Comment="" />
+  <VarDeclaration Name="t_fault" Type="LREAL" InitialValue="0.4" Comment="" />
+
+  <VarDeclaration Name="x" Type="LREAL" InitialValue="0.0" Comment="" />
 </InternalVars>
 <ECC>
   <ECState Name="INIT" Comment="" x="218.75" y="656.25">
@@ -97,7 +97,7 @@
   <ECTransition Source="L_OFF" Destination="L_INRUSH_E0" Condition="on" />
   <ECTransition Source="L_OFF" Destination="L_OFF" Condition="!on" />
 
-  <ECTransition Source="L_INRUSH_E0" Destination="L_NOM_0" Condition="LREAL_EQ(x, i_inrush)" />
+  <ECTransition Source="L_INRUSH_E0" Destination="L_NOM_E0" Condition="LREAL_EQ(x, i_inrush)" />
   <ECTransition Source="L_INRUSH_E0" Destination="L_INRUSH" Condition="LREAL_LT(x, i_inrush)" />
   
   <ECTransition Source="L_INRUSH" Destination="L_NOM_E0" Condition="LREAL_EQ(x, i_inrush)" />
@@ -114,7 +114,7 @@
   <ECTransition Source="L_FAULT_E0" Destination="L_OFF_E2" Condition="off" />
   <ECTransition Source="L_FAULT_E0" Destination="L_FAULT" Condition="!off" />
   
-  <ECTransition Source="L_FAULT" Destination="L_OFF" Condition="off" />
+  <ECTransition Source="L_FAULT" Destination="L_OFF_E2" Condition="off" />
   <ECTransition Source="L_FAULT" Destination="L_FAULT" Condition="!off" />
   
 </ECC>

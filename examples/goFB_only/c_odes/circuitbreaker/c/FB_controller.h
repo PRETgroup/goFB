@@ -48,6 +48,8 @@ typedef struct {
 	
 	//any internal vars (BFBs only)
     LREAL StateChangeTime;
+    LREAL DeltaTime;
+    LREAL x;
     
 	//any child FBs (CFBs only)
 	

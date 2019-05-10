@@ -103,11 +103,11 @@ void top_syncOutputEvents(top_t  *me) {
 void top_syncInputEvents(top_t  *me) {
 	//first, we explicitly synchronise the children
 	
-	me->load.inputEvents.event.start = 0; 
+	me->load.inputEvents.event.on = me->contr.outputEvents.event.on; 
 	
-	me->load.inputEvents.event.remove = 0; 
+	me->load.inputEvents.event.off = me->contr.outputEvents.event.off; 
 	
-	me->load.inputEvents.event.done = 0; 
+	me->load.inputEvents.event.fault = me->contr.outputEvents.event.fault; 
 	
 
 	//then, call this same function on all cfb children

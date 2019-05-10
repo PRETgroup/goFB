@@ -19,6 +19,8 @@
 </InterfaceList>
 <BasicFB><InternalVars>
   <VarDeclaration Name="StateChangeTime" Type="LREAL" Comment="" InitialValue="5.0" />
+  <VarDeclaration Name="DeltaTime" Type="LREAL" InitialValue="0.01" Comment="" />
+  <VarDeclaration Name="x" Type="LREAL" InitialValue="0" Comment="" />
 </InternalVars><ECC>
   <ECState Name="INIT" Comment="">
   </ECState>
@@ -52,28 +54,28 @@
   
   <ECTransition Source="INIT" Destination="L_OFF_E0" Condition="true"  />
 
-  <ECTransition Source="L_OFF_E0" Destination="L_OFF" Condition="!LREAL_EQ(t, 5)"  />
-  <ECTransition Source="L_OFF_E0" Destination="L_ON_E0" Condition="LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_OFF_E0" Destination="L_OFF" Condition="!LREAL_EQ(x, 5)"  />
+  <ECTransition Source="L_OFF_E0" Destination="L_ON_E0" Condition="LREAL_EQ(x, 5)"  />
 
-  <ECTransition Source="L_OFF" Destination="L_OFF" Condition="!LREAL_EQ(t, 5)"  />
-  <ECTransition Source="L_OFF" Destination="L_ON_E0" Condition="LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_OFF" Destination="L_OFF" Condition="!LREAL_EQ(x, 5)"  />
+  <ECTransition Source="L_OFF" Destination="L_ON_E0" Condition="LREAL_EQ(x, 5)"  />
 
-  <ECTransition Source="L_ON_E0" Destination="L_ON" Condition="!LREAL_EQ(t, 5)"  />
-  <ECTransition Source="L_ON_E0" Destination="L_FAULT_E0" Condition="LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_ON_E0" Destination="L_ON" Condition="!LREAL_EQ(x, 5)"  />
+  <ECTransition Source="L_ON_E0" Destination="L_FAULT_E0" Condition="LREAL_EQ(x, 5)"  />
 
-  <ECTransition Source="L_ON" Destination="L_ON" Condition="!LREAL_EQ(t, 5)"  />
-  <ECTransition Source="L_ON" Destination="L_FAULT_E0" Condition="LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_ON" Destination="L_ON" Condition="!LREAL_EQ(x, 5)"  />
+  <ECTransition Source="L_ON" Destination="L_FAULT_E0" Condition="LREAL_EQ(x, 5)"  />
 
-  <ECTransition Source="L_FAULT_E0" Destination="L_FAULT" Condition="!LREAL_EQ(t, 5)"  />
-  <ECTransition Source="L_FAULT_E0" Destination="L_OFF_E0" Condition="LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_FAULT_E0" Destination="L_FAULT" Condition="!LREAL_EQ(x, 5)"  />
+  <ECTransition Source="L_FAULT_E0" Destination="L_OFF_E0" Condition="LREAL_EQ(x, 5)"  />
 
-  <ECTransition Source="L_FAULT" Destination="L_FAULT" Condition="!LREAL_EQ(t, 5)"  />
-  <ECTransition Source="L_FAULT" Destination="L_OFF_E0" Condition="LREAL_EQ(t, 5)"  />
+  <ECTransition Source="L_FAULT" Destination="L_FAULT" Condition="!LREAL_EQ(x, 5)"  />
+  <ECTransition Source="L_FAULT" Destination="L_OFF_E0" Condition="LREAL_EQ(x, 5)"  />
 
 </ECC><Algorithm Name="ResetT" Comment="ODE_init">
-  <Other Language="C" Prototype="" Text="t_prime = 0;" />
+  <Other Language="C" Prototype="" Text="x_prime = 0;" />
 </Algorithm>
 <Algorithm Name="NextT" Comment="ODE">
-  <Other Language="C" Prototype="" Text="t_dot = 1;" />
+  <Other Language="C" Prototype="" Text="x_dot = 1;&#xD;&#xA;x_trigger = 5;" />
 </Algorithm></BasicFB>
 </FBType>

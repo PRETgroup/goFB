@@ -24,9 +24,9 @@ enum load_states { STATE_load_INIT, STATE_load_L_OFF_E0, STATE_load_L_OFF_E1, ST
 
 union loadInputEvents {
 	struct {
-		UDINT start;
-		UDINT remove;
-		UDINT done;
+		UDINT on;
+		UDINT off;
+		UDINT fault;
 	} event;
 	
 };
@@ -34,8 +34,7 @@ union loadInputEvents {
 
 union loadOutputEvents {
 	struct {
-		UDINT xChange;
-		UDINT Smoke;
+		UDINT i_change;
 	} event;
 	
 };
@@ -49,17 +48,19 @@ typedef struct {
 	union loadOutputEvents outputEvents;
 
     //input vars
-	LREAL DeltaTime;
-    
+	
     //output vars
-	LREAL x;
+	LREAL i;
     
 	//any internal vars (BFBs only)
+    LREAL DeltaTime;
     LREAL i_fault;
     LREAL i_inrush;
+    LREAL i_nom;
     LREAL t_up;
     LREAL t_down;
-    LREAL i_nom;
+    LREAL t_fault;
+    LREAL x;
     
 	//any child FBs (CFBs only)
 	
