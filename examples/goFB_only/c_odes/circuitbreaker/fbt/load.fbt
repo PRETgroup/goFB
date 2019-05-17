@@ -32,7 +32,7 @@
 
   <VarDeclaration Name="t_up" Type="LREAL" InitialValue="0.2" Comment="" />
   <VarDeclaration Name="t_down" Type="LREAL" InitialValue="0.4" Comment="" />
-  <VarDeclaration Name="t_fault" Type="LREAL" InitialValue="0.4" Comment="" />
+  <VarDeclaration Name="t_fault" Type="LREAL" InitialValue="2" Comment="" />
 
   <VarDeclaration Name="x" Type="LREAL" InitialValue="0.0" Comment="" />
 </InternalVars>

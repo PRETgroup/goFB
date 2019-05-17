@@ -33,7 +33,7 @@ int load_preinit(load_t  *me) {
 	me->i_nom = 200.0;
 	me->t_up = 0.2;
 	me->t_down = 0.4;
-	me->t_fault = 0.4;
+	me->t_fault = 2;
 	me->x = 0.0;
 	
 	

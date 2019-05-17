@@ -9,13 +9,13 @@ goFB -i=$WD/fbt -o=$WD/c -l=c -t=top -cvode
 
 #compile
 #clang c/*.c -o top.out
-#for mMAXTICKS in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100
-#do
-#	echo $(($mMAXTICKS*100000))
-#	gcc c/*.c /home/hammond/cvode/inst/lib/libsundials_cvode.a /home/hammond/cvode/inst/lib/libsundials_nvecserial.a -I/home/hammond/cvode/inst/include -lm -o ha.out -Wfatal-errors -DMAX_TICKS=$(($mMAXTICKS*100000))
-#	./ha.out
-#done
+# for mMAXTICKS in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100
+# do
+# 	echo $(($mMAXTICKS*100000))
+# 	gcc c/*.c /home/hammond/cvode/inst/lib/libsundials_cvode.a /home/hammond/cvode/inst/lib/libsundials_nvecserial.a -I/home/hammond/cvode/inst/include -lm -o ha.out -Wfatal-errors -DMAX_TICKS=$(($mMAXTICKS*100000))
+# 	./ha.out
+# done
 #run
 
-gcc c/*.c /home/hammond/cvode/inst/lib/libsundials_cvode.a /home/hammond/cvode/inst/lib/libsundials_nvecserial.a -I/home/hammond/cvode/inst/include -lm -o ha.out -Wfatal-errors -DMAX_TICKS=10000 -DPRINT_VALS
+gcc -o0 c/*.c /home/hammond/cvode/inst/lib/libsundials_cvode.a /home/hammond/cvode/inst/lib/libsundials_nvecserial.a -I/home/hammond/cvode/inst/include -lm -o ha.out -Wfatal-errors -DMAX_TICKS=1000000 -DPRINT_VALS
 
