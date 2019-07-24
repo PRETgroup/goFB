@@ -1,15 +1,17 @@
 # goFB, an IEC61499 Function Block toolchain
 
-This repository provides all source code for the goFB project, which aims to supply a complete toolchain for IEC61499 design, validation, and compilation.
+This repository provides all source code for the goFB project, which aims to supply a complete toolchain for IEC61499 design, validation, and compilation. It typically generates C code from your Function Block networks which executes synchronously (the default behaviour), but also has experimental support for a more-standard event-driven network. Both approaches generate code amenable to static timing analysis given suitable target architectures.
 
-goFB was inspired by [FBC](https://www.researchgate.net/publication/224453746_Efficient_implementation_of_IEC_61499_function_blocks), [BlokIDE](http://timeme.io), and Structured Text.
+Furthermore, there is yet additional experimental support for compiling Function Block networks to Verilog for synchronous execution in reconfigurable hardware.
+
+goFB was inspired by [FBC](https://www.researchgate.net/publication/224453746_Efficient_implementation_of_IEC_61499_function_blocks), [BlokIDE](http://pretzel.ece.auckland.ac.nz/#!research?project=iec61499), and Structured Text.
 
 There are two major components to this toolchain:
 * *goFB/goTFB* provides a commandline text-based methodology for design of IEC61499 function blocks and networks, and
 * *goFB/goFB* provides the compiler goFB for IEC61499 to C.
 
 goTFB creates intermediary IEC61499-compliant XML files as its output, and goFB uses those same intermediary IEC61499-compliant XML files as its input.
-This means that goTFB can be paired with any suitable compiler, and goFB can be paired with any other IEC61499 design tool.
+This means that goTFB may be paired with any suitable compiler (e.g. FBC), and goFB may be paired with any other IEC61499 design tool (e.g. BlokIDE).
 
 ## Support
 
