@@ -21,35 +21,37 @@
  * It sets all I/O values to zero.
  */
 int container_two_mixed_preinit(container_two_mixed_t  *me) {
-	//if there are input events, reset them
+	
+
+	//reset the input events
 	me->inputEvents.event.DataInChanged = 0;
 	
-	//if there are output events, reset them
+	//reset the output events
 	me->outputEvents.event.DataOutChanged = 0;
 	
-	//if there are input vars with default values, set them
+	//set any input vars with default values
 	
-	//if there are output vars with default values, set them
+	//set any output vars with default values
 	
-	//if there are internal vars with default values, set them (BFBs only)
 	
-	//if there are resource vars with default values, set them
 	
-	//if there are resources with set parameters, set them
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(container_one_preinit(&me->cf1) != 0) {
 		return 1;
 	}
+	
 	if(passforward_preinit(&me->pf2) != 0) {
 		return 1;
 	}
 	
 	
-
 	
 
-	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
+	
+	
+	
+
 	
 
 	return 0;
@@ -67,23 +69,14 @@ int container_two_mixed_init(container_two_mixed_t  *me) {
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	
+	
 	//sync config for cf1 (of Type container_one) 
-	
-	
-		me->cf1.DataIn = me->DataIn;
-	
-	
-		me->cf1.printf_id = me->printf_id1;
-	//sync config for pf2 (of Type passforward) 
-	
-	
-		me->pf2.DataIn = me->cf1.DataOut;
-	
-	
-		me->pf2.printf_id = me->printf_id2;
-	
-
-	
+			me->cf1.DataIn = me->DataIn;
+							me->cf1.printf_id = me->printf_id1;
+							//sync config for pf2 (of Type passforward) 
+			me->pf2.DataIn = me->cf1.DataOut;
+							me->pf2.printf_id = me->printf_id2;
+							
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(container_one_init(&me->cf1) != 0) {
@@ -108,14 +101,10 @@ int container_two_mixed_init(container_two_mixed_t  *me) {
 void container_two_mixed_syncOutputEvents(container_two_mixed_t  *me) {
 	//first, for all cfb children, call this same function
 	
-	container_one_syncOutputEvents(&me->cf1);//sync for cf1 (of type container_one) which is a CFB
-	
-	
-	//then, for all connections that are connected to an output on the parent, run their run their copy
+	container_one_syncOutputEvents(&me->cf1);//sync for cf1 (of type container_one) which is a CFB//then, for all connections that are connected to an output on the parent, run their run their copy
 	
 	me->outputEvents.event.DataOutChanged = me->pf2.outputEvents.event.DataOutChanged; 
-	
-}
+		}
 
 /* container_two_mixed_syncInputEvents() synchronises the input events of an
  * instance of container_two_mixed as required by synchronous semantics.
@@ -173,8 +162,9 @@ void container_two_mixed_syncInputData(container_two_mixed_t  *me) {
 	
 	//sync for pf2 (of type passforward) which is a BFB
 	
-	if(me->pf2.inputEvents.event.DataInChanged == 1) { 
+	if(me->pf2.inputEvents.event.DataInChanged == 1) {
 		me->pf2.DataIn = me->cf1.DataOut;
+		
 	} 
 	
 	
@@ -191,8 +181,15 @@ void container_two_mixed_syncInputData(container_two_mixed_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void container_two_mixed_run(container_two_mixed_t  *me) {
+	
+	
 	container_one_run(&me->cf1);
+	
 	passforward_run(&me->pf2);
 	
 }
+
+
+
+
 

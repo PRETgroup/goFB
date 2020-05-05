@@ -21,33 +21,33 @@
  * It sets all I/O values to zero.
  */
 int topMANY_preinit(topMANY_t  *me) {
-	//if there are input events, reset them
 	
-	//if there are output events, reset them
+
 	
-	//if there are input vars with default values, set them
 	
-	//if there are output vars with default values, set them
+	//set any input vars with default values
 	
-	//if there are internal vars with default values, set them (BFBs only)
+	//set any output vars with default values
 	
-	//if there are resource vars with default values, set them
 	
-	//if there are resources with set parameters, set them
+	
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(container_two_basic_preinit(&me->basic) != 0) {
 		return 1;
 	}
+	
 	if(container_two_mixed_preinit(&me->mixed) != 0) {
 		return 1;
 	}
 	
 	
-
 	
 
-	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
+	
+	
+	
+
 	
 
 	return 0;
@@ -69,21 +69,12 @@ int topMANY_init(topMANY_t  *me) {
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	
+	
 	//sync config for basic (of Type container_two_basic) 
-	
-	
-		me->basic.DataIn = me->mixed.DataOut;
-	
-	
-	//sync config for mixed (of Type container_two_mixed) 
-	
-	
-		me->mixed.DataIn = me->basic.DataOut;
-	
-	
-	
-
-	
+			me->basic.DataIn = me->mixed.DataOut;
+							//sync config for mixed (of Type container_two_mixed) 
+			me->mixed.DataIn = me->basic.DataOut;
+							
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(container_two_basic_init(&me->basic) != 0) {
@@ -109,13 +100,8 @@ void topMANY_syncOutputEvents(topMANY_t  *me) {
 	//first, for all cfb children, call this same function
 	
 	container_two_basic_syncOutputEvents(&me->basic);//sync for basic (of type container_two_basic) which is a CFB
-	
-	container_two_mixed_syncOutputEvents(&me->mixed);//sync for mixed (of type container_two_mixed) which is a CFB
-	
-	
-	//then, for all connections that are connected to an output on the parent, run their run their copy
-	
-}
+	container_two_mixed_syncOutputEvents(&me->mixed);//sync for mixed (of type container_two_mixed) which is a CFB//then, for all connections that are connected to an output on the parent, run their run their copy
+	}
 
 /* topMANY_syncInputEvents() synchronises the input events of an
  * instance of topMANY as required by synchronous semantics.
@@ -193,8 +179,15 @@ void topMANY_syncInputData(topMANY_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void topMANY_run(topMANY_t  *me) {
+	
+	
 	container_two_basic_run(&me->basic);
+	
 	container_two_mixed_run(&me->mixed);
 	
 }
+
+
+
+
 

@@ -17,6 +17,8 @@
 #include "FB_container_one.h"
 
 
+
+
 //this block had no input events
 
 
@@ -48,6 +50,10 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
+	
+
+	
+
 } topCFB1_t;
 
 //all FBs get a preinit function

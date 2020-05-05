@@ -6,30 +6,33 @@
 #include "FB_topFLAT.h"
 #include <sys/time.h>
 
-#ifndef MAX_TICKS
-#define MAX_TICKS 100
-#endif
+// #ifndef MAX_TICKS
+// #define MAX_TICKS 100
+// #endif
+
+
 
 //put a copy of the top level block into global memory
-topFLAT_t mytopFLAT;
+topFLAT_t topFLAT;
 
 int main() {
+	if(topFLAT_preinit(&topFLAT) != 0) {
+		printf("Failed to preinitialize.");
+		return 1;
+	}
+	if(topFLAT_init(&topFLAT) != 0) {
+		printf("Failed to initialize.");
+		return 1;
+	}
+	printf("\n");
+	
+//this is executing with synchronous semantics
 	//printf("\n\n\n");
 	//printf("\nTop: %20s   Size: %lu\n", "topFLAT", sizeof(mytopFLAT));
 
 	#ifdef PRINT_VALS
 	printf("Simulation time,");
 	#endif
-
-	if(topFLAT_preinit(&mytopFLAT) != 0) {
-		printf("Failed to preinitialize.");
-		return 1;
-	}
-	if(topFLAT_init(&mytopFLAT) != 0) {
-		printf("Failed to initialize.");
-		return 1;
-	}
-	printf("\n");
 	
 	struct timeval tv1, tv2;
 	gettimeofday(&tv1, NULL);
@@ -39,17 +42,24 @@ int main() {
 		#ifdef PRINT_VALS
 			printf("%f,",(double)tickNum*0.01);
 		#endif
-		topFLAT_syncOutputEvents(&mytopFLAT);
-		topFLAT_syncInputEvents(&mytopFLAT);
-
-		topFLAT_syncOutputData(&mytopFLAT);
-		topFLAT_syncInputData(&mytopFLAT);
 		
-		topFLAT_run(&mytopFLAT);
+		topFLAT_syncOutputEvents(&topFLAT);
+		topFLAT_syncInputEvents(&topFLAT);
+
+		topFLAT_syncOutputData(&topFLAT);
+		topFLAT_syncInputData(&topFLAT);
+		
+		
+		topFLAT_run(&topFLAT);
 		#ifdef PRINT_VALS
 			printf("\n");
 		#endif
-	} while(tickNum++ < MAX_TICKS);
+	} 
+	#ifdef MAX_TICKS
+		while(tickNum++ < MAX_TICKS);
+	#else
+		while(1);
+	#endif
 	gettimeofday(&tv2, NULL);
 	#ifdef PRINT_TIME
 	printf ("Total time = %f seconds\n",
@@ -57,5 +67,8 @@ int main() {
          (double) (tv2.tv_sec - tv1.tv_sec));
 	#endif
 	return 0;
+
 }
+
+
 

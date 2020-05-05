@@ -15,6 +15,8 @@
 #include "FB_container_two_mixed.h"
 
 
+
+
 //this block had no input events
 
 
@@ -44,6 +46,10 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
+	
+
+	
+
 } topMANY_t;
 
 //all FBs get a preinit function

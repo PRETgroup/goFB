@@ -15,6 +15,8 @@
 #include "FB_passforward.h"
 
 
+
+
 union container_two_basicInputEvents {
 	struct {
 		UDINT DataInChanged;
@@ -58,6 +60,10 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
+	
+
+	
+
 } container_two_basic_t;
 
 //all FBs get a preinit function

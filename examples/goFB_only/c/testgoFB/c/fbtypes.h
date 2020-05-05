@@ -5,6 +5,7 @@
 #define FBTYPES_H_
 
 #include <stdio.h>
+#include <math.h>
 
 
 /*********************************************************************
@@ -66,5 +67,12 @@ typedef long long TIME;
 typedef char FBstring[STRING_LENGTH];
 typedef FBstring STRING;
 typedef FBstring WSTRING;
+
+// DTimer
+typedef long long DTIMER;
+
+
+#define PushEvent(...) (void)0
+
 
 #endif // FBTYPES_H_

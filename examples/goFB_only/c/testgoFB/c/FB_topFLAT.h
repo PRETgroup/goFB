@@ -17,6 +17,8 @@
 #include "FB_passforward.h"
 
 
+
+
 //this block had no input events
 
 
@@ -48,6 +50,10 @@ typedef struct {
 	
 	//state and trigger (BFBs only)
 	
+	
+
+	
+
 } topFLAT_t;
 
 //all FBs get a preinit function

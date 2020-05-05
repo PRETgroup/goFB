@@ -21,39 +21,41 @@
  * It sets all I/O values to zero.
  */
 int topFLAT_preinit(topFLAT_t  *me) {
-	//if there are input events, reset them
 	
-	//if there are output events, reset them
+
 	
-	//if there are input vars with default values, set them
 	
-	//if there are output vars with default values, set them
+	//set any input vars with default values
 	
-	//if there are internal vars with default values, set them (BFBs only)
+	//set any output vars with default values
 	
-	//if there are resource vars with default values, set them
 	
-	//if there are resources with set parameters, set them
+	
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(passforward_preinit(&me->pf1) != 0) {
 		return 1;
 	}
+	
 	if(passforward_preinit(&me->pf2) != 0) {
 		return 1;
 	}
+	
 	if(passforward_preinit(&me->pf3) != 0) {
 		return 1;
 	}
+	
 	if(passforward_preinit(&me->pf4) != 0) {
 		return 1;
 	}
 	
 	
-
 	
 
-	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
+	
+	
+	
+
 	
 
 	return 0;
@@ -75,29 +77,16 @@ int topFLAT_init(topFLAT_t  *me) {
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	
+	
 	//sync config for pf1 (of Type passforward) 
-	
-	
-		me->pf1.DataIn = me->pf4.DataOut;
-	
-	//sync config for pf2 (of Type passforward) 
-	
-	
-		me->pf2.DataIn = me->pf1.DataOut;
-	
-	//sync config for pf3 (of Type passforward) 
-	
-	
-		me->pf3.DataIn = me->pf2.DataOut;
-	
-	//sync config for pf4 (of Type passforward) 
-	
-	
-		me->pf4.DataIn = me->pf3.DataOut;
-	
-	
-
-	
+			me->pf1.DataIn = me->pf4.DataOut;
+							//sync config for pf2 (of Type passforward) 
+			me->pf2.DataIn = me->pf1.DataOut;
+							//sync config for pf3 (of Type passforward) 
+			me->pf3.DataIn = me->pf2.DataOut;
+							//sync config for pf4 (of Type passforward) 
+			me->pf4.DataIn = me->pf3.DataOut;
+							
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(passforward_init(&me->pf1) != 0) {
@@ -127,11 +116,8 @@ int topFLAT_init(topFLAT_t  *me) {
  */
 void topFLAT_syncOutputEvents(topFLAT_t  *me) {
 	//first, for all cfb children, call this same function
-	
-	
 	//then, for all connections that are connected to an output on the parent, run their run their copy
-	
-}
+	}
 
 /* topFLAT_syncInputEvents() synchronises the input events of an
  * instance of topFLAT as required by synchronous semantics.
@@ -182,26 +168,30 @@ void topFLAT_syncInputData(topFLAT_t  *me) {
 	
 	//sync for pf1 (of type passforward) which is a BFB
 	
-	if(me->pf1.inputEvents.event.DataInChanged == 1) { 
+	if(me->pf1.inputEvents.event.DataInChanged == 1) {
 		me->pf1.DataIn = me->pf4.DataOut;
+		
 	} 
 	
 	//sync for pf2 (of type passforward) which is a BFB
 	
-	if(me->pf2.inputEvents.event.DataInChanged == 1) { 
+	if(me->pf2.inputEvents.event.DataInChanged == 1) {
 		me->pf2.DataIn = me->pf1.DataOut;
+		
 	} 
 	
 	//sync for pf3 (of type passforward) which is a BFB
 	
-	if(me->pf3.inputEvents.event.DataInChanged == 1) { 
+	if(me->pf3.inputEvents.event.DataInChanged == 1) {
 		me->pf3.DataIn = me->pf2.DataOut;
+		
 	} 
 	
 	//sync for pf4 (of type passforward) which is a BFB
 	
-	if(me->pf4.inputEvents.event.DataInChanged == 1) { 
+	if(me->pf4.inputEvents.event.DataInChanged == 1) {
 		me->pf4.DataIn = me->pf3.DataOut;
+		
 	} 
 	
 	
@@ -217,10 +207,19 @@ void topFLAT_syncInputData(topFLAT_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void topFLAT_run(topFLAT_t  *me) {
+	
+	
 	passforward_run(&me->pf1);
+	
 	passforward_run(&me->pf2);
+	
 	passforward_run(&me->pf3);
+	
 	passforward_run(&me->pf4);
 	
 }
+
+
+
+
 

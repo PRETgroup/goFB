@@ -10,33 +10,34 @@
  * It sets all I/O values to zero.
  */
 int passforward_preinit(passforward_t  *me) {
-	//if there are input events, reset them
+	
+
+	//reset the input events
 	me->inputEvents.event.DataInChanged = 0;
 	
-	//if there are output events, reset them
+	//reset the output events
 	me->outputEvents.event.DataOutChanged = 0;
 	
-	//if there are input vars with default values, set them
+	//set any input vars with default values
 	
-	//if there are output vars with default values, set them
+	//set any output vars with default values
 	
-	//if there are internal vars with default values, set them (BFBs only)
+	//set any internal vars with default values
 	
-	//if there are resource vars with default values, set them
 	
-	//if there are resources with set parameters, set them
 	
-	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	
 	
 
 	
-
+	
 	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
 	me->_state = STATE_passforward_Start;
 	me->_trigger = true;
 	
 	
+	
+
 	
 
 	return 0;
@@ -55,7 +56,6 @@ int passforward_init(passforward_t  *me) {
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	
 	
-
 	
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
@@ -81,7 +81,7 @@ me->DataOut = me->DataIn + 1;
  * instance of passforward according to synchronous semantics.
  * Notice that it does NOT perform any I/O - synchronisation
  * will need to be done in the parent.
- * Also note that on the first run of this function, trigger will be set
+ * Also note that on the first run of this function, trigger will already be set
  * to true, meaning that on the very first run no next state logic will occur.
  */
 void passforward_run(passforward_t  *me) {
@@ -89,29 +89,37 @@ void passforward_run(passforward_t  *me) {
 	
 	me->outputEvents.event.DataOutChanged = 0;
 	
+	
+	
 
+	
 	//next state logic
 	if(me->_trigger == false) {
 		switch(me->_state) {
 		case STATE_passforward_Start:
 			if(true) {
+				
 				me->_state = STATE_passforward_emit_data;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_passforward_emit_data:
 			if(me->inputEvents.event.DataInChanged) {
+				
 				me->_state = STATE_passforward_count;
 				me->_trigger = true;
 			};
 			break;
 		case STATE_passforward_count:
 			if(true) {
+				
 				me->_state = STATE_passforward_emit_data;
 				me->_trigger = true;
 			};
 			break;
 		
+		default: 
+			break;
 		}
 	}
 
@@ -119,21 +127,38 @@ void passforward_run(passforward_t  *me) {
 	if(me->_trigger == true) {
 		switch(me->_state) {
 		case STATE_passforward_Start:
+			#ifdef PRINT_STATES
+				printf("passforward: [Entered State Start]\n");
+			#endif
+			
 			break;
-
 		case STATE_passforward_emit_data:
+			#ifdef PRINT_STATES
+				printf("passforward: [Entered State emit_data]\n");
+			#endif
 			me->outputEvents.event.DataOutChanged = 1;
+			
 			break;
-
 		case STATE_passforward_count:
+			#ifdef PRINT_STATES
+				printf("passforward: [Entered State count]\n");
+			#endif
 			passforward_upcount(me);
+			
 			break;
-
 		
+		default: 
+			break;
 		}
 	}
 
 	me->_trigger = false;
+
+	
+
+	//Ensure input events are cleared
+	me->inputEvents.event.DataInChanged = 0;
+	
 }
 
 

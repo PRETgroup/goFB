@@ -10,8 +10,10 @@
 
 
 
-//This is a BFB, so we need an enum type for the state machine
+//This is a BFB with states, so we need an enum type for the state machine
 enum passforward_states { STATE_passforward_Start, STATE_passforward_emit_data, STATE_passforward_count };
+
+
 
 
 union passforwardInputEvents {
@@ -57,6 +59,10 @@ typedef struct {
 	BOOL _trigger; //indicates if a state transition has occured this tick
 	
 	
+	
+
+	
+
 } passforward_t;
 
 //all FBs get a preinit function

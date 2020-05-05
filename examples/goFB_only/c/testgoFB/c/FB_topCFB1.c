@@ -21,39 +21,41 @@
  * It sets all I/O values to zero.
  */
 int topCFB1_preinit(topCFB1_t  *me) {
-	//if there are input events, reset them
 	
-	//if there are output events, reset them
+
 	
-	//if there are input vars with default values, set them
 	
-	//if there are output vars with default values, set them
+	//set any input vars with default values
 	
-	//if there are internal vars with default values, set them (BFBs only)
+	//set any output vars with default values
 	
-	//if there are resource vars with default values, set them
 	
-	//if there are resources with set parameters, set them
+	
 	
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(container_one_preinit(&me->cf1) != 0) {
 		return 1;
 	}
+	
 	if(container_one_preinit(&me->cf2) != 0) {
 		return 1;
 	}
+	
 	if(container_one_preinit(&me->cf3) != 0) {
 		return 1;
 	}
+	
 	if(container_one_preinit(&me->cf4) != 0) {
 		return 1;
 	}
 	
 	
-
 	
 
-	//if this is a BFB/odeFB, set start state so that the start state is properly executed and _trigger if necessary
+	
+	
+	
+
 	
 
 	return 0;
@@ -75,29 +77,16 @@ int topCFB1_init(topCFB1_t  *me) {
 
 	//perform a data copy to all children (if any present) (can move config data around, doesn't do anything otherwise)
 	
+	
 	//sync config for cf1 (of Type container_one) 
-	
-	
-		me->cf1.DataIn = me->cf4.DataOut;
-	
-	//sync config for cf2 (of Type container_one) 
-	
-	
-		me->cf2.DataIn = me->cf1.DataOut;
-	
-	//sync config for cf3 (of Type container_one) 
-	
-	
-		me->cf3.DataIn = me->cf2.DataOut;
-	
-	//sync config for cf4 (of Type container_one) 
-	
-	
-		me->cf4.DataIn = me->cf3.DataOut;
-	
-	
-
-	
+			me->cf1.DataIn = me->cf4.DataOut;
+							//sync config for cf2 (of Type container_one) 
+			me->cf2.DataIn = me->cf1.DataOut;
+							//sync config for cf3 (of Type container_one) 
+			me->cf3.DataIn = me->cf2.DataOut;
+							//sync config for cf4 (of Type container_one) 
+			me->cf4.DataIn = me->cf3.DataOut;
+							
 
 	//if there are fb children (CFBs/Devices/Resources only), call this same function on them
 	if(container_one_init(&me->cf1) != 0) {
@@ -129,17 +118,10 @@ void topCFB1_syncOutputEvents(topCFB1_t  *me) {
 	//first, for all cfb children, call this same function
 	
 	container_one_syncOutputEvents(&me->cf1);//sync for cf1 (of type container_one) which is a CFB
-	
 	container_one_syncOutputEvents(&me->cf2);//sync for cf2 (of type container_one) which is a CFB
-	
 	container_one_syncOutputEvents(&me->cf3);//sync for cf3 (of type container_one) which is a CFB
-	
-	container_one_syncOutputEvents(&me->cf4);//sync for cf4 (of type container_one) which is a CFB
-	
-	
-	//then, for all connections that are connected to an output on the parent, run their run their copy
-	
-}
+	container_one_syncOutputEvents(&me->cf4);//sync for cf4 (of type container_one) which is a CFB//then, for all connections that are connected to an output on the parent, run their run their copy
+	}
 
 /* topCFB1_syncInputEvents() synchronises the input events of an
  * instance of topCFB1 as required by synchronous semantics.
@@ -237,10 +219,19 @@ void topCFB1_syncInputData(topCFB1_t  *me) {
  * is done using the _syncX functions at this (and any higher) level.
  */
 void topCFB1_run(topCFB1_t  *me) {
+	
+	
 	container_one_run(&me->cf1);
+	
 	container_one_run(&me->cf2);
+	
 	container_one_run(&me->cf3);
+	
 	container_one_run(&me->cf4);
 	
 }
+
+
+
+
 
