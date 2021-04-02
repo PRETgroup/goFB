@@ -6,7 +6,8 @@ goTFB -i=tfb -o=fbt
 
 #compile fbt to c
 echo "Compiling FBTs to C..."
-goFB -i=./fbt -o=./c -l=c -t=Top -eventMoC=true
+goFB -i=./fbt -o=./c -l=c -t=Top 
+#-eventMoC=true
 
 #compile
 echo "Compiling C to binary..."
