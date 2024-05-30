@@ -1,11 +1,13 @@
+.PHONY: default
+
 default: goFB goTFB
 
-goFB: goFB/*
-	go build -o ./bin/goFB -i ./goFB
+goFB: 
+	cd goFB && go build -o ../bin/goFB
 
-goTFB: goTFB/*
-	go build -o ./bin/goTFB -i ./goTFB
+goTFB: 
+	cd goTFB && go build -o ../bin/goTFB
 
 clean:
-	rm ./bin/goFB
-	rm ./bin/goTFB
+	rm -f ./bin/goFB
+	rm -f ./bin/goTFB
